@@ -7,7 +7,12 @@ import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:air_job_management/widgets/custom_textfield.dart';
 import 'package:air_job_management/widgets/show_message.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
+import '../models/user.dart';
+import '../utils/my_route.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -17,7 +22,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late AuthProvider authProvider;
   bool isShowPassword = false;
-  TextEditingController email = TextEditingController(text: 'abcd123');
+  TextEditingController email = TextEditingController(text: 'admin@gmail.com');
   TextEditingController password = TextEditingController(text: '123456');
   TextEditingController username = TextEditingController(text: 'Admin ABC');
 
@@ -42,6 +47,8 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  bool isShow = true;
+
   buildBody() {
     return Container(
       decoration: BoxDecoration(
@@ -54,59 +61,46 @@ class _LoginPageState extends State<LoginPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // SvgPicture.asset(
-          //   ImageSource.icLogo,
-          //   width: 150,
-          //   height: 150,
-          // ),
+          Image.asset(
+            "assets/svgs/img.png",
+            width: 250,
+            height: 80,
+          ),
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
           Text(
-            "GPSワーク",
+            "Air Job",
             style: TextStyle(color: AppColor.primaryColor, fontWeight: FontWeight.w600, fontSize: 30),
           ),
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
-          CustomTextFieldWidget(
-              controller: email,
-              isSecureText: false,
-              isFromLogin: true,
-              width: AppSize.getDeviceWidth(context) * (Responsive.isDesktop(context) ? 0.5 : 0.8),
-              hintText: "スタッフ番号",
-              maxLine: 1),
+          PrimaryTextField(isRequired: true, hint: "スタッフ番号", controller: email, isObsecure: false),
           AppSize.spaceHeight16,
-          !authProvider.isLogin
-              ? CustomTextFieldWidget(
-                  controller: username,
-                  isSecureText: false,
-                  isFromLogin: true,
-                  width: AppSize.getDeviceWidth(context) * (Responsive.isDesktop(context) ? 0.5 : 0.8),
-                  hintText: "Username",
-                  maxLine: 1)
-              : SizedBox(),
+          !authProvider.isLogin ? PrimaryTextField(hint: "Username", controller: username, isObsecure: false) : SizedBox(),
           !authProvider.isLogin ? AppSize.spaceHeight16 : SizedBox(),
-          Stack(
-            children: [
-              CustomTextFieldWidget(
-                  isFromLogin: true,
-                  controller: password,
-                  isSecureText: !isShowPassword,
-                  width: AppSize.getDeviceWidth(context) * (Responsive.isDesktop(context) ? 0.5 : 0.8),
-                  hintText: "パスワード",
-                  maxLine: 1),
-              Positioned(
-                top: 5,
-                right: 10,
-                child: IconButton(
+          PrimaryTextField(
+            hint: "パスワード",
+            controller: password,
+            isRequired: true,
+            isObsecure: isShow,
+            suffix: !isShow
+                ? IconButton(
                     onPressed: () {
                       setState(() {
-                        isShowPassword = !isShowPassword;
+                        isShow = !isShow;
                       });
                     },
-                    icon: Icon(!isShowPassword ? Icons.visibility_off_rounded : Icons.visibility)),
-              )
-            ],
+                    icon: Icon(FlutterIcons.eye_ent, color: AppColor.primaryColor),
+                  )
+                : IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isShow = !isShow;
+                      });
+                    },
+                    icon: Icon(FlutterIcons.eye_with_line_ent, color: AppColor.primaryColor),
+                  ),
           ),
           AppSize.spaceHeight16,
           ButtonWidget(
@@ -121,18 +115,26 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   onRegister() {}
+
   onLogin() async {
     if (email.text.isEmpty || password.text.isEmpty) {
       MessageWidget.show("スタッフ番号またはパスワードが必要です");
-    } else {}
+    } else {
+      authProvider.setLoading(true);
+      MyUser? user = await authProvider.loginAccount(email.text.trim(), password.text.trim());
+      if (user != null) {
+        context.go(MyRoute.home);
+      } else {
+        MessageWidget.show("${authProvider.errorMessage}");
+      }
+    }
   }
 
   buildTab(String title, bool isSelected) {
     return Container(
       width: 150,
       height: 45,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16), color: isSelected ? AppColor.primaryColor : AppColor.secondaryColor),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: isSelected ? AppColor.primaryColor : AppColor.secondaryColor),
       child: InkWell(
         onTap: () {
           if (title == "Login") {

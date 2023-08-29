@@ -1,52 +1,149 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:sura_flutter/sura_flutter.dart';
 
-class CustomTextFieldWidget extends StatelessWidget {
-  final TextEditingController controller;
-  final double width;
-  final String hintText;
-  final bool isSecureText;
-  final int maxLine;
-  final Color? bgColor;
-  final bool? isFromLogin;
-  CustomTextFieldWidget(
-      {required this.controller,
-      this.isFromLogin,
-      required this.isSecureText,
-      required this.width,
-      required this.hintText,
-      required this.maxLine,
-      this.bgColor});
+import '../utils/app_color.dart';
+
+/// {@category Widget}
+/// A widget that display the text field with various type of customization, and it is common used in entire app
+class PrimaryTextField extends StatelessWidget {
+  final TextEditingController? controller;
+  final String hint;
+  final String? Function(String?)? validator;
+  final void Function(String)? onChange;
+  final void Function(String?)? onSubmit;
+  final bool isObsecure;
+  final bool isPhoneNumber;
+  final Widget? prefix;
+  final Widget? suffix;
+  final bool isRequired;
+  final double marginBottom;
+  final TextInputType textInputType;
+  final double borderWidth;
+  final TextCapitalization textCapitalization;
+  final VoidCallback? onTap;
+  final bool readOnly;
+  final AutovalidateMode? autoValidateMode;
+  final TextStyle? style;
+  final TextInputAction? textInputAction;
+
+  const PrimaryTextField({
+    Key? key,
+    required this.controller,
+    required this.hint,
+    this.validator,
+    this.isObsecure = false,
+    this.prefix,
+    this.suffix,
+    this.marginBottom = 16,
+    this.textInputType = TextInputType.text,
+    this.borderWidth = 0.8,
+    this.isRequired = true,
+    this.textCapitalization = TextCapitalization.none,
+    this.onTap,
+    this.readOnly = false,
+    this.onChange,
+    this.onSubmit,
+    this.isPhoneNumber = false,
+    this.autoValidateMode,
+    this.style,
+    this.textInputAction = TextInputAction.done,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: width,
-        height: maxLine == 1
-            ? 50
-            : maxLine == 4
-                ? 30
-                : maxLine == 3
-                    ? 150
-                    : 200,
-        padding: EdgeInsets.only(left: maxLine == 4 ? 5 : 16),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: bgColor != null ? Colors.white : Color(0xffF0F0F0),
-            border: Border.all(width: 0.6, color: Colors.grey)),
-        alignment: Alignment.centerLeft,
-        child: TextField(
-          controller: controller,
-          obscureText: isSecureText,
-          maxLines: maxLine == 4 ? 1 : maxLine,
-          inputFormatters: isFromLogin != null && isFromLogin == true
-              ? null
-              : <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
-          style: TextStyle(color: Colors.black),
-          decoration: InputDecoration.collapsed(hintText: hintText),
+    return Container(
+      margin: EdgeInsets.only(bottom: marginBottom),
+      child: TextFormField(
+        controller: controller,
+        onChanged: onChange,
+        onTap: onTap ?? null,
+        readOnly: readOnly,
+        obscureText: isObsecure,
+        keyboardType: textInputType,
+        textInputAction: textInputAction,
+        validator: isRequired
+            ? (value) {
+                if (validator != null) return validator!(value);
+                return FormValidator.validateField(value, hint);
+              }
+            : null,
+        autocorrect: false,
+        autovalidateMode: autoValidateMode,
+        textCapitalization: textCapitalization,
+        onFieldSubmitted: onSubmit,
+        style: style,
+        decoration: InputDecoration(
+          hintText: hint,
+          prefixIcon: prefix,
+          suffixIcon: readOnly
+              ? SizedBox()
+              : suffix == null
+                  ? Icon(
+                      FlutterIcons.asterisk_fou,
+                      color: readOnly
+                          ? AppColor.primaryColor
+                          : isRequired
+                              ? Colors.red
+                              : Colors.transparent,
+                      size: 8,
+                    )
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        suffix!,
+                        const SpaceX(),
+                        Icon(
+                          FlutterIcons.asterisk_fou,
+                          color: readOnly
+                              ? AppColor.primaryColor
+                              : isRequired
+                                  ? Colors.red
+                                  : Colors.transparent,
+                          size: 8,
+                        ),
+                        const SpaceX(16),
+                      ],
+                    ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(
+              color: AppColor.primaryColor,
+              width: borderWidth,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: AppColor.primaryColor, width: borderWidth),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: Colors.red, width: borderWidth),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: Colors.red, width: borderWidth),
+          ),
+          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         ),
       ),
     );
+  }
+}
+
+class FormValidator {
+  static String? validateField(String? value, String field, {int? length}) {
+    if (value == null || value.isEmpty) return "$field is required";
+    if (length != null) {
+      if (value.length < length) return "$field is required";
+    }
+    return null;
+  }
+
+  static String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) return "Invalid Email";
+    bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
+    return emailValid ? null : "Invalid Email";
   }
 }

@@ -78,8 +78,9 @@ class AuthProvider with ChangeNotifier {
       UserCredential authResult = await firebaseAuth.signInWithEmailAndPassword(email: email.trim(), password: password);
       User? user = authResult.user;
       myUser = await UserApiServices().getProfileUser(user!.uid);
+      print("My user is ${myUser?.email} ${myUser?.role}");
       setLoading(false);
-      if (myUser != null && (myUser!.role == RoleHelper.admin || myUser!.role == RoleHelper.subManager)) {
+      if (myUser != null && (myUser!.role == RoleHelper.admin)) {
         return myUser;
       } else {
         await logout();

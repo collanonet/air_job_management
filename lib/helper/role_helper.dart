@@ -1,5 +1,5 @@
 class RoleHelper {
-  static String staff = "staff";
+  static String staff = "worker";
   static String subManager = "sub-manager";
   static String admin = "admin";
   static String staffJP = "スタッフ";

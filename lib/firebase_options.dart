@@ -37,15 +37,13 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAf9tH86b0ivcLv1uINz8OVWXYzdpr3F3I',
-    appId: '1:400472065925:android:b9575bb4ffc69f54f626ec',
-    messagingSenderId: '400472065925',
-    projectId: 'gpswork-6aa75',
-    authDomain: 'gpswork-6aa75.firebaseapp.com',
-    databaseURL: '',
-    storageBucket: 'gpswork-6aa75.appspot.com',
-    measurementId: 'G-5PCYNHZ6J3',
-  );
+      apiKey: "AIzaSyD5gegrw0DmJZrL6JiSpPgQPXt1QJ_IaOE",
+      authDomain: "air-job.firebaseapp.com",
+      projectId: "air-job",
+      storageBucket: "air-job.appspot.com",
+      messagingSenderId: "466227911476",
+      appId: "1:466227911476:web:e85c5cd5f071d0593ee361",
+      measurementId: "G-S2ECSWMM6C");
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCdRjCVZlhrq72RuEklEyyxYlBRCYhI2Sw',

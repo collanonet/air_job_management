@@ -41,7 +41,7 @@ final GoRouter _router = GoRouter(
       },
       routes: <RouteBase>[
         GoRoute(
-          path: MyRoute.home.removeSlash(),
+          path: MyRoute.login.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {
             return LoginPage();
           },
@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
             Locale('ja', 'JP'), // Hebrew, no country code
           ],
           debugShowCheckedModeBanner: false,
-          title: 'GPSワーク',
+          title: 'Air Job',
           routerConfig: _router,
         ));
   }

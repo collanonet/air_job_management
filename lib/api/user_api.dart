@@ -7,7 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 class UserApiServices {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final db = FirebaseFirestore.instance;
-  final CollectionReference userRef = FirebaseFirestore.instance.collection('users');
+  final CollectionReference userRef = FirebaseFirestore.instance.collection('user');
 
   Future<void> updateEmail(String hashPass, String oldEmail, String newEmail) async {
     try {
