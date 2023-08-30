@@ -55,58 +55,75 @@ class _LoginPageState extends State<LoginPage> {
         borderRadius: const BorderRadius.only(topLeft: Radius.circular(32), bottomRight: Radius.circular(32)),
         color: AppColor.whiteColor,
       ),
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.symmetric(vertical: AppSize.getDeviceHeight(context) * 0.1),
       width: AppSize.getDeviceWidth(context) * (Responsive.isDesktop(context) ? 0.5 : 0.8),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset(
-            "assets/svgs/img.png",
-            width: 250,
-            height: 80,
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Image.asset(
+                "assets/svgs/img.png",
+                width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.3),
+              ),
+              Positioned(
+                  right: 0,
+                  left: 0,
+                  bottom: Responsive.isMobile(context) ? -20 : -10,
+                  child: Center(
+                    child: Text(
+                      "求人企業",
+                      style: TextStyle(color: AppColor.primaryColor, fontWeight: FontWeight.w600, fontSize: 18),
+                    ),
+                  ))
+            ],
           ),
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
-          Text(
-            "Air Job",
-            style: TextStyle(color: AppColor.primaryColor, fontWeight: FontWeight.w600, fontSize: 30),
+          AppSize.spaceHeight16,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            child: PrimaryTextField(isRequired: true, hint: "スタッフ番号", controller: email, isObsecure: false),
           ),
-          AppSize.spaceHeight16,
-          AppSize.spaceHeight16,
-          AppSize.spaceHeight16,
-          PrimaryTextField(isRequired: true, hint: "スタッフ番号", controller: email, isObsecure: false),
           AppSize.spaceHeight16,
           !authProvider.isLogin ? PrimaryTextField(hint: "Username", controller: username, isObsecure: false) : SizedBox(),
           !authProvider.isLogin ? AppSize.spaceHeight16 : SizedBox(),
-          PrimaryTextField(
-            hint: "パスワード",
-            controller: password,
-            isRequired: true,
-            isObsecure: isShow,
-            suffix: !isShow
-                ? IconButton(
-                    onPressed: () {
-                      setState(() {
-                        isShow = !isShow;
-                      });
-                    },
-                    icon: Icon(FlutterIcons.eye_ent, color: AppColor.primaryColor),
-                  )
-                : IconButton(
-                    onPressed: () {
-                      setState(() {
-                        isShow = !isShow;
-                      });
-                    },
-                    icon: Icon(FlutterIcons.eye_with_line_ent, color: AppColor.primaryColor),
-                  ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            child: PrimaryTextField(
+              hint: "パスワード",
+              controller: password,
+              isRequired: true,
+              isObsecure: isShow,
+              suffix: !isShow
+                  ? IconButton(
+                      onPressed: () {
+                        setState(() {
+                          isShow = !isShow;
+                        });
+                      },
+                      icon: Icon(FlutterIcons.eye_ent, color: AppColor.primaryColor),
+                    )
+                  : IconButton(
+                      onPressed: () {
+                        setState(() {
+                          isShow = !isShow;
+                        });
+                      },
+                      icon: Icon(FlutterIcons.eye_with_line_ent, color: AppColor.primaryColor),
+                    ),
+            ),
           ),
           AppSize.spaceHeight16,
-          ButtonWidget(
-              title: authProvider.isLogin ? "ログイン" : "Register",
-              color: AppColor.primaryColor,
-              onPress: () => authProvider.isLogin ? onLogin() : onRegister()),
+          SizedBox(
+            width: AppSize.getDeviceWidth(context) * 0.20,
+            child: ButtonWidget(
+                title: authProvider.isLogin ? "ログイン" : "Register",
+                color: AppColor.primaryColor,
+                onPress: () => authProvider.isLogin ? onLogin() : onRegister()),
+          ),
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
         ],
@@ -123,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
       authProvider.setLoading(true);
       MyUser? user = await authProvider.loginAccount(email.text.trim(), password.text.trim());
       if (user != null) {
-        context.go(MyRoute.home);
+        context.go(MyRoute.dashboard);
       } else {
         MessageWidget.show("${authProvider.errorMessage}");
       }

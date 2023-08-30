@@ -1,9 +1,12 @@
 import 'dart:ui';
 
+import 'package:air_job_management/pages/home/home.dart';
 import 'package:air_job_management/pages/login.dart';
 import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart' as auth;
+import 'package:air_job_management/providers/home.dart';
 import 'package:air_job_management/utils/extension.dart';
+import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/my_route.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +44,88 @@ final GoRouter _router = GoRouter(
       },
       routes: <RouteBase>[
         GoRoute(
+          path: MyRoute.dashboard.removeSlash(),
+          builder: (BuildContext context, GoRouterState state) {
+            return HomePage(selectItem: JapaneseText.dashboard);
+          },
+        ),
+        // GoRoute(
+        //   path: MyRoute.staff.removeSlash(),
+        //   builder: (BuildContext context, GoRouterState state) {
+        //     return HomePage(pageName: MyRoute.staff);
+        //   },
+        //   routes: <GoRoute>[
+        //     GoRoute(
+        //       path: ':uid/edit',
+        //       builder: (BuildContext context, GoRouterState state) {
+        //         return HomePage(
+        //             pageName: MyRoute.staff,
+        //             page: const StaffPage(
+        //               isDetail: true,
+        //             ));
+        //       },
+        //     ),
+        //     GoRoute(
+        //       path: ':uid/attendance-history',
+        //       builder: (BuildContext context, GoRouterState state) {
+        //         return HomePage(
+        //             pageName: MyRoute.staff,
+        //             page: const StaffPage(
+        //               isDetail: true,
+        //             ));
+        //       },
+        //     ),
+        //     GoRoute(
+        //       path: ':uid/schedule',
+        //       builder: (BuildContext context, GoRouterState state) {
+        //         return HomePage(
+        //             pageName: MyRoute.staff,
+        //             page: const StaffPage(
+        //               isDetail: true,
+        //             ));
+        //       },
+        //     ),
+        //     GoRoute(
+        //       path: 'create-batch-schedule',
+        //       builder: (BuildContext context, GoRouterState state) {
+        //         return HomePage(
+        //             pageName: MyRoute.staff,
+        //             page: const StaffPage(
+        //               isDetail: true,
+        //             ));
+        //       },
+        //     ),
+        //     GoRoute(
+        //       path: 'create',
+        //       builder: (BuildContext context, GoRouterState state) {
+        //         return HomePage(
+        //             pageName: MyRoute.staff,
+        //             page: const StaffPage(
+        //               isDetail: true,
+        //             ));
+        //       },
+        //     ),
+        //   ],
+        // ),
+        GoRoute(
+          path: MyRoute.users.removeSlash(),
+          builder: (BuildContext context, GoRouterState state) {
+            return HomePage(selectItem: JapaneseText.users);
+          },
+        ),
+        GoRoute(
+          path: MyRoute.schedule.removeSlash(),
+          builder: (BuildContext context, GoRouterState state) {
+            return HomePage(selectItem: JapaneseText.schedule);
+          },
+        ),
+        GoRoute(
+          path: MyRoute.setting.removeSlash(),
+          builder: (BuildContext context, GoRouterState state) {
+            return HomePage(selectItem: JapaneseText.setting);
+          },
+        ),
+        GoRoute(
           path: MyRoute.login.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {
             return LoginPage();
@@ -61,6 +146,7 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider<auth.AuthProvider>.value(value: auth.AuthProvider()),
           StreamProvider.value(value: auth.AuthProvider().user, initialData: null),
+          ChangeNotifierProvider(create: (_) => HomeProvider())
         ],
         child: MaterialApp.router(
           localizationsDelegates: const [

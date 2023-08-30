@@ -19,7 +19,6 @@ class JapaneseText {
   static String scheduleTemplate = "スケジュール雛形";
 
   static String date = "日付";
-  static String schedule = "スケジュール";
   static String actualWorkTime = "出勤時間";
   static String workStatus = "勤務状況";
   static String workRecord = "実績";
@@ -90,7 +89,6 @@ class JapaneseText {
 
   static String staffId = "社員番号";
   static String groupId = "勤務地ID";
-  static String name = "氏名";
   static String numberOfWorkDay = "出勤日数";
   static String numberOfAwayFromWork = "休出日数";
   static String numberOfDayOff = "特休日数";
@@ -131,4 +129,20 @@ class JapaneseText {
   static String paidHolidaySetting = "年次有給休暇設定";
   static String holidayWorkSetting = "振休設定 (デフォルト)";
   static String compensationSetting = "代休設定 (デフォルト)";
+
+  //Dashboard
+  static String dashboard = "ダッシュボード";
+  static String users = "メンバー";
+  static String schedule = "スケジュール";
+  static String setting = "設定";
+
+  //table header
+  static String name = "名前";
+  static String dob = "生年月日";
+  static String nationality = "国籍";
+  static String gender = "設定";
+  static String status2 = "ステータス";
+
+  //status
+  static String normal = "正常";
 }

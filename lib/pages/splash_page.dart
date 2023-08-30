@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
   startTime() async {
     FirebaseAuth.instance.authStateChanges().listen((user) async {
       if (user != null) {
-        context.go(MyRoute.home);
+        context.go(MyRoute.dashboard);
       } else {
         context.go(MyRoute.login);
       }
