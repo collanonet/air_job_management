@@ -41,43 +41,47 @@ class _HomePageState extends State<HomePage> with AfterBuildMixin {
     return SizedBox(
       width: width,
       height: double.infinity,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          AppSize.spaceHeight16,
-          AirJobManagementWidget(onPress: () {
-            homeProvider.onChangeSelectItem(homeProvider.menuList[0]);
-          }),
-          AppSize.spaceHeight30,
-          for (int i = 0; i < homeProvider.menuList.length; i++)
-            Column(
-              children: [
-                TabSectionWidget(
-                    title: homeProvider.menuList[i],
-                    icon: homeProvider.menuIconList[i],
-                    onPress: () {
-                      homeProvider.onChangeSelectItem(homeProvider.menuList[i]);
-                      var route = homeProvider.checkRoute(homeProvider);
-                      context.go(route);
-                    }),
-                AppSize.spaceHeight8,
-              ],
-            ),
-          TabSectionWidget(
-              title: "Logout",
-              icon: Icons.logout,
-              onPress: () async {
-                await FirebaseAuth.instance.signOut();
-                context.go(MyRoute.login);
-              }),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            AppSize.spaceHeight16,
+            AirJobManagementWidget(onPress: () {
+              homeProvider.onChangeSelectItem(homeProvider.menuList[0]);
+            }),
+            AppSize.spaceHeight16,
+            for (int i = 0; i < homeProvider.menuList.length; i++)
+              Column(
+                children: [
+                  TabSectionWidget(
+                      title: homeProvider.menuList[i],
+                      icon: homeProvider.menuIconList[i],
+                      onPress: () {
+                        homeProvider
+                            .onChangeSelectItem(homeProvider.menuList[i]);
+                        var route = homeProvider.checkRoute(homeProvider);
+                        context.go(route);
+                      }),
+                  AppSize.spaceHeight8,
+                ],
+              ),
+            TabSectionWidget(
+                title: "Logout",
+                icon: Icons.logout,
+                onPress: () async {
+                  await FirebaseAuth.instance.signOut();
+                  context.go(MyRoute.login);
+                }),
+          ],
+        ),
       ),
     );
   }
 
   rightWidget() {
-    int selectedIndex = homeProvider.menuList.indexOf(homeProvider.selectedItem);
+    int selectedIndex =
+        homeProvider.menuList.indexOf(homeProvider.selectedItem);
     return Expanded(child: homeProvider.menuPageList.elementAt(selectedIndex));
   }
 

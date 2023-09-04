@@ -40,8 +40,10 @@ class JapaneseText {
   static String dontHaveScheduleMessage = "編集するスケジュールがありません。";
   static String dontHaveWorkRecordMessage = "編集する勤務実績がありません。";
 
-  static String canNotCreateAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
-  static String canNotEditAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
+  static String canNotCreateAllWorkgroupMessage =
+      "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
+  static String canNotEditAllWorkgroupMessage =
+      "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
   static String workday = "勤務日";
   static String fixedDayOff = "所定休日";
   static String lawDayOff = "法定休日";
@@ -130,12 +132,6 @@ class JapaneseText {
   static String holidayWorkSetting = "振休設定 (デフォルト)";
   static String compensationSetting = "代休設定 (デフォルト)";
 
-  //Dashboard
-  static String dashboard = "ダッシュボード";
-  static String users = "メンバー";
-  static String schedule = "スケジュール";
-  static String setting = "設定";
-
   //table header
   static String name = "名前";
   static String dob = "生年月日";
@@ -145,4 +141,12 @@ class JapaneseText {
 
   //status
   static String normal = "正常";
+
+  //Dashboard
+  static String analysis = "分析";
+  static String recruitingCompany = "求人企業";
+  static String jobSeeker = "求職者";
+  static String job = "お仕事";
+  static String shift = "シフト";
+  static String setting = "設定";
 }

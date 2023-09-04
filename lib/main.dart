@@ -46,7 +46,7 @@ final GoRouter _router = GoRouter(
         GoRoute(
           path: MyRoute.dashboard.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {
-            return HomePage(selectItem: JapaneseText.dashboard);
+            return HomePage(selectItem: JapaneseText.analysis);
           },
         ),
         // GoRoute(
@@ -108,15 +108,27 @@ final GoRouter _router = GoRouter(
         //   ],
         // ),
         GoRoute(
-          path: MyRoute.users.removeSlash(),
+          path: MyRoute.job.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {
-            return HomePage(selectItem: JapaneseText.users);
+            return HomePage(selectItem: JapaneseText.job);
           },
         ),
         GoRoute(
-          path: MyRoute.schedule.removeSlash(),
+          path: MyRoute.shift.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {
-            return HomePage(selectItem: JapaneseText.schedule);
+            return HomePage(selectItem: JapaneseText.shift);
+          },
+        ),
+        GoRoute(
+          path: MyRoute.jobSeeker.removeSlash(),
+          builder: (BuildContext context, GoRouterState state) {
+            return HomePage(selectItem: JapaneseText.jobSeeker);
+          },
+        ),
+        GoRoute(
+          path: MyRoute.company.removeSlash(),
+          builder: (BuildContext context, GoRouterState state) {
+            return HomePage(selectItem: JapaneseText.recruitingCompany);
           },
         ),
         GoRoute(
@@ -144,8 +156,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider<auth.AuthProvider>.value(value: auth.AuthProvider()),
-          StreamProvider.value(value: auth.AuthProvider().user, initialData: null),
+          ChangeNotifierProvider<auth.AuthProvider>.value(
+              value: auth.AuthProvider()),
+          StreamProvider.value(
+              value: auth.AuthProvider().user, initialData: null),
           ChangeNotifierProvider(create: (_) => HomeProvider())
         ],
         child: MaterialApp.router(

@@ -17,10 +17,14 @@ class RouteHandler {
     if (provider.selectedItem == provider.menuList[0]) {
       return MyRoute.dashboard;
     } else if (provider.selectedItem == provider.menuList[1]) {
-      return MyRoute.users;
+      return MyRoute.jobSeeker;
     } else if (provider.selectedItem == provider.menuList[2]) {
-      return MyRoute.schedule;
+      return MyRoute.company;
     } else if (provider.selectedItem == provider.menuList[3]) {
+      return MyRoute.job;
+    } else if (provider.selectedItem == provider.menuList[4]) {
+      return MyRoute.shift;
+    } else if (provider.selectedItem == provider.menuList[5]) {
       return MyRoute.setting;
     } else {
       return MyRoute.login;
