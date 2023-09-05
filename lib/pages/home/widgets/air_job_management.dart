@@ -5,7 +5,8 @@ import '../../../utils/app_size.dart';
 
 class AirJobManagementWidget extends StatelessWidget {
   final Function onPress;
-  const AirJobManagementWidget({Key? key, required this.onPress}) : super(key: key);
+  const AirJobManagementWidget({Key? key, required this.onPress})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class AirJobManagementWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                Icons.health_and_safety_outlined,
+                Icons.work_history_outlined,
                 color: AppColor.primaryColor,
                 size: 35,
               ),

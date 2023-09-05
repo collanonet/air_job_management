@@ -1,7 +1,6 @@
 import 'package:air_job_management/pages/home/widgets/air_job_management.dart';
 import 'package:air_job_management/pages/home/widgets/tab_section.dart';
 import 'package:air_job_management/providers/home.dart';
-import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/my_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,10 +24,11 @@ class _HomePageState extends State<HomePage> with AfterBuildMixin {
   Widget build(BuildContext context) {
     homeProvider = Provider.of<HomeProvider>(context);
     return Scaffold(
+      backgroundColor: Color(0xff8c8fa3),
       body: Container(
         width: AppSize.getDeviceWidth(context),
         height: AppSize.getDeviceHeight(context),
-        color: AppColor.whiteColor,
+        color: Color(0xfff0f1fa),
         child: Row(
           children: [leftWidget(), rightWidget()],
         ),

@@ -5,6 +5,7 @@ import 'package:air_job_management/pages/login.dart';
 import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart' as auth;
 import 'package:air_job_management/providers/home.dart';
+import 'package:air_job_management/providers/job_seeker.dart';
 import 'package:air_job_management/utils/extension.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/my_route.dart';
@@ -160,7 +161,8 @@ class MyApp extends StatelessWidget {
               value: auth.AuthProvider()),
           StreamProvider.value(
               value: auth.AuthProvider().user, initialData: null),
-          ChangeNotifierProvider(create: (_) => HomeProvider())
+          ChangeNotifierProvider(create: (_) => HomeProvider()),
+          ChangeNotifierProvider(create: (_) => JobSeekerProvider())
         ],
         child: MaterialApp.router(
           localizationsDelegates: const [

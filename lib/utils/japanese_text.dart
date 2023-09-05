@@ -149,4 +149,17 @@ class JapaneseText {
   static String job = "お仕事";
   static String shift = "シフト";
   static String setting = "設定";
+
+  //Company
+  //Search
+  static String correspondenceStatus = "対応状況";
+  static String duringCorrespondence = "対応中";
+  static String newArrivalOrInterview = "対応中";
+  static String allData = "すべて";
+  static String newArrival = "新着";
+  static String interview = "面接";
+
+  //Job Seeker
+  //Filter
+  static String applicantSearch = "応募者検索";
 }
