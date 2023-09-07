@@ -11,7 +11,8 @@ import 'package:sura_flutter/sura_flutter.dart';
 
 class HomePage extends StatefulWidget {
   final String? selectItem;
-  const HomePage({Key? key, this.selectItem}) : super(key: key);
+  final Widget? page;
+  const HomePage({Key? key, this.selectItem, this.page}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -19,6 +20,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with AfterBuildMixin {
   late HomeProvider homeProvider;
+
+  @override
+  void afterBuild(BuildContext context) {
+    if (widget.selectItem != null) {
+      homeProvider.onChangeSelectItem(widget.selectItem ?? "");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,13 +90,9 @@ class _HomePageState extends State<HomePage> with AfterBuildMixin {
   rightWidget() {
     int selectedIndex =
         homeProvider.menuList.indexOf(homeProvider.selectedItem);
-    return Expanded(child: homeProvider.menuPageList.elementAt(selectedIndex));
-  }
-
-  @override
-  void afterBuild(BuildContext context) {
-    if (widget.selectItem != null) {
-      homeProvider.onChangeSelectItem(widget.selectItem ?? "");
-    }
+    return Expanded(
+        child: widget.page != null
+            ? widget.page!
+            : homeProvider.menuPageList.elementAt(selectedIndex));
   }
 }

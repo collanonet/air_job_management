@@ -1,10 +1,14 @@
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
+import 'package:air_job_management/utils/japanese_text.dart';
+import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CreateSeekerOrDownloadListWidget extends StatelessWidget {
-  const CreateSeekerOrDownloadListWidget({super.key});
+  final BuildContext context2;
+  const CreateSeekerOrDownloadListWidget({super.key, required this.context2});
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +21,14 @@ class CreateSeekerOrDownloadListWidget extends StatelessWidget {
           children: [
             Spacer(),
             ButtonWidget(
-                title: "手動登録", color: AppColor.primaryColor, onPress: () {}),
+                title: JapaneseText.createJobSeeker,
+                color: AppColor.primaryColor,
+                onPress: () {
+                  context2.go(MyRoute.createJobSeeker);
+                }),
             AppSize.spaceWidth16,
             ButtonWidget(
-                title: "応募一覧をダウンロード",
+                title: JapaneseText.downloadSeekerList,
                 color: AppColor.primaryColor,
                 onPress: () {}),
           ],

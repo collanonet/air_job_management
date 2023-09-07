@@ -162,4 +162,16 @@ class JapaneseText {
   //Job Seeker
   //Filter
   static String applicantSearch = "応募者検索";
+  static String createJobSeeker = "手動登録";
+  static String downloadSeekerList = "応募一覧をダウンロード";
+
+  //Info
+  static String basicInformation = "基本情報";
+  static String nameKanJi = "名前（漢字）";
+  static String nameFugigana = "名前（ふりがな)";
+  static String phone = "電話番号";
+  static String email = "Eメール";
+  static String password = "パスワード";
+  static String note = "メモ";
+  static String clearInput = "クリア入力";
 }

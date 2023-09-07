@@ -26,12 +26,14 @@ class PrimaryTextField extends StatelessWidget {
   final AutovalidateMode? autoValidateMode;
   final TextStyle? style;
   final TextInputAction? textInputAction;
+  final int? maxLine;
 
   const PrimaryTextField({
     Key? key,
     required this.controller,
     required this.hint,
     this.validator,
+    this.maxLine = 1,
     this.isObsecure = false,
     this.prefix,
     this.suffix,
@@ -68,6 +70,7 @@ class PrimaryTextField extends StatelessWidget {
                 return FormValidator.validateField(value, hint);
               }
             : null,
+        maxLines: maxLine,
         autocorrect: false,
         autovalidateMode: autoValidateMode,
         textCapitalization: textCapitalization,
@@ -115,7 +118,8 @@ class PrimaryTextField extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: AppColor.primaryColor, width: borderWidth),
+            borderSide:
+                BorderSide(color: AppColor.primaryColor, width: borderWidth),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
@@ -125,7 +129,8 @@ class PrimaryTextField extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(color: Colors.red, width: borderWidth),
           ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         ),
       ),
     );
@@ -143,7 +148,9 @@ class FormValidator {
 
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) return "Invalid Email";
-    bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
+    bool emailValid = RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(value);
     return emailValid ? null : "Invalid Email";
   }
 }

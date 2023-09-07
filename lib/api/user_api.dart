@@ -7,18 +7,41 @@ import 'package:firebase_storage/firebase_storage.dart';
 class UserApiServices {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final db = FirebaseFirestore.instance;
-  final CollectionReference userRef = FirebaseFirestore.instance.collection('user');
+  final CollectionReference userRef =
+      FirebaseFirestore.instance.collection('user');
 
-  Future<void> updateEmail(String hashPass, String oldEmail, String newEmail) async {
+  Future<void> updateEmail(
+      String hashPass, String oldEmail, String newEmail) async {
     try {
       print("$hashPass Hash, $oldEmail, $newEmail");
       String pass = EncryptUtils.decryptedPassword(hashPass);
       print("$pass pass, $oldEmail, $newEmail");
-      var credential = await f.FirebaseAuth.instance.signInWithEmailAndPassword(email: oldEmail, password: pass);
+      var credential = await f.FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: oldEmail, password: pass);
       credential.user?.updateEmail(newEmail);
       print("updateEmail success");
     } catch (e) {
       print("Error updateEmail =>> ${e.toString()}");
+    }
+  }
+
+  Future<String?> createUserAccount(
+      String email, String password, MyUser myUser) async {
+    try {
+      var credential = await f.FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      String encryptedPassword = EncryptUtils.encryptPassword(password);
+      if (credential.user != null) {
+        String uid = credential.user!.uid;
+        myUser.uid = uid;
+        myUser.hash_password = encryptedPassword;
+        await userRef.doc(uid).set(myUser.toJson());
+        return "success";
+      }
+      return "Failed to create user";
+    } catch (e) {
+      print("Error updateEmail =>> ${e.toString()}");
+      return "$e";
     }
   }
 
@@ -39,7 +62,10 @@ class UserApiServices {
 
   Future<bool> getUserEmailByID(String uid) async {
     try {
-      var doc = await userRef.where("staff_number", isEqualTo: uid).orderBy("last_name", descending: true).get();
+      var doc = await userRef
+          .where("staff_number", isEqualTo: uid)
+          .orderBy("last_name", descending: true)
+          .get();
       if (doc.size > 0) {
         return true;
       }

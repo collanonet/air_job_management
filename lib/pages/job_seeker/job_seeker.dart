@@ -34,7 +34,9 @@ class _JobSeekerPageState extends State<JobSeekerPage> {
         child: Column(
           children: [
             JobSeekerFilterDataWidget(),
-            CreateSeekerOrDownloadListWidget(),
+            CreateSeekerOrDownloadListWidget(
+              context2: context,
+            ),
             Expanded(
                 child: Container(
               decoration: boxDecoration,

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:air_job_management/pages/home/home.dart';
+import 'package:air_job_management/pages/job_seeker/create_job_seeker.dart';
 import 'package:air_job_management/pages/login.dart';
 import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart' as auth;
@@ -121,11 +122,38 @@ final GoRouter _router = GoRouter(
           },
         ),
         GoRoute(
-          path: MyRoute.jobSeeker.removeSlash(),
-          builder: (BuildContext context, GoRouterState state) {
-            return HomePage(selectItem: JapaneseText.jobSeeker);
-          },
+            path: MyRoute.jobSeeker.removeSlash(),
+            builder: (BuildContext context, GoRouterState state) {
+              print("Location is ${state.location}");
+              return HomePage(selectItem: JapaneseText.jobSeeker);
+            },
+            routes: [
+              GoRoute(
+                path: ':uid',
+                builder: (BuildContext context, GoRouterState state) {
+                  print("Location is ${state.location}");
+                  return HomePage(page: CreateJobSeekerPage());
+                },
+              ),
+              GoRoute(
+                path: 'create',
+                builder: (BuildContext context, GoRouterState state) {
+                  print("Location is ${state.location}");
+                  return HomePage(
+                      selectItem: MyRoute.createJobSeeker.removeSlash(),
+                      page: CreateJobSeekerPage());
+                },
+              ),
+            ]),
+        GoRoute(
+          path: MyRoute.createJobSeeker.removeSlash(),
+          redirect: (BuildContext context, GoRouterState state) =>
+              MyRoute.createJobSeeker,
         ),
+        GoRoute(
+            path: "${MyRoute.jobSeeker.removeSlash()}/:uid",
+            redirect: (c, s) =>
+                "${MyRoute.jobSeeker}/${s.pathParameters['uid']}"),
         GoRoute(
           path: MyRoute.company.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {
