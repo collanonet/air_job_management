@@ -9,14 +9,17 @@ import '../const/const.dart';
 class UserApiServices {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final db = FirebaseFirestore.instance;
-  final CollectionReference userRef = FirebaseFirestore.instance.collection('user');
+  final CollectionReference userRef =
+      FirebaseFirestore.instance.collection('user');
 
-  Future<void> updateEmail(String hashPass, String oldEmail, String newEmail) async {
+  Future<void> updateEmail(
+      String hashPass, String oldEmail, String newEmail) async {
     try {
       print("$hashPass Hash, $oldEmail, $newEmail");
       String pass = EncryptUtils.decryptedPassword(hashPass);
       print("$pass pass, $oldEmail, $newEmail");
-      var credential = await f.FirebaseAuth.instance.signInWithEmailAndPassword(email: oldEmail, password: pass);
+      var credential = await f.FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: oldEmail, password: pass);
       credential.user?.updateEmail(newEmail);
       print("updateEmail success");
     } catch (e) {
@@ -24,9 +27,11 @@ class UserApiServices {
     }
   }
 
-  Future<String?> createUserAccount(String email, String password, MyUser myUser) async {
+  Future<String?> createUserAccount(
+      String email, String password, MyUser myUser) async {
     try {
-      var credential = await f.FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+      var credential = await f.FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
       String encryptedPassword = EncryptUtils.encryptPassword(password);
       if (credential.user != null) {
         String uid = credential.user!.uid;
@@ -39,6 +44,27 @@ class UserApiServices {
     } catch (e) {
       print("Error updateEmail =>> ${e.toString()}");
       return "$e";
+    }
+  }
+
+  Future<List<MyUser>> getAllUser() async {
+    try {
+      var doc = await userRef.get();
+      if (doc.docs.isNotEmpty) {
+        List<MyUser> list = [];
+        for (int i = 0; i < doc.docs.length; i++) {
+          MyUser myUser =
+              MyUser.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          myUser.uid = doc.docs[i].id;
+          list.add(myUser);
+        }
+        return list;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Error getAllUser =>> ${e.toString()}");
+      return [];
     }
   }
 
@@ -59,7 +85,10 @@ class UserApiServices {
 
   Future<bool> getUserEmailByID(String uid) async {
     try {
-      var doc = await userRef.where("staff_number", isEqualTo: uid).orderBy("last_name", descending: true).get();
+      var doc = await userRef
+          .where("staff_number", isEqualTo: uid)
+          .orderBy("last_name", descending: true)
+          .get();
       if (doc.size > 0) {
         return true;
       }

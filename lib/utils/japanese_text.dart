@@ -174,4 +174,14 @@ class JapaneseText {
   static String password = "パスワード";
   static String note = "メモ";
   static String clearInput = "クリア入力";
+
+  //Seeker List
+  static String listApplication = "応募者一覧";
+  static String application = "応募者";
+  static String jobDetail = "求人内容";
+  static String message = "メッセージ";
+
+  //Job Seeker Detail
+  static String chat = "チャット";
+  static String applicationHistory = "応募履歴";
 }

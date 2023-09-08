@@ -124,21 +124,18 @@ final GoRouter _router = GoRouter(
         GoRoute(
             path: MyRoute.jobSeeker.removeSlash(),
             builder: (BuildContext context, GoRouterState state) {
-              print("Location is ${state.location}");
               return HomePage(selectItem: JapaneseText.jobSeeker);
             },
             routes: [
               GoRoute(
                 path: ':uid',
                 builder: (BuildContext context, GoRouterState state) {
-                  print("Location is ${state.location}");
                   return HomePage(page: CreateJobSeekerPage());
                 },
               ),
               GoRoute(
                 path: 'create',
                 builder: (BuildContext context, GoRouterState state) {
-                  print("Location is ${state.location}");
                   return HomePage(
                       selectItem: MyRoute.createJobSeeker.removeSlash(),
                       page: CreateJobSeekerPage());
