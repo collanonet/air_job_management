@@ -10,6 +10,7 @@ class MyUser {
   String? dob;
   String? note;
   String? hash_password;
+  String? profileImage;
   MyUser(
       {this.email,
       this.firstName,
@@ -21,10 +22,12 @@ class MyUser {
       this.nameKanJi,
       this.dob,
       this.nameFu,
-      this.hash_password});
+      this.hash_password,
+      this.profileImage});
 
   factory MyUser.fromJson(Map<String, dynamic> json) {
     return MyUser(
+        profileImage: json["profile"] ?? "",
         firstName: json["first_name"] ?? "",
         lastName: json["last_name"] ?? "",
         role: json["role"] ?? "",
@@ -38,6 +41,7 @@ class MyUser {
   }
 
   Map<String, dynamic> toJson() => {
+        "profile": profileImage,
         "first_name": firstName,
         "email": email,
         "role": "staff",

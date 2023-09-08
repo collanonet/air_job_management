@@ -1,15 +1,18 @@
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/utils/app_color.dart';
+import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
+import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:air_job_management/widgets/custom_textfield.dart';
-import 'package:air_job_management/widgets/show_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
+import '../../const/const.dart';
 import '../../utils/app_size.dart';
 import '../../utils/style.dart';
 
@@ -30,12 +33,10 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
   TextEditingController note = TextEditingController(text: "");
   bool isShow = true;
   bool isLoading = false;
+  DateTime dateTime = DateTime.parse("2000-10-10");
 
   onSaveUserData() async {
-    if (nameKanJi.text.isNotEmpty &&
-        nameFurigana.text.isNotEmpty &&
-        email.text.isNotEmpty &&
-        password.text.isNotEmpty) {
+    if (nameKanJi.text.isNotEmpty && nameFurigana.text.isNotEmpty && email.text.isNotEmpty && password.text.isNotEmpty) {
       setState(() {
         isLoading = true;
       });
@@ -50,18 +51,30 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
           hash_password: "",
           lastName: "",
           role: "staff");
-      String? val = await UserApiServices()
-          .createUserAccount(email.text.trim(), password.text.trim(), myUser);
+      String? val = await UserApiServices().createUserAccount(email.text.trim(), password.text.trim(), myUser);
       setState(() {
         isLoading = false;
       });
-      if (val == "success") {
-        MessageWidget.show("Create user account success");
-        context.pop();
+      if (val == ConstValue.success) {
+        toastMessageSuccess("Create user account success", context);
+        await CommonUtils.waiting(500);
+        clearAllText();
       } else {
-        MessageWidget.show("$val");
+        toastMessageError("$val", context);
       }
     }
+  }
+
+  @override
+  void dispose() {
+    nameKanJi.dispose();
+    nameFurigana.dispose();
+    phone.dispose();
+    dob.dispose();
+    email.dispose();
+    password.dispose();
+    note.dispose();
+    super.dispose();
   }
 
   @override
@@ -156,6 +169,28 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
                               isRequired: false,
                               controller: dob,
                               hint: '',
+                              readOnly: true,
+                              onTap: () async {
+                                var date = await showDatePicker(
+                                    locale: Locale("ja", "JP"),
+                                    context: context,
+                                    initialDate: dateTime,
+                                    firstDate: DateTime(1900, 1, 1),
+                                    lastDate: DateTime.now());
+                                // var date = await d.DatePicker.showDatePicker(context,
+                                //     theme: d.DatePickerTheme(containerHeight: AppSize.getDeviceHeight(context) * 0.5),
+                                //     showTitleActions: true,
+                                //     minTime: DateTime(1900, 1, 1),
+                                //     maxTime: DateTime.now(), onChanged: (date) {
+                                //   print('change $date');
+                                // }, onConfirm: (date) {
+                                //   print('confirm $date');
+                                // }, currentTime: dateTime, locale: d.LocaleType.jp);
+                                if (date != null) {
+                                  dateTime = date;
+                                  dob.text = DateFormat('yyyy-MM-dd').format(dateTime);
+                                }
+                              },
                             ),
                           ],
                         )),
@@ -195,8 +230,7 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
                                           isShow = !isShow;
                                         });
                                       },
-                                      icon: Icon(FlutterIcons.eye_ent,
-                                          color: AppColor.primaryColor),
+                                      icon: Icon(FlutterIcons.eye_ent, color: AppColor.primaryColor),
                                     )
                                   : IconButton(
                                       onPressed: () {
@@ -204,8 +238,7 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
                                           isShow = !isShow;
                                         });
                                       },
-                                      icon: Icon(FlutterIcons.eye_with_line_ent,
-                                          color: AppColor.primaryColor),
+                                      icon: Icon(FlutterIcons.eye_with_line_ent, color: AppColor.primaryColor),
                                     ),
                             ),
                           ],
@@ -232,26 +265,12 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
                       children: [
                         SizedBox(
                           width: AppSize.getDeviceWidth(context) * 0.3,
-                          child: ButtonWidget(
-                              title: JapaneseText.clearInput,
-                              color: AppColor.redColor,
-                              onPress: () {
-                                nameFurigana.text = "";
-                                nameKanJi.text = "";
-                                email.text = "";
-                                password.text = "";
-                                phone.text = "";
-                                dob.text = "";
-                                note.text = "";
-                              }),
+                          child: ButtonWidget(title: JapaneseText.clearInput, color: AppColor.redColor, onPress: () => clearAllText()),
                         ),
                         AppSize.spaceWidth16,
                         SizedBox(
                           width: AppSize.getDeviceWidth(context) * 0.3,
-                          child: ButtonWidget(
-                              title: JapaneseText.save,
-                              color: AppColor.primaryColor,
-                              onPress: () => onSaveUserData()),
+                          child: ButtonWidget(title: JapaneseText.save, color: AppColor.primaryColor, onPress: () => onSaveUserData()),
                         ),
                       ],
                     )
@@ -263,6 +282,16 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
         ),
       ),
     );
+  }
+
+  clearAllText() {
+    nameFurigana.text = "";
+    nameKanJi.text = "";
+    email.text = "";
+    password.text = "";
+    phone.text = "";
+    dob.text = "";
+    note.text = "";
   }
 
   titleWidget() {

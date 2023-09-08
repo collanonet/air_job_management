@@ -1,4 +1,8 @@
 class CommonUtils {
+  static Future<void> waiting([int mili = 1000]) async {
+    await Future.delayed(Duration(milliseconds: mili));
+  }
+
   convertStringToDoubleOrInt(String day) {
     if (day.contains(".")) {
       return num.parse(day);
