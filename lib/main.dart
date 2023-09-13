@@ -2,11 +2,13 @@ import 'dart:ui';
 
 import 'package:air_job_management/pages/home/home.dart';
 import 'package:air_job_management/pages/job_seeker/create_job_seeker.dart';
+import 'package:air_job_management/pages/job_seeker/job_seeker_detail/job_seeker_detail.dart';
 import 'package:air_job_management/pages/login.dart';
 import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart' as auth;
 import 'package:air_job_management/providers/home.dart';
 import 'package:air_job_management/providers/job_seeker.dart';
+import 'package:air_job_management/providers/job_seeker_detail.dart';
 import 'package:air_job_management/utils/extension.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/my_route.dart';
@@ -51,64 +53,6 @@ final GoRouter _router = GoRouter(
             return HomePage(selectItem: JapaneseText.analysis);
           },
         ),
-        // GoRoute(
-        //   path: MyRoute.staff.removeSlash(),
-        //   builder: (BuildContext context, GoRouterState state) {
-        //     return HomePage(pageName: MyRoute.staff);
-        //   },
-        //   routes: <GoRoute>[
-        //     GoRoute(
-        //       path: ':uid/edit',
-        //       builder: (BuildContext context, GoRouterState state) {
-        //         return HomePage(
-        //             pageName: MyRoute.staff,
-        //             page: const StaffPage(
-        //               isDetail: true,
-        //             ));
-        //       },
-        //     ),
-        //     GoRoute(
-        //       path: ':uid/attendance-history',
-        //       builder: (BuildContext context, GoRouterState state) {
-        //         return HomePage(
-        //             pageName: MyRoute.staff,
-        //             page: const StaffPage(
-        //               isDetail: true,
-        //             ));
-        //       },
-        //     ),
-        //     GoRoute(
-        //       path: ':uid/schedule',
-        //       builder: (BuildContext context, GoRouterState state) {
-        //         return HomePage(
-        //             pageName: MyRoute.staff,
-        //             page: const StaffPage(
-        //               isDetail: true,
-        //             ));
-        //       },
-        //     ),
-        //     GoRoute(
-        //       path: 'create-batch-schedule',
-        //       builder: (BuildContext context, GoRouterState state) {
-        //         return HomePage(
-        //             pageName: MyRoute.staff,
-        //             page: const StaffPage(
-        //               isDetail: true,
-        //             ));
-        //       },
-        //     ),
-        //     GoRoute(
-        //       path: 'create',
-        //       builder: (BuildContext context, GoRouterState state) {
-        //         return HomePage(
-        //             pageName: MyRoute.staff,
-        //             page: const StaffPage(
-        //               isDetail: true,
-        //             ));
-        //       },
-        //     ),
-        //   ],
-        // ),
         GoRoute(
           path: MyRoute.job.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {
@@ -128,17 +72,18 @@ final GoRouter _router = GoRouter(
             },
             routes: [
               GoRoute(
-                path: ':uid',
+                path: 'create',
                 builder: (BuildContext context, GoRouterState state) {
-                  return HomePage(page: CreateJobSeekerPage());
+                  return const HomePage(page: CreateJobSeekerPage());
                 },
               ),
               GoRoute(
-                path: 'create',
+                path: ':uid',
                 builder: (BuildContext context, GoRouterState state) {
                   return HomePage(
-                      selectItem: MyRoute.createJobSeeker.removeSlash(),
-                      page: CreateJobSeekerPage());
+                      page: JobSeekerDetailPage(
+                    seekerId: state.pathParameters["uid"].toString(),
+                  ));
                 },
               ),
             ]),
@@ -187,7 +132,8 @@ class MyApp extends StatelessWidget {
           StreamProvider.value(
               value: auth.AuthProvider().user, initialData: null),
           ChangeNotifierProvider(create: (_) => HomeProvider()),
-          ChangeNotifierProvider(create: (_) => JobSeekerProvider())
+          ChangeNotifierProvider(create: (_) => JobSeekerProvider()),
+          ChangeNotifierProvider(create: (_) => JobSeekerDetailProvider())
         ],
         child: MaterialApp.router(
           localizationsDelegates: const [

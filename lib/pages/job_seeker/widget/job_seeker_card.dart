@@ -1,8 +1,10 @@
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
+import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class JobSeekerCardWidget extends StatelessWidget {
   final MyUser user;
@@ -19,7 +21,7 @@ class JobSeekerCardWidget extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () {},
+          onTap: () => context.go("${MyRoute.jobSeeker}/${user.uid}"),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Row(
