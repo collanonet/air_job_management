@@ -36,7 +36,10 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
   DateTime dateTime = DateTime.parse("2000-10-10");
 
   onSaveUserData() async {
-    if (nameKanJi.text.isNotEmpty && nameFurigana.text.isNotEmpty && email.text.isNotEmpty && password.text.isNotEmpty) {
+    if (nameKanJi.text.isNotEmpty &&
+        nameFurigana.text.isNotEmpty &&
+        email.text.isNotEmpty &&
+        password.text.isNotEmpty) {
       setState(() {
         isLoading = true;
       });
@@ -51,7 +54,8 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
           hash_password: "",
           lastName: "",
           role: "staff");
-      String? val = await UserApiServices().createUserAccount(email.text.trim(), password.text.trim(), myUser);
+      String? val = await UserApiServices()
+          .createUserAccount(email.text.trim(), password.text.trim(), myUser);
       setState(() {
         isLoading = false;
       });
@@ -188,7 +192,8 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
                                 // }, currentTime: dateTime, locale: d.LocaleType.jp);
                                 if (date != null) {
                                   dateTime = date;
-                                  dob.text = DateFormat('yyyy-MM-dd').format(dateTime);
+                                  dob.text =
+                                      DateFormat('yyyy-MM-dd').format(dateTime);
                                 }
                               },
                             ),
@@ -230,7 +235,8 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
                                           isShow = !isShow;
                                         });
                                       },
-                                      icon: Icon(FlutterIcons.eye_ent, color: AppColor.primaryColor),
+                                      icon: Icon(FlutterIcons.eye_ent,
+                                          color: AppColor.primaryColor),
                                     )
                                   : IconButton(
                                       onPressed: () {
@@ -238,7 +244,8 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
                                           isShow = !isShow;
                                         });
                                       },
-                                      icon: Icon(FlutterIcons.eye_with_line_ent, color: AppColor.primaryColor),
+                                      icon: Icon(FlutterIcons.eye_with_line_ent,
+                                          color: AppColor.primaryColor),
                                     ),
                             ),
                           ],
@@ -261,16 +268,22 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
                     ),
                     AppSize.spaceHeight16,
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         SizedBox(
-                          width: AppSize.getDeviceWidth(context) * 0.3,
-                          child: ButtonWidget(title: JapaneseText.clearInput, color: AppColor.redColor, onPress: () => clearAllText()),
+                          width: AppSize.getDeviceWidth(context) * 0.1,
+                          child: ButtonWidget(
+                              title: JapaneseText.clearInput,
+                              color: AppColor.redColor,
+                              onPress: () => clearAllText()),
                         ),
                         AppSize.spaceWidth16,
                         SizedBox(
-                          width: AppSize.getDeviceWidth(context) * 0.3,
-                          child: ButtonWidget(title: JapaneseText.save, color: AppColor.primaryColor, onPress: () => onSaveUserData()),
+                          width: AppSize.getDeviceWidth(context) * 0.1,
+                          child: ButtonWidget(
+                              title: JapaneseText.save,
+                              color: AppColor.primaryColor,
+                              onPress: () => onSaveUserData()),
                         ),
                       ],
                     )

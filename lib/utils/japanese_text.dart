@@ -153,7 +153,6 @@ class JapaneseText {
   //Company
   //Search
   static String correspondenceStatus = "対応状況";
-  static String duringCorrespondence = "対応中";
   static String newArrivalOrInterview = "対応中";
   static String allData = "すべて";
   static String newArrival = "新着";
@@ -184,4 +183,7 @@ class JapaneseText {
   //Job Seeker Detail
   static String chat = "チャット";
   static String applicationHistory = "応募履歴";
+
+  //Job Status
+  static String duringCorrespondence = "対応中";
 }

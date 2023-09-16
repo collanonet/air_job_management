@@ -12,6 +12,9 @@ class MyUser {
   String? hash_password;
   String? profileImage;
   String? workingStatus;
+  String? jobDetail;
+  String? jobTitle;
+  String? jobId;
 
   MyUser(
       {this.email,
@@ -26,7 +29,10 @@ class MyUser {
       this.nameFu,
       this.hash_password,
       this.profileImage,
-      this.workingStatus});
+      this.workingStatus,
+      this.jobDetail,
+      this.jobTitle,
+      this.jobId});
 
   factory MyUser.fromJson(Map<String, dynamic> json) {
     return MyUser(
@@ -36,11 +42,14 @@ class MyUser {
         lastName: json["last_name"] ?? "",
         role: json["role"] ?? "",
         email: json["email"] ?? "",
-        dob: json["dob"],
-        nameFu: json["name_fu"],
-        nameKanJi: json["name_kanji"],
-        note: json["note"],
-        phone: json["phone"],
+        dob: json["dob"] ?? "",
+        nameFu: json["name_fu"] ?? "",
+        nameKanJi: json["name_kanji"] ?? "",
+        note: json["note"] ?? "",
+        phone: json["phone"] ?? "",
+        jobDetail: json["job_detail"] ?? "",
+        jobId: json["job_id"] ?? "",
+        jobTitle: json["job_title"] ?? "",
         hash_password: json["hash_password"]);
   }
 
@@ -57,6 +66,9 @@ class MyUser {
         "phone": phone,
         "hash_password": hash_password,
         "last_name": lastName,
+        "job_detail": jobDetail,
+        "job_title": jobTitle,
+        "job_id": jobId,
         "working_status": workingStatus ?? ""
       };
 }

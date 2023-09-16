@@ -50,7 +50,7 @@ class _JobSeekerPageState extends State<JobSeekerPage> with AfterBuildMixin {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            JobSeekerFilterDataWidget(),
+            const JobSeekerFilterDataWidget(),
             CreateSeekerOrDownloadListWidget(
               context2: context,
             ),
@@ -90,12 +90,12 @@ class _JobSeekerPageState extends State<JobSeekerPage> with AfterBuildMixin {
                           flex: 2,
                         ),
                         Expanded(
-                          child: Text(JapaneseText.application,
+                          child: Text(JapaneseText.jobDetail,
                               style: normalTextStyle.copyWith(fontSize: 13)),
                           flex: 3,
                         ),
                         Expanded(
-                          child: Text(JapaneseText.application,
+                          child: Text(JapaneseText.note,
                               style: normalTextStyle.copyWith(fontSize: 13)),
                           flex: 3,
                         ),

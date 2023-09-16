@@ -63,7 +63,7 @@ class JobSeekerCardWidget extends StatelessWidget {
                   flex: 2,
                 ),
                 Expanded(
-                  child: Text("${user.note}",
+                  child: Text("${user.jobDetail}",
                       style: normalTextStyle.copyWith(fontSize: 13)),
                   flex: 3,
                 ),
