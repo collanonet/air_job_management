@@ -1,3 +1,5 @@
+import 'package:air_job_management/utils/japanese_text.dart';
+
 class MyUser {
   String? uid;
   String? email;
@@ -15,6 +17,7 @@ class MyUser {
   String? jobDetail;
   String? jobTitle;
   String? jobId;
+  String? status;
 
   MyUser(
       {this.email,
@@ -32,6 +35,7 @@ class MyUser {
       this.workingStatus,
       this.jobDetail,
       this.jobTitle,
+      this.status,
       this.jobId});
 
   factory MyUser.fromJson(Map<String, dynamic> json) {
@@ -42,6 +46,7 @@ class MyUser {
         lastName: json["last_name"] ?? "",
         role: json["role"] ?? "",
         email: json["email"] ?? "",
+        status: json["status"] ?? JapaneseText.free,
         dob: json["dob"] ?? "",
         nameFu: json["name_fu"] ?? "",
         nameKanJi: json["name_kanji"] ?? "",
@@ -54,6 +59,7 @@ class MyUser {
   }
 
   Map<String, dynamic> toJson() => {
+        "status": status,
         "profile": profileImage,
         "first_name": firstName,
         "email": email,

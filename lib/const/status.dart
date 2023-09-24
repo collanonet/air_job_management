@@ -1,80 +1,97 @@
 import 'package:air_job_management/utils/style.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/app_color.dart';
+import '../utils/japanese_text.dart';
+
 class StatusUtils {
-  displayStatus(String? status) {
-    if (status == null || status == "") {
+  static displayStatus(String? status) {
+    if (status == null ||
+        status == "" ||
+        status == "null" ||
+        status == JapaneseText.free) {
       return Container(
+        width: 120,
         height: 40,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
-            color: Colors.blueAccent, borderRadius: BorderRadius.circular(16)),
-        child: Center(
-            child: Text(
-          "Free",
-          style: normalTextStyle.copyWith(color: Colors.white),
-        )),
+          color: Colors.grey.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(25),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          JapaneseText.free,
+          style: subTitle,
+        ),
       );
-    } else if (status == "applying") {
+    } else if (status == JapaneseText.duringCorrespondence) {
       return Container(
+        width: 120,
         height: 40,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
-            color: Colors.orangeAccent,
-            borderRadius: BorderRadius.circular(16)),
-        child: Center(
-            child: Text(
-          "Applying",
-          style: normalTextStyle.copyWith(color: Colors.white),
-        )),
+          color: AppColor.primaryColor,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          JapaneseText.duringCorrespondence,
+          style: subTitle.copyWith(color: Colors.white),
+        ),
       );
-    } else if (status == "Interview") {
+    } else if (status == JapaneseText.noContact) {
       return Container(
+        width: 120,
         height: 40,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
-            color: Colors.blue, borderRadius: BorderRadius.circular(16)),
-        child: Center(
-            child: Text(
-          "Interview",
-          style: normalTextStyle.copyWith(color: Colors.white),
-        )),
+          color: AppColor.redColor,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          JapaneseText.noContact,
+          style: subTitle.copyWith(color: Colors.white),
+        ),
       );
-    } else if (status == "working") {
+    } else if (status == JapaneseText.contact) {
       return Container(
+        width: 120,
         height: 40,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        alignment: Alignment.center,
         decoration: BoxDecoration(
-            color: Colors.deepOrange, borderRadius: BorderRadius.circular(16)),
-        child: Center(
-            child: Text(
-          "Working",
-          style: normalTextStyle.copyWith(color: Colors.white),
-        )),
+          color: AppColor.success,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: Text(
+          JapaneseText.contact,
+          style: subTitle.copyWith(color: Colors.white),
+        ),
       );
-    } else if (status == "completed") {
+    } else if (status == JapaneseText.passedInterview) {
       return Container(
+        width: 120,
         height: 40,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
-            color: Colors.green, borderRadius: BorderRadius.circular(16)),
-        child: Center(
-            child: Text(
-          "Completed",
-          style: normalTextStyle.copyWith(color: Colors.white),
-        )),
+          color: AppColor.darkBlueColor,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          JapaneseText.passedInterview,
+          style: subTitle.copyWith(color: Colors.white),
+        ),
       );
     } else {
       return Container(
+        width: 120,
         height: 40,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         decoration: BoxDecoration(
-            color: Colors.blueAccent, borderRadius: BorderRadius.circular(16)),
-        child: Center(
-            child: Text(
-          "Free",
-          style: normalTextStyle.copyWith(color: Colors.white),
-        )),
+          color: Colors.grey.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(25),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          JapaneseText.free,
+          style: subTitle,
+        ),
       );
     }
   }

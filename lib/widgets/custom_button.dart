@@ -19,7 +19,8 @@ class ButtonWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
         child: Text(
           title,
-          style: normalTextStyle.copyWith(color: Colors.white),
+          style: normalTextStyle.copyWith(
+              color: color == Colors.white ? Colors.black : Colors.white),
         ),
         onPressed: () => onPress(),
       ),

@@ -128,7 +128,7 @@ class _JobSeekerDetailPageState extends State<JobSeekerDetailPage>
           ),
           Row(
             children: [
-              StatusUtils().displayStatus(seeker?.workingStatus),
+              StatusUtils.displayStatus(seeker?.status),
               AppSize.spaceWidth16,
               IconButton(
                   onPressed: () => context.pop(), icon: Icon(Icons.close)),

@@ -14,6 +14,7 @@ class PrimaryTextField extends StatelessWidget {
   final void Function(String?)? onSubmit;
   final bool isObsecure;
   final bool isPhoneNumber;
+  final bool isEmail;
   final Widget? prefix;
   final Widget? suffix;
   final bool isRequired;
@@ -33,11 +34,12 @@ class PrimaryTextField extends StatelessWidget {
     required this.controller,
     required this.hint,
     this.validator,
+    this.isEmail = false,
     this.maxLine = 1,
     this.isObsecure = false,
     this.prefix,
     this.suffix,
-    this.marginBottom = 16,
+    this.marginBottom = 12,
     this.textInputType = TextInputType.text,
     this.borderWidth = 0.8,
     this.isRequired = true,
@@ -64,12 +66,14 @@ class PrimaryTextField extends StatelessWidget {
         obscureText: isObsecure,
         keyboardType: textInputType,
         textInputAction: textInputAction,
-        validator: isRequired
-            ? (value) {
-                if (validator != null) return validator!(value);
-                return FormValidator.validateField(value, hint);
-              }
-            : null,
+        validator: isEmail && isRequired
+            ? (value) => FormValidator.validateEmail(value)
+            : isRequired
+                ? (value) {
+                    if (validator != null) return validator!(value);
+                    return FormValidator.validateField(value, hint);
+                  }
+                : null,
         maxLines: maxLine,
         autocorrect: false,
         autovalidateMode: autoValidateMode,
@@ -139,18 +143,18 @@ class PrimaryTextField extends StatelessWidget {
 
 class FormValidator {
   static String? validateField(String? value, String field, {int? length}) {
-    if (value == null || value.isEmpty) return "$field is required";
+    if (value == null || value.isEmpty) return "この項目は必須です";
     if (length != null) {
-      if (value.length < length) return "$field is required";
+      if (value.length < length) return "この項目は必須です";
     }
     return null;
   }
 
   static String? validateEmail(String? value) {
-    if (value == null || value.isEmpty) return "Invalid Email";
+    if (value == null || value.isEmpty) return "無効な電子メール";
     bool emailValid = RegExp(
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(value);
-    return emailValid ? null : "Invalid Email";
+    return emailValid ? null : "無効な電子メール";
   }
 }

@@ -139,9 +139,6 @@ class JapaneseText {
   static String gender = "設定";
   static String status2 = "ステータス";
 
-  //status
-  static String normal = "正常";
-
   //Dashboard
   static String analysis = "分析";
   static String recruitingCompany = "求人企業";
@@ -155,14 +152,23 @@ class JapaneseText {
   static String correspondenceStatus = "対応状況";
   static String newArrivalOrInterview = "対応中";
   static String allData = "すべて";
-  static String newArrival = "新着";
-  static String interview = "面接";
+  static String duringCorrespondence = "対応中";
+
+  //status
+  static String normal = "正常";
+  static String applying = "無料";
+  static String passedInterview = "面接に合格した";
+  static String free = "無料";
+  static String noContact = "接触無し";
+  static String contact = "接触";
 
   //Job Seeker
   //Filter
   static String applicantSearch = "応募者検索";
   static String createJobSeeker = "手動登録";
   static String downloadSeekerList = "応募一覧をダウンロード";
+  static String newArrival = "新着";
+  static String interview = "面接";
 
   //Info
   static String basicInformation = "基本情報";
@@ -184,6 +190,24 @@ class JapaneseText {
   static String chat = "チャット";
   static String applicationHistory = "応募履歴";
 
-  //Job Status
-  static String duringCorrespondence = "対応中";
+  //Com List
+  static String signUp = "新規登録";
+  static String company = "企業";
+  static String area = "エリア";
+  static String industry = "業種";
+  static String numberOfJobOpening = "求人件数";
+
+  //Company Info
+  static String companyName = "会社名";
+  static String profileCom = "PR写真";
+  static String postalCode = "郵便番号";
+  static String location = "所在地";
+  static String capital = "資本金";
+  static String publicDate = "設立年月日";
+  static String homePage = "ホームページ";
+  static String affiliate = "関連会社";
+  static String rePresentative = "代表者";
+  static String manager = "担当者";
+  static String addRow = "行を追加";
+  static String content = "事業内容";
 }

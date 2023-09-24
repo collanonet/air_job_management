@@ -1,10 +1,10 @@
-import 'package:air_job_management/api/user_api.dart';
-import 'package:air_job_management/models/user.dart';
+import 'package:air_job_management/api/company.dart';
+import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:flutter/cupertino.dart';
 
-class JobSeekerProvider with ChangeNotifier {
-  List<MyUser> myUserList = [];
+class CompanyProvider with ChangeNotifier {
+  List<Company> companyList = [];
 
   List<String> statusList = [
     JapaneseText.allData,
@@ -31,9 +31,8 @@ class JobSeekerProvider with ChangeNotifier {
 
   bool isLoading = false;
 
-  getAllUser() async {
-    myUserList = await UserApiServices().getAllUser();
-    notifyListeners();
+  getAllCompany() async {
+    companyList = await CompanyApiServices().getAllCompany();
   }
 
   onInit() {

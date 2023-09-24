@@ -1,5 +1,5 @@
 import 'package:air_job_management/const/status.dart';
-import 'package:air_job_management/models/user.dart';
+import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/my_route.dart';
@@ -7,9 +7,9 @@ import 'package:air_job_management/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class JobSeekerCardWidget extends StatelessWidget {
-  final MyUser user;
-  const JobSeekerCardWidget({Key? key, required this.user}) : super(key: key);
+class CompanyCardWidget extends StatelessWidget {
+  final Company company;
+  const CompanyCardWidget({Key? key, required this.company}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class JobSeekerCardWidget extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () => context.go("${MyRoute.jobSeeker}/${user.uid}"),
+          onTap: () => context.go("${MyRoute.company}/${company.uid}"),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Row(
@@ -38,7 +38,7 @@ class JobSeekerCardWidget extends StatelessWidget {
                             color: AppColor.primaryColor),
                         alignment: Alignment.center,
                         child: const Icon(
-                          Icons.person,
+                          Icons.home_work_outlined,
                           size: 20,
                           color: Colors.white,
                         ),
@@ -48,36 +48,34 @@ class JobSeekerCardWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "${user.nameKanJi}",
+                            "${company.companyName}",
                             style: normalTextStyle.copyWith(
                                 fontSize: 13, color: AppColor.primaryColor),
                           ),
                           AppSize.spaceHeight5,
                           Text(
-                            "${user.nameFu}",
+                            "${company.rePresentative?.kanji} ${company.rePresentative?.kana}",
                             style: normalTextStyle.copyWith(fontSize: 12),
                           )
                         ],
                       )
                     ],
                   ),
-                  flex: 2,
+                  flex: 4,
                 ),
                 Expanded(
-                  child: Text("${user.jobDetail}",
+                  child:
+                      Text("大阪", style: normalTextStyle.copyWith(fontSize: 13)),
+                  flex: 3,
+                ),
+                Expanded(
+                  child: Text("01.農林業",
                       style: normalTextStyle.copyWith(fontSize: 13)),
                   flex: 3,
                 ),
                 Expanded(
-                  child: Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: Colors.grey, width: 1)),
-                    padding: EdgeInsets.all(8),
-                    alignment: Alignment.centerLeft,
-                    child: Text("${user.note}"),
-                  ),
+                  child:
+                      Text("7", style: normalTextStyle.copyWith(fontSize: 13)),
                   flex: 3,
                 ),
                 Expanded(
@@ -86,11 +84,11 @@ class JobSeekerCardWidget extends StatelessWidget {
                     Icons.email_rounded,
                     color: AppColor.primaryColor,
                   )),
-                  flex: 1,
+                  flex: 3,
                 ),
                 Expanded(
-                  child: StatusUtils.displayStatus(user.status),
-                  flex: 1,
+                  child: StatusUtils.displayStatus(""),
+                  flex: 3,
                 )
               ],
             ),
