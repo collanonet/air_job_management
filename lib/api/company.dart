@@ -4,6 +4,7 @@ import 'package:air_job_management/models/company.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 
 import '../const/const.dart';
 
@@ -14,23 +15,16 @@ class CompanyApiServices {
       FirebaseFirestore.instance.collection('company');
 
   Future<String?> uploadImageToFirebase(File image) async {
-    //Get the file from the image picker and store it
-
-    //Create a reference to the location you want to upload to in firebase
     try {
       Reference reference =
           _storage.ref().child("/images/${image.path.split("/").last}");
-
-      //Upload the file to firebase
-      TaskSnapshot storageTaskSnapshot = await reference.putFile(image);
-
-      // Waits till the file is uploaded then stores the download url
-      var dowUrl = await storageTaskSnapshot.ref.getDownloadURL();
-
-      //returns the download url
+      Uint8List unit8 = await image.readAsBytes();
+      TaskSnapshot uploadTask = await reference.putData(
+          unit8, SettableMetadata(contentType: 'image/jpg'));
+      var dowUrl = await uploadTask.ref.getDownloadURL();
       return dowUrl;
     } catch (e) {
-      print("Upload image error " + e.toString());
+      print("Upload image error => " + e.toString());
       return null;
     }
   }

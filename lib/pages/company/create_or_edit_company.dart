@@ -44,12 +44,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
   TextEditingController kana = TextEditingController(text: "");
   TextEditingController content = TextEditingController(text: "");
 
-  List<Map<String, TextEditingController>> managerList = [
-    {
-      "kanji": TextEditingController(text: ""),
-      "kana": TextEditingController(text: ""),
-    }
-  ];
+  List<Map<String, TextEditingController>> managerList = [];
   File? fileImage;
   bool isShow = true;
   bool isLoading = false;
@@ -94,7 +89,10 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
           tax: tax.text,
           tel: tel.text,
           rePresentative: RePresentative(kana: kana.text, kanji: kanji.text),
-          manager: []);
+          manager: managerList
+              .map((e) => RePresentative(
+                  kanji: e["kanji"]?.text.trim(), kana: e["kana"]?.text.trim()))
+              .toList());
       String? val;
       if (widget.id != null) {
         val = await CompanyApiServices().updateCompanyInfo(company);
@@ -121,6 +119,11 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
     if (widget.id != null) {
       isLoading = true;
       initialData();
+    } else {
+      managerList.add({
+        "kanji": TextEditingController(text: ""),
+        "kana": TextEditingController(text: ""),
+      });
     }
     super.initState();
   }
@@ -141,6 +144,14 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
     kanji.text = company.rePresentative?.kanji ?? "";
     kana.text = company.rePresentative?.kana ?? "";
     content.text = company.content ?? "";
+    if (company.manager != null) {
+      for (var manager in company.manager!) {
+        managerList.add({
+          "kanji": TextEditingController(text: manager.kanji),
+          "kana": TextEditingController(text: manager.kana),
+        });
+      }
+    }
     setState(() {
       isLoading = false;
     });
@@ -672,7 +683,8 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
             JapaneseText.applicantSearch,
             style: titleStyle,
           ),
-          IconButton(onPressed: () => context.pop(), icon: Icon(Icons.close))
+          IconButton(
+              onPressed: () => context.pop(), icon: const Icon(Icons.close))
         ],
       ),
     );
