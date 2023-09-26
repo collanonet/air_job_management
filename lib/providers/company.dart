@@ -6,28 +6,15 @@ import 'package:flutter/cupertino.dart';
 class CompanyProvider with ChangeNotifier {
   List<Company> companyList = [];
 
-  List<String> statusList = [
-    JapaneseText.allData,
-    JapaneseText.duringCorrespondence,
-    JapaneseText.noContact,
-    JapaneseText.contact
-  ];
+  List<String> statusList = [JapaneseText.allData, JapaneseText.duringCorrespondence, JapaneseText.noContact, JapaneseText.contact];
 
   String? selectedStatus;
+  String imageUrl = "";
 
-  List<String> newArrivalList = [
-    JapaneseText.allData,
-    JapaneseText.newArrival,
-    JapaneseText.interview
-  ];
+  List<String> newArrivalList = [JapaneseText.allData, JapaneseText.newArrival, JapaneseText.interview];
   String? selectedNewArrival;
 
-  List<String> jobSeekerDetailTab = [
-    JapaneseText.basicInformation,
-    JapaneseText.chat,
-    JapaneseText.newArrival,
-    JapaneseText.interview
-  ];
+  List<String> jobSeekerDetailTab = [JapaneseText.basicInformation, JapaneseText.chat, JapaneseText.newArrival, JapaneseText.interview];
 
   bool isLoading = false;
 
@@ -39,6 +26,16 @@ class CompanyProvider with ChangeNotifier {
     selectedStatus = null;
     selectedNewArrival = null;
     isLoading = true;
+    imageUrl = "";
+  }
+
+  set setImage(String val) {
+    imageUrl = val;
+  }
+
+  onChangeImageUrl(String val) {
+    imageUrl = val;
+    notifyListeners();
   }
 
   onChangeLoading(bool val) {

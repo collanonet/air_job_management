@@ -1,28 +1,35 @@
-import 'dart:io';
+import 'dart:html' as f;
 
 import 'package:air_job_management/models/company.dart';
+import 'package:air_job_management/providers/company.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 
 import '../const/const.dart';
 
 class CompanyApiServices {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final db = FirebaseFirestore.instance;
-  final CollectionReference companyRef =
-      FirebaseFirestore.instance.collection('company');
+  final CollectionReference companyRef = FirebaseFirestore.instance.collection('company');
 
-  Future<String?> uploadImageToFirebase(File image) async {
+  Future<void> uploadImageToFirebase(CompanyProvider provider) async {
     try {
-      Reference reference =
-          _storage.ref().child("/images/${image.path.split("/").last}");
-      Uint8List unit8 = await image.readAsBytes();
-      TaskSnapshot uploadTask = await reference.putData(
-          unit8, SettableMetadata(contentType: 'image/jpg'));
-      var dowUrl = await uploadTask.ref.getDownloadURL();
-      return dowUrl;
+      String url = "";
+      var input = f.FileUploadInputElement()..accept = 'image/*';
+      FirebaseStorage fs = FirebaseStorage.instance;
+      input.click();
+      input.onChange.listen((event) async {
+        final file = input.files!.first;
+        final reader = f.FileReader();
+        reader.readAsDataUrl(file);
+        reader.onLoadEnd.listen((event) async {
+          var snapshot = await fs.ref().child(file.name).putBlob(file);
+          String downloadUrl = await snapshot.ref.getDownloadURL();
+          url = downloadUrl;
+          provider.onChangeImageUrl(downloadUrl);
+        });
+      });
     } catch (e) {
       print("Upload image error => " + e.toString());
       return null;
@@ -55,8 +62,7 @@ class CompanyApiServices {
       if (doc.docs.isNotEmpty) {
         List<Company> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
-          Company company =
-              Company.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          Company company = Company.fromJson(doc.docs[i].data() as Map<String, dynamic>);
           company.uid = doc.docs[i].id;
           list.add(company);
         }

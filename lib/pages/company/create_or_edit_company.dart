@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:air_job_management/api/company.dart';
 import 'package:air_job_management/models/company.dart';
+import 'package:air_job_management/providers/company.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/my_route.dart';
@@ -9,10 +10,10 @@ import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:air_job_management/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../const/const.dart';
 import '../../utils/app_size.dart';
@@ -24,8 +25,7 @@ class CreateOrEditCompanyPage extends StatefulWidget {
   const CreateOrEditCompanyPage({Key? key, required this.id}) : super(key: key);
 
   @override
-  State<CreateOrEditCompanyPage> createState() =>
-      _CreateOrEditCompanyPageState();
+  State<CreateOrEditCompanyPage> createState() => _CreateOrEditCompanyPageState();
 }
 
 class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
@@ -43,24 +43,24 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
   TextEditingController kanji = TextEditingController(text: "");
   TextEditingController kana = TextEditingController(text: "");
   TextEditingController content = TextEditingController(text: "");
-
+  late CompanyProvider provider;
   List<Map<String, TextEditingController>> managerList = [];
   File? fileImage;
   bool isShow = true;
   bool isLoading = false;
   DateTime dateTime = DateTime.parse("2000-10-10");
   final ImagePicker _picker = ImagePicker();
-  Uint8List? imageUnit8;
-
-  onPickImage() async {
-    XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      imageUnit8 = await image.readAsBytes();
-      setState(() {
-        fileImage = File(image.path);
-      });
-    }
-  }
+  // Uint8List? imageUnit8;
+  //
+  // onPickImage() async {
+  //   XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+  //   if (image != null) {
+  //     imageUnit8 = await image.readAsBytes();
+  //     setState(() {
+  //       fileImage = File(image.path);
+  //     });
+  //   }
+  // }
 
   final _formKey = GlobalKey<FormState>();
 
@@ -70,17 +70,16 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
         isLoading = true;
       });
       String companyUrl = "";
-      if (fileImage != null) {
-        companyUrl =
-            await CompanyApiServices().uploadImageToFirebase(fileImage!) ?? "";
-      }
+      // if (fileImage != null) {
+      //   companyUrl = await CompanyApiServices().uploadImageToFirebase(fileImage!) ?? "";
+      // }
       Company company = Company(
           uid: widget.id,
           email: email.text.trim(),
           affiliate: affiliate.text,
           capital: capital.text,
           companyName: companyName.text,
-          companyProfile: companyUrl,
+          companyProfile: provider.imageUrl,
           content: content.text,
           homePage: homePage.text,
           publicDate: publicDate.text,
@@ -89,10 +88,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
           tax: tax.text,
           tel: tel.text,
           rePresentative: RePresentative(kana: kana.text, kanji: kanji.text),
-          manager: managerList
-              .map((e) => RePresentative(
-                  kanji: e["kanji"]?.text.trim(), kana: e["kana"]?.text.trim()))
-              .toList());
+          manager: managerList.map((e) => RePresentative(kanji: e["kanji"]?.text.trim(), kana: e["kana"]?.text.trim())).toList());
       String? val;
       if (widget.id != null) {
         val = await CompanyApiServices().updateCompanyInfo(company);
@@ -103,9 +99,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
         isLoading = false;
       });
       if (val == ConstValue.success) {
-        toastMessageSuccess(
-            "${widget.id != null ? "Update" : "Create"} company success",
-            context);
+        toastMessageSuccess("${widget.id != null ? "Update" : "Create"} company success", context);
         context.pop();
         context.go(MyRoute.company);
       } else {
@@ -120,6 +114,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
       isLoading = true;
       initialData();
     } else {
+      Provider.of<CompanyProvider>(context, listen: false).setImage = "";
       managerList.add({
         "kanji": TextEditingController(text: ""),
         "kana": TextEditingController(text: ""),
@@ -144,6 +139,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
     kanji.text = company.rePresentative?.kanji ?? "";
     kana.text = company.rePresentative?.kana ?? "";
     content.text = company.content ?? "";
+    provider.setImage = company.companyProfile ?? "";
     if (company.manager != null) {
       for (var manager in company.manager!) {
         managerList.add({
@@ -164,6 +160,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
 
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<CompanyProvider>(context);
     return Form(
       key: _formKey,
       child: CustomLoadingOverlay(
@@ -215,10 +212,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                       AppSize.spaceHeight16,
                       SizedBox(
                         width: AppSize.getDeviceWidth(context) * 0.1,
-                        child: ButtonWidget(
-                            title: JapaneseText.save,
-                            color: AppColor.primaryColor,
-                            onPress: () => onSaveUserData()),
+                        child: ButtonWidget(title: JapaneseText.save, color: AppColor.primaryColor, onPress: () => onSaveUserData()),
                       ),
                     ],
                   ),
@@ -313,8 +307,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                               lastDate: DateTime.now());
                           if (date != null) {
                             dateTime = date;
-                            publicDate.text =
-                                DateFormat('yyyy-MM-dd').format(dateTime);
+                            publicDate.text = DateFormat('yyyy-MM-dd').format(dateTime);
                           }
                         },
                       ),
@@ -352,7 +345,9 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
         Text(JapaneseText.profileCom),
         AppSize.spaceHeight5,
         InkWell(
-          onTap: () => onPickImage(),
+          onTap: () async {
+            await CompanyApiServices().uploadImageToFirebase(provider);
+          },
           child: Material(
             color: Colors.transparent,
             child: Container(
@@ -361,7 +356,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                 border: Border.all(width: 1, color: AppColor.darkBlueColor),
               ),
               alignment: Alignment.center,
-              child: fileImage == null
+              child: provider.imageUrl.isEmpty
                   ? Text(
                       "Upload File Here",
                       style: normalTextStyle,
@@ -374,8 +369,8 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                           top: 0,
                           right: 0,
                           bottom: 0,
-                          child: Image.memory(
-                            imageUnit8!,
+                          child: Image.network(
+                            provider.imageUrl,
                             fit: BoxFit.cover,
                             width: 230,
                           ),
@@ -385,9 +380,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                           right: 10,
                           child: IconButton(
                               onPressed: () {
-                                setState(() {
-                                  fileImage = null;
-                                });
+                                provider.onChangeImageUrl("");
                               },
                               icon: const Icon(
                                 Icons.close,
@@ -683,8 +676,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
             JapaneseText.applicantSearch,
             style: titleStyle,
           ),
-          IconButton(
-              onPressed: () => context.pop(), icon: const Icon(Icons.close))
+          IconButton(onPressed: () => context.pop(), icon: const Icon(Icons.close))
         ],
       ),
     );
