@@ -5,11 +5,11 @@ import '../utils/app_color.dart';
 import '../utils/japanese_text.dart';
 
 class StatusUtils {
+  static const String active = "active";
+  static const String delete = "delete";
+
   static displayStatus(String? status) {
-    if (status == null ||
-        status == "" ||
-        status == "null" ||
-        status == JapaneseText.free) {
+    if (status == null || status == "" || status == "null" || status == JapaneseText.free) {
       return Container(
         width: 120,
         height: 40,

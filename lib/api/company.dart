@@ -1,5 +1,6 @@
 import 'dart:html' as f;
 
+import 'package:air_job_management/const/status.dart';
 import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/providers/company.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -56,9 +57,19 @@ class CompanyApiServices {
     }
   }
 
+  Future<bool> updateStatusCompany(Company company) async {
+    try {
+      await companyRef.doc(company.uid).update({"status": StatusUtils.delete});
+      return true;
+    } catch (e) {
+      print("Error updateStatusCompany =>> ${e.toString()}");
+      return false;
+    }
+  }
+
   Future<List<Company>> getAllCompany() async {
     try {
-      var doc = await companyRef.get();
+      var doc = await companyRef.where("status", isEqualTo: StatusUtils.active).get();
       if (doc.docs.isNotEmpty) {
         List<Company> list = [];
         for (int i = 0; i < doc.docs.length; i++) {

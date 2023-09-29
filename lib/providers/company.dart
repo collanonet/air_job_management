@@ -18,8 +18,11 @@ class CompanyProvider with ChangeNotifier {
 
   bool isLoading = false;
 
-  getAllCompany() async {
+  getAllCompany({bool? isNotify}) async {
     companyList = await CompanyApiServices().getAllCompany();
+    if (isNotify == true) {
+      notifyListeners();
+    }
   }
 
   onInit() {

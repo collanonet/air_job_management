@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:air_job_management/api/company.dart';
+import 'package:air_job_management/const/status.dart';
 import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/providers/company.dart';
 import 'package:air_job_management/utils/app_color.dart';
@@ -50,17 +51,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
   bool isLoading = false;
   DateTime dateTime = DateTime.parse("2000-10-10");
   final ImagePicker _picker = ImagePicker();
-  // Uint8List? imageUnit8;
-  //
-  // onPickImage() async {
-  //   XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-  //   if (image != null) {
-  //     imageUnit8 = await image.readAsBytes();
-  //     setState(() {
-  //       fileImage = File(image.path);
-  //     });
-  //   }
-  // }
+  Company? company;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -69,11 +60,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
       setState(() {
         isLoading = true;
       });
-      String companyUrl = "";
-      // if (fileImage != null) {
-      //   companyUrl = await CompanyApiServices().uploadImageToFirebase(fileImage!) ?? "";
-      // }
-      Company company = Company(
+      Company c = Company(
           uid: widget.id,
           email: email.text.trim(),
           affiliate: affiliate.text,
@@ -85,15 +72,16 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
           publicDate: publicDate.text,
           location: location.text,
           postalCode: postalCode.text,
+          status: company?.status ?? StatusUtils.active,
           tax: tax.text,
           tel: tel.text,
           rePresentative: RePresentative(kana: kana.text, kanji: kanji.text),
           manager: managerList.map((e) => RePresentative(kanji: e["kanji"]?.text.trim(), kana: e["kana"]?.text.trim())).toList());
       String? val;
       if (widget.id != null) {
-        val = await CompanyApiServices().updateCompanyInfo(company);
+        val = await CompanyApiServices().updateCompanyInfo(c);
       } else {
-        val = await CompanyApiServices().createCompany(company);
+        val = await CompanyApiServices().createCompany(c);
       }
       setState(() {
         isLoading = false;
@@ -124,24 +112,24 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
   }
 
   initialData() async {
-    var company = await CompanyApiServices().getACompany(widget.id!);
+    company = await CompanyApiServices().getACompany(widget.id!);
     companyName.text = company!.companyName ?? "";
-    profileCom.text = company.companyProfile ?? "";
-    postalCode.text = company.postalCode ?? "";
-    location.text = company.location ?? "";
-    capital.text = company.capital ?? "";
-    publicDate.text = company.publicDate ?? "";
-    homePage.text = company.homePage ?? "";
-    affiliate.text = company.affiliate ?? "";
-    tax.text = company.tax ?? "";
-    tel.text = company.tel ?? "";
-    email.text = company.email ?? "";
-    kanji.text = company.rePresentative?.kanji ?? "";
-    kana.text = company.rePresentative?.kana ?? "";
-    content.text = company.content ?? "";
-    provider.setImage = company.companyProfile ?? "";
-    if (company.manager != null) {
-      for (var manager in company.manager!) {
+    profileCom.text = company!.companyProfile ?? "";
+    postalCode.text = company!.postalCode ?? "";
+    location.text = company!.location ?? "";
+    capital.text = company!.capital ?? "";
+    publicDate.text = company!.publicDate ?? "";
+    homePage.text = company!.homePage ?? "";
+    affiliate.text = company!.affiliate ?? "";
+    tax.text = company!.tax ?? "";
+    tel.text = company!.tel ?? "";
+    email.text = company!.email ?? "";
+    kanji.text = company!.rePresentative?.kanji ?? "";
+    kana.text = company!.rePresentative?.kana ?? "";
+    content.text = company!.content ?? "";
+    provider.setImage = company!.companyProfile ?? "";
+    if (company!.manager != null) {
+      for (var manager in company!.manager!) {
         managerList.add({
           "kanji": TextEditingController(text: manager.kanji),
           "kana": TextEditingController(text: manager.kana),

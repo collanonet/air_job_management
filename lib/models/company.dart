@@ -14,6 +14,7 @@ class Company {
   List<RePresentative>? manager;
   String? content;
   String? uid;
+  String? status;
 
   Company(
       {this.uid,
@@ -30,9 +31,11 @@ class Company {
       this.content,
       this.email,
       this.tax,
-      this.tel});
+      this.tel,
+      this.status});
 
   factory Company.fromJson(Map<String, dynamic> json) => Company(
+        status: json["status"],
         tel: json["tel"],
         tax: json["tax"],
         email: json["email"],
@@ -44,18 +47,14 @@ class Company {
         publicDate: json["public_date"],
         homePage: json["home_page"],
         affiliate: json["affiliate"],
-        rePresentative: json["re_presentative"] == null
-            ? null
-            : RePresentative.fromJson(json["re_presentative"]),
-        manager: json["manager"] == null
-            ? []
-            : List<RePresentative>.from(
-                json["manager"]!.map((x) => RePresentative.fromJson(x))),
+        rePresentative: json["re_presentative"] == null ? null : RePresentative.fromJson(json["re_presentative"]),
+        manager: json["manager"] == null ? [] : List<RePresentative>.from(json["manager"]!.map((x) => RePresentative.fromJson(x))),
         content: json["content"],
       );
 
   Map<String, dynamic> toJson() => {
         "tel": tel,
+        "status": status,
         "tax": tax,
         "email": email,
         "company_name": companyName,
@@ -67,9 +66,7 @@ class Company {
         "home_page": homePage,
         "affiliate": affiliate,
         "re_presentative": rePresentative?.toJson(),
-        "manager": manager == null
-            ? []
-            : List<dynamic>.from(manager!.map((x) => x.toJson())),
+        "manager": manager == null ? [] : List<dynamic>.from(manager!.map((x) => x.toJson())),
         "content": content,
       };
 }
