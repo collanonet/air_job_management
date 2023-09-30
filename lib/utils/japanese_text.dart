@@ -40,10 +40,8 @@ class JapaneseText {
   static String dontHaveScheduleMessage = "編集するスケジュールがありません。";
   static String dontHaveWorkRecordMessage = "編集する勤務実績がありません。";
 
-  static String canNotCreateAllWorkgroupMessage =
-      "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
-  static String canNotEditAllWorkgroupMessage =
-      "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
+  static String canNotCreateAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
+  static String canNotEditAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
   static String workday = "勤務日";
   static String fixedDayOff = "所定休日";
   static String lawDayOff = "法定休日";
@@ -67,9 +65,6 @@ class JapaneseText {
 
   static String internationalStudent = "留学生";
   static String foreignersStayWithFamily = "家族滞在の外国人";
-  static String contractEmployee = "契約社員";
-  static String fullTimeEmployee = "正社員";
-  static String partTimeEmployee = "パート";
   static String specifiedSkill = "特定技能";
   static String technicalIntern = "技能実習";
   static String other = "その他（　）";
@@ -79,7 +74,6 @@ class JapaneseText {
   static String unSupportApp = "未対応申請";
   static String errorCase = "打刻エラー	";
   static String cWorkGroup = "打刻グループ名";
-  static String remark = "備考";
   static String history = "変更履歴";
   static String status = "状態	";
   static String download = "ダウンロード";
@@ -105,10 +99,6 @@ class JapaneseText {
   static String totalOvertime = "総残業時間";
   static String workingGroup = "所属グループ名";
   static String imprintGroup = "打刻グループ";
-
-  static String regularHoliday = "所定休";
-  static String legalHoliday = "法定休";
-  static String paidHoliday = "有休";
 
   static String gpsLimit = 'GPS範囲制限';
   static String gpsNoLimit = '設定しない';
@@ -210,4 +200,99 @@ class JapaneseText {
   static String manager = "担当者";
   static String addRow = "行を追加";
   static String content = "事業内容";
+
+  //Job Posting
+  static String numberOfPeopleRecruiting = "募集人数";
+  static String publicationStatus = "掲載状況";
+
+  //Job Posting Status
+  static String currentlyBeingPublished = "掲載中";
+  static String end = "終了";
+
+  //Job Type
+  static String contractEmployee = "契約社員";
+  static String fullTimeEmployee = "正社員";
+  static String partTimeEmployee = "パート";
+  static String gigWork = "アルバイト";
+
+  //Job Posting Check 1
+  //RecruitmentRequirement
+  static String acceptCompany = "受け入れ企業";
+  static String recruitmentRequirement = "募集要項";
+  static String workCatchPhrase = "お仕事キャッチコピー";
+  static String overview = "概要";
+  static String contentCompany = "内容";
+  static String recruitmentStart = "募集 開始";
+  static String workLocation = "勤務地";
+
+  //Occupation
+  static String occupation = "職種";
+  static String specifiedSkills = "特定技能";
+  static String otherThanSpecifiedSkills = "特定技能以外";
+
+  //Employment Contract
+  static String employmentContract = "雇用契約の定め";
+  static String yes = "有り";
+  static String no = "無し";
+  static String employmentStatus = "雇用契約の定め";
+  static String pleaseSelect = "選択してください";
+
+  //Trail Period
+  static String trailPeriod = "試用期間";
+  static String salaryFrom = "給与形態";
+  static String monthlySalary = "月給";
+  static String hourlyWage = "時給";
+  static String startWorkingHourPerDay = "1日の勤務時間 開始";
+  static String breakTimeOfTheDay = "1日の休憩時間";
+
+  //Bonus
+  static String bonus = "賞与";
+  static String raise = "昇給";
+  static String offHours = "時間外";
+  static String paidHoliday = "有給休暇";
+  static String annualHoliday = "年間休日日数";
+  static String holidayDetail = "休日日数の詳細";
+
+  // Dorm or Company House
+  static String dormOrCompanyHouse = "寮‧社宅";
+  static String wifiAbility = "Wifiの有無";
+  static String mealsAbility = "まかないの有無";
+  static String transportExpense = "交通費";
+
+  //Remote Interview
+  static String isThereRemoteInterview = "リモート面接の有無";
+  static String interviewLocation = "面接場所";
+
+  //Content of Test
+  static String contentOfTest = "試験内容";
+  static String statusOfResidence = "必要な在留資格";
+  static String otherQualification = "その他資格";
+  static String hotelCleanLearningItems = "ホテル清掃学習済み項目";
+  static String bedMaking = "ベッドメイキング ";
+  static String bathRoomCleaning = "バスルーム清掃";
+
+  //Job Posting Check 2
+  static String applicationRequirement = "募集要項";
+  static String titleOfApplicationRequirement = "求職者に希望の性別/希望の国籍は表示されません";
+  static String desiredGender = "希望の性別";
+  static String male = "男性";
+  static String female = "女性";
+  static String bothGender = "どちらでも良い";
+  static String desiredNationality = "希望の国籍";
+  static String necessaryJapanSkill = "必要な日本語スキル";
+  static String remark = "備考";
+
+  //Job Posting Check 3
+  static String employmentCondition = "雇用条件";
+  static String socialInsurance = "社会保険";
+  static String employment = "雇用";
+  static String workerCompensation = "労災";
+  static String health = "健康";
+  static String welfare = "厚生";
+  static String childCareLeaveSystem = "育児休業制度";
+  static String retirementSystem = "定年制";
+  static String rehire = "再雇用";
+  static String severancePay = "退職金";
+
+  static String preview = "プレビュー";
 }

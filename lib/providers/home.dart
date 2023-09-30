@@ -7,7 +7,7 @@ import 'package:air_job_management/pages/shift/shift.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:flutter/material.dart';
 
-import '../pages/job/job.dart';
+import '../pages/job_posting/job_posting.dart';
 
 class HomeProvider with ChangeNotifier {
   List<String> menuList = [
@@ -26,14 +26,7 @@ class HomeProvider with ChangeNotifier {
     Icons.calendar_month_rounded,
     Icons.settings_rounded
   ];
-  List<Widget> menuPageList = const [
-    DashboardPage(),
-    JobSeekerPage(),
-    CompanyPage(),
-    JobPage(),
-    ShiftPage(),
-    SettingPage()
-  ];
+  List<Widget> menuPageList = const [DashboardPage(), JobSeekerPage(), CompanyPage(), JobPage(), ShiftPage(), SettingPage()];
   String selectedItem = JapaneseText.analysis;
 
   onInit() {
