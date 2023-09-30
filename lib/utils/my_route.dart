@@ -10,4 +10,5 @@ class MyRoute {
   static var createJobSeeker = "/job_seeker/create";
   static var shift = "/shift";
   static var job = "/job";
+  static var createJob = "/job/create";
 }

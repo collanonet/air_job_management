@@ -1,4 +1,5 @@
 class JapaneseText {
+  static String empty = "空の";
   static String successCreate = "作成しました";
   static String failCreate = "作成に失敗しました。";
   static String successUpdate = "更新しました。";
@@ -40,8 +41,10 @@ class JapaneseText {
   static String dontHaveScheduleMessage = "編集するスケジュールがありません。";
   static String dontHaveWorkRecordMessage = "編集する勤務実績がありません。";
 
-  static String canNotCreateAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
-  static String canNotEditAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
+  static String canNotCreateAllWorkgroupMessage =
+      "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
+  static String canNotEditAllWorkgroupMessage =
+      "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
   static String workday = "勤務日";
   static String fixedDayOff = "所定休日";
   static String lawDayOff = "法定休日";
@@ -295,4 +298,16 @@ class JapaneseText {
   static String severancePay = "退職金";
 
   static String preview = "プレビュー";
+}
+
+class SalaryType {
+  static String monthly = JapaneseText.monthlySalary;
+  static String hourlyWage = JapaneseText.hourlyWage;
+}
+
+class EmploymentStatus {
+  static String contract = JapaneseText.contractEmployee;
+  static String part = JapaneseText.gigWork;
+  static String fullTime = JapaneseText.fullTimeEmployee;
+  static String partTime = JapaneseText.partTimeEmployee;
 }

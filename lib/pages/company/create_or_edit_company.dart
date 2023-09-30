@@ -88,6 +88,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
       });
       if (val == ConstValue.success) {
         toastMessageSuccess("${widget.id != null ? "Update" : "Create"} company success", context);
+        await provider.getAllCompany(isNotify: true);
         context.pop();
         context.go(MyRoute.company);
       } else {
