@@ -29,7 +29,18 @@ class JobPostingProvider with ChangeNotifier {
     JapaneseText.interview
   ];
 
+  String imageUrl = "";
+
   bool isLoading = false;
+
+  set setImage(String val) {
+    imageUrl = val;
+  }
+
+  onChangeImageUrl(String val) {
+    imageUrl = val;
+    notifyListeners();
+  }
 
   getAllJobPost() async {
     jobPostingList = await JobPostingApiService().getAllJobPost();
@@ -40,6 +51,7 @@ class JobPostingProvider with ChangeNotifier {
     selectedStatus = null;
     selectedNewArrival = null;
     isLoading = true;
+    imageUrl = "";
   }
 
   onChangeLoading(bool val) {

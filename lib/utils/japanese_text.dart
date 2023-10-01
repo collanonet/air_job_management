@@ -298,6 +298,13 @@ class JapaneseText {
   static String severancePay = "退職金";
 
   static String preview = "プレビュー";
+
+  //Occupations Type
+  static String constructionWorker = "建設労働者";
+  static String hotelStaff = "ホテルのスタッフ";
+  static String teacher = "教師";
+  static String worker = "ワーカー";
+  static String barista = "バリスタ";
 }
 
 class SalaryType {
