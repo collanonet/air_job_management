@@ -5,7 +5,7 @@ class JobPosting {
   String? companyId;
   String? workCatchPhrase;
   String? description;
-  String? access;
+  String? content;
   String? startDate;
   String? endDate;
   String? image;
@@ -54,7 +54,7 @@ class JobPosting {
       this.companyId,
       this.workCatchPhrase,
       this.description,
-      this.access,
+      this.content,
       this.startDate,
       this.endDate,
       this.image,
@@ -104,18 +104,15 @@ class JobPosting {
         companyId: json["company_id"],
         workCatchPhrase: json["work_catch_phrase"],
         description: json["description"],
-        access: json["access"],
+        content: json["content"],
         startDate: json["start_date"],
         endDate: json["end_date"],
         image: json["image"],
-        location: json["location"] == null
-            ? null
-            : Location.fromJson(json["location"]),
+        location: json["location"] == null ? null : Location.fromJson(json["location"]),
         numberOfRecruit: json["number_of_recruit"],
         occupationType: json["occupation_type"],
         occupation: json["occupation"],
-        employmentContractProvisioning:
-            json["employment_contract_provisioning"],
+        employmentContractProvisioning: json["employment_contract_provisioning"],
         employmentType: json["employment_type"],
         trailPeriod: json["trail_period"],
         salaryType: json["salary_type"],
@@ -133,9 +130,7 @@ class JobPosting {
         meals: json["meals"],
         transportExpense: json["transport_expense"],
         isRemoteInterview: json["is_remote_interview"],
-        interviewLocation: json["interview_location"] == null
-            ? null
-            : Location.fromJson(json["interview_location"]),
+        interviewLocation: json["interview_location"] == null ? null : Location.fromJson(json["interview_location"]),
         contentOfTheTest: json["content_of_the_test"],
         statusOfResidence: json["status_of_residence"],
         otherQualification: json["other_qualification"],
@@ -150,10 +145,7 @@ class JobPosting {
         rehire: json["rehire"],
         severancePay: json["severance_pay"],
         title: json["title"],
-        reviews: json["reviews"] == null
-            ? []
-            : List<Review>.from(
-                json["reviews"]!.map((x) => Review.fromJson(x))),
+        reviews: json["reviews"] == null ? [] : List<Review>.from(json["reviews"]!.map((x) => Review.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -162,7 +154,7 @@ class JobPosting {
         "company_id": companyId,
         "work_catch_phrase": workCatchPhrase,
         "description": description,
-        "access": access,
+        "content": content,
         "start_date": startDate,
         "end_date": endDate,
         "image": image,
@@ -203,9 +195,7 @@ class JobPosting {
         "rehire": rehire,
         "severance_pay": severancePay,
         "title": title,
-        "reviews": reviews == null
-            ? []
-            : List<dynamic>.from(reviews!.map((x) => x.toJson())),
+        "reviews": reviews == null ? [] : List<dynamic>.from(reviews!.map((x) => x.toJson())),
       };
 }
 

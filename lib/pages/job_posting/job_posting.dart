@@ -26,7 +26,7 @@ class _JobPageState extends State<JobPage> with AfterBuildMixin {
 
   @override
   void initState() {
-    Provider.of<JobPostingProvider>(context, listen: false).onInit();
+    Provider.of<JobPostingProvider>(context, listen: false).onInitForList();
     super.initState();
   }
 
@@ -90,25 +90,19 @@ class _JobPageState extends State<JobPage> with AfterBuildMixin {
                           flex: 4,
                         ),
                         Expanded(
-                          child: Text(JapaneseText.area,
-                              style: normalTextStyle.copyWith(fontSize: 13)),
+                          child: Text(JapaneseText.area, style: normalTextStyle.copyWith(fontSize: 13)),
                           flex: 2,
                         ),
                         Expanded(
-                          child: Text(JapaneseText.industry,
-                              style: normalTextStyle.copyWith(fontSize: 13)),
+                          child: Text(JapaneseText.industry, style: normalTextStyle.copyWith(fontSize: 13)),
                           flex: 2,
                         ),
                         Expanded(
-                          child: Text(JapaneseText.numberOfJobOpening,
-                              style: normalTextStyle.copyWith(fontSize: 13)),
+                          child: Text(JapaneseText.numberOfJobOpening, style: normalTextStyle.copyWith(fontSize: 13)),
                           flex: 2,
                         ),
                         Expanded(
-                          child: Center(
-                              child: Text(JapaneseText.correspondenceStatus,
-                                  style:
-                                      normalTextStyle.copyWith(fontSize: 13))),
+                          child: Center(child: Text(JapaneseText.correspondenceStatus, style: normalTextStyle.copyWith(fontSize: 13))),
                           flex: 2,
                         )
                       ],
@@ -135,13 +129,8 @@ class _JobPageState extends State<JobPage> with AfterBuildMixin {
         return ListView.separated(
             itemCount: jobPostingProvider.jobPostingList.length,
             shrinkWrap: true,
-            separatorBuilder: (context, index) => Padding(
-                padding: EdgeInsets.only(
-                    top: 10,
-                    bottom:
-                        index + 1 == jobPostingProvider.jobPostingList.length
-                            ? 20
-                            : 0)),
+            separatorBuilder: (context, index) =>
+                Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == jobPostingProvider.jobPostingList.length ? 20 : 0)),
             itemBuilder: (context, index) {
               JobPosting jobPosting = jobPostingProvider.jobPostingList[index];
               return JobPostingCardWidget(jobPosting: jobPosting);

@@ -6,7 +6,6 @@ import 'package:air_job_management/pages/job_posting/create_or_edit_job.dart';
 import 'package:air_job_management/pages/job_seeker/create_job_seeker.dart';
 import 'package:air_job_management/pages/job_seeker/job_seeker_detail/job_seeker_detail.dart';
 import 'package:air_job_management/pages/login.dart';
-import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart' as auth;
 import 'package:air_job_management/providers/company.dart';
 import 'package:air_job_management/providers/home.dart';
@@ -48,7 +47,7 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
-        return const SplashScreen();
+        return const CreateOrEditJobPage(jobPostId: null);
       },
       routes: <RouteBase>[
         GoRoute(
@@ -66,8 +65,7 @@ final GoRouter _router = GoRouter(
               GoRoute(
                 path: 'create',
                 builder: (BuildContext context, GoRouterState state) {
-                  return const HomePage(
-                      page: CreateOrEditJobPage(jobPostId: null));
+                  return const HomePage(page: CreateOrEditJobPage(jobPostId: null));
                 },
               ),
               GoRoute(
@@ -82,12 +80,9 @@ final GoRouter _router = GoRouter(
             ]),
         GoRoute(
           path: MyRoute.createJob.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.createJob,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.createJob,
         ),
-        GoRoute(
-            path: "${MyRoute.job.removeSlash()}/:uid",
-            redirect: (c, s) => "${MyRoute.job}/${s.pathParameters['uid']}"),
+        GoRoute(path: "${MyRoute.job.removeSlash()}/:uid", redirect: (c, s) => "${MyRoute.job}/${s.pathParameters['uid']}"),
         GoRoute(
           path: MyRoute.shift.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {
@@ -118,13 +113,9 @@ final GoRouter _router = GoRouter(
             ]),
         GoRoute(
           path: MyRoute.createJobSeeker.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.createJobSeeker,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.createJobSeeker,
         ),
-        GoRoute(
-            path: "${MyRoute.jobSeeker.removeSlash()}/:uid",
-            redirect: (c, s) =>
-                "${MyRoute.jobSeeker}/${s.pathParameters['uid']}"),
+        GoRoute(path: "${MyRoute.jobSeeker.removeSlash()}/:uid", redirect: (c, s) => "${MyRoute.jobSeeker}/${s.pathParameters['uid']}"),
         GoRoute(
             path: MyRoute.company.removeSlash(),
             builder: (BuildContext context, GoRouterState state) {
@@ -134,8 +125,7 @@ final GoRouter _router = GoRouter(
               GoRoute(
                 path: 'create',
                 builder: (BuildContext context, GoRouterState state) {
-                  return const HomePage(
-                      page: CreateOrEditCompanyPage(id: null));
+                  return const HomePage(page: CreateOrEditCompanyPage(id: null));
                 },
               ),
               GoRoute(
@@ -150,13 +140,9 @@ final GoRouter _router = GoRouter(
             ]),
         GoRoute(
           path: MyRoute.createCompany.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.createCompany,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.createCompany,
         ),
-        GoRoute(
-            path: "${MyRoute.company.removeSlash()}/:uid",
-            redirect: (c, s) =>
-                "${MyRoute.company}/${s.pathParameters['uid']}"),
+        GoRoute(path: "${MyRoute.company.removeSlash()}/:uid", redirect: (c, s) => "${MyRoute.company}/${s.pathParameters['uid']}"),
         GoRoute(
           path: MyRoute.setting.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {
@@ -182,10 +168,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider<auth.AuthProvider>.value(
-              value: auth.AuthProvider()),
-          StreamProvider.value(
-              value: auth.AuthProvider().user, initialData: null),
+          ChangeNotifierProvider<auth.AuthProvider>.value(value: auth.AuthProvider()),
+          StreamProvider.value(value: auth.AuthProvider().user, initialData: null),
           ChangeNotifierProvider(create: (_) => HomeProvider()),
           ChangeNotifierProvider(create: (_) => JobSeekerProvider()),
           ChangeNotifierProvider(create: (_) => JobSeekerDetailProvider()),
