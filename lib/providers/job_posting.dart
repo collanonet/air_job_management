@@ -59,8 +59,12 @@ class JobPostingProvider with ChangeNotifier {
     EmploymentStatus.partTime,
   ];
 
-  String trailPeriod = JapaneseText.no;
   String salaryType = JapaneseText.monthlySalary;
+  bool trailPeriod = false;
+  bool bonus = false;
+  bool raise = false;
+  bool offHour = false;
+  bool paidHoliday = false;
 
   DateTime? startTime;
   DateTime? endTime;
@@ -71,6 +75,26 @@ class JobPostingProvider with ChangeNotifier {
 
   set setLoading(bool val) {
     isLoading = val;
+  }
+
+  onChangeBonus(bool val) {
+    bonus = val;
+    notifyListeners();
+  }
+
+  onChangeRaise(bool val) {
+    raise = val;
+    notifyListeners();
+  }
+
+  onChangeOffHour(bool val) {
+    offHour = val;
+    notifyListeners();
+  }
+
+  onChangePaidHoliday(bool val) {
+    paidHoliday = val;
+    notifyListeners();
   }
 
   onChangeStartWorkTime(DateTime val) {
@@ -88,7 +112,7 @@ class JobPostingProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  onChangeTrailPeriod(String val) {
+  onChangeTrailPeriod(bool val) {
     trailPeriod = val;
     notifyListeners();
   }

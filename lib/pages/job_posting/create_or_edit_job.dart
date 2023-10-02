@@ -120,6 +120,13 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                         buildEmploymentContractProvisioning(),
                         AppSize.spaceHeight16,
                         buildTrailPeriod(),
+                        AppSize.spaceHeight16,
+                        const Divider(),
+                        AppSize.spaceHeight16,
+                        buildBonus(),
+                        AppSize.spaceHeight16,
+                        const Divider(),
+                        AppSize.spaceHeight16,
                         AppSize.spaceHeight50,
                         SizedBox(
                           width: AppSize.getDeviceWidth(context) * 0.1,
@@ -545,10 +552,10 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                         JapaneseText.yes,
                         style: normalTextStyle.copyWith(fontSize: 12),
                       ),
-                      value: provider.trailPeriod == JapaneseText.yes,
+                      value: provider.trailPeriod,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeTrailPeriod(JapaneseText.yes)),
+                      onChanged: (v) => provider.onChangeTrailPeriod(true)),
                 ),
                 AppSize.spaceWidth5,
                 SizedBox(
@@ -559,10 +566,10 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                         JapaneseText.no,
                         style: normalTextStyle.copyWith(fontSize: 12),
                       ),
-                      value: provider.trailPeriod != JapaneseText.yes,
+                      value: !provider.trailPeriod,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeTrailPeriod(JapaneseText.no)),
+                      onChanged: (v) => provider.onChangeTrailPeriod(false)),
                 )
               ],
             )
@@ -702,6 +709,185 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                     ),
                   ],
                 ),
+              ],
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
+  buildBonus() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              JapaneseText.bonus,
+              style: normalTextStyle,
+            ),
+            AppSize.spaceHeight5,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 120,
+                  child: CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        JapaneseText.yes,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: provider.bonus,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangeBonus(true)),
+                ),
+                AppSize.spaceWidth5,
+                SizedBox(
+                  width: 120,
+                  child: CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        JapaneseText.no,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: !provider.bonus,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangeBonus(false)),
+                )
+              ],
+            )
+          ],
+        ),
+        AppSize.spaceWidth16,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              JapaneseText.raise,
+              style: normalTextStyle,
+            ),
+            AppSize.spaceHeight5,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 120,
+                  child: CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        JapaneseText.yes,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: provider.raise,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangeRaise(true)),
+                ),
+                AppSize.spaceWidth5,
+                SizedBox(
+                  width: 120,
+                  child: CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        JapaneseText.no,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: !provider.raise,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangeRaise(false)),
+                )
+              ],
+            )
+          ],
+        ),
+        AppSize.spaceWidth16,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              JapaneseText.offHours,
+              style: normalTextStyle,
+            ),
+            AppSize.spaceHeight5,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 120,
+                  child: CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        JapaneseText.yes,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: provider.offHour,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangeOffHour(true)),
+                ),
+                AppSize.spaceWidth5,
+                SizedBox(
+                  width: 120,
+                  child: CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        JapaneseText.no,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: !provider.offHour,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangeOffHour(false)),
+                )
+              ],
+            )
+          ],
+        ),
+        AppSize.spaceWidth16,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              JapaneseText.paidHoliday,
+              style: normalTextStyle,
+            ),
+            AppSize.spaceHeight5,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 120,
+                  child: CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        JapaneseText.yes,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: provider.paidHoliday,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangePaidHoliday(true)),
+                ),
+                AppSize.spaceWidth5,
+                SizedBox(
+                  width: 120,
+                  child: CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        JapaneseText.no,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: !provider.paidHoliday,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangePaidHoliday(false)),
+                )
               ],
             )
           ],
