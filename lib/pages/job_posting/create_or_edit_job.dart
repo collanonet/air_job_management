@@ -1,3 +1,4 @@
+import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/providers/job_posting.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:flutter/material.dart';
@@ -610,22 +611,98 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
             )
           ],
         ),
-        const SizedBox(
-          width: 90,
-        ),
-        Column(
+        AppSize.spaceWidth32,
+        Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              JapaneseText.employmentStatus,
-              style: normalTextStyle,
+            SizedBox(
+              width: AppSize.getDeviceWidth(context) * 0.2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(JapaneseText.startWorkingHourPerDay, style: normalTextStyle),
+                  AppSize.spaceHeight5,
+                  PrimaryTextField(
+                    controller: provider.startWorkTime,
+                    hint: '',
+                    isRequired: true,
+                    onTap: () async {
+                      var date = await showTimePicker(
+                          initialEntryMode: TimePickerEntryMode.dialOnly,
+                          cancelText: JapaneseText.cancel,
+                          confirmText: JapaneseText.saveChange,
+                          context: context,
+                          initialTime: provider.startTime != null
+                              ? TimeOfDay(hour: provider.startTime!.hour, minute: provider.startTime!.minute)
+                              : TimeOfDay(hour: now.hour, minute: now.minute));
+                      if (date != null) {
+                        provider.startWorkTime.text = dateTimeToHourAndMinute(DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.onChangeStartWorkTime(DateTime(2023, 1, 1, date.hour, date.minute));
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
-            AppSize.spaceHeight5,
-            CustomDropDownWidget(
-              list: provider.employmentType.map((e) => e.toString()).toList(),
-              onChange: (e) => provider.onChangeEmploymentType(e),
-              width: AppSize.getDeviceWidth(context) * 0.3,
-              selectItem: provider.selectedEmploymentType,
+            AppSize.spaceWidth16,
+            const Padding(padding: EdgeInsets.only(top: 35), child: Text("~")),
+            AppSize.spaceWidth16,
+            SizedBox(
+              width: AppSize.getDeviceWidth(context) * 0.2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(JapaneseText.end, style: normalTextStyle),
+                  AppSize.spaceHeight5,
+                  PrimaryTextField(
+                    controller: provider.endWorkTime,
+                    hint: '',
+                    isRequired: true,
+                    onTap: () async {
+                      var date = await showTimePicker(
+                          initialEntryMode: TimePickerEntryMode.dialOnly,
+                          cancelText: JapaneseText.cancel,
+                          confirmText: JapaneseText.saveChange,
+                          context: context,
+                          initialTime: provider.endTime != null
+                              ? TimeOfDay(hour: provider.endTime!.hour, minute: provider.endTime!.minute)
+                              : TimeOfDay(hour: now.hour, minute: now.minute));
+                      if (date != null) {
+                        provider.endWorkTime.text = dateTimeToHourAndMinute(DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.onChangeEndWorkTime(DateTime(2023, 1, 1, date.hour, date.minute));
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+            AppSize.spaceWidth16,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(JapaneseText.breakTimeOfTheDay, style: normalTextStyle),
+                AppSize.spaceHeight5,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 100,
+                      child: PrimaryTextField(
+                        controller: provider.breakTimeMinute,
+                        hint: '',
+                        isRequired: true,
+                        isPhoneNumber: true,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4, top: 15),
+                      child: Text("分", style: normalTextStyle),
+                    ),
+                  ],
+                ),
+              ],
             )
           ],
         ),

@@ -35,6 +35,9 @@ class JobPostingProvider with ChangeNotifier {
   late TextEditingController endRecruitDate;
   late TextEditingController companyLocation;
   late TextEditingController numberOfRecruitPeople;
+  late TextEditingController breakTimeMinute;
+  late TextEditingController startWorkTime;
+  late TextEditingController endWorkTime;
 
   String? selectedOccupation;
   bool chooseOccupationSkill = false;
@@ -59,12 +62,25 @@ class JobPostingProvider with ChangeNotifier {
   String trailPeriod = JapaneseText.no;
   String salaryType = JapaneseText.monthlySalary;
 
+  DateTime? startTime;
+  DateTime? endTime;
+
   set setImage(String val) {
     imageUrl = val;
   }
 
   set setLoading(bool val) {
     isLoading = val;
+  }
+
+  onChangeStartWorkTime(DateTime val) {
+    startTime = val;
+    notifyListeners();
+  }
+
+  onChangeEndWorkTime(DateTime val) {
+    endTime = val;
+    notifyListeners();
   }
 
   onChangeSalaryType(String val) {
@@ -125,6 +141,9 @@ class JobPostingProvider with ChangeNotifier {
     endRecruitDate = TextEditingController(text: "");
     companyLocation = TextEditingController(text: "");
     numberOfRecruitPeople = TextEditingController(text: "");
+    breakTimeMinute = TextEditingController(text: "");
+    startWorkTime = TextEditingController(text: "");
+    endWorkTime = TextEditingController(text: "");
   }
 
   onInitForJobPostingDetail(String? id) async {
@@ -173,5 +192,8 @@ class JobPostingProvider with ChangeNotifier {
     affiliate.dispose();
     startRecruitDate.dispose();
     endRecruitDate.dispose();
+    breakTimeMinute.dispose();
+    numberOfRecruitPeople.dispose();
+    companyLocation.dispose();
   }
 }
