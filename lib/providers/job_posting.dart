@@ -9,11 +9,20 @@ import '../models/company.dart';
 class JobPostingProvider with ChangeNotifier {
   //For Job Posting List
   List<JobPosting> jobPostingList = [];
-  List<String> statusList = [JapaneseText.allData, JapaneseText.duringCorrespondence, JapaneseText.noContact, JapaneseText.contact];
+  List<String> statusList = [
+    JapaneseText.allData,
+    JapaneseText.duringCorrespondence,
+    JapaneseText.noContact,
+    JapaneseText.contact
+  ];
 
   String? selectedStatus;
 
-  List<String> newArrivalList = [JapaneseText.allData, JapaneseText.newArrival, JapaneseText.interview];
+  List<String> newArrivalList = [
+    JapaneseText.allData,
+    JapaneseText.newArrival,
+    JapaneseText.interview
+  ];
   String? selectedNewArrival;
 
   //For Job Posting Detail
@@ -38,6 +47,8 @@ class JobPostingProvider with ChangeNotifier {
   late TextEditingController breakTimeMinute;
   late TextEditingController startWorkTime;
   late TextEditingController endWorkTime;
+  late TextEditingController numberOfAnnualHolidays;
+  late TextEditingController holidayDetail;
 
   String? selectedOccupation;
   bool chooseOccupationSkill = false;
@@ -65,6 +76,10 @@ class JobPostingProvider with ChangeNotifier {
   bool raise = false;
   bool offHour = false;
   bool paidHoliday = false;
+  bool wifi = false;
+  bool dorm = false;
+  bool meals = false;
+  bool transportExpense = false;
 
   DateTime? startTime;
   DateTime? endTime;
@@ -75,6 +90,26 @@ class JobPostingProvider with ChangeNotifier {
 
   set setLoading(bool val) {
     isLoading = val;
+  }
+
+  onChangeDorm(bool val) {
+    dorm = val;
+    notifyListeners();
+  }
+
+  onChangeWifi(bool val) {
+    wifi = val;
+    notifyListeners();
+  }
+
+  onChangeMeals(bool val) {
+    meals = val;
+    notifyListeners();
+  }
+
+  onChangeTransportExpense(bool val) {
+    transportExpense = val;
+    notifyListeners();
   }
 
   onChangeBonus(bool val) {
@@ -168,6 +203,8 @@ class JobPostingProvider with ChangeNotifier {
     breakTimeMinute = TextEditingController(text: "");
     startWorkTime = TextEditingController(text: "");
     endWorkTime = TextEditingController(text: "");
+    numberOfAnnualHolidays = TextEditingController(text: "");
+    holidayDetail = TextEditingController(text: "");
   }
 
   onInitForJobPostingDetail(String? id) async {

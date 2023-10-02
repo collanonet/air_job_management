@@ -19,13 +19,15 @@ import '../../widgets/custom_textfield.dart';
 
 class CreateOrEditJobPage extends StatefulWidget {
   final String? jobPostId;
-  const CreateOrEditJobPage({Key? key, required this.jobPostId}) : super(key: key);
+  const CreateOrEditJobPage({Key? key, required this.jobPostId})
+      : super(key: key);
 
   @override
   State<CreateOrEditJobPage> createState() => _CreateOrEditJobPageState();
 }
 
-class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBuildMixin {
+class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
+    with AfterBuildMixin {
   late JobPostingProvider provider;
   DateTime now = DateTime.now();
   final _formKey = GlobalKey<FormState>();
@@ -46,7 +48,8 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
   @override
   void initState() {
     Provider.of<JobPostingProvider>(context, listen: false).setLoading = true;
-    Provider.of<JobPostingProvider>(context, listen: false).setAllController = [];
+    Provider.of<JobPostingProvider>(context, listen: false).setAllController =
+        [];
     Provider.of<JobPostingProvider>(context, listen: false).setImage = "";
     super.initState();
   }
@@ -111,7 +114,11 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                         ),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [buildTitleOverviewAndContent(), AppSize.spaceWidth16, buildChooseProfile()],
+                          children: [
+                            buildTitleOverviewAndContent(),
+                            AppSize.spaceWidth16,
+                            buildChooseProfile()
+                          ],
                         ),
                         const Divider(),
                         AppSize.spaceHeight16,
@@ -127,10 +134,18 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                         AppSize.spaceHeight16,
                         const Divider(),
                         AppSize.spaceHeight16,
+                        buildNumberOfAnnualHolidayAndDetail(),
+                        AppSize.spaceHeight16,
+                        const Divider(),
+                        AppSize.spaceHeight16,
+                        buildWifiAndMore(),
                         AppSize.spaceHeight50,
                         SizedBox(
                           width: AppSize.getDeviceWidth(context) * 0.1,
-                          child: ButtonWidget(title: JapaneseText.save, color: AppColor.primaryColor, onPress: () => onSaveUserData()),
+                          child: ButtonWidget(
+                              title: JapaneseText.save,
+                              color: AppColor.primaryColor,
+                              onPress: () => onSaveUserData()),
                         ),
                       ],
                     ),
@@ -154,7 +169,8 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
         ),
         AppSize.spaceHeight5,
         CustomDropDownWidget(
-          list: provider.allCompany.map((e) => e.companyName.toString()).toList(),
+          list:
+              provider.allCompany.map((e) => e.companyName.toString()).toList(),
           onChange: (e) => provider.onChangeSelectCompanyForDetail(e),
           width: AppSize.getDeviceWidth(context) * 0.6,
           selectItem: provider.selectedCompany,
@@ -307,11 +323,15 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       var date = await showDatePicker(
                           locale: const Locale("ja", "JP"),
                           context: context,
-                          initialDate: provider.startRecruitDate.text.isNotEmpty ? DateTime.parse(provider.startRecruitDate.text) : now,
+                          initialDate: provider.startRecruitDate.text.isNotEmpty
+                              ? DateTime.parse(provider.startRecruitDate.text)
+                              : now,
                           firstDate: now,
-                          lastDate: DateTime.now().add(const Duration(days: 3000)));
+                          lastDate:
+                              DateTime.now().add(const Duration(days: 3000)));
                       if (date != null) {
-                        provider.startRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
+                        provider.startRecruitDate.text =
+                            DateFormat('yyyy-MM-dd').format(date);
                       }
                     },
                   ),
@@ -338,11 +358,14 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       var date = await showDatePicker(
                           locale: const Locale("ja", "JP"),
                           context: context,
-                          initialDate: provider.endRecruitDate.text.isNotEmpty ? DateTime.parse(provider.endRecruitDate.text) : now,
+                          initialDate: provider.endRecruitDate.text.isNotEmpty
+                              ? DateTime.parse(provider.endRecruitDate.text)
+                              : now,
                           firstDate: now,
                           lastDate: now.add(const Duration(days: 3000)));
                       if (date != null) {
-                        provider.endRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
+                        provider.endRecruitDate.text =
+                            DateFormat('yyyy-MM-dd').format(date);
                       }
                     },
                   ),
@@ -410,8 +433,10 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
               children: [
                 SizedBox(
                   width: 140,
-                  child: CheckboxListTile(
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
                       contentPadding: EdgeInsets.zero,
+                      groupValue: true,
                       title: Text(
                         JapaneseText.specifiedSkill,
                         style: normalTextStyle.copyWith(fontSize: 12),
@@ -421,19 +446,22 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       controlAffinity: ListTileControlAffinity.leading,
                       onChanged: (v) => provider.onChangeOccupationSkill(true)),
                 ),
-                AppSize.spaceWidth5,
+                AppSize.spaceWidth16,
                 SizedBox(
                   width: 160,
-                  child: CheckboxListTile(
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
                       contentPadding: EdgeInsets.zero,
+                      groupValue: false,
                       title: Text(
                         JapaneseText.otherThanSpecifiedSkills,
                         style: normalTextStyle.copyWith(fontSize: 12),
                       ),
-                      value: !provider.chooseOccupationSkill,
+                      value: provider.chooseOccupationSkill,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeOccupationSkill(false)),
+                      onChanged: (v) =>
+                          provider.onChangeOccupationSkill(false)),
                 )
               ],
             )
@@ -476,31 +504,37 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 120,
-                  child: CheckboxListTile(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
                       contentPadding: EdgeInsets.zero,
+                      groupValue: JapaneseText.yes,
                       title: Text(
                         JapaneseText.yes,
                         style: normalTextStyle.copyWith(fontSize: 12),
                       ),
-                      value: provider.contractProvisioning == JapaneseText.yes,
+                      value: provider.contractProvisioning,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeContractProvisioning(JapaneseText.yes)),
+                      onChanged: (v) => provider
+                          .onChangeContractProvisioning(JapaneseText.yes)),
                 ),
-                AppSize.spaceWidth5,
+                AppSize.spaceWidth16,
                 SizedBox(
-                  width: 120,
-                  child: CheckboxListTile(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
                       contentPadding: EdgeInsets.zero,
+                      groupValue: JapaneseText.no,
                       title: Text(
                         JapaneseText.no,
                         style: normalTextStyle.copyWith(fontSize: 12),
                       ),
-                      value: provider.contractProvisioning != JapaneseText.yes,
+                      value: provider.contractProvisioning,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeContractProvisioning(JapaneseText.no)),
+                      onChanged: (v) => provider
+                          .onChangeContractProvisioning(JapaneseText.no)),
                 )
               ],
             )
@@ -545,9 +579,11 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 120,
-                  child: CheckboxListTile(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
                       contentPadding: EdgeInsets.zero,
+                      groupValue: true,
                       title: Text(
                         JapaneseText.yes,
                         style: normalTextStyle.copyWith(fontSize: 12),
@@ -557,16 +593,18 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       controlAffinity: ListTileControlAffinity.leading,
                       onChanged: (v) => provider.onChangeTrailPeriod(true)),
                 ),
-                AppSize.spaceWidth5,
+                AppSize.spaceWidth16,
                 SizedBox(
-                  width: 120,
-                  child: CheckboxListTile(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
                       contentPadding: EdgeInsets.zero,
+                      groupValue: false,
                       title: Text(
                         JapaneseText.no,
                         style: normalTextStyle.copyWith(fontSize: 12),
                       ),
-                      value: !provider.trailPeriod,
+                      value: provider.trailPeriod,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
                       onChanged: (v) => provider.onChangeTrailPeriod(false)),
@@ -575,7 +613,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
             )
           ],
         ),
-        AppSize.spaceWidth16,
+        AppSize.spaceWidth32,
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -588,31 +626,37 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 120,
-                  child: CheckboxListTile(
+                  width: 100,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
                       contentPadding: EdgeInsets.zero,
+                      groupValue: JapaneseText.monthlySalary,
                       title: Text(
                         JapaneseText.monthlySalary,
                         style: normalTextStyle.copyWith(fontSize: 12),
                       ),
-                      value: provider.salaryType == JapaneseText.monthlySalary,
+                      value: provider.salaryType,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeSalaryType(JapaneseText.monthlySalary)),
+                      onChanged: (v) => provider
+                          .onChangeSalaryType(JapaneseText.monthlySalary)),
                 ),
-                AppSize.spaceWidth5,
+                AppSize.spaceWidth16,
                 SizedBox(
-                  width: 120,
-                  child: CheckboxListTile(
+                  width: 100,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
                       contentPadding: EdgeInsets.zero,
+                      groupValue: JapaneseText.hourlyWage,
                       title: Text(
                         JapaneseText.hourlyWage,
                         style: normalTextStyle.copyWith(fontSize: 12),
                       ),
-                      value: provider.salaryType != JapaneseText.monthlySalary,
+                      value: provider.salaryType,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeSalaryType(JapaneseText.hourlyWage)),
+                      onChanged: (v) =>
+                          provider.onChangeSalaryType(JapaneseText.hourlyWage)),
                 )
               ],
             )
@@ -623,12 +667,13 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              width: AppSize.getDeviceWidth(context) * 0.2,
+              width: AppSize.getDeviceWidth(context) * 0.15,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(JapaneseText.startWorkingHourPerDay, style: normalTextStyle),
+                  Text(JapaneseText.startWorkingHourPerDay,
+                      style: normalTextStyle),
                   AppSize.spaceHeight5,
                   PrimaryTextField(
                     controller: provider.startWorkTime,
@@ -641,11 +686,15 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                           confirmText: JapaneseText.saveChange,
                           context: context,
                           initialTime: provider.startTime != null
-                              ? TimeOfDay(hour: provider.startTime!.hour, minute: provider.startTime!.minute)
+                              ? TimeOfDay(
+                                  hour: provider.startTime!.hour,
+                                  minute: provider.startTime!.minute)
                               : TimeOfDay(hour: now.hour, minute: now.minute));
                       if (date != null) {
-                        provider.startWorkTime.text = dateTimeToHourAndMinute(DateTime(2023, 1, 1, date.hour, date.minute));
-                        provider.onChangeStartWorkTime(DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.startWorkTime.text = dateTimeToHourAndMinute(
+                            DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.onChangeStartWorkTime(
+                            DateTime(2023, 1, 1, date.hour, date.minute));
                       }
                     },
                   ),
@@ -656,7 +705,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
             const Padding(padding: EdgeInsets.only(top: 35), child: Text("~")),
             AppSize.spaceWidth16,
             SizedBox(
-              width: AppSize.getDeviceWidth(context) * 0.2,
+              width: AppSize.getDeviceWidth(context) * 0.15,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -674,11 +723,15 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                           confirmText: JapaneseText.saveChange,
                           context: context,
                           initialTime: provider.endTime != null
-                              ? TimeOfDay(hour: provider.endTime!.hour, minute: provider.endTime!.minute)
+                              ? TimeOfDay(
+                                  hour: provider.endTime!.hour,
+                                  minute: provider.endTime!.minute)
                               : TimeOfDay(hour: now.hour, minute: now.minute));
                       if (date != null) {
-                        provider.endWorkTime.text = dateTimeToHourAndMinute(DateTime(2023, 1, 1, date.hour, date.minute));
-                        provider.onChangeEndWorkTime(DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.endWorkTime.text = dateTimeToHourAndMinute(
+                            DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.onChangeEndWorkTime(
+                            DateTime(2023, 1, 1, date.hour, date.minute));
                       }
                     },
                   ),
@@ -695,7 +748,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: 100,
+                      width: 80,
                       child: PrimaryTextField(
                         controller: provider.breakTimeMinute,
                         hint: '',
@@ -733,9 +786,11 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 120,
-                  child: CheckboxListTile(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
                       contentPadding: EdgeInsets.zero,
+                      groupValue: true,
                       title: Text(
                         JapaneseText.yes,
                         style: normalTextStyle.copyWith(fontSize: 12),
@@ -745,16 +800,18 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       controlAffinity: ListTileControlAffinity.leading,
                       onChanged: (v) => provider.onChangeBonus(true)),
                 ),
-                AppSize.spaceWidth5,
+                AppSize.spaceWidth16,
                 SizedBox(
-                  width: 120,
-                  child: CheckboxListTile(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
                       contentPadding: EdgeInsets.zero,
+                      groupValue: false,
                       title: Text(
                         JapaneseText.no,
                         style: normalTextStyle.copyWith(fontSize: 12),
                       ),
-                      value: !provider.bonus,
+                      value: provider.bonus,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
                       onChanged: (v) => provider.onChangeBonus(false)),
@@ -763,7 +820,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
             )
           ],
         ),
-        AppSize.spaceWidth16,
+        AppSize.spaceWidth32,
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -776,9 +833,11 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 120,
-                  child: CheckboxListTile(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
                       contentPadding: EdgeInsets.zero,
+                      groupValue: true,
                       title: Text(
                         JapaneseText.yes,
                         style: normalTextStyle.copyWith(fontSize: 12),
@@ -788,16 +847,18 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       controlAffinity: ListTileControlAffinity.leading,
                       onChanged: (v) => provider.onChangeRaise(true)),
                 ),
-                AppSize.spaceWidth5,
+                AppSize.spaceWidth16,
                 SizedBox(
-                  width: 120,
-                  child: CheckboxListTile(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
                       contentPadding: EdgeInsets.zero,
+                      groupValue: false,
                       title: Text(
                         JapaneseText.no,
                         style: normalTextStyle.copyWith(fontSize: 12),
                       ),
-                      value: !provider.raise,
+                      value: provider.raise,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
                       onChanged: (v) => provider.onChangeRaise(false)),
@@ -806,7 +867,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
             )
           ],
         ),
-        AppSize.spaceWidth16,
+        AppSize.spaceWidth32,
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -819,9 +880,11 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 120,
-                  child: CheckboxListTile(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
                       contentPadding: EdgeInsets.zero,
+                      groupValue: true,
                       title: Text(
                         JapaneseText.yes,
                         style: normalTextStyle.copyWith(fontSize: 12),
@@ -831,16 +894,18 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       controlAffinity: ListTileControlAffinity.leading,
                       onChanged: (v) => provider.onChangeOffHour(true)),
                 ),
-                AppSize.spaceWidth5,
+                AppSize.spaceWidth16,
                 SizedBox(
-                  width: 120,
-                  child: CheckboxListTile(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
                       contentPadding: EdgeInsets.zero,
+                      groupValue: false,
                       title: Text(
                         JapaneseText.no,
                         style: normalTextStyle.copyWith(fontSize: 12),
                       ),
-                      value: !provider.offHour,
+                      value: provider.offHour,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
                       onChanged: (v) => provider.onChangeOffHour(false)),
@@ -849,7 +914,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
             )
           ],
         ),
-        AppSize.spaceWidth16,
+        AppSize.spaceWidth32,
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -862,9 +927,11 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 120,
-                  child: CheckboxListTile(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
                       contentPadding: EdgeInsets.zero,
+                      groupValue: true,
                       title: Text(
                         JapaneseText.yes,
                         style: normalTextStyle.copyWith(fontSize: 12),
@@ -874,19 +941,269 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       controlAffinity: ListTileControlAffinity.leading,
                       onChanged: (v) => provider.onChangePaidHoliday(true)),
                 ),
-                AppSize.spaceWidth5,
+                AppSize.spaceWidth16,
                 SizedBox(
-                  width: 120,
-                  child: CheckboxListTile(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
+                      contentPadding: EdgeInsets.zero,
+                      groupValue: false,
+                      title: Text(
+                        JapaneseText.no,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: provider.paidHoliday,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangePaidHoliday(false)),
+                )
+              ],
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
+  buildNumberOfAnnualHolidayAndDetail() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            JapaneseText.numberOfHolidays,
+            style: normalTextStyle,
+          ),
+          AppSize.spaceHeight5,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: AppSize.getDeviceWidth(context) * 0.15,
+                child: PrimaryTextField(
+                  controller: provider.numberOfAnnualHolidays,
+                  hint: '',
+                  isRequired: true,
+                  isPhoneNumber: true,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 4, top: 15),
+                child: Text("⽇", style: normalTextStyle),
+              ),
+            ],
+          ),
+        ]),
+        const SizedBox(
+          width: 50,
+        ),
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            JapaneseText.holidayDetail,
+            style: normalTextStyle,
+          ),
+          AppSize.spaceHeight5,
+          SizedBox(
+            width: AppSize.getDeviceWidth(context) * 0.3,
+            child: PrimaryTextField(
+              controller: provider.holidayDetail,
+              hint: '',
+              isRequired: true,
+            ),
+          )
+        ])
+      ],
+    );
+  }
+
+  buildWifiAndMore() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              JapaneseText.dormOrCompanyHouse,
+              style: normalTextStyle,
+            ),
+            AppSize.spaceHeight5,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
+                      groupValue: true,
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        JapaneseText.yes,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: provider.dorm,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangeDorm(true)),
+                ),
+                AppSize.spaceWidth16,
+                SizedBox(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
+                      groupValue: false,
                       contentPadding: EdgeInsets.zero,
                       title: Text(
                         JapaneseText.no,
                         style: normalTextStyle.copyWith(fontSize: 12),
                       ),
-                      value: !provider.paidHoliday,
+                      value: provider.dorm,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangePaidHoliday(false)),
+                      onChanged: (v) => provider.onChangeDorm(false)),
+                )
+              ],
+            )
+          ],
+        ),
+        AppSize.spaceWidth32,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              JapaneseText.wifiAbility,
+              style: normalTextStyle,
+            ),
+            AppSize.spaceHeight5,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
+                      contentPadding: EdgeInsets.zero,
+                      groupValue: true,
+                      title: Text(
+                        JapaneseText.yes,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: provider.wifi,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangeWifi(true)),
+                ),
+                AppSize.spaceWidth16,
+                SizedBox(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
+                      groupValue: false,
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        JapaneseText.no,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: provider.wifi,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangeWifi(false)),
+                )
+              ],
+            )
+          ],
+        ),
+        AppSize.spaceWidth32,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              JapaneseText.mealsAbility,
+              style: normalTextStyle,
+            ),
+            AppSize.spaceHeight5,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
+                      contentPadding: EdgeInsets.zero,
+                      groupValue: true,
+                      title: Text(
+                        JapaneseText.yes,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: provider.meals,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangeMeals(true)),
+                ),
+                AppSize.spaceWidth16,
+                SizedBox(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
+                      contentPadding: EdgeInsets.zero,
+                      groupValue: false,
+                      title: Text(
+                        JapaneseText.no,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: provider.meals,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangeMeals(false)),
+                )
+              ],
+            )
+          ],
+        ),
+        AppSize.spaceWidth32,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              JapaneseText.transportExpense,
+              style: normalTextStyle,
+            ),
+            AppSize.spaceHeight5,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
+                      contentPadding: EdgeInsets.zero,
+                      groupValue: true,
+                      title: Text(
+                        JapaneseText.yes,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: provider.transportExpense,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) =>
+                          provider.onChangeTransportExpense(true)),
+                ),
+                AppSize.spaceWidth16,
+                SizedBox(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
+                      contentPadding: EdgeInsets.zero,
+                      groupValue: false,
+                      title: Text(
+                        JapaneseText.no,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: provider.transportExpense,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) =>
+                          provider.onChangeTransportExpense(false)),
                 )
               ],
             )
@@ -912,7 +1229,10 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
               JapaneseText.applicantSearch,
               style: titleStyle,
             ),
-            IconButton(splashRadius: 30, onPressed: () => context.pop(), icon: const Icon(Icons.close))
+            IconButton(
+                splashRadius: 30,
+                onPressed: () => context.pop(),
+                icon: const Icon(Icons.close))
           ],
         ),
       ),
