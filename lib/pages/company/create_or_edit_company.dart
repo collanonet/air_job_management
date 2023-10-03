@@ -347,7 +347,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
               alignment: Alignment.center,
               child: provider.imageUrl.isEmpty
                   ? Text(
-                      "Upload File Here",
+                      "ここにファイルをアップロード",
                       style: normalTextStyle,
                     )
                   : Stack(

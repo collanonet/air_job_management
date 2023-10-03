@@ -9,20 +9,11 @@ import '../models/company.dart';
 class JobPostingProvider with ChangeNotifier {
   //For Job Posting List
   List<JobPosting> jobPostingList = [];
-  List<String> statusList = [
-    JapaneseText.allData,
-    JapaneseText.duringCorrespondence,
-    JapaneseText.noContact,
-    JapaneseText.contact
-  ];
+  List<String> statusList = [JapaneseText.allData, JapaneseText.duringCorrespondence, JapaneseText.noContact, JapaneseText.contact];
 
   String? selectedStatus;
 
-  List<String> newArrivalList = [
-    JapaneseText.allData,
-    JapaneseText.newArrival,
-    JapaneseText.interview
-  ];
+  List<String> newArrivalList = [JapaneseText.allData, JapaneseText.newArrival, JapaneseText.interview];
   String? selectedNewArrival;
 
   //For Job Posting Detail
@@ -49,6 +40,7 @@ class JobPostingProvider with ChangeNotifier {
   late TextEditingController endWorkTime;
   late TextEditingController numberOfAnnualHolidays;
   late TextEditingController holidayDetail;
+  late TextEditingController interviewLocation;
 
   String? selectedOccupation;
   bool chooseOccupationSkill = false;
@@ -81,6 +73,8 @@ class JobPostingProvider with ChangeNotifier {
   bool meals = false;
   bool transportExpense = false;
 
+  bool isThereRemoteInterview = false;
+
   DateTime? startTime;
   DateTime? endTime;
 
@@ -90,6 +84,11 @@ class JobPostingProvider with ChangeNotifier {
 
   set setLoading(bool val) {
     isLoading = val;
+  }
+
+  onChangeRemoteInterview(bool val) {
+    isThereRemoteInterview = val;
+    notifyListeners();
   }
 
   onChangeDorm(bool val) {
@@ -205,6 +204,7 @@ class JobPostingProvider with ChangeNotifier {
     endWorkTime = TextEditingController(text: "");
     numberOfAnnualHolidays = TextEditingController(text: "");
     holidayDetail = TextEditingController(text: "");
+    interviewLocation = TextEditingController(text: "");
   }
 
   onInitForJobPostingDetail(String? id) async {
@@ -256,5 +256,10 @@ class JobPostingProvider with ChangeNotifier {
     breakTimeMinute.dispose();
     numberOfRecruitPeople.dispose();
     companyLocation.dispose();
+    holidayDetail.dispose();
+    interviewLocation.dispose();
+    numberOfAnnualHolidays.dispose();
+    startWorkTime.dispose();
+    endWorkTime.dispose();
   }
 }

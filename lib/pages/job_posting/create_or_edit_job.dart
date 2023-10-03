@@ -19,15 +19,13 @@ import '../../widgets/custom_textfield.dart';
 
 class CreateOrEditJobPage extends StatefulWidget {
   final String? jobPostId;
-  const CreateOrEditJobPage({Key? key, required this.jobPostId})
-      : super(key: key);
+  const CreateOrEditJobPage({Key? key, required this.jobPostId}) : super(key: key);
 
   @override
   State<CreateOrEditJobPage> createState() => _CreateOrEditJobPageState();
 }
 
-class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
-    with AfterBuildMixin {
+class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBuildMixin {
   late JobPostingProvider provider;
   DateTime now = DateTime.now();
   final _formKey = GlobalKey<FormState>();
@@ -48,8 +46,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
   @override
   void initState() {
     Provider.of<JobPostingProvider>(context, listen: false).setLoading = true;
-    Provider.of<JobPostingProvider>(context, listen: false).setAllController =
-        [];
+    Provider.of<JobPostingProvider>(context, listen: false).setAllController = [];
     Provider.of<JobPostingProvider>(context, listen: false).setImage = "";
     super.initState();
   }
@@ -114,11 +111,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                         ),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            buildTitleOverviewAndContent(),
-                            AppSize.spaceWidth16,
-                            buildChooseProfile()
-                          ],
+                          children: [buildTitleOverviewAndContent(), AppSize.spaceWidth16, buildChooseProfile()],
                         ),
                         const Divider(),
                         AppSize.spaceHeight16,
@@ -139,13 +132,14 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                         const Divider(),
                         AppSize.spaceHeight16,
                         buildWifiAndMore(),
+                        AppSize.spaceHeight16,
+                        const Divider(),
+                        AppSize.spaceHeight16,
+                        buildOnlineInterview(),
                         AppSize.spaceHeight50,
                         SizedBox(
                           width: AppSize.getDeviceWidth(context) * 0.1,
-                          child: ButtonWidget(
-                              title: JapaneseText.save,
-                              color: AppColor.primaryColor,
-                              onPress: () => onSaveUserData()),
+                          child: ButtonWidget(title: JapaneseText.save, color: AppColor.primaryColor, onPress: () => onSaveUserData()),
                         ),
                       ],
                     ),
@@ -169,8 +163,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
         ),
         AppSize.spaceHeight5,
         CustomDropDownWidget(
-          list:
-              provider.allCompany.map((e) => e.companyName.toString()).toList(),
+          list: provider.allCompany.map((e) => e.companyName.toString()).toList(),
           onChange: (e) => provider.onChangeSelectCompanyForDetail(e),
           width: AppSize.getDeviceWidth(context) * 0.6,
           selectItem: provider.selectedCompany,
@@ -270,7 +263,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
               alignment: Alignment.center,
               child: provider.imageUrl.isEmpty
                   ? Text(
-                      "Upload File Here",
+                      "ここにファイルをアップロード",
                       style: normalTextStyle,
                     )
                   : Stack(
@@ -323,15 +316,11 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       var date = await showDatePicker(
                           locale: const Locale("ja", "JP"),
                           context: context,
-                          initialDate: provider.startRecruitDate.text.isNotEmpty
-                              ? DateTime.parse(provider.startRecruitDate.text)
-                              : now,
+                          initialDate: provider.startRecruitDate.text.isNotEmpty ? DateTime.parse(provider.startRecruitDate.text) : now,
                           firstDate: now,
-                          lastDate:
-                              DateTime.now().add(const Duration(days: 3000)));
+                          lastDate: DateTime.now().add(const Duration(days: 3000)));
                       if (date != null) {
-                        provider.startRecruitDate.text =
-                            DateFormat('yyyy-MM-dd').format(date);
+                        provider.startRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
                       }
                     },
                   ),
@@ -358,14 +347,11 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       var date = await showDatePicker(
                           locale: const Locale("ja", "JP"),
                           context: context,
-                          initialDate: provider.endRecruitDate.text.isNotEmpty
-                              ? DateTime.parse(provider.endRecruitDate.text)
-                              : now,
+                          initialDate: provider.endRecruitDate.text.isNotEmpty ? DateTime.parse(provider.endRecruitDate.text) : now,
                           firstDate: now,
                           lastDate: now.add(const Duration(days: 3000)));
                       if (date != null) {
-                        provider.endRecruitDate.text =
-                            DateFormat('yyyy-MM-dd').format(date);
+                        provider.endRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
                       }
                     },
                   ),
@@ -460,8 +446,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.chooseOccupationSkill,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) =>
-                          provider.onChangeOccupationSkill(false)),
+                      onChanged: (v) => provider.onChangeOccupationSkill(false)),
                 )
               ],
             )
@@ -516,8 +501,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.contractProvisioning,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider
-                          .onChangeContractProvisioning(JapaneseText.yes)),
+                      onChanged: (v) => provider.onChangeContractProvisioning(JapaneseText.yes)),
                 ),
                 AppSize.spaceWidth16,
                 SizedBox(
@@ -533,8 +517,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.contractProvisioning,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider
-                          .onChangeContractProvisioning(JapaneseText.no)),
+                      onChanged: (v) => provider.onChangeContractProvisioning(JapaneseText.no)),
                 )
               ],
             )
@@ -638,8 +621,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.salaryType,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider
-                          .onChangeSalaryType(JapaneseText.monthlySalary)),
+                      onChanged: (v) => provider.onChangeSalaryType(JapaneseText.monthlySalary)),
                 ),
                 AppSize.spaceWidth16,
                 SizedBox(
@@ -655,8 +637,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.salaryType,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) =>
-                          provider.onChangeSalaryType(JapaneseText.hourlyWage)),
+                      onChanged: (v) => provider.onChangeSalaryType(JapaneseText.hourlyWage)),
                 )
               ],
             )
@@ -672,8 +653,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(JapaneseText.startWorkingHourPerDay,
-                      style: normalTextStyle),
+                  Text(JapaneseText.startWorkingHourPerDay, style: normalTextStyle),
                   AppSize.spaceHeight5,
                   PrimaryTextField(
                     controller: provider.startWorkTime,
@@ -686,15 +666,11 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                           confirmText: JapaneseText.saveChange,
                           context: context,
                           initialTime: provider.startTime != null
-                              ? TimeOfDay(
-                                  hour: provider.startTime!.hour,
-                                  minute: provider.startTime!.minute)
+                              ? TimeOfDay(hour: provider.startTime!.hour, minute: provider.startTime!.minute)
                               : TimeOfDay(hour: now.hour, minute: now.minute));
                       if (date != null) {
-                        provider.startWorkTime.text = dateTimeToHourAndMinute(
-                            DateTime(2023, 1, 1, date.hour, date.minute));
-                        provider.onChangeStartWorkTime(
-                            DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.startWorkTime.text = dateTimeToHourAndMinute(DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.onChangeStartWorkTime(DateTime(2023, 1, 1, date.hour, date.minute));
                       }
                     },
                   ),
@@ -723,15 +699,11 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                           confirmText: JapaneseText.saveChange,
                           context: context,
                           initialTime: provider.endTime != null
-                              ? TimeOfDay(
-                                  hour: provider.endTime!.hour,
-                                  minute: provider.endTime!.minute)
+                              ? TimeOfDay(hour: provider.endTime!.hour, minute: provider.endTime!.minute)
                               : TimeOfDay(hour: now.hour, minute: now.minute));
                       if (date != null) {
-                        provider.endWorkTime.text = dateTimeToHourAndMinute(
-                            DateTime(2023, 1, 1, date.hour, date.minute));
-                        provider.onChangeEndWorkTime(
-                            DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.endWorkTime.text = dateTimeToHourAndMinute(DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.onChangeEndWorkTime(DateTime(2023, 1, 1, date.hour, date.minute));
                       }
                     },
                   ),
@@ -1185,8 +1157,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.transportExpense,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) =>
-                          provider.onChangeTransportExpense(true)),
+                      onChanged: (v) => provider.onChangeTransportExpense(true)),
                 ),
                 AppSize.spaceWidth16,
                 SizedBox(
@@ -1202,11 +1173,82 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.transportExpense,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) =>
-                          provider.onChangeTransportExpense(false)),
+                      onChanged: (v) => provider.onChangeTransportExpense(false)),
                 )
               ],
             )
+          ],
+        ),
+      ],
+    );
+  }
+
+  buildOnlineInterview() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              JapaneseText.isThereRemoteInterview,
+              style: normalTextStyle,
+            ),
+            AppSize.spaceHeight5,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
+                      contentPadding: EdgeInsets.zero,
+                      groupValue: true,
+                      title: Text(
+                        JapaneseText.yes,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: provider.isThereRemoteInterview,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangeRemoteInterview(true)),
+                ),
+                AppSize.spaceWidth16,
+                SizedBox(
+                  width: 80,
+                  child: RadioListTile(
+                      activeColor: AppColor.primaryColor,
+                      contentPadding: EdgeInsets.zero,
+                      groupValue: false,
+                      title: Text(
+                        JapaneseText.no,
+                        style: normalTextStyle.copyWith(fontSize: 12),
+                      ),
+                      value: provider.isThereRemoteInterview,
+                      dense: true,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (v) => provider.onChangeRemoteInterview(false)),
+                )
+              ],
+            )
+          ],
+        ),
+        AppSize.spaceWidth32,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              JapaneseText.interviewLocation,
+              style: normalTextStyle,
+            ),
+            AppSize.spaceHeight5,
+            SizedBox(
+                width: AppSize.getDeviceWidth(context) * 0.4,
+                child: PrimaryTextField(
+                  controller: provider.interviewLocation,
+                  hint: "",
+                  isRequired: true,
+                ))
           ],
         ),
       ],
@@ -1229,10 +1271,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
               JapaneseText.applicantSearch,
               style: titleStyle,
             ),
-            IconButton(
-                splashRadius: 30,
-                onPressed: () => context.pop(),
-                icon: const Icon(Icons.close))
+            IconButton(splashRadius: 30, onPressed: () => context.pop(), icon: const Icon(Icons.close))
           ],
         ),
       ),
