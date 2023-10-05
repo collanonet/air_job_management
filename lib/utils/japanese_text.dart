@@ -305,6 +305,25 @@ class JapaneseText {
   static String teacher = "教師";
   static String worker = "ワーカー";
   static String barista = "バリスタ";
+
+  //Content of test for staff and contract staff
+  static String entrySheet = "エントリーシート";
+  static String cv = "履歴書、職務経歴書";
+  //interview
+  static String appropriateTest = "適正検査（SPI、玉手箱、GABなど）";
+  static String writtenTest = "筆記テスト";
+
+  //Status of Recident
+  static String diplomat = "外交";
+  static String public = "公用";
+  static String professional = "教授";
+  static String art = "芸術";
+  static String religion = "宗教";
+  static String newsCoverage = "報道";
+
+//Content of test for gig and part time staff
+  //cv
+  //interview
 }
 
 class SalaryType {

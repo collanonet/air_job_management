@@ -1,9 +1,11 @@
 import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/providers/job_posting.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
+import 'package:air_job_management/widgets/multi_select.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
@@ -19,13 +21,15 @@ import '../../widgets/custom_textfield.dart';
 
 class CreateOrEditJobPage extends StatefulWidget {
   final String? jobPostId;
-  const CreateOrEditJobPage({Key? key, required this.jobPostId}) : super(key: key);
+  const CreateOrEditJobPage({Key? key, required this.jobPostId})
+      : super(key: key);
 
   @override
   State<CreateOrEditJobPage> createState() => _CreateOrEditJobPageState();
 }
 
-class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBuildMixin {
+class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
+    with AfterBuildMixin {
   late JobPostingProvider provider;
   DateTime now = DateTime.now();
   final _formKey = GlobalKey<FormState>();
@@ -46,7 +50,8 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
   @override
   void initState() {
     Provider.of<JobPostingProvider>(context, listen: false).setLoading = true;
-    Provider.of<JobPostingProvider>(context, listen: false).setAllController = [];
+    Provider.of<JobPostingProvider>(context, listen: false).setAllController =
+        [];
     Provider.of<JobPostingProvider>(context, listen: false).setImage = "";
     super.initState();
   }
@@ -111,7 +116,11 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                         ),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [buildTitleOverviewAndContent(), AppSize.spaceWidth16, buildChooseProfile()],
+                          children: [
+                            buildTitleOverviewAndContent(),
+                            AppSize.spaceWidth16,
+                            buildChooseProfile()
+                          ],
                         ),
                         const Divider(),
                         AppSize.spaceHeight16,
@@ -136,10 +145,19 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                         const Divider(),
                         AppSize.spaceHeight16,
                         buildOnlineInterview(),
+                        AppSize.spaceHeight16,
+                        buildContentOfTest(),
+                        AppSize.spaceHeight16,
+                        buildSelectStatusOfRecident(),
+                        AppSize.spaceHeight16,
+                        buildHotelCleaningItem(),
                         AppSize.spaceHeight50,
                         SizedBox(
                           width: AppSize.getDeviceWidth(context) * 0.1,
-                          child: ButtonWidget(title: JapaneseText.save, color: AppColor.primaryColor, onPress: () => onSaveUserData()),
+                          child: ButtonWidget(
+                              title: JapaneseText.save,
+                              color: AppColor.primaryColor,
+                              onPress: () => onSaveUserData()),
                         ),
                       ],
                     ),
@@ -163,7 +181,8 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
         ),
         AppSize.spaceHeight5,
         CustomDropDownWidget(
-          list: provider.allCompany.map((e) => e.companyName.toString()).toList(),
+          list:
+              provider.allCompany.map((e) => e.companyName.toString()).toList(),
           onChange: (e) => provider.onChangeSelectCompanyForDetail(e),
           width: AppSize.getDeviceWidth(context) * 0.6,
           selectItem: provider.selectedCompany,
@@ -316,11 +335,15 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       var date = await showDatePicker(
                           locale: const Locale("ja", "JP"),
                           context: context,
-                          initialDate: provider.startRecruitDate.text.isNotEmpty ? DateTime.parse(provider.startRecruitDate.text) : now,
+                          initialDate: provider.startRecruitDate.text.isNotEmpty
+                              ? DateTime.parse(provider.startRecruitDate.text)
+                              : now,
                           firstDate: now,
-                          lastDate: DateTime.now().add(const Duration(days: 3000)));
+                          lastDate:
+                              DateTime.now().add(const Duration(days: 3000)));
                       if (date != null) {
-                        provider.startRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
+                        provider.startRecruitDate.text =
+                            DateFormat('yyyy-MM-dd').format(date);
                       }
                     },
                   ),
@@ -347,11 +370,14 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       var date = await showDatePicker(
                           locale: const Locale("ja", "JP"),
                           context: context,
-                          initialDate: provider.endRecruitDate.text.isNotEmpty ? DateTime.parse(provider.endRecruitDate.text) : now,
+                          initialDate: provider.endRecruitDate.text.isNotEmpty
+                              ? DateTime.parse(provider.endRecruitDate.text)
+                              : now,
                           firstDate: now,
                           lastDate: now.add(const Duration(days: 3000)));
                       if (date != null) {
-                        provider.endRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
+                        provider.endRecruitDate.text =
+                            DateFormat('yyyy-MM-dd').format(date);
                       }
                     },
                   ),
@@ -446,7 +472,8 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       value: provider.chooseOccupationSkill,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeOccupationSkill(false)),
+                      onChanged: (v) =>
+                          provider.onChangeOccupationSkill(false)),
                 )
               ],
             )
@@ -501,7 +528,8 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       value: provider.contractProvisioning,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeContractProvisioning(JapaneseText.yes)),
+                      onChanged: (v) => provider
+                          .onChangeContractProvisioning(JapaneseText.yes)),
                 ),
                 AppSize.spaceWidth16,
                 SizedBox(
@@ -517,7 +545,8 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       value: provider.contractProvisioning,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeContractProvisioning(JapaneseText.no)),
+                      onChanged: (v) => provider
+                          .onChangeContractProvisioning(JapaneseText.no)),
                 )
               ],
             )
@@ -621,7 +650,8 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       value: provider.salaryType,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeSalaryType(JapaneseText.monthlySalary)),
+                      onChanged: (v) => provider
+                          .onChangeSalaryType(JapaneseText.monthlySalary)),
                 ),
                 AppSize.spaceWidth16,
                 SizedBox(
@@ -637,7 +667,8 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       value: provider.salaryType,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeSalaryType(JapaneseText.hourlyWage)),
+                      onChanged: (v) =>
+                          provider.onChangeSalaryType(JapaneseText.hourlyWage)),
                 )
               ],
             )
@@ -653,7 +684,8 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(JapaneseText.startWorkingHourPerDay, style: normalTextStyle),
+                  Text(JapaneseText.startWorkingHourPerDay,
+                      style: normalTextStyle),
                   AppSize.spaceHeight5,
                   PrimaryTextField(
                     controller: provider.startWorkTime,
@@ -666,11 +698,15 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                           confirmText: JapaneseText.saveChange,
                           context: context,
                           initialTime: provider.startTime != null
-                              ? TimeOfDay(hour: provider.startTime!.hour, minute: provider.startTime!.minute)
+                              ? TimeOfDay(
+                                  hour: provider.startTime!.hour,
+                                  minute: provider.startTime!.minute)
                               : TimeOfDay(hour: now.hour, minute: now.minute));
                       if (date != null) {
-                        provider.startWorkTime.text = dateTimeToHourAndMinute(DateTime(2023, 1, 1, date.hour, date.minute));
-                        provider.onChangeStartWorkTime(DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.startWorkTime.text = dateTimeToHourAndMinute(
+                            DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.onChangeStartWorkTime(
+                            DateTime(2023, 1, 1, date.hour, date.minute));
                       }
                     },
                   ),
@@ -699,11 +735,15 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                           confirmText: JapaneseText.saveChange,
                           context: context,
                           initialTime: provider.endTime != null
-                              ? TimeOfDay(hour: provider.endTime!.hour, minute: provider.endTime!.minute)
+                              ? TimeOfDay(
+                                  hour: provider.endTime!.hour,
+                                  minute: provider.endTime!.minute)
                               : TimeOfDay(hour: now.hour, minute: now.minute));
                       if (date != null) {
-                        provider.endWorkTime.text = dateTimeToHourAndMinute(DateTime(2023, 1, 1, date.hour, date.minute));
-                        provider.onChangeEndWorkTime(DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.endWorkTime.text = dateTimeToHourAndMinute(
+                            DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.onChangeEndWorkTime(
+                            DateTime(2023, 1, 1, date.hour, date.minute));
                       }
                     },
                   ),
@@ -1157,7 +1197,8 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       value: provider.transportExpense,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeTransportExpense(true)),
+                      onChanged: (v) =>
+                          provider.onChangeTransportExpense(true)),
                 ),
                 AppSize.spaceWidth16,
                 SizedBox(
@@ -1173,7 +1214,8 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       value: provider.transportExpense,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeTransportExpense(false)),
+                      onChanged: (v) =>
+                          provider.onChangeTransportExpense(false)),
                 )
               ],
             )
@@ -1227,7 +1269,8 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                       value: provider.isThereRemoteInterview,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeRemoteInterview(false)),
+                      onChanged: (v) =>
+                          provider.onChangeRemoteInterview(false)),
                 )
               ],
             )
@@ -1255,6 +1298,149 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
     );
   }
 
+  buildContentOfTest() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          JapaneseText.contentOfTest,
+          style: normalTextStyle,
+        ),
+        AppSize.spaceHeight5,
+        Container(
+          width: AppSize.getDeviceWidth(context) * 0.6,
+          // height: 100,
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(width: 0.3, color: Colors.grey),
+              borderRadius: BorderRadius.circular(16)),
+          child: MultiSelectDialogField2(
+            dialogWidth: 400,
+            dialogHeight: 300,
+            isOffice: true,
+            initialValue: provider.selectedContentOfTest,
+            items: provider.contentOfTestStaff
+                .map((e) => MultiSelectItem(e, e))
+                .toList(),
+            cancelText: Text(JapaneseText.cancel),
+            confirmText: Text(JapaneseText.saveChange),
+            title: Text(JapaneseText.contentOfTest),
+            buttonText: Text(JapaneseText.contentOfTest),
+            buttonIcon: const Icon(Icons.arrow_drop_down_rounded),
+            listType: MultiSelectListType.LIST,
+            onConfirm: (values) {
+              provider.onChangeContentOfTest(values);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  buildSelectStatusOfRecident() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              JapaneseText.statusOfResidence,
+              style: normalTextStyle,
+            ),
+            AppSize.spaceHeight5,
+            Container(
+              width: AppSize.getDeviceWidth(context) * 0.3,
+              // height: 100,
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(width: 0.3, color: Colors.grey),
+                  borderRadius: BorderRadius.circular(16)),
+              child: MultiSelectDialogField2(
+                dialogWidth: 400,
+                dialogHeight: 300,
+                isOffice: true,
+                initialValue: provider.selectedStatusOfRecident,
+                items: provider.statusOfRecident
+                    .map((e) => MultiSelectItem(e, e))
+                    .toList(),
+                cancelText: Text(JapaneseText.cancel),
+                confirmText: Text(JapaneseText.saveChange),
+                title: Text(JapaneseText.statusOfResidence),
+                buttonText: Text(JapaneseText.statusOfResidence),
+                buttonIcon: const Icon(Icons.arrow_drop_down_rounded),
+                listType: MultiSelectListType.LIST,
+                onConfirm: (values) {
+                  provider.onChangeStatusOfRecident(values);
+                },
+              ),
+            ),
+          ],
+        ),
+        AppSize.spaceWidth32,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              JapaneseText.otherQualification,
+              style: normalTextStyle,
+            ),
+            AppSize.spaceHeight5,
+            SizedBox(
+                width: AppSize.getDeviceWidth(context) * 0.3,
+                child: PrimaryTextField(
+                  controller: provider.interviewLocation,
+                  hint: "",
+                  isRequired: true,
+                ))
+          ],
+        ),
+      ],
+    );
+  }
+
+  buildHotelCleaningItem() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          JapaneseText.hotelCleanLearningItems,
+          style: normalTextStyle,
+        ),
+        AppSize.spaceHeight5,
+        Container(
+          width: AppSize.getDeviceWidth(context) * 0.3,
+          // height: 100,
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(width: 0.3, color: Colors.grey),
+              borderRadius: BorderRadius.circular(16)),
+          child: MultiSelectDialogField2(
+            dialogWidth: 400,
+            dialogHeight: 300,
+            isOffice: true,
+            initialValue: provider.selectedHotelCleaningItemLearn,
+            items: provider.hotelCleaningItemLearn
+                .map((e) => MultiSelectItem(e, e))
+                .toList(),
+            cancelText: Text(JapaneseText.cancel),
+            confirmText: Text(JapaneseText.saveChange),
+            title: Text(JapaneseText.hotelCleanLearningItems),
+            buttonText: Text(JapaneseText.hotelCleanLearningItems),
+            buttonIcon: const Icon(Icons.arrow_drop_down_rounded),
+            listType: MultiSelectListType.LIST,
+            onConfirm: (values) {
+              provider.onChangeStatusOfRecident(values);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   clearAllText() {}
 
   titleWidget() {
@@ -1271,7 +1457,10 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
               JapaneseText.applicantSearch,
               style: titleStyle,
             ),
-            IconButton(splashRadius: 30, onPressed: () => context.pop(), icon: const Icon(Icons.close))
+            IconButton(
+                splashRadius: 30,
+                onPressed: () => context.pop(),
+                icon: const Icon(Icons.close))
           ],
         ),
       ),

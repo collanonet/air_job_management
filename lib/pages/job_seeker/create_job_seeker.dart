@@ -63,7 +63,7 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
           isLoading = false;
         });
         if (val == ConstValue.success) {
-          toastMessageSuccess("Create user account success", context);
+          toastMessageSuccess(JapaneseText.successCreate, context);
           context.pop();
           context.go(MyRoute.jobSeeker);
         } else {

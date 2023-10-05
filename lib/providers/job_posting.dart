@@ -9,11 +9,20 @@ import '../models/company.dart';
 class JobPostingProvider with ChangeNotifier {
   //For Job Posting List
   List<JobPosting> jobPostingList = [];
-  List<String> statusList = [JapaneseText.allData, JapaneseText.duringCorrespondence, JapaneseText.noContact, JapaneseText.contact];
+  List<String> statusList = [
+    JapaneseText.allData,
+    JapaneseText.duringCorrespondence,
+    JapaneseText.noContact,
+    JapaneseText.contact
+  ];
 
   String? selectedStatus;
 
-  List<String> newArrivalList = [JapaneseText.allData, JapaneseText.newArrival, JapaneseText.interview];
+  List<String> newArrivalList = [
+    JapaneseText.allData,
+    JapaneseText.newArrival,
+    JapaneseText.interview
+  ];
   String? selectedNewArrival;
 
   //For Job Posting Detail
@@ -41,6 +50,7 @@ class JobPostingProvider with ChangeNotifier {
   late TextEditingController numberOfAnnualHolidays;
   late TextEditingController holidayDetail;
   late TextEditingController interviewLocation;
+  late TextEditingController otherQualification;
 
   String? selectedOccupation;
   bool chooseOccupationSkill = false;
@@ -78,12 +88,66 @@ class JobPostingProvider with ChangeNotifier {
   DateTime? startTime;
   DateTime? endTime;
 
+  List<String> contentOfTestStaff = [
+    JapaneseText.entrySheet,
+    JapaneseText.cv,
+    JapaneseText.interview,
+    JapaneseText.appropriateTest,
+    JapaneseText.writtenTest,
+  ];
+
+  List<String> contentOfTestPartTimeStaff = [
+    JapaneseText.cv,
+    JapaneseText.interview,
+  ];
+
+  List<String> selectedContentOfTest = [
+    JapaneseText.cv,
+    JapaneseText.interview,
+  ];
+
+  List<String> statusOfRecident = [
+    JapaneseText.diplomat,
+    JapaneseText.public,
+    JapaneseText.professional,
+    JapaneseText.art,
+    JapaneseText.religion,
+    JapaneseText.newsCoverage,
+  ];
+
+  List<String> selectedStatusOfRecident = [
+    JapaneseText.diplomat,
+    JapaneseText.public,
+  ];
+
+  List<String> hotelCleaningItemLearn = [
+    JapaneseText.bedMaking,
+    JapaneseText.bathRoomCleaning,
+  ];
+
+  List<String> selectedHotelCleaningItemLearn = [];
+
+  onChangeHotelCleaningItemLearn(List<String> val) {
+    selectedHotelCleaningItemLearn = val;
+    notifyListeners();
+  }
+
+  onChangeStatusOfRecident(List<String> val) {
+    selectedStatusOfRecident = val;
+    notifyListeners();
+  }
+
   set setImage(String val) {
     imageUrl = val;
   }
 
   set setLoading(bool val) {
     isLoading = val;
+  }
+
+  onChangeContentOfTest(List<String> val) {
+    selectedContentOfTest = val;
+    notifyListeners();
   }
 
   onChangeRemoteInterview(bool val) {
@@ -205,6 +269,7 @@ class JobPostingProvider with ChangeNotifier {
     numberOfAnnualHolidays = TextEditingController(text: "");
     holidayDetail = TextEditingController(text: "");
     interviewLocation = TextEditingController(text: "");
+    otherQualification = TextEditingController(text: "");
   }
 
   onInitForJobPostingDetail(String? id) async {
@@ -257,9 +322,10 @@ class JobPostingProvider with ChangeNotifier {
     numberOfRecruitPeople.dispose();
     companyLocation.dispose();
     holidayDetail.dispose();
-    interviewLocation.dispose();
     numberOfAnnualHolidays.dispose();
     startWorkTime.dispose();
     endWorkTime.dispose();
+    otherQualification.dispose();
+    interviewLocation.dispose();
   }
 }
