@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:air_job_management/api/company.dart';
 import 'package:air_job_management/const/status.dart';
 import 'package:air_job_management/models/company.dart';
@@ -12,9 +10,8 @@ import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:air_job_management/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../const/const.dart';
 import '../../utils/app_size.dart';
@@ -29,63 +26,37 @@ class CreateOrEditCompanyPage extends StatefulWidget {
   State<CreateOrEditCompanyPage> createState() => _CreateOrEditCompanyPageState();
 }
 
-class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
-  TextEditingController companyName = TextEditingController(text: "");
-  TextEditingController profileCom = TextEditingController(text: "");
-  TextEditingController postalCode = TextEditingController(text: "");
-  TextEditingController location = TextEditingController(text: "");
-  TextEditingController capital = TextEditingController(text: "");
-  TextEditingController publicDate = TextEditingController(text: "");
-  TextEditingController homePage = TextEditingController(text: "");
-  TextEditingController affiliate = TextEditingController(text: "");
-  TextEditingController tel = TextEditingController(text: "");
-  TextEditingController tax = TextEditingController(text: "");
-  TextEditingController email = TextEditingController(text: "");
-  TextEditingController kanji = TextEditingController(text: "");
-  TextEditingController kana = TextEditingController(text: "");
-  TextEditingController content = TextEditingController(text: "");
+class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with AfterBuildMixin {
   late CompanyProvider provider;
-  List<Map<String, TextEditingController>> managerList = [];
-  File? fileImage;
-  bool isShow = true;
-  bool isLoading = false;
-  DateTime dateTime = DateTime.parse("2000-10-10");
-  final ImagePicker _picker = ImagePicker();
-  Company? company;
-
   final _formKey = GlobalKey<FormState>();
 
   onSaveUserData() async {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        isLoading = true;
-      });
+      provider.onChangeLoadingForDetail(true);
       Company c = Company(
           uid: widget.id,
-          email: email.text.trim(),
-          affiliate: affiliate.text,
-          capital: capital.text,
-          companyName: companyName.text,
+          email: provider.email.text.trim(),
+          affiliate: provider.affiliate.text,
+          capital: provider.capital.text,
+          companyName: provider.companyName.text,
           companyProfile: provider.imageUrl,
-          content: content.text,
-          homePage: homePage.text,
-          publicDate: publicDate.text,
-          location: location.text,
-          postalCode: postalCode.text,
-          status: company?.status ?? StatusUtils.active,
-          tax: tax.text,
-          tel: tel.text,
-          rePresentative: RePresentative(kana: kana.text, kanji: kanji.text),
-          manager: managerList.map((e) => RePresentative(kanji: e["kanji"]?.text.trim(), kana: e["kana"]?.text.trim())).toList());
+          content: provider.content.text,
+          homePage: provider.homePage.text,
+          publicDate: provider.publicDate.text,
+          location: provider.location.text,
+          postalCode: provider.postalCode.text,
+          status: provider.company?.status ?? StatusUtils.active,
+          tax: provider.tax.text,
+          tel: provider.tel.text,
+          rePresentative: RePresentative(kana: provider.kana.text, kanji: provider.kanji.text),
+          manager: provider.managerList.map((e) => RePresentative(kanji: e["kanji"]?.text.trim(), kana: e["kana"]?.text.trim())).toList());
       String? val;
       if (widget.id != null) {
         val = await CompanyApiServices().updateCompanyInfo(c);
       } else {
         val = await CompanyApiServices().createCompany(c);
       }
-      setState(() {
-        isLoading = false;
-      });
+      provider.onChangeLoadingForDetail(false);
       if (val == ConstValue.success) {
         toastMessageSuccess("${widget.id != null ? "Update" : "Create"} company success", context);
         await provider.getAllCompany(isNotify: true);
@@ -99,61 +70,28 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
 
   @override
   void initState() {
-    if (widget.id != null) {
-      isLoading = true;
-      initialData();
-    } else {
-      Provider.of<CompanyProvider>(context, listen: false).setImage = "";
-      managerList.add({
-        "kanji": TextEditingController(text: ""),
-        "kana": TextEditingController(text: ""),
-      });
-    }
+    CompanyProvider.getProvider(context, listen: false).initialController();
     super.initState();
   }
 
-  initialData() async {
-    company = await CompanyApiServices().getACompany(widget.id!);
-    companyName.text = company!.companyName ?? "";
-    profileCom.text = company!.companyProfile ?? "";
-    postalCode.text = company!.postalCode ?? "";
-    location.text = company!.location ?? "";
-    capital.text = company!.capital ?? "";
-    publicDate.text = company!.publicDate ?? "";
-    homePage.text = company!.homePage ?? "";
-    affiliate.text = company!.affiliate ?? "";
-    tax.text = company!.tax ?? "";
-    tel.text = company!.tel ?? "";
-    email.text = company!.email ?? "";
-    kanji.text = company!.rePresentative?.kanji ?? "";
-    kana.text = company!.rePresentative?.kana ?? "";
-    content.text = company!.content ?? "";
-    provider.setImage = company!.companyProfile ?? "";
-    if (company!.manager != null) {
-      for (var manager in company!.manager!) {
-        managerList.add({
-          "kanji": TextEditingController(text: manager.kanji),
-          "kana": TextEditingController(text: manager.kana),
-        });
-      }
-    }
-    setState(() {
-      isLoading = false;
-    });
+  @override
+  void afterBuild(BuildContext context) {
+    provider.onInitDataForDetail(widget.id);
   }
 
   @override
   void dispose() {
+    provider.disposeData();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    provider = Provider.of<CompanyProvider>(context);
+    provider = CompanyProvider.getProvider(context);
     return Form(
       key: _formKey,
       child: CustomLoadingOverlay(
-        isLoading: isLoading,
+        isLoading: provider.isLoadingForDetail,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -225,7 +163,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                 Text(JapaneseText.companyName),
                 AppSize.spaceHeight5,
                 PrimaryTextField(
-                  controller: companyName,
+                  controller: provider.companyName,
                   hint: '',
                   marginBottom: 5,
                 ),
@@ -242,7 +180,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                     Text(JapaneseText.postalCode),
                     AppSize.spaceHeight5,
                     PrimaryTextField(
-                      controller: postalCode,
+                      controller: provider.postalCode,
                       isRequired: true,
                       hint: '',
                       marginBottom: 5,
@@ -258,7 +196,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                     Text(JapaneseText.location),
                     AppSize.spaceHeight5,
                     PrimaryTextField(
-                      controller: location,
+                      controller: provider.location,
                       isRequired: true,
                       hint: '',
                       marginBottom: 5,
@@ -283,20 +221,20 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                       AppSize.spaceHeight5,
                       PrimaryTextField(
                         isRequired: true,
-                        controller: publicDate,
+                        controller: provider.publicDate,
                         hint: '',
                         readOnly: true,
                         marginBottom: 5,
                         onTap: () async {
                           var date = await showDatePicker(
-                              locale: Locale("ja", "JP"),
+                              locale: const Locale("ja", "JP"),
                               context: context,
-                              initialDate: dateTime,
+                              initialDate: provider.dateTime,
                               firstDate: DateTime(1900, 1, 1),
                               lastDate: DateTime.now());
                           if (date != null) {
-                            dateTime = date;
-                            publicDate.text = DateFormat('yyyy-MM-dd').format(dateTime);
+                            provider.dateTime = date;
+                            provider.publicDate.text = DateFormat('yyyy-MM-dd').format(provider.dateTime);
                           }
                         },
                       ),
@@ -311,7 +249,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                       Text(JapaneseText.capital),
                       AppSize.spaceHeight5,
                       PrimaryTextField(
-                        controller: capital,
+                        controller: provider.capital,
                         isRequired: true,
                         hint: '',
                         marginBottom: 5,
@@ -399,7 +337,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                   const Text("TEL"),
                   AppSize.spaceHeight5,
                   PrimaryTextField(
-                    controller: tel,
+                    controller: provider.tel,
                     hint: '',
                     isRequired: true,
                   ),
@@ -414,7 +352,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                   const Text("FAX"),
                   AppSize.spaceHeight5,
                   PrimaryTextField(
-                    controller: tax,
+                    controller: provider.tax,
                     hint: '',
                     isRequired: true,
                   ),
@@ -429,7 +367,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                   Text(JapaneseText.email),
                   AppSize.spaceHeight5,
                   PrimaryTextField(
-                    controller: email,
+                    controller: provider.email,
                     hint: '',
                     isRequired: true,
                     isEmail: true,
@@ -457,7 +395,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                 Text(JapaneseText.homePage),
                 AppSize.spaceHeight5,
                 PrimaryTextField(
-                  controller: homePage,
+                  controller: provider.homePage,
                   hint: '',
                   isRequired: false,
                 ),
@@ -470,7 +408,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                 Text(JapaneseText.affiliate),
                 AppSize.spaceHeight5,
                 PrimaryTextField(
-                  controller: affiliate,
+                  controller: provider.affiliate,
                   hint: '',
                   isRequired: false,
                 ),
@@ -504,7 +442,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                         AppSize.spaceHeight5,
                         PrimaryTextField(
                           isRequired: true,
-                          controller: kanji,
+                          controller: provider.kanji,
                           hint: '',
                           marginBottom: 5,
                         ),
@@ -519,7 +457,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                         Text(JapaneseText.nameFugigana),
                         AppSize.spaceHeight5,
                         PrimaryTextField(
-                          controller: kana,
+                          controller: provider.kana,
                           isRequired: true,
                           hint: '',
                           marginBottom: 5,
@@ -534,7 +472,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
           AppSize.spaceHeight16,
           ListView.builder(
               shrinkWrap: true,
-              itemCount: managerList.length,
+              itemCount: provider.managerList.length,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return SizedBox(
@@ -551,7 +489,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                               AppSize.spaceHeight5,
                               PrimaryTextField(
                                 isRequired: true,
-                                controller: managerList[index]["kanji"],
+                                controller: provider.managerList[index]["kanji"],
                                 hint: '',
                                 marginBottom: 5,
                               ),
@@ -566,7 +504,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                               Text(JapaneseText.nameFugigana),
                               AppSize.spaceHeight5,
                               PrimaryTextField(
-                                controller: managerList[index]["kana"],
+                                controller: provider.managerList[index]["kana"],
                                 isRequired: true,
                                 hint: '',
                                 marginBottom: 5,
@@ -574,14 +512,14 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                             ],
                           )),
                       AppSize.spaceWidth16,
-                      managerList.length == 1
+                      provider.managerList.length == 1
                           ? const SizedBox()
                           : Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: IconButton(
                                   onPressed: () {
                                     setState(() {
-                                      managerList.removeAt(index);
+                                      provider.managerList.removeAt(index);
                                     });
                                   },
                                   icon: const Icon(
@@ -598,15 +536,15 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
             child: TextButton(
                 onPressed: () {
                   setState(() {
-                    managerList.add({
+                    provider.managerList.add({
                       "kanji": TextEditingController(text: ""),
                       "kana": TextEditingController(text: ""),
-                    } as Map<String, TextEditingController>);
+                    });
                   });
                 },
                 child: Row(
                   children: [
-                    Icon(Icons.add),
+                    const Icon(Icons.add),
                     AppSize.spaceWidth5,
                     Text(JapaneseText.addMore),
                   ],
@@ -638,7 +576,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> {
                   Text(JapaneseText.content),
                   AppSize.spaceHeight5,
                   PrimaryTextField(
-                    controller: content,
+                    controller: provider.content,
                     hint: '',
                     marginBottom: 5,
                     maxLine: 5,
