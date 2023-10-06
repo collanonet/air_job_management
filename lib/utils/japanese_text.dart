@@ -282,7 +282,11 @@ class JapaneseText {
   static String female = "女性";
   static String bothGender = "どちらでも良い";
   static String desiredNationality = "希望の国籍";
-  static String necessaryJapanSkill = "必要な日本語スキル";
+  static String necessaryJapanSkill = "必要な⽇本語スキル";
+  static String native = "必要な⽇ネイティブ";
+  static String good = "良い";
+  static String poor = "貧しい";
+  static String notRequire = "必要ありません";
   static String remark = "備考";
 
   //Job Posting Check 3

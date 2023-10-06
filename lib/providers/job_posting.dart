@@ -51,6 +51,7 @@ class JobPostingProvider with ChangeNotifier {
   late TextEditingController holidayDetail;
   late TextEditingController interviewLocation;
   late TextEditingController otherQualification;
+  late TextEditingController remark;
 
   String? selectedOccupation;
   bool chooseOccupationSkill = false;
@@ -126,6 +127,90 @@ class JobPostingProvider with ChangeNotifier {
   ];
 
   List<String> selectedHotelCleaningItemLearn = [];
+
+  String selectedDesiredGender = JapaneseText.bothGender;
+  List<String> nationalityList = [
+    "Japanese",
+    "Cambodian",
+    "Vietnamese",
+    "Thai",
+    "Singapour"
+  ];
+  String? selectedNationality;
+
+  List<String> necessaryJapanSkillList = [
+    JapaneseText.notRequire,
+    JapaneseText.native,
+    JapaneseText.good,
+    JapaneseText.normal,
+    JapaneseText.poor,
+  ];
+  String? selectedNecessaryJapanSkill;
+
+  bool isEmployment = false;
+  bool isIndustrialAccident = false;
+  bool isHealth = false;
+  bool isWelfare = false;
+
+  bool isChildCareSystem = false;
+  bool isRetirementSystem = false;
+  bool isReemployment = false;
+  bool isRetirementBenefits = false;
+
+  onChangeRetirementBenefits(bool val) {
+    isRetirementBenefits = val;
+    notifyListeners();
+  }
+
+  onChangeEmployment(bool val) {
+    isEmployment = val;
+    notifyListeners();
+  }
+
+  onChangeIndustrialAccident(bool val) {
+    isIndustrialAccident = val;
+    notifyListeners();
+  }
+
+  onChangeHealth(bool val) {
+    isHealth = val;
+    notifyListeners();
+  }
+
+  onChangeWelfare(bool val) {
+    isWelfare = val;
+    notifyListeners();
+  }
+
+  onChangeChildCare(bool val) {
+    isChildCareSystem = val;
+    notifyListeners();
+  }
+
+  onChangeRetirement(bool val) {
+    isRetirementSystem = val;
+    notifyListeners();
+  }
+
+  onChangeReemployment(bool val) {
+    isReemployment = val;
+    notifyListeners();
+  }
+
+  onChangeNecessaryJapanSkill(String? val) {
+    selectedNecessaryJapanSkill = val;
+    notifyListeners();
+  }
+
+  onChangeNationality(String? val) {
+    selectedNationality = val;
+    notifyListeners();
+  }
+
+  onChangeChooseGender(String val) {
+    selectedDesiredGender = val;
+    notifyListeners();
+  }
 
   onChangeHotelCleaningItemLearn(List<String> val) {
     selectedHotelCleaningItemLearn = val;
@@ -270,6 +355,7 @@ class JobPostingProvider with ChangeNotifier {
     holidayDetail = TextEditingController(text: "");
     interviewLocation = TextEditingController(text: "");
     otherQualification = TextEditingController(text: "");
+    remark = TextEditingController(text: "");
   }
 
   onInitForJobPostingDetail(String? id) async {
@@ -327,5 +413,6 @@ class JobPostingProvider with ChangeNotifier {
     endWorkTime.dispose();
     otherQualification.dispose();
     interviewLocation.dispose();
+    remark.dispose();
   }
 }

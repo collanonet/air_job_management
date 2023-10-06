@@ -151,13 +151,55 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                         buildSelectStatusOfRecident(),
                         AppSize.spaceHeight16,
                         buildHotelCleaningItem(),
-                        AppSize.spaceHeight50,
-                        SizedBox(
-                          width: AppSize.getDeviceWidth(context) * 0.1,
-                          child: ButtonWidget(
-                              title: JapaneseText.save,
+                        AppSize.spaceHeight16,
+                        const Divider(),
+                        AppSize.spaceHeight16,
+                        //Application Requirements
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.check_circle,
                               color: AppColor.primaryColor,
-                              onPress: () => onSaveUserData()),
+                            ),
+                            AppSize.spaceWidth8,
+                            Text(
+                              JapaneseText.applicationRequirement,
+                              style: titleStyle,
+                            ),
+                          ],
+                        ),
+                        AppSize.spaceHeight16,
+                        buildApplicationRequirementAndJapanSkill(),
+                        AppSize.spaceHeight16,
+                        const Divider(),
+                        AppSize.spaceHeight16,
+                        //Application Requirements
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.check_circle,
+                              color: AppColor.primaryColor,
+                            ),
+                            AppSize.spaceWidth8,
+                            Text(
+                              JapaneseText.employmentCondition,
+                              style: titleStyle,
+                            ),
+                          ],
+                        ),
+                        AppSize.spaceHeight16,
+                        buildEmploymentCondition(),
+                        AppSize.spaceHeight50,
+                        Center(
+                          child: SizedBox(
+                            width: AppSize.getDeviceWidth(context) * 0.2,
+                            child: ButtonWidget(
+                                title: JapaneseText.save,
+                                color: AppColor.primaryColor,
+                                onPress: () => onSaveUserData()),
+                          ),
                         ),
                       ],
                     ),
@@ -1437,6 +1479,398 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
             },
           ),
         ),
+      ],
+    );
+  }
+
+  buildApplicationRequirementAndJapanSkill() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(JapaneseText.titleOfApplicationRequirement,
+            style: normalTextStyle),
+        AppSize.spaceHeight5,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  JapaneseText.desiredGender,
+                  style: normalTextStyle,
+                ),
+                AppSize.spaceHeight5,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 80,
+                      child: RadioListTile(
+                          activeColor: AppColor.primaryColor,
+                          contentPadding: EdgeInsets.zero,
+                          groupValue: JapaneseText.male,
+                          title: Text(
+                            JapaneseText.male,
+                            style: normalTextStyle.copyWith(fontSize: 12),
+                          ),
+                          value: provider.selectedDesiredGender,
+                          dense: true,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          onChanged: (v) =>
+                              provider.onChangeChooseGender(JapaneseText.male)),
+                    ),
+                    AppSize.spaceWidth16,
+                    SizedBox(
+                      width: 80,
+                      child: RadioListTile(
+                          activeColor: AppColor.primaryColor,
+                          contentPadding: EdgeInsets.zero,
+                          groupValue: JapaneseText.female,
+                          title: Text(
+                            JapaneseText.female,
+                            style: normalTextStyle.copyWith(fontSize: 12),
+                          ),
+                          value: provider.selectedDesiredGender,
+                          dense: true,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          onChanged: (v) => provider
+                              .onChangeChooseGender(JapaneseText.female)),
+                    ),
+                    AppSize.spaceWidth16,
+                    SizedBox(
+                      width: 140,
+                      child: RadioListTile(
+                          activeColor: AppColor.primaryColor,
+                          contentPadding: EdgeInsets.zero,
+                          groupValue: JapaneseText.bothGender,
+                          title: Text(
+                            JapaneseText.bothGender,
+                            style: normalTextStyle.copyWith(fontSize: 12),
+                          ),
+                          value: provider.selectedDesiredGender,
+                          dense: true,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          onChanged: (v) => provider
+                              .onChangeChooseGender(JapaneseText.bothGender)),
+                    )
+                  ],
+                )
+              ],
+            ),
+            AppSize.spaceWidth32,
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(
+                JapaneseText.desiredNationality,
+                style: normalTextStyle,
+              ),
+              AppSize.spaceHeight5,
+              CustomDropDownWidget(
+                list: provider.nationalityList,
+                onChange: (v) => provider.onChangeNationality(v),
+                selectItem: provider.selectedNationality,
+              )
+            ])
+          ],
+        ),
+        AppSize.spaceHeight16,
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            JapaneseText.necessaryJapanSkill,
+            style: normalTextStyle,
+          ),
+          AppSize.spaceHeight5,
+          CustomDropDownWidget(
+            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
+            list: provider.necessaryJapanSkillList,
+            onChange: (v) => provider.onChangeNecessaryJapanSkill(v),
+            selectItem: provider.selectedNecessaryJapanSkill,
+          )
+        ]),
+        AppSize.spaceHeight16,
+        SizedBox(
+            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  JapaneseText.remark,
+                  style: normalTextStyle,
+                ),
+                AppSize.spaceHeight5,
+                PrimaryTextField(
+                  controller: provider.remark,
+                  hint: '',
+                  marginBottom: 5,
+                  maxLine: 6,
+                  isRequired: false,
+                  textInputAction: TextInputAction.newline,
+                  textInputType: TextInputType.multiline,
+                ),
+              ],
+            )),
+      ],
+    );
+  }
+
+  buildEmploymentCondition() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(JapaneseText.socialInsurance, style: normalTextStyle),
+            AppSize.spaceHeight5,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: CheckboxListTile(
+                      activeColor: AppColor.primaryColor,
+                      value: provider.isEmployment,
+                      contentPadding: EdgeInsets.zero,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      title:
+                          Text(JapaneseText.employment, style: normalTextStyle),
+                      dense: true,
+                      onChanged: (val) => provider.onChangeEmployment(val!)),
+                ),
+                AppSize.spaceWidth16,
+                SizedBox(
+                  width: 100,
+                  child: CheckboxListTile(
+                      activeColor: AppColor.primaryColor,
+                      value: provider.isIndustrialAccident,
+                      contentPadding: EdgeInsets.zero,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      title: Text(JapaneseText.workerCompensation,
+                          style: normalTextStyle),
+                      dense: true,
+                      onChanged: (val) =>
+                          provider.onChangeIndustrialAccident(val!)),
+                ),
+                AppSize.spaceWidth16,
+                SizedBox(
+                  width: 100,
+                  child: CheckboxListTile(
+                      activeColor: AppColor.primaryColor,
+                      value: provider.isHealth,
+                      contentPadding: EdgeInsets.zero,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      title: Text(JapaneseText.health, style: normalTextStyle),
+                      dense: true,
+                      onChanged: (val) => provider.onChangeHealth(val!)),
+                ),
+                AppSize.spaceWidth16,
+                SizedBox(
+                  width: 100,
+                  child: CheckboxListTile(
+                      activeColor: AppColor.primaryColor,
+                      value: provider.isWelfare,
+                      contentPadding: EdgeInsets.zero,
+                      controlAffinity: ListTileControlAffinity.leading,
+                      title: Text(JapaneseText.welfare, style: normalTextStyle),
+                      dense: true,
+                      onChanged: (val) => provider.onChangeWelfare(val!)),
+                ),
+              ],
+            )
+          ],
+        ),
+        AppSize.spaceHeight16,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(JapaneseText.childCareLeaveSystem, style: normalTextStyle),
+                AppSize.spaceHeight5,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 80,
+                      child: RadioListTile(
+                          activeColor: AppColor.primaryColor,
+                          contentPadding: EdgeInsets.zero,
+                          groupValue: true,
+                          title: Text(
+                            JapaneseText.yes,
+                            style: normalTextStyle.copyWith(fontSize: 12),
+                          ),
+                          value: provider.isChildCareSystem,
+                          dense: true,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          onChanged: (v) => provider.onChangeChildCare(true)),
+                    ),
+                    AppSize.spaceWidth16,
+                    SizedBox(
+                      width: 80,
+                      child: RadioListTile(
+                          activeColor: AppColor.primaryColor,
+                          contentPadding: EdgeInsets.zero,
+                          groupValue: false,
+                          title: Text(
+                            JapaneseText.no,
+                            style: normalTextStyle.copyWith(fontSize: 12),
+                          ),
+                          value: provider.isChildCareSystem,
+                          dense: true,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          onChanged: (v) => provider.onChangeChildCare(false)),
+                    )
+                  ],
+                )
+              ],
+            ),
+            AppSize.spaceWidth32,
+            AppSize.spaceWidth16,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(JapaneseText.retirementSystem, style: normalTextStyle),
+                AppSize.spaceHeight5,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 80,
+                      child: RadioListTile(
+                          activeColor: AppColor.primaryColor,
+                          contentPadding: EdgeInsets.zero,
+                          groupValue: true,
+                          title: Text(
+                            JapaneseText.yes,
+                            style: normalTextStyle.copyWith(fontSize: 12),
+                          ),
+                          value: provider.isRetirementSystem,
+                          dense: true,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          onChanged: (v) => provider.onChangeRetirement(true)),
+                    ),
+                    AppSize.spaceWidth16,
+                    SizedBox(
+                      width: 80,
+                      child: RadioListTile(
+                          activeColor: AppColor.primaryColor,
+                          contentPadding: EdgeInsets.zero,
+                          groupValue: false,
+                          title: Text(
+                            JapaneseText.no,
+                            style: normalTextStyle.copyWith(fontSize: 12),
+                          ),
+                          value: provider.isRetirementSystem,
+                          dense: true,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          onChanged: (v) => provider.onChangeRetirement(false)),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ],
+        ),
+        AppSize.spaceHeight16,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(JapaneseText.rehire, style: normalTextStyle),
+                AppSize.spaceHeight5,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 80,
+                      child: RadioListTile(
+                          activeColor: AppColor.primaryColor,
+                          contentPadding: EdgeInsets.zero,
+                          groupValue: true,
+                          title: Text(
+                            JapaneseText.yes,
+                            style: normalTextStyle.copyWith(fontSize: 12),
+                          ),
+                          value: provider.isReemployment,
+                          dense: true,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          onChanged: (v) =>
+                              provider.onChangeReemployment(true)),
+                    ),
+                    AppSize.spaceWidth16,
+                    SizedBox(
+                      width: 80,
+                      child: RadioListTile(
+                          activeColor: AppColor.primaryColor,
+                          contentPadding: EdgeInsets.zero,
+                          groupValue: false,
+                          title: Text(
+                            JapaneseText.no,
+                            style: normalTextStyle.copyWith(fontSize: 12),
+                          ),
+                          value: provider.isReemployment,
+                          dense: true,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          onChanged: (v) =>
+                              provider.onChangeReemployment(false)),
+                    )
+                  ],
+                )
+              ],
+            ),
+            AppSize.spaceWidth32,
+            AppSize.spaceWidth16,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(JapaneseText.severancePay, style: normalTextStyle),
+                AppSize.spaceHeight5,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 80,
+                      child: RadioListTile(
+                          activeColor: AppColor.primaryColor,
+                          contentPadding: EdgeInsets.zero,
+                          groupValue: true,
+                          title: Text(
+                            JapaneseText.yes,
+                            style: normalTextStyle.copyWith(fontSize: 12),
+                          ),
+                          value: provider.isRetirementBenefits,
+                          dense: true,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          onChanged: (v) =>
+                              provider.onChangeRetirementBenefits(true)),
+                    ),
+                    AppSize.spaceWidth16,
+                    SizedBox(
+                      width: 80,
+                      child: RadioListTile(
+                          activeColor: AppColor.primaryColor,
+                          contentPadding: EdgeInsets.zero,
+                          groupValue: false,
+                          title: Text(
+                            JapaneseText.no,
+                            style: normalTextStyle.copyWith(fontSize: 12),
+                          ),
+                          value: provider.isRetirementBenefits,
+                          dense: true,
+                          controlAffinity: ListTileControlAffinity.leading,
+                          onChanged: (v) =>
+                              provider.onChangeRetirementBenefits(false)),
+                    )
+                  ],
+                )
+              ],
+            ),
+          ],
+        )
       ],
     );
   }
