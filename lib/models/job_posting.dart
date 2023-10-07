@@ -12,7 +12,7 @@ class JobPosting {
   Location? location;
   String? numberOfRecruit;
   String? occupationType;
-  String? occupation;
+  bool? occupation;
   bool? employmentContractProvisioning;
   String? employmentType;
   bool? trailPeriod;
@@ -29,13 +29,13 @@ class JobPosting {
   bool? dormOrCompanyHouse;
   bool? wifi;
   bool? meals;
-  String? transportExpense;
+  bool? transportExpense;
   bool? isRemoteInterview;
   Location? interviewLocation;
-  String? contentOfTheTest;
-  String? statusOfResidence;
+  List<String>? contentOfTheTest;
+  List<String>? statusOfResidence;
   String? otherQualification;
-  String? hotelCleaningLearningItem;
+  List<String>? hotelCleaningLearningItem;
   String? desiredGender;
   String? desiredNationality;
   String? necessaryJapanSkill;
@@ -47,6 +47,10 @@ class JobPosting {
   bool? severancePay;
   String? title;
   List<Review>? reviews;
+  bool? employment;
+  bool? industrialAccident;
+  bool? health;
+  bool? publicWelfare;
 
   JobPosting(
       {this.status,
@@ -96,9 +100,17 @@ class JobPosting {
       this.severancePay,
       this.title,
       this.reviews,
-      this.uid});
+      this.uid,
+      this.employment,
+      this.health,
+      this.industrialAccident,
+      this.publicWelfare});
 
   factory JobPosting.fromJson(Map<String, dynamic> json) => JobPosting(
+        employment: json["employment"],
+        industrialAccident: json["industrial_accident"],
+        health: json["health"],
+        publicWelfare: json["public_welfare"],
         status: json["status"],
         company: json["company"],
         companyId: json["company_id"],
@@ -131,10 +143,11 @@ class JobPosting {
         transportExpense: json["transport_expense"],
         isRemoteInterview: json["is_remote_interview"],
         interviewLocation: json["interview_location"] == null ? null : Location.fromJson(json["interview_location"]),
-        contentOfTheTest: json["content_of_the_test"],
-        statusOfResidence: json["status_of_residence"],
+        contentOfTheTest: json["content_of_the_test"] != null ? List<String>.from(json["content_of_the_test"].map((e) => e)) : [],
+        statusOfResidence: json["status_of_residence"] != null ? List<String>.from(json["status_of_residence"].map((e) => e)) : [],
         otherQualification: json["other_qualification"],
-        hotelCleaningLearningItem: json["hotel_cleaning_learning_item"],
+        hotelCleaningLearningItem:
+            json["hotel_cleaning_learning_item"] != null ? List<String>.from(json["hotel_cleaning_learning_item"].map((e) => e)) : [],
         desiredGender: json["desired_gender"],
         desiredNationality: json["desired_nationality"],
         necessaryJapanSkill: json["necessary_japan_skill"],
@@ -149,6 +162,10 @@ class JobPosting {
       );
 
   Map<String, dynamic> toJson() => {
+        "public_welfare": publicWelfare,
+        "health": health,
+        "employment": employment,
+        "industrial_accident": industrialAccident,
         "status": status,
         "company": company,
         "company_id": companyId,
@@ -181,10 +198,10 @@ class JobPosting {
         "transport_expense": transportExpense,
         "is_remote_interview": isRemoteInterview,
         "interview_location": interviewLocation?.toJson(),
-        "content_of_the_test": contentOfTheTest,
-        "status_of_residence": statusOfResidence,
+        "content_of_the_test": contentOfTheTest != null ? contentOfTheTest!.map((e) => e) : [],
+        "status_of_residence": statusOfResidence != null ? statusOfResidence!.map((e) => e) : [],
         "other_qualification": otherQualification,
-        "hotel_cleaning_learning_item": hotelCleaningLearningItem,
+        "hotel_cleaning_learning_item": hotelCleaningLearningItem != null ? hotelCleaningLearningItem!.map((e) => e) : [],
         "desired_gender": desiredGender,
         "desired_nationality": desiredNationality,
         "necessary_japan_skill": necessaryJapanSkill,

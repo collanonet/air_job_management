@@ -41,10 +41,8 @@ class JapaneseText {
   static String dontHaveScheduleMessage = "編集するスケジュールがありません。";
   static String dontHaveWorkRecordMessage = "編集する勤務実績がありません。";
 
-  static String canNotCreateAllWorkgroupMessage =
-      "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
-  static String canNotEditAllWorkgroupMessage =
-      "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
+  static String canNotCreateAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
+  static String canNotEditAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
   static String workday = "勤務日";
   static String fixedDayOff = "所定休日";
   static String lawDayOff = "法定休日";
@@ -195,6 +193,7 @@ class JapaneseText {
   static String profileCom = "PR写真";
   static String postalCode = "郵便番号";
   static String location = "所在地";
+  static String companyLatLng = "会社の緯度と経度";
   static String capital = "資本金";
   static String publicDate = "設立年月日";
   static String homePage = "ホームページ";
@@ -265,6 +264,7 @@ class JapaneseText {
   //Remote Interview
   static String isThereRemoteInterview = "リモート面接の有無";
   static String interviewLocation = "面接場所";
+  static String interviewLatLng = "面接時の緯度と経度";
 
   //Content of Test
   static String contentOfTest = "試験内容";

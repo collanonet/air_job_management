@@ -23,12 +23,10 @@ class CreateOrEditCompanyPage extends StatefulWidget {
   const CreateOrEditCompanyPage({Key? key, required this.id}) : super(key: key);
 
   @override
-  State<CreateOrEditCompanyPage> createState() =>
-      _CreateOrEditCompanyPageState();
+  State<CreateOrEditCompanyPage> createState() => _CreateOrEditCompanyPageState();
 }
 
-class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage>
-    with AfterBuildMixin {
+class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with AfterBuildMixin {
   late CompanyProvider provider;
   final _formKey = GlobalKey<FormState>();
 
@@ -50,12 +48,9 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage>
           status: provider.company?.status ?? StatusUtils.active,
           tax: provider.tax.text,
           tel: provider.tel.text,
-          rePresentative: RePresentative(
-              kana: provider.kana.text, kanji: provider.kanji.text),
-          manager: provider.managerList
-              .map((e) => RePresentative(
-                  kanji: e["kanji"]?.text.trim(), kana: e["kana"]?.text.trim()))
-              .toList());
+          companyLatLng: provider.companyLatLng.text,
+          rePresentative: RePresentative(kana: provider.kana.text, kanji: provider.kanji.text),
+          manager: provider.managerList.map((e) => RePresentative(kanji: e["kanji"]?.text.trim(), kana: e["kana"]?.text.trim())).toList());
       String? val;
       if (widget.id != null) {
         val = await CompanyApiServices().updateCompanyInfo(c);
@@ -64,11 +59,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage>
       }
       provider.onChangeLoadingForDetail(false);
       if (val == ConstValue.success) {
-        toastMessageSuccess(
-            widget.id != null
-                ? JapaneseText.successUpdate
-                : JapaneseText.successCreate,
-            context);
+        toastMessageSuccess(widget.id != null ? JapaneseText.successUpdate : JapaneseText.successCreate, context);
         await provider.getAllCompany(isNotify: true);
         context.pop();
         context.go(MyRoute.company);
@@ -149,10 +140,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage>
                       AppSize.spaceHeight16,
                       SizedBox(
                         width: AppSize.getDeviceWidth(context) * 0.1,
-                        child: ButtonWidget(
-                            title: JapaneseText.save,
-                            color: AppColor.primaryColor,
-                            onPress: () => onSaveUserData()),
+                        child: ButtonWidget(title: JapaneseText.save, color: AppColor.primaryColor, onPress: () => onSaveUserData()),
                       ),
                     ],
                   ),
@@ -186,7 +174,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage>
         Row(
           children: [
             SizedBox(
-                width: AppSize.getDeviceWidth(context) * 0.15,
+                width: AppSize.getDeviceWidth(context) * 0.1,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -202,7 +190,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage>
                 )),
             AppSize.spaceWidth16,
             SizedBox(
-                width: AppSize.getDeviceWidth(context) * 0.4,
+                width: AppSize.getDeviceWidth(context) * 0.3,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -213,6 +201,23 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage>
                       isRequired: true,
                       hint: '',
                       marginBottom: 5,
+                    ),
+                  ],
+                )),
+            AppSize.spaceWidth16,
+            SizedBox(
+                width: AppSize.getDeviceWidth(context) * 0.15,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(JapaneseText.companyLatLng),
+                    AppSize.spaceHeight5,
+                    PrimaryTextField(
+                      controller: provider.companyLatLng,
+                      isRequired: true,
+                      hint: '',
+                      marginBottom: 5,
+                      validator: (value) => FormValidator.validateLatLang(value),
                     ),
                   ],
                 )),
@@ -247,8 +252,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage>
                               lastDate: DateTime.now());
                           if (date != null) {
                             provider.dateTime = date;
-                            provider.publicDate.text = DateFormat('yyyy-MM-dd')
-                                .format(provider.dateTime);
+                            provider.publicDate.text = DateFormat('yyyy-MM-dd').format(provider.dateTime);
                           }
                         },
                       ),
@@ -503,8 +507,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage>
                               AppSize.spaceHeight5,
                               PrimaryTextField(
                                 isRequired: true,
-                                controller: provider.managerList[index]
-                                    ["kanji"],
+                                controller: provider.managerList[index]["kanji"],
                                 hint: '',
                                 marginBottom: 5,
                               ),
@@ -618,8 +621,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage>
             JapaneseText.applicantSearch,
             style: titleStyle,
           ),
-          IconButton(
-              onPressed: () => context.pop(), icon: const Icon(Icons.close))
+          IconButton(onPressed: () => context.pop(), icon: const Icon(Icons.close))
         ],
       ),
     );

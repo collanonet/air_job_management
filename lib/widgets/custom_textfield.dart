@@ -67,14 +67,16 @@ class PrimaryTextField extends StatelessWidget {
         obscureText: isObsecure,
         keyboardType: textInputType,
         textInputAction: textInputAction,
-        validator: isEmail && isRequired
-            ? (value) => FormValidator.validateEmail(value)
-            : isRequired
-                ? (value) {
-                    if (validator != null) return validator!(value);
-                    return FormValidator.validateField(value, hint);
-                  }
-                : null,
+        validator: validator != null
+            ? (value) => validator!(value)
+            : isEmail && isRequired
+                ? (value) => FormValidator.validateEmail(value)
+                : isRequired
+                    ? (value) {
+                        if (validator != null) return validator!(value);
+                        return FormValidator.validateField(value, hint);
+                      }
+                    : null,
         maxLines: maxLine,
         autocorrect: false,
         autovalidateMode: autoValidateMode,
@@ -147,6 +149,14 @@ class FormValidator {
     if (value == null || value.isEmpty) return "この項目は必須です";
     if (length != null) {
       if (value.length < length) return "この項目は必須です";
+    }
+    return null;
+  }
+
+  static String? validateLatLang(String? value) {
+    if (value == null || value.isEmpty) return "この項目は必須です";
+    if (!value.contains(", ")) {
+      return "緯度と経度が無効です";
     }
     return null;
   }

@@ -1,5 +1,6 @@
 class Company {
   String? companyName;
+  String? companyLatLng;
   String? companyProfile;
   String? postalCode;
   String? location;
@@ -19,6 +20,7 @@ class Company {
   Company(
       {this.uid,
       this.companyName,
+      this.companyLatLng,
       this.companyProfile,
       this.postalCode,
       this.location,
@@ -35,6 +37,7 @@ class Company {
       this.status});
 
   factory Company.fromJson(Map<String, dynamic> json) => Company(
+        companyLatLng: json["lat_lng"],
         status: json["status"],
         tel: json["tel"],
         tax: json["tax"],
@@ -53,6 +56,7 @@ class Company {
       );
 
   Map<String, dynamic> toJson() => {
+        "lat_lng": companyLatLng,
         "tel": tel,
         "status": status,
         "tax": tax,

@@ -25,6 +25,7 @@ class CompanyProvider with ChangeNotifier {
   late TextEditingController profileCom;
   late TextEditingController postalCode;
   late TextEditingController location;
+  late TextEditingController companyLatLng;
   late TextEditingController capital;
   late TextEditingController publicDate;
   late TextEditingController homePage;
@@ -66,6 +67,7 @@ class CompanyProvider with ChangeNotifier {
       profileCom.text = company!.companyProfile ?? "";
       postalCode.text = company!.postalCode ?? "";
       location.text = company!.location ?? "";
+      companyLatLng.text = company!.companyLatLng ?? "";
       capital.text = company!.capital ?? "";
       publicDate.text = company!.publicDate ?? "";
       homePage.text = company!.homePage ?? "";
@@ -97,6 +99,7 @@ class CompanyProvider with ChangeNotifier {
     profileCom = TextEditingController(text: "");
     postalCode = TextEditingController(text: "");
     location = TextEditingController(text: "");
+    companyLatLng = TextEditingController(text: "");
     capital = TextEditingController(text: "");
     publicDate = TextEditingController(text: "");
     homePage = TextEditingController(text: "");

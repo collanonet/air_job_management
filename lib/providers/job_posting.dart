@@ -9,20 +9,11 @@ import '../models/company.dart';
 class JobPostingProvider with ChangeNotifier {
   //For Job Posting List
   List<JobPosting> jobPostingList = [];
-  List<String> statusList = [
-    JapaneseText.allData,
-    JapaneseText.duringCorrespondence,
-    JapaneseText.noContact,
-    JapaneseText.contact
-  ];
+  List<String> statusList = [JapaneseText.allData, JapaneseText.duringCorrespondence, JapaneseText.noContact, JapaneseText.contact];
 
   String? selectedStatus;
 
-  List<String> newArrivalList = [
-    JapaneseText.allData,
-    JapaneseText.newArrival,
-    JapaneseText.interview
-  ];
+  List<String> newArrivalList = [JapaneseText.allData, JapaneseText.newArrival, JapaneseText.interview];
   String? selectedNewArrival;
 
   //For Job Posting Detail
@@ -37,12 +28,10 @@ class JobPostingProvider with ChangeNotifier {
   late TextEditingController title;
   late TextEditingController overview;
   late TextEditingController content;
-  late TextEditingController profileCom;
-  late TextEditingController homePage;
-  late TextEditingController affiliate;
   late TextEditingController startRecruitDate;
   late TextEditingController endRecruitDate;
   late TextEditingController companyLocation;
+  late TextEditingController companyLocationLatLng;
   late TextEditingController numberOfRecruitPeople;
   late TextEditingController breakTimeMinute;
   late TextEditingController startWorkTime;
@@ -50,6 +39,7 @@ class JobPostingProvider with ChangeNotifier {
   late TextEditingController numberOfAnnualHolidays;
   late TextEditingController holidayDetail;
   late TextEditingController interviewLocation;
+  late TextEditingController interviewLocationLatLng;
   late TextEditingController otherQualification;
   late TextEditingController remark;
 
@@ -129,13 +119,7 @@ class JobPostingProvider with ChangeNotifier {
   List<String> selectedHotelCleaningItemLearn = [];
 
   String selectedDesiredGender = JapaneseText.bothGender;
-  List<String> nationalityList = [
-    "Japanese",
-    "Cambodian",
-    "Vietnamese",
-    "Thai",
-    "Singapour"
-  ];
+  List<String> nationalityList = ["Japanese", "Cambodian", "Vietnamese", "Thai", "Singapour"];
   String? selectedNationality;
 
   List<String> necessaryJapanSkillList = [
@@ -341,12 +325,10 @@ class JobPostingProvider with ChangeNotifier {
     title = TextEditingController(text: "");
     overview = TextEditingController(text: "");
     content = TextEditingController(text: "");
-    profileCom = TextEditingController(text: "");
-    homePage = TextEditingController(text: "");
-    affiliate = TextEditingController(text: "");
     startRecruitDate = TextEditingController(text: "");
     endRecruitDate = TextEditingController(text: "");
     companyLocation = TextEditingController(text: "");
+    companyLocationLatLng = TextEditingController(text: "");
     numberOfRecruitPeople = TextEditingController(text: "");
     breakTimeMinute = TextEditingController(text: "");
     startWorkTime = TextEditingController(text: "");
@@ -354,6 +336,7 @@ class JobPostingProvider with ChangeNotifier {
     numberOfAnnualHolidays = TextEditingController(text: "");
     holidayDetail = TextEditingController(text: "");
     interviewLocation = TextEditingController(text: "");
+    interviewLocationLatLng = TextEditingController(text: "");
     otherQualification = TextEditingController(text: "");
     remark = TextEditingController(text: "");
   }
@@ -366,6 +349,53 @@ class JobPostingProvider with ChangeNotifier {
     allCompany = await CompanyApiServices().getAllCompany();
     if (id != null) {
       jobPosting = await JobPostingApiService().getAJobPosting(id);
+      if (jobPosting!.companyId != null) {
+        for (var c in allCompany) {
+          if (c.uid == jobPosting!.companyId) {
+            selectedCompany = c.companyName;
+            selectedCompanyId = c.uid;
+          }
+        }
+      }
+      imageUrl = jobPosting?.image ?? "";
+      title.text = jobPosting?.title ?? "";
+      overview.text = jobPosting?.description ?? "";
+      content.text = jobPosting?.content ?? "";
+      startRecruitDate.text = jobPosting?.startDate ?? "";
+      endRecruitDate.text = jobPosting?.endDate ?? "";
+      if (jobPosting!.location != null) {
+        companyLocation.text = jobPosting?.location?.name ?? "";
+        if (jobPosting?.location?.lat != null && jobPosting?.location?.lat != "") {
+          companyLocationLatLng.text = "${jobPosting?.location?.lat}, ${jobPosting?.location?.lng}";
+        }
+      }
+      numberOfRecruitPeople.text = jobPosting?.numberOfRecruit ?? "";
+      breakTimeMinute.text = jobPosting?.breakTimeAsMinute ?? "";
+      startWorkTime.text = jobPosting?.startTimeHour ?? "";
+      endWorkTime.text = jobPosting?.endTimeHour ?? "";
+      numberOfAnnualHolidays.text = jobPosting?.annualHoliday ?? "";
+      holidayDetail.text = jobPosting?.holidayDetail ?? "";
+      selectedOccupation = jobPosting?.occupationType;
+      chooseOccupationSkill = jobPosting?.occupation ?? false;
+      selectedEmploymentType = jobPosting?.employmentType;
+      selectedNationality = jobPosting?.desiredNationality;
+      selectedNecessaryJapanSkill = jobPosting?.necessaryJapanSkill;
+      selectedContentOfTest = jobPosting?.contentOfTheTest ?? [];
+      selectedStatusOfRecident = jobPosting?.statusOfResidence ?? [];
+      selectedHotelCleaningItemLearn = jobPosting?.hotelCleaningLearningItem ?? [];
+      contractProvisioning = jobPosting?.employmentContractProvisioning == true ? JapaneseText.yes : JapaneseText.no;
+      if (jobPosting!.interviewLocation != null) {
+        interviewLocation.text = jobPosting?.interviewLocation?.name ?? "";
+        if (jobPosting?.interviewLocation?.lat != null && jobPosting?.interviewLocation?.lat != "") {
+          interviewLocationLatLng.text = "${jobPosting?.interviewLocation?.lat}, ${jobPosting?.interviewLocation?.lng}";
+        }
+      }
+      otherQualification.text = jobPosting?.otherQualification ?? "";
+      remark.text = jobPosting?.remarkOfRequirement ?? "";
+      isIndustrialAccident = jobPosting?.industrialAccident ?? false;
+      isEmployment = jobPosting?.employment ?? false;
+      isHealth = jobPosting?.health ?? false;
+      isWelfare = jobPosting?.publicWelfare ?? false;
     }
     onChangeLoading(false);
   }
@@ -375,6 +405,8 @@ class JobPostingProvider with ChangeNotifier {
     for (var c in allCompany) {
       if (c.companyName!.contains(selectedCompany.toString())) {
         selectedCompanyId = c.uid;
+        companyLocation.text = c.location ?? "";
+        companyLocationLatLng.text = c.companyLatLng ?? "";
       }
     }
     notifyListeners();
@@ -399,9 +431,6 @@ class JobPostingProvider with ChangeNotifier {
     title.dispose();
     overview.dispose();
     content.dispose();
-    profileCom.dispose();
-    homePage.dispose();
-    affiliate.dispose();
     startRecruitDate.dispose();
     endRecruitDate.dispose();
     breakTimeMinute.dispose();

@@ -1,4 +1,6 @@
+import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/helper/japan_date_time.dart';
+import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/providers/job_posting.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/multi_select.dart';
@@ -10,9 +12,11 @@ import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../api/company.dart';
+import '../../const/const.dart';
 import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
 import '../../utils/japanese_text.dart';
+import '../../utils/my_route.dart';
 import '../../utils/style.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_dropdown_string.dart';
@@ -21,15 +25,13 @@ import '../../widgets/custom_textfield.dart';
 
 class CreateOrEditJobPage extends StatefulWidget {
   final String? jobPostId;
-  const CreateOrEditJobPage({Key? key, required this.jobPostId})
-      : super(key: key);
+  const CreateOrEditJobPage({Key? key, required this.jobPostId}) : super(key: key);
 
   @override
   State<CreateOrEditJobPage> createState() => _CreateOrEditJobPageState();
 }
 
-class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
-    with AfterBuildMixin {
+class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBuildMixin {
   late JobPostingProvider provider;
   DateTime now = DateTime.now();
   final _formKey = GlobalKey<FormState>();
@@ -41,8 +43,87 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
       if (end.isBefore(start)) {
         // End date is before start date validation
         toastMessageError("募集終了日が募集開始日より前です", context);
+      } else if (!provider.interviewLocationLatLng.text.contains(", ") || !provider.companyLocationLatLng.text.contains(", ")) {
+        //Invalid latitude and longitude of company location or interview location.
+        toastMessageError("会社の所在地または面接の場所の緯度と経度が無効です。", context);
       } else {
         //Continue to create job posting
+        JobPosting c = JobPosting(
+            status: "",
+            uid: widget.jobPostId ?? "",
+            title: provider.title.text,
+            endDate: provider.endRecruitDate.text,
+            startDate: provider.startRecruitDate.text,
+            annualHoliday: provider.numberOfAnnualHolidays.text,
+            bonus: provider.bonus,
+            breakTimeAsMinute: provider.breakTimeMinute.text,
+            childCareLeaveSystem: provider.isChildCareSystem,
+            company: provider.selectedCompany,
+            companyId: provider.selectedCompanyId,
+            content: provider.content.text,
+            contentOfTheTest: provider.selectedContentOfTest.map((e) => e).toList(),
+            description: provider.overview.text,
+            desiredGender: provider.selectedDesiredGender,
+            desiredNationality: provider.selectedNationality,
+            dormOrCompanyHouse: provider.dorm,
+            employmentContractProvisioning: provider.contractProvisioning == JapaneseText.yes,
+            employmentType: provider.selectedEmploymentType,
+            endTimeHour: provider.startWorkTime.text,
+            holidayDetail: provider.holidayDetail.text,
+            hotelCleaningLearningItem: provider.selectedHotelCleaningItemLearn.map((e) => e).toList(),
+            image: provider.imageUrl,
+            interviewLocation: Location(
+                name: provider.interviewLocation.text,
+                des: provider.interviewLocation.text,
+                lat: provider.interviewLocationLatLng.text.split(", ")[0],
+                lng: provider.interviewLocationLatLng.text.split(", ")[1]),
+            isRemoteInterview: provider.isThereRemoteInterview,
+            location: Location(
+                name: provider.companyLocation.text,
+                des: provider.companyLocation.text,
+                lat: provider.companyLocationLatLng.text.split(", ")[0],
+                lng: provider.companyLocationLatLng.text.split(", ")[1]),
+            meals: provider.meals,
+            necessaryJapanSkill: provider.selectedNecessaryJapanSkill,
+            numberOfRecruit: provider.numberOfRecruitPeople.text,
+            occupation: provider.chooseOccupationSkill,
+            occupationType: provider.selectedOccupation,
+            offHour: provider.offHour,
+            otherQualification: provider.otherQualification.text,
+            paidHoliday: provider.paidHoliday,
+            raise: provider.raise,
+            rehire: provider.isRetirementSystem,
+            remarkOfRequirement: provider.remark.text,
+            retirementSystem: provider.isRetirementSystem,
+            reviews: [],
+            salaryType: provider.salaryType,
+            severancePay: provider.isRetirementBenefits,
+            socialInsurance: "",
+            startTimeHour: provider.startWorkTime.text,
+            statusOfResidence: provider.selectedStatusOfRecident.map((e) => e).toList(),
+            trailPeriod: provider.trailPeriod,
+            transportExpense: provider.transportExpense,
+            wifi: provider.wifi,
+            workCatchPhrase: provider.title.text,
+            employment: provider.isEmployment,
+            health: provider.isHealth,
+            industrialAccident: provider.isIndustrialAccident,
+            publicWelfare: provider.isWelfare);
+        String? val;
+        if (widget.jobPostId != null) {
+          val = await JobPostingApiService().updateJobPostingInfo(c);
+        } else {
+          val = await JobPostingApiService().createJob(c);
+        }
+        provider.onChangeLoading(false);
+        if (val == ConstValue.success) {
+          toastMessageSuccess(widget.jobPostId != null ? JapaneseText.successUpdate : JapaneseText.successCreate, context);
+          await provider.getAllJobPost();
+          context.pop();
+          context.go(MyRoute.job);
+        } else {
+          toastMessageError("$val", context);
+        }
       }
     }
   }
@@ -50,8 +131,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
   @override
   void initState() {
     Provider.of<JobPostingProvider>(context, listen: false).setLoading = true;
-    Provider.of<JobPostingProvider>(context, listen: false).setAllController =
-        [];
+    Provider.of<JobPostingProvider>(context, listen: false).setAllController = [];
     Provider.of<JobPostingProvider>(context, listen: false).setImage = "";
     super.initState();
   }
@@ -76,137 +156,128 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
     provider = Provider.of<JobPostingProvider>(context);
     return Form(
       key: _formKey,
-      child: Scaffold(
-        body: CustomLoadingOverlay(
-          isLoading: provider.isLoading,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                titleWidget(),
-                AppSize.spaceHeight16,
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  width: AppSize.getDeviceWidth(context),
-                  height: AppSize.getDeviceHeight(context) - 110,
-                  decoration: boxDecoration,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        chooseCompany(),
-                        AppSize.spaceHeight16,
-                        const Divider(),
-                        AppSize.spaceHeight16,
-                        //Basic Info
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.check_circle,
-                              color: AppColor.primaryColor,
-                            ),
-                            AppSize.spaceWidth8,
-                            Text(
-                              JapaneseText.applicantSearch,
-                              style: titleStyle,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            buildTitleOverviewAndContent(),
-                            AppSize.spaceWidth16,
-                            buildChooseProfile()
-                          ],
-                        ),
-                        const Divider(),
-                        AppSize.spaceHeight16,
-                        buildOccupation(),
-                        AppSize.spaceHeight16,
-                        buildEmploymentContractProvisioning(),
-                        AppSize.spaceHeight16,
-                        buildTrailPeriod(),
-                        AppSize.spaceHeight16,
-                        const Divider(),
-                        AppSize.spaceHeight16,
-                        buildBonus(),
-                        AppSize.spaceHeight16,
-                        const Divider(),
-                        AppSize.spaceHeight16,
-                        buildNumberOfAnnualHolidayAndDetail(),
-                        AppSize.spaceHeight16,
-                        const Divider(),
-                        AppSize.spaceHeight16,
-                        buildWifiAndMore(),
-                        AppSize.spaceHeight16,
-                        const Divider(),
-                        AppSize.spaceHeight16,
-                        buildOnlineInterview(),
-                        AppSize.spaceHeight16,
-                        buildContentOfTest(),
-                        AppSize.spaceHeight16,
-                        buildSelectStatusOfRecident(),
-                        AppSize.spaceHeight16,
-                        buildHotelCleaningItem(),
-                        AppSize.spaceHeight16,
-                        const Divider(),
-                        AppSize.spaceHeight16,
-                        //Application Requirements
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.check_circle,
-                              color: AppColor.primaryColor,
-                            ),
-                            AppSize.spaceWidth8,
-                            Text(
-                              JapaneseText.applicationRequirement,
-                              style: titleStyle,
-                            ),
-                          ],
-                        ),
-                        AppSize.spaceHeight16,
-                        buildApplicationRequirementAndJapanSkill(),
-                        AppSize.spaceHeight16,
-                        const Divider(),
-                        AppSize.spaceHeight16,
-                        //Application Requirements
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.check_circle,
-                              color: AppColor.primaryColor,
-                            ),
-                            AppSize.spaceWidth8,
-                            Text(
-                              JapaneseText.employmentCondition,
-                              style: titleStyle,
-                            ),
-                          ],
-                        ),
-                        AppSize.spaceHeight16,
-                        buildEmploymentCondition(),
-                        AppSize.spaceHeight50,
-                        Center(
-                          child: SizedBox(
-                            width: AppSize.getDeviceWidth(context) * 0.2,
-                            child: ButtonWidget(
-                                title: JapaneseText.save,
-                                color: AppColor.primaryColor,
-                                onPress: () => onSaveUserData()),
+      child: CustomLoadingOverlay(
+        isLoading: provider.isLoading,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              titleWidget(),
+              AppSize.spaceHeight16,
+              Container(
+                padding: const EdgeInsets.all(12),
+                width: AppSize.getDeviceWidth(context),
+                height: AppSize.getDeviceHeight(context) - 110,
+                decoration: boxDecoration,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      chooseCompany(),
+                      AppSize.spaceHeight16,
+                      const Divider(),
+                      AppSize.spaceHeight16,
+                      //Basic Info
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.check_circle,
+                            color: AppColor.primaryColor,
                           ),
+                          AppSize.spaceWidth8,
+                          Text(
+                            JapaneseText.applicantSearch,
+                            style: titleStyle,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [buildTitleOverviewAndContent(), AppSize.spaceWidth16, buildChooseProfile()],
+                      ),
+                      const Divider(),
+                      AppSize.spaceHeight16,
+                      buildOccupation(),
+                      AppSize.spaceHeight16,
+                      buildEmploymentContractProvisioning(),
+                      AppSize.spaceHeight16,
+                      buildTrailPeriod(),
+                      AppSize.spaceHeight16,
+                      const Divider(),
+                      AppSize.spaceHeight16,
+                      buildBonus(),
+                      AppSize.spaceHeight16,
+                      const Divider(),
+                      AppSize.spaceHeight16,
+                      buildNumberOfAnnualHolidayAndDetail(),
+                      AppSize.spaceHeight16,
+                      const Divider(),
+                      AppSize.spaceHeight16,
+                      buildWifiAndMore(),
+                      AppSize.spaceHeight16,
+                      const Divider(),
+                      AppSize.spaceHeight16,
+                      buildOnlineInterview(),
+                      AppSize.spaceHeight16,
+                      buildContentOfTest(),
+                      AppSize.spaceHeight16,
+                      buildSelectStatusOfRecident(),
+                      AppSize.spaceHeight16,
+                      buildHotelCleaningItem(),
+                      AppSize.spaceHeight16,
+                      const Divider(),
+                      AppSize.spaceHeight16,
+                      //Application Requirements
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.check_circle,
+                            color: AppColor.primaryColor,
+                          ),
+                          AppSize.spaceWidth8,
+                          Text(
+                            JapaneseText.applicationRequirement,
+                            style: titleStyle,
+                          ),
+                        ],
+                      ),
+                      AppSize.spaceHeight16,
+                      buildApplicationRequirementAndJapanSkill(),
+                      AppSize.spaceHeight16,
+                      const Divider(),
+                      AppSize.spaceHeight16,
+                      //Application Requirements
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.check_circle,
+                            color: AppColor.primaryColor,
+                          ),
+                          AppSize.spaceWidth8,
+                          Text(
+                            JapaneseText.employmentCondition,
+                            style: titleStyle,
+                          ),
+                        ],
+                      ),
+                      AppSize.spaceHeight16,
+                      buildEmploymentCondition(),
+                      AppSize.spaceHeight50,
+                      Center(
+                        child: SizedBox(
+                          width: AppSize.getDeviceWidth(context) * 0.2,
+                          child: ButtonWidget(title: JapaneseText.save, color: AppColor.primaryColor, onPress: () => onSaveUserData()),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
         ),
       ),
@@ -223,8 +294,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
         ),
         AppSize.spaceHeight5,
         CustomDropDownWidget(
-          list:
-              provider.allCompany.map((e) => e.companyName.toString()).toList(),
+          list: provider.allCompany.map((e) => e.companyName.toString()).toList(),
           onChange: (e) => provider.onChangeSelectCompanyForDetail(e),
           width: AppSize.getDeviceWidth(context) * 0.6,
           selectItem: provider.selectedCompany,
@@ -377,15 +447,11 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       var date = await showDatePicker(
                           locale: const Locale("ja", "JP"),
                           context: context,
-                          initialDate: provider.startRecruitDate.text.isNotEmpty
-                              ? DateTime.parse(provider.startRecruitDate.text)
-                              : now,
+                          initialDate: provider.startRecruitDate.text.isNotEmpty ? DateTime.parse(provider.startRecruitDate.text) : now,
                           firstDate: now,
-                          lastDate:
-                              DateTime.now().add(const Duration(days: 3000)));
+                          lastDate: DateTime.now().add(const Duration(days: 3000)));
                       if (date != null) {
-                        provider.startRecruitDate.text =
-                            DateFormat('yyyy-MM-dd').format(date);
+                        provider.startRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
                       }
                     },
                   ),
@@ -412,14 +478,11 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       var date = await showDatePicker(
                           locale: const Locale("ja", "JP"),
                           context: context,
-                          initialDate: provider.endRecruitDate.text.isNotEmpty
-                              ? DateTime.parse(provider.endRecruitDate.text)
-                              : now,
+                          initialDate: provider.endRecruitDate.text.isNotEmpty ? DateTime.parse(provider.endRecruitDate.text) : now,
                           firstDate: now,
                           lastDate: now.add(const Duration(days: 3000)));
                       if (date != null) {
-                        provider.endRecruitDate.text =
-                            DateFormat('yyyy-MM-dd').format(date);
+                        provider.endRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
                       }
                     },
                   ),
@@ -441,26 +504,47 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
           ],
         ),
         AppSize.spaceHeight8,
-        Column(
+        Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(JapaneseText.location, style: normalTextStyle),
-            AppSize.spaceHeight5,
-            Row(
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(JapaneseText.companyLatLng, style: normalTextStyle),
+                AppSize.spaceHeight5,
                 SizedBox(
-                  width: 100,
+                  width: 200,
                   child: PrimaryTextField(
-                    controller: provider.numberOfRecruitPeople,
+                    controller: provider.companyLocationLatLng,
                     hint: '',
                     isRequired: true,
-                    isPhoneNumber: true,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 4, top: 15),
-                  child: Text("人", style: normalTextStyle),
+              ],
+            ),
+            AppSize.spaceWidth32,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(JapaneseText.numberOfPeopleRecruiting, style: normalTextStyle),
+                AppSize.spaceHeight5,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 100,
+                      child: PrimaryTextField(
+                        controller: provider.numberOfRecruitPeople,
+                        hint: '',
+                        isRequired: true,
+                        isPhoneNumber: true,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4, top: 15),
+                      child: Text("人", style: normalTextStyle),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -514,8 +598,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.chooseOccupationSkill,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) =>
-                          provider.onChangeOccupationSkill(false)),
+                      onChanged: (v) => provider.onChangeOccupationSkill(false)),
                 )
               ],
             )
@@ -570,8 +653,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.contractProvisioning,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider
-                          .onChangeContractProvisioning(JapaneseText.yes)),
+                      onChanged: (v) => provider.onChangeContractProvisioning(JapaneseText.yes)),
                 ),
                 AppSize.spaceWidth16,
                 SizedBox(
@@ -587,8 +669,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.contractProvisioning,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider
-                          .onChangeContractProvisioning(JapaneseText.no)),
+                      onChanged: (v) => provider.onChangeContractProvisioning(JapaneseText.no)),
                 )
               ],
             )
@@ -692,8 +773,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.salaryType,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider
-                          .onChangeSalaryType(JapaneseText.monthlySalary)),
+                      onChanged: (v) => provider.onChangeSalaryType(JapaneseText.monthlySalary)),
                 ),
                 AppSize.spaceWidth16,
                 SizedBox(
@@ -709,8 +789,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.salaryType,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) =>
-                          provider.onChangeSalaryType(JapaneseText.hourlyWage)),
+                      onChanged: (v) => provider.onChangeSalaryType(JapaneseText.hourlyWage)),
                 )
               ],
             )
@@ -726,8 +805,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(JapaneseText.startWorkingHourPerDay,
-                      style: normalTextStyle),
+                  Text(JapaneseText.startWorkingHourPerDay, style: normalTextStyle),
                   AppSize.spaceHeight5,
                   PrimaryTextField(
                     controller: provider.startWorkTime,
@@ -740,15 +818,11 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                           confirmText: JapaneseText.saveChange,
                           context: context,
                           initialTime: provider.startTime != null
-                              ? TimeOfDay(
-                                  hour: provider.startTime!.hour,
-                                  minute: provider.startTime!.minute)
+                              ? TimeOfDay(hour: provider.startTime!.hour, minute: provider.startTime!.minute)
                               : TimeOfDay(hour: now.hour, minute: now.minute));
                       if (date != null) {
-                        provider.startWorkTime.text = dateTimeToHourAndMinute(
-                            DateTime(2023, 1, 1, date.hour, date.minute));
-                        provider.onChangeStartWorkTime(
-                            DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.startWorkTime.text = dateTimeToHourAndMinute(DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.onChangeStartWorkTime(DateTime(2023, 1, 1, date.hour, date.minute));
                       }
                     },
                   ),
@@ -777,15 +851,11 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                           confirmText: JapaneseText.saveChange,
                           context: context,
                           initialTime: provider.endTime != null
-                              ? TimeOfDay(
-                                  hour: provider.endTime!.hour,
-                                  minute: provider.endTime!.minute)
+                              ? TimeOfDay(hour: provider.endTime!.hour, minute: provider.endTime!.minute)
                               : TimeOfDay(hour: now.hour, minute: now.minute));
                       if (date != null) {
-                        provider.endWorkTime.text = dateTimeToHourAndMinute(
-                            DateTime(2023, 1, 1, date.hour, date.minute));
-                        provider.onChangeEndWorkTime(
-                            DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.endWorkTime.text = dateTimeToHourAndMinute(DateTime(2023, 1, 1, date.hour, date.minute));
+                        provider.onChangeEndWorkTime(DateTime(2023, 1, 1, date.hour, date.minute));
                       }
                     },
                   ),
@@ -1239,8 +1309,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.transportExpense,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) =>
-                          provider.onChangeTransportExpense(true)),
+                      onChanged: (v) => provider.onChangeTransportExpense(true)),
                 ),
                 AppSize.spaceWidth16,
                 SizedBox(
@@ -1256,8 +1325,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.transportExpense,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) =>
-                          provider.onChangeTransportExpense(false)),
+                      onChanged: (v) => provider.onChangeTransportExpense(false)),
                 )
               ],
             )
@@ -1311,29 +1379,51 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.isThereRemoteInterview,
                       dense: true,
                       controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) =>
-                          provider.onChangeRemoteInterview(false)),
+                      onChanged: (v) => provider.onChangeRemoteInterview(false)),
                 )
               ],
             )
           ],
         ),
         AppSize.spaceWidth32,
-        Column(
+        Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              JapaneseText.interviewLocation,
-              style: normalTextStyle,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  JapaneseText.interviewLocation,
+                  style: normalTextStyle,
+                ),
+                AppSize.spaceHeight5,
+                SizedBox(
+                    width: AppSize.getDeviceWidth(context) * 0.4,
+                    child: PrimaryTextField(
+                      controller: provider.interviewLocation,
+                      hint: "",
+                      isRequired: true,
+                    ))
+              ],
             ),
-            AppSize.spaceHeight5,
-            SizedBox(
-                width: AppSize.getDeviceWidth(context) * 0.4,
-                child: PrimaryTextField(
-                  controller: provider.interviewLocation,
-                  hint: "",
-                  isRequired: true,
-                ))
+            AppSize.spaceWidth32,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  JapaneseText.interviewLatLng,
+                  style: normalTextStyle,
+                ),
+                AppSize.spaceHeight5,
+                SizedBox(
+                    width: AppSize.getDeviceWidth(context) * 0.2,
+                    child: PrimaryTextField(
+                      controller: provider.interviewLocationLatLng,
+                      hint: "",
+                      isRequired: true,
+                    ))
+              ],
+            )
           ],
         ),
       ],
@@ -1353,18 +1443,13 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
           width: AppSize.getDeviceWidth(context) * 0.6,
           // height: 100,
           padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(width: 0.3, color: Colors.grey),
-              borderRadius: BorderRadius.circular(16)),
+          decoration: BoxDecoration(color: Colors.white, border: Border.all(width: 0.3, color: Colors.grey), borderRadius: BorderRadius.circular(16)),
           child: MultiSelectDialogField2(
             dialogWidth: 400,
             dialogHeight: 300,
             isOffice: true,
             initialValue: provider.selectedContentOfTest,
-            items: provider.contentOfTestStaff
-                .map((e) => MultiSelectItem(e, e))
-                .toList(),
+            items: provider.contentOfTestStaff.map((e) => MultiSelectItem(e, e)).toList(),
             cancelText: Text(JapaneseText.cancel),
             confirmText: Text(JapaneseText.saveChange),
             title: Text(JapaneseText.contentOfTest),
@@ -1396,18 +1481,14 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
               width: AppSize.getDeviceWidth(context) * 0.3,
               // height: 100,
               padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(width: 0.3, color: Colors.grey),
-                  borderRadius: BorderRadius.circular(16)),
+              decoration:
+                  BoxDecoration(color: Colors.white, border: Border.all(width: 0.3, color: Colors.grey), borderRadius: BorderRadius.circular(16)),
               child: MultiSelectDialogField2(
                 dialogWidth: 400,
                 dialogHeight: 300,
                 isOffice: true,
                 initialValue: provider.selectedStatusOfRecident,
-                items: provider.statusOfRecident
-                    .map((e) => MultiSelectItem(e, e))
-                    .toList(),
+                items: provider.statusOfRecident.map((e) => MultiSelectItem(e, e)).toList(),
                 cancelText: Text(JapaneseText.cancel),
                 confirmText: Text(JapaneseText.saveChange),
                 title: Text(JapaneseText.statusOfResidence),
@@ -1433,7 +1514,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
             SizedBox(
                 width: AppSize.getDeviceWidth(context) * 0.3,
                 child: PrimaryTextField(
-                  controller: provider.interviewLocation,
+                  controller: provider.otherQualification,
                   hint: "",
                   isRequired: true,
                 ))
@@ -1456,18 +1537,13 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
           width: AppSize.getDeviceWidth(context) * 0.3,
           // height: 100,
           padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(width: 0.3, color: Colors.grey),
-              borderRadius: BorderRadius.circular(16)),
+          decoration: BoxDecoration(color: Colors.white, border: Border.all(width: 0.3, color: Colors.grey), borderRadius: BorderRadius.circular(16)),
           child: MultiSelectDialogField2(
             dialogWidth: 400,
             dialogHeight: 300,
             isOffice: true,
             initialValue: provider.selectedHotelCleaningItemLearn,
-            items: provider.hotelCleaningItemLearn
-                .map((e) => MultiSelectItem(e, e))
-                .toList(),
+            items: provider.hotelCleaningItemLearn.map((e) => MultiSelectItem(e, e)).toList(),
             cancelText: Text(JapaneseText.cancel),
             confirmText: Text(JapaneseText.saveChange),
             title: Text(JapaneseText.hotelCleanLearningItems),
@@ -1475,7 +1551,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
             buttonIcon: const Icon(Icons.arrow_drop_down_rounded),
             listType: MultiSelectListType.LIST,
             onConfirm: (values) {
-              provider.onChangeStatusOfRecident(values);
+              provider.onChangeHotelCleaningItemLearn(values);
             },
           ),
         ),
@@ -1487,8 +1563,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(JapaneseText.titleOfApplicationRequirement,
-            style: normalTextStyle),
+        Text(JapaneseText.titleOfApplicationRequirement, style: normalTextStyle),
         AppSize.spaceHeight5,
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -1517,8 +1592,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                           value: provider.selectedDesiredGender,
                           dense: true,
                           controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) =>
-                              provider.onChangeChooseGender(JapaneseText.male)),
+                          onChanged: (v) => provider.onChangeChooseGender(JapaneseText.male)),
                     ),
                     AppSize.spaceWidth16,
                     SizedBox(
@@ -1534,8 +1608,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                           value: provider.selectedDesiredGender,
                           dense: true,
                           controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) => provider
-                              .onChangeChooseGender(JapaneseText.female)),
+                          onChanged: (v) => provider.onChangeChooseGender(JapaneseText.female)),
                     ),
                     AppSize.spaceWidth16,
                     SizedBox(
@@ -1551,8 +1624,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                           value: provider.selectedDesiredGender,
                           dense: true,
                           controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) => provider
-                              .onChangeChooseGender(JapaneseText.bothGender)),
+                          onChanged: (v) => provider.onChangeChooseGender(JapaneseText.bothGender)),
                     )
                   ],
                 )
@@ -1632,8 +1704,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.isEmployment,
                       contentPadding: EdgeInsets.zero,
                       controlAffinity: ListTileControlAffinity.leading,
-                      title:
-                          Text(JapaneseText.employment, style: normalTextStyle),
+                      title: Text(JapaneseText.employment, style: normalTextStyle),
                       dense: true,
                       onChanged: (val) => provider.onChangeEmployment(val!)),
                 ),
@@ -1645,11 +1716,9 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                       value: provider.isIndustrialAccident,
                       contentPadding: EdgeInsets.zero,
                       controlAffinity: ListTileControlAffinity.leading,
-                      title: Text(JapaneseText.workerCompensation,
-                          style: normalTextStyle),
+                      title: Text(JapaneseText.workerCompensation, style: normalTextStyle),
                       dense: true,
-                      onChanged: (val) =>
-                          provider.onChangeIndustrialAccident(val!)),
+                      onChanged: (val) => provider.onChangeIndustrialAccident(val!)),
                 ),
                 AppSize.spaceWidth16,
                 SizedBox(
@@ -1798,8 +1867,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                           value: provider.isReemployment,
                           dense: true,
                           controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) =>
-                              provider.onChangeReemployment(true)),
+                          onChanged: (v) => provider.onChangeReemployment(true)),
                     ),
                     AppSize.spaceWidth16,
                     SizedBox(
@@ -1815,8 +1883,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                           value: provider.isReemployment,
                           dense: true,
                           controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) =>
-                              provider.onChangeReemployment(false)),
+                          onChanged: (v) => provider.onChangeReemployment(false)),
                     )
                   ],
                 )
@@ -1845,8 +1912,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                           value: provider.isRetirementBenefits,
                           dense: true,
                           controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) =>
-                              provider.onChangeRetirementBenefits(true)),
+                          onChanged: (v) => provider.onChangeRetirementBenefits(true)),
                     ),
                     AppSize.spaceWidth16,
                     SizedBox(
@@ -1862,8 +1928,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                           value: provider.isRetirementBenefits,
                           dense: true,
                           controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) =>
-                              provider.onChangeRetirementBenefits(false)),
+                          onChanged: (v) => provider.onChangeRetirementBenefits(false)),
                     )
                   ],
                 )
@@ -1878,25 +1943,20 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
   clearAllText() {}
 
   titleWidget() {
-    return Material(
-      child: Container(
-        width: AppSize.getDeviceWidth(context),
-        height: 60,
-        decoration: boxDecoration,
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              JapaneseText.applicantSearch,
-              style: titleStyle,
-            ),
-            IconButton(
-                splashRadius: 30,
-                onPressed: () => context.pop(),
-                icon: const Icon(Icons.close))
-          ],
-        ),
+    return Container(
+      width: AppSize.getDeviceWidth(context),
+      height: 60,
+      decoration: boxDecoration,
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            JapaneseText.applicantSearch,
+            style: titleStyle,
+          ),
+          IconButton(splashRadius: 30, onPressed: () => context.pop(), icon: const Icon(Icons.close))
+        ],
       ),
     );
   }
