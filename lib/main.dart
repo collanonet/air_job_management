@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:air_job_management/pages/company/create_or_edit_company.dart';
 import 'package:air_job_management/pages/home/home.dart';
 import 'package:air_job_management/pages/job_posting/create_or_edit_job.dart';
+import 'package:air_job_management/pages/job_posting/create_or_edit_job_for_japanese.dart';
 import 'package:air_job_management/pages/job_seeker/create_job_seeker.dart';
 import 'package:air_job_management/pages/job_seeker/job_seeker_detail/job_seeker_detail.dart';
 import 'package:air_job_management/pages/login.dart';
@@ -11,6 +12,7 @@ import 'package:air_job_management/providers/auth.dart' as auth;
 import 'package:air_job_management/providers/company.dart';
 import 'package:air_job_management/providers/home.dart';
 import 'package:air_job_management/providers/job_posting.dart';
+import 'package:air_job_management/providers/job_posting_for_japanese.dart';
 import 'package:air_job_management/providers/job_seeker.dart';
 import 'package:air_job_management/providers/job_seeker_detail.dart';
 import 'package:air_job_management/utils/extension.dart';
@@ -66,16 +68,27 @@ final GoRouter _router = GoRouter(
               GoRoute(
                 path: 'create',
                 builder: (BuildContext context, GoRouterState state) {
-                  return const HomePage(page: CreateOrEditJobPage(jobPostId: null));
+                  if (state.extra == "japanese") {
+                    return const HomePage(page: CreateOrEditJobForJapanesePage(jobPostId: null));
+                  } else {
+                    return const HomePage(page: CreateOrEditJobPage(jobPostId: null));
+                  }
                 },
               ),
               GoRoute(
                 path: ':uid',
                 builder: (BuildContext context, GoRouterState state) {
-                  return HomePage(
-                      page: CreateOrEditJobPage(
-                    jobPostId: state.pathParameters["uid"].toString(),
-                  ));
+                  if (state.extra == "japanese") {
+                    return HomePage(
+                        page: CreateOrEditJobForJapanesePage(
+                      jobPostId: state.pathParameters["uid"].toString(),
+                    ));
+                  } else {
+                    return HomePage(
+                        page: CreateOrEditJobPage(
+                      jobPostId: state.pathParameters["uid"].toString(),
+                    ));
+                  }
                 },
               ),
             ]),
@@ -175,6 +188,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => JobSeekerProvider()),
           ChangeNotifierProvider(create: (_) => JobSeekerDetailProvider()),
           ChangeNotifierProvider(create: (_) => JobPostingProvider()),
+          ChangeNotifierProvider(create: (_) => JobPostingForJapaneseProvider()),
           ChangeNotifierProvider(create: (_) => CompanyProvider())
         ],
         child: MaterialApp.router(

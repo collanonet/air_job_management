@@ -2,6 +2,7 @@ import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/pages/job_posting/widgets/job_posting_card.dart';
 import 'package:air_job_management/pages/job_posting/widgets/sign_up_or_delete.dart';
 import 'package:air_job_management/providers/job_posting.dart';
+import 'package:air_job_management/providers/job_posting_for_japanese.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
@@ -23,10 +24,12 @@ class JobPage extends StatefulWidget {
 
 class _JobPageState extends State<JobPage> with AfterBuildMixin {
   late JobPostingProvider jobPostingProvider;
+  late JobPostingForJapaneseProvider jobPostingForJapaneseProvider;
 
   @override
   void initState() {
     Provider.of<JobPostingProvider>(context, listen: false).onInitForList();
+    Provider.of<JobPostingForJapaneseProvider>(context, listen: false).onInitForList();
     super.initState();
   }
 
@@ -43,6 +46,7 @@ class _JobPageState extends State<JobPage> with AfterBuildMixin {
   @override
   Widget build(BuildContext context) {
     jobPostingProvider = Provider.of<JobPostingProvider>(context);
+    jobPostingForJapaneseProvider = Provider.of<JobPostingForJapaneseProvider>(context);
     return SizedBox(
       width: AppSize.getDeviceWidth(context),
       height: AppSize.getDeviceHeight(context),
