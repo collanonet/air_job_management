@@ -9,11 +9,20 @@ import '../models/company.dart';
 class JobPostingForJapaneseProvider with ChangeNotifier {
   //For Job Posting List
   List<JobPosting> jobPostingList = [];
-  List<String> statusList = [JapaneseText.allData, JapaneseText.duringCorrespondence, JapaneseText.noContact, JapaneseText.contact];
+  List<String> statusList = [
+    JapaneseText.allData,
+    JapaneseText.duringCorrespondence,
+    JapaneseText.noContact,
+    JapaneseText.contact
+  ];
 
   String? selectedStatus;
 
-  List<String> newArrivalList = [JapaneseText.allData, JapaneseText.newArrival, JapaneseText.interview];
+  List<String> newArrivalList = [
+    JapaneseText.allData,
+    JapaneseText.newArrival,
+    JapaneseText.interview
+  ];
   String? selectedNewArrival;
 
   //For Job Posting Detail
@@ -26,6 +35,8 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
   bool isLoading = false;
 
   late TextEditingController title;
+  late TextEditingController supplementary;
+  late TextEditingController eligibilityForApp;
   late TextEditingController overview;
   late TextEditingController content;
   late TextEditingController startRecruitDate;
@@ -33,6 +44,8 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
   late TextEditingController companyLocation;
   late TextEditingController companyLocationLatLng;
   late TextEditingController numberOfRecruitPeople;
+  late TextEditingController fromSalaryAmount;
+  late TextEditingController toSalaryAmount;
   late TextEditingController breakTimeMinute;
   late TextEditingController startWorkTime;
   late TextEditingController endWorkTime;
@@ -64,6 +77,8 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
   ];
 
   String salaryType = JapaneseText.monthlySalary;
+  String salaryRangeType = JapaneseText.salaryRangeFixed1200;
+  String examAndTraining = JapaneseText.trailPeriodYes;
   bool trailPeriod = false;
   bool bonus = false;
   bool raise = false;
@@ -119,7 +134,13 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
   List<String> selectedHotelCleaningItemLearn = [];
 
   String selectedDesiredGender = JapaneseText.bothGender;
-  List<String> nationalityList = ["Japanese", "Cambodian", "Vietnamese", "Thai", "Singapour"];
+  List<String> nationalityList = [
+    "Japanese",
+    "Cambodian",
+    "Vietnamese",
+    "Thai",
+    "Singapour"
+  ];
   String? selectedNationality;
 
   List<String> necessaryJapanSkillList = [
@@ -178,6 +199,11 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
 
   onChangeReemployment(bool val) {
     isReemployment = val;
+    notifyListeners();
+  }
+
+  onChangeExamAndTraining(String val) {
+    examAndTraining = val;
     notifyListeners();
   }
 
@@ -274,6 +300,11 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  onChangeSalaryRangeType(String val) {
+    salaryRangeType = val;
+    notifyListeners();
+  }
+
   onChangeSalaryType(String val) {
     salaryType = val;
     notifyListeners();
@@ -324,10 +355,14 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
   set setAllController(List<dynamic> dynamicList) {
     title = TextEditingController(text: "");
     overview = TextEditingController(text: "");
+    eligibilityForApp = TextEditingController(text: "");
+    supplementary = TextEditingController(text: "");
     content = TextEditingController(text: "");
     startRecruitDate = TextEditingController(text: "");
     endRecruitDate = TextEditingController(text: "");
     companyLocation = TextEditingController(text: "");
+    fromSalaryAmount = TextEditingController(text: "");
+    toSalaryAmount = TextEditingController(text: "");
     companyLocationLatLng = TextEditingController(text: "");
     numberOfRecruitPeople = TextEditingController(text: "");
     breakTimeMinute = TextEditingController(text: "");
@@ -365,8 +400,10 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
       endRecruitDate.text = jobPosting?.endDate ?? "";
       if (jobPosting!.location != null) {
         companyLocation.text = jobPosting?.location?.name ?? "";
-        if (jobPosting?.location?.lat != null && jobPosting?.location?.lat != "") {
-          companyLocationLatLng.text = "${jobPosting?.location?.lat}, ${jobPosting?.location?.lng}";
+        if (jobPosting?.location?.lat != null &&
+            jobPosting?.location?.lat != "") {
+          companyLocationLatLng.text =
+              "${jobPosting?.location?.lat}, ${jobPosting?.location?.lng}";
         }
       }
       numberOfRecruitPeople.text = jobPosting?.numberOfRecruit ?? "";
@@ -382,12 +419,17 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
       selectedNecessaryJapanSkill = jobPosting?.necessaryJapanSkill;
       selectedContentOfTest = jobPosting?.contentOfTheTest ?? [];
       selectedStatusOfRecident = jobPosting?.statusOfResidence ?? [];
-      selectedHotelCleaningItemLearn = jobPosting?.hotelCleaningLearningItem ?? [];
-      contractProvisioning = jobPosting?.employmentContractProvisioning == true ? JapaneseText.yes : JapaneseText.no;
+      selectedHotelCleaningItemLearn =
+          jobPosting?.hotelCleaningLearningItem ?? [];
+      contractProvisioning = jobPosting?.employmentContractProvisioning == true
+          ? JapaneseText.yes
+          : JapaneseText.no;
       if (jobPosting!.interviewLocation != null) {
         interviewLocation.text = jobPosting?.interviewLocation?.name ?? "";
-        if (jobPosting?.interviewLocation?.lat != null && jobPosting?.interviewLocation?.lat != "") {
-          interviewLocationLatLng.text = "${jobPosting?.interviewLocation?.lat}, ${jobPosting?.interviewLocation?.lng}";
+        if (jobPosting?.interviewLocation?.lat != null &&
+            jobPosting?.interviewLocation?.lat != "") {
+          interviewLocationLatLng.text =
+              "${jobPosting?.interviewLocation?.lat}, ${jobPosting?.interviewLocation?.lng}";
         }
       }
       otherQualification.text = jobPosting?.otherQualification ?? "";
@@ -442,6 +484,8 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
     endWorkTime.dispose();
     otherQualification.dispose();
     interviewLocation.dispose();
+    fromSalaryAmount.dispose();
+    toSalaryAmount.dispose();
     remark.dispose();
   }
 }

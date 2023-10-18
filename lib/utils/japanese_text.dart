@@ -41,8 +41,10 @@ class JapaneseText {
   static String dontHaveScheduleMessage = "編集するスケジュールがありません。";
   static String dontHaveWorkRecordMessage = "編集する勤務実績がありません。";
 
-  static String canNotCreateAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
-  static String canNotEditAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
+  static String canNotCreateAllWorkgroupMessage =
+      "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
+  static String canNotEditAllWorkgroupMessage =
+      "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
   static String workday = "勤務日";
   static String fixedDayOff = "所定休日";
   static String lawDayOff = "法定休日";
@@ -68,7 +70,7 @@ class JapaneseText {
   static String foreignersStayWithFamily = "家族滞在の外国人";
   static String specifiedSkill = "特定技能";
   static String technicalIntern = "技能実習";
-  static String other = "その他（　）";
+  static String other = "その他";
 
   static String limit28HourMsg = "28時間を超えているため、就業時間を訂正してください。";
 
@@ -244,6 +246,10 @@ class JapaneseText {
   static String salaryFrom = "給与形態";
   static String monthlySalary = "月給";
   static String hourlyWage = "時給";
+  static String dailyWage = "日給";
+  static String annualWage = "年俸";
+  static String onePanel = "1コマ";
+  static String oneWorkday = "1勤務";
   static String startWorkingHourPerDay = "1日の勤務時間 開始";
   static String breakTimeOfTheDay = "1日の休憩時間";
 
@@ -328,6 +334,24 @@ class JapaneseText {
 //Content of test for gig and part time staff
   //cv
   //interview
+
+  //Job Posting for Japanese
+  static String applicationGuidelines = "募集要項";
+  static String occupationMajor = "職種(大項目)";
+  static String occupationSmallItem = "職種(小項目)";
+
+  static String salaryRangeFrom1200 = "範囲を指定する(表示例:1,200円〜2,000円)";
+  static String salaryRangeUnder1200 = "最低額を指定する(表示例:1,200円〜)";
+  static String salaryRangeFixed1200 = "固定額を指定する(表示例:1,200円)";
+  static String salaryAmount = "給与金額";
+
+  static String supplementaryExplanationOfSalary = "給与の補足";
+  static String examAndTraining = "試験‧研修";
+  static String neither = "どちらもなし";
+  static String trailPeriodYes = "試用期間あり";
+  static String trainingPeriodYes = "研修期間あり";
+  static String desInTheText = "本文中に記載";
+  static String eligibilityForApplication = "応募資格";
 }
 
 class SalaryType {

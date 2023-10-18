@@ -26,10 +26,17 @@ class SignUpOrDeleteJobPostWidget extends StatelessWidget {
           children: [
             const Spacer(),
             ButtonWidget(
-                title: JapaneseText.signUp,
+                title: JapaneseText.signUp + " (Japanese)",
                 color: AppColor.primaryColor,
                 onPress: () {
                   context2.go(MyRoute.createJob, extra: "japanese");
+                }),
+            AppSize.spaceWidth16,
+            ButtonWidget(
+                title: JapaneseText.signUp + " (Foreigner)",
+                color: AppColor.primaryColor,
+                onPress: () {
+                  context2.go(MyRoute.createJob);
                 }),
             AppSize.spaceWidth16,
             ButtonWidget(
