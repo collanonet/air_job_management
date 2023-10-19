@@ -593,13 +593,134 @@ class _CreateOrEditJobForJapanesePageState
                   hint: '',
                   marginBottom: 5,
                   maxLine: 6,
+                  readOnly: true,
                   textInputAction: TextInputAction.newline,
                   textInputType: TextInputType.multiline,
                 ),
               ],
             )),
         AppSize.spaceHeight16,
+        Text(
+          "クリックされると上記枠に追加されます",
+          style: normalTextStyle,
+        ),
+        AppSize.spaceHeight5,
+        //1 row
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            eliItem(eligibilityApplicationList[0]),
+            AppSize.spaceWidth8,
+            eliItem(eligibilityApplicationList[1]),
+            AppSize.spaceWidth8,
+            eliItem(eligibilityApplicationList[2]),
+            AppSize.spaceWidth8,
+          ],
+        ),
+        AppSize.spaceHeight5,
+        //2 row
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            eliItem(eligibilityApplicationList[3]),
+            AppSize.spaceWidth8,
+            eliItem(eligibilityApplicationList[4]),
+            AppSize.spaceWidth8,
+            eliItem(eligibilityApplicationList[5]),
+            AppSize.spaceWidth8,
+            eliItem(eligibilityApplicationList[6]),
+          ],
+        ),
+        AppSize.spaceHeight5,
+        //3 row
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            eliItem(eligibilityApplicationList[7]),
+            AppSize.spaceWidth8,
+            eliItem(eligibilityApplicationList[8]),
+            AppSize.spaceWidth8,
+            eliItem(eligibilityApplicationList[9]),
+            AppSize.spaceWidth8,
+          ],
+        ),
+        AppSize.spaceHeight5,
+        //4 row
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            eliItem(eligibilityApplicationList[10]),
+            AppSize.spaceWidth8,
+            eliItem(eligibilityApplicationList[11]),
+            AppSize.spaceWidth8,
+            eliItem(eligibilityApplicationList[12]),
+            AppSize.spaceWidth8,
+          ],
+        ),
+        AppSize.spaceHeight16,
+        //Off Hours
+        SizedBox(
+            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "勤務時間",
+                  style: normalTextStyle,
+                ),
+                AppSize.spaceHeight5,
+                PrimaryTextField(
+                  controller: provider.offHours,
+                  hint: '10時〜17時',
+                  marginBottom: 5,
+                  maxLine: 3,
+                  textInputAction: TextInputAction.newline,
+                  textInputType: TextInputType.multiline,
+                ),
+              ],
+            )),
       ],
+    );
+  }
+
+  eliItem(String title) {
+    return InkWell(
+      onTap: () {
+        if (provider.eligibilityForApp.text.contains(title)) {
+          if (provider.eligibilityForApp.text.split(", ")[0] == title) {
+            setState(() {
+              provider.eligibilityForApp.text =
+                  provider.eligibilityForApp.text.replaceAll(title, "");
+            });
+          } else {
+            setState(() {
+              provider.eligibilityForApp.text =
+                  provider.eligibilityForApp.text.replaceAll(", $title", "");
+            });
+          }
+        } else {
+          if (provider.eligibilityForApp.text.isEmpty) {
+            setState(() {
+              provider.eligibilityForApp.text = title;
+            });
+          } else {
+            setState(() {
+              provider.eligibilityForApp.text += ", $title";
+            });
+          }
+        }
+      },
+      child: Container(
+        height: 40,
+        padding: const EdgeInsets.only(left: 20, right: 20),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            color: provider.eligibilityForApp.text.contains(title)
+                ? AppColor.primaryColor.withOpacity(0.5)
+                : Colors.white,
+            border: Border.all(width: 0.5, color: Colors.grey)),
+        child: Text(title),
+      ),
     );
   }
 

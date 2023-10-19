@@ -37,6 +37,7 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
   late TextEditingController title;
   late TextEditingController supplementary;
   late TextEditingController eligibilityForApp;
+  late TextEditingController offHours;
   late TextEditingController overview;
   late TextEditingController content;
   late TextEditingController startRecruitDate;
@@ -353,6 +354,7 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
   }
 
   set setAllController(List<dynamic> dynamicList) {
+    offHours = TextEditingController(text: "");
     title = TextEditingController(text: "");
     overview = TextEditingController(text: "");
     eligibilityForApp = TextEditingController(text: "");

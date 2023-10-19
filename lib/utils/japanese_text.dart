@@ -352,7 +352,36 @@ class JapaneseText {
   static String trainingPeriodYes = "研修期間あり";
   static String desInTheText = "本文中に記載";
   static String eligibilityForApplication = "応募資格";
+  static String highSchoolGraduateOrAbove = "高卒以上";
+  static String ableToOperateAComputer = "パソコン操作できる方";
+  static String alsoSuitableForBeginners = "初心者も可";
+  static String mopedLicense = "原付免許";
+  static String driverLicense = "普通自動車免許";
+  static String mediumSizeCarLicense = "中型自動車免許";
+  static String largeVehicleLicense = "大型自動車免許";
+  static String bookKeepingLevelOrHigher = "簿記○級以上";
+  static String expYearOrMore = "○○経験○年以上の方";
+  static String nurseTeacherQualification = "保育士資格";
+  static String dentalLicense = "⻭科衛生士免許";
+  static String rigisteredNurseAssociateNurseLicense = "正看護師‧准看護師免許";
+  static String cosmetologyLicense = "美容師免許";
 }
+
+List<String> eligibilityApplicationList = [
+  JapaneseText.highSchoolGraduateOrAbove,
+  JapaneseText.ableToOperateAComputer,
+  JapaneseText.alsoSuitableForBeginners,
+  JapaneseText.mopedLicense,
+  JapaneseText.driverLicense,
+  JapaneseText.mediumSizeCarLicense,
+  JapaneseText.largeVehicleLicense,
+  JapaneseText.bookKeepingLevelOrHigher,
+  JapaneseText.expYearOrMore,
+  JapaneseText.nurseTeacherQualification,
+  JapaneseText.dentalLicense,
+  JapaneseText.rigisteredNurseAssociateNurseLicense,
+  JapaneseText.cosmetologyLicense
+];
 
 class SalaryType {
   static String monthly = JapaneseText.monthlySalary;
