@@ -365,6 +365,9 @@ class JapaneseText {
   static String dentalLicense = "⻭科衛生士免許";
   static String rigisteredNurseAssociateNurseLicense = "正看護師‧准看護師免許";
   static String cosmetologyLicense = "美容師免許";
+
+  static String aboutEmployee = "就業について";
+  static String workDay = "勤務曜日";
 }
 
 List<String> eligibilityApplicationList = [

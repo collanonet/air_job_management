@@ -163,6 +163,14 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
   bool isReemployment = false;
   bool isRetirementBenefits = false;
 
+  bool mon = false;
+  bool tue = false;
+  bool wed = false;
+  bool thu = false;
+  bool fri = false;
+  bool sat = false;
+  bool sun = false;
+
   onChangeRetirementBenefits(bool val) {
     isRetirementBenefits = val;
     notifyListeners();

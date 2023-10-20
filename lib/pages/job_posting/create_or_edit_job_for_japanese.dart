@@ -235,6 +235,8 @@ class _CreateOrEditJobForJapanesePageState
                       AppSize.spaceHeight16,
                       supplementaryExplanationExamAndTraining(),
                       AppSize.spaceHeight16,
+                      aboutEmployee(),
+                      AppSize.spaceHeight16,
                       //Basic Info
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -680,6 +682,114 @@ class _CreateOrEditJobForJapanesePageState
               ],
             )),
       ],
+    );
+  }
+
+  aboutEmployee() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.check_circle,
+              color: AppColor.primaryColor,
+            ),
+            AppSize.spaceWidth8,
+            Text(
+              JapaneseText.aboutEmployee,
+              style: titleStyle,
+            ),
+          ],
+        ),
+        AppSize.spaceHeight16,
+        Text(
+          JapaneseText.workDay,
+          style: normalTextStyle,
+        ),
+        AppSize.spaceHeight5,
+        //  月 火 水 木 金 土 日
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                title: "月",
+                val: provider.mon,
+                onChange: (v) {
+                  setState(() {
+                    provider.mon = v;
+                  });
+                }),
+            checkBoxTile(
+                title: "火",
+                val: provider.tue,
+                onChange: (v) {
+                  setState(() {
+                    provider.tue = v;
+                  });
+                }),
+            checkBoxTile(
+                title: "水",
+                val: provider.wed,
+                onChange: (v) {
+                  setState(() {
+                    provider.wed = v;
+                  });
+                }),
+            checkBoxTile(
+                title: "木",
+                val: provider.thu,
+                onChange: (v) {
+                  setState(() {
+                    provider.thu = v;
+                  });
+                }),
+            checkBoxTile(
+                title: "金",
+                val: provider.fri,
+                onChange: (v) {
+                  setState(() {
+                    provider.fri = v;
+                  });
+                }),
+            checkBoxTile(
+                title: "土",
+                val: provider.sat,
+                onChange: (v) {
+                  setState(() {
+                    provider.sat = v;
+                  });
+                }),
+            checkBoxTile(
+                title: "日",
+                val: provider.sun,
+                onChange: (v) {
+                  setState(() {
+                    provider.sun = v;
+                  });
+                }),
+          ],
+        )
+      ],
+    );
+  }
+
+  checkBoxTile(
+      {required String title, required bool val, required Function onChange}) {
+    return SizedBox(
+      width: 80,
+      child: CheckboxListTile(
+        value: val,
+        dense: true,
+        activeColor: AppColor.primaryColor,
+        controlAffinity: ListTileControlAffinity.leading,
+        onChanged: (v) => onChange(v),
+        title: Text(
+          title,
+          style: subTitle,
+        ),
+      ),
     );
   }
 
