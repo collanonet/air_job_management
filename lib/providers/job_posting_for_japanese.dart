@@ -9,20 +9,11 @@ import '../models/company.dart';
 class JobPostingForJapaneseProvider with ChangeNotifier {
   //For Job Posting List
   List<JobPosting> jobPostingList = [];
-  List<String> statusList = [
-    JapaneseText.allData,
-    JapaneseText.duringCorrespondence,
-    JapaneseText.noContact,
-    JapaneseText.contact
-  ];
+  List<String> statusList = [JapaneseText.allData, JapaneseText.duringCorrespondence, JapaneseText.noContact, JapaneseText.contact];
 
   String? selectedStatus;
 
-  List<String> newArrivalList = [
-    JapaneseText.allData,
-    JapaneseText.newArrival,
-    JapaneseText.interview
-  ];
+  List<String> newArrivalList = [JapaneseText.allData, JapaneseText.newArrival, JapaneseText.interview];
   String? selectedNewArrival;
 
   //For Job Posting Detail
@@ -56,6 +47,15 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
   late TextEditingController interviewLocationLatLng;
   late TextEditingController otherQualification;
   late TextEditingController remark;
+  late TextEditingController remarkHoliday;
+  late TextEditingController remarkBonus;
+  late TextEditingController remarkTransport;
+  late TextEditingController minimumWorkTerm;
+  late TextEditingController minimumNumberOfWorkingDays;
+  late TextEditingController minimumNumberOfWorkingTime;
+  late TextEditingController shiftCycle;
+  late TextEditingController shiftSubPeriod;
+  late TextEditingController shiftFixingPeriod;
 
   String? selectedOccupation;
   bool chooseOccupationSkill = false;
@@ -135,13 +135,7 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
   List<String> selectedHotelCleaningItemLearn = [];
 
   String selectedDesiredGender = JapaneseText.bothGender;
-  List<String> nationalityList = [
-    "Japanese",
-    "Cambodian",
-    "Vietnamese",
-    "Thai",
-    "Singapour"
-  ];
+  List<String> nationalityList = ["Japanese", "Cambodian", "Vietnamese", "Thai", "Singapour"];
   String? selectedNationality;
 
   List<String> necessaryJapanSkillList = [
@@ -170,6 +164,36 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
   bool fri = false;
   bool sat = false;
   bool sun = false;
+
+  bool shiftSystem = false;
+  bool paidHoliday2 = false;
+  bool summerVacation = false;
+  bool winterVacation = false;
+  bool nurseCareLeave = false;
+  bool childCareLeave = false;
+  bool prenatalAndPostnatalLeave = false;
+  bool accordingToOurCalendar = false;
+  bool sundayAndPublicHoliday = false;
+  bool fourTwoFiveTwoOff = false;
+
+  bool salaryIncrease = false;
+  bool uniform = false;
+  bool socialInsurance2 = false;
+  bool bonuses = false;
+
+  bool mealsAssAvailable = false;
+  bool companyDiscountAvailable = false;
+  bool employeePromotionAvailable = false;
+  bool qualificationAcqSupportSystem = false;
+
+  bool overtimeAllowance = false;
+  bool lateNightAllowance = false;
+  bool holidayAllowance = false;
+  bool dormCompanyHouseHousingAllowanceAvailable = false;
+
+  bool qualificationAllowance = false;
+  bool perfectAttendanceAllowance = false;
+  bool familyAllowance = false;
 
   onChangeRetirementBenefits(bool val) {
     isRetirementBenefits = val;
@@ -384,6 +408,15 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
     interviewLocationLatLng = TextEditingController(text: "");
     otherQualification = TextEditingController(text: "");
     remark = TextEditingController(text: "");
+    remarkHoliday = TextEditingController(text: "");
+    remarkBonus = TextEditingController(text: "");
+    remarkTransport = TextEditingController(text: "");
+    minimumWorkTerm = TextEditingController(text: "");
+    minimumNumberOfWorkingDays = TextEditingController(text: "");
+    minimumNumberOfWorkingTime = TextEditingController(text: "");
+    shiftCycle = TextEditingController(text: "");
+    shiftSubPeriod = TextEditingController(text: "");
+    shiftFixingPeriod = TextEditingController(text: "");
   }
 
   onInitForJobPostingDetail(String? id) async {
@@ -410,10 +443,8 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
       endRecruitDate.text = jobPosting?.endDate ?? "";
       if (jobPosting!.location != null) {
         companyLocation.text = jobPosting?.location?.name ?? "";
-        if (jobPosting?.location?.lat != null &&
-            jobPosting?.location?.lat != "") {
-          companyLocationLatLng.text =
-              "${jobPosting?.location?.lat}, ${jobPosting?.location?.lng}";
+        if (jobPosting?.location?.lat != null && jobPosting?.location?.lat != "") {
+          companyLocationLatLng.text = "${jobPosting?.location?.lat}, ${jobPosting?.location?.lng}";
         }
       }
       numberOfRecruitPeople.text = jobPosting?.numberOfRecruit ?? "";
@@ -429,17 +460,12 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
       selectedNecessaryJapanSkill = jobPosting?.necessaryJapanSkill;
       selectedContentOfTest = jobPosting?.contentOfTheTest ?? [];
       selectedStatusOfRecident = jobPosting?.statusOfResidence ?? [];
-      selectedHotelCleaningItemLearn =
-          jobPosting?.hotelCleaningLearningItem ?? [];
-      contractProvisioning = jobPosting?.employmentContractProvisioning == true
-          ? JapaneseText.yes
-          : JapaneseText.no;
+      selectedHotelCleaningItemLearn = jobPosting?.hotelCleaningLearningItem ?? [];
+      contractProvisioning = jobPosting?.employmentContractProvisioning == true ? JapaneseText.yes : JapaneseText.no;
       if (jobPosting!.interviewLocation != null) {
         interviewLocation.text = jobPosting?.interviewLocation?.name ?? "";
-        if (jobPosting?.interviewLocation?.lat != null &&
-            jobPosting?.interviewLocation?.lat != "") {
-          interviewLocationLatLng.text =
-              "${jobPosting?.interviewLocation?.lat}, ${jobPosting?.interviewLocation?.lng}";
+        if (jobPosting?.interviewLocation?.lat != null && jobPosting?.interviewLocation?.lat != "") {
+          interviewLocationLatLng.text = "${jobPosting?.interviewLocation?.lat}, ${jobPosting?.interviewLocation?.lng}";
         }
       }
       otherQualification.text = jobPosting?.otherQualification ?? "";

@@ -41,10 +41,8 @@ class JapaneseText {
   static String dontHaveScheduleMessage = "編集するスケジュールがありません。";
   static String dontHaveWorkRecordMessage = "編集する勤務実績がありません。";
 
-  static String canNotCreateAllWorkgroupMessage =
-      "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
-  static String canNotEditAllWorkgroupMessage =
-      "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
+  static String canNotCreateAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
+  static String canNotEditAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
   static String workday = "勤務日";
   static String fixedDayOff = "所定休日";
   static String lawDayOff = "法定休日";
@@ -368,6 +366,43 @@ class JapaneseText {
 
   static String aboutEmployee = "就業について";
   static String workDay = "勤務曜日";
+
+  //holiday leave
+  static String shiftSystem = "シフト制";
+  static String paidHoliday2 = "有給休暇";
+  static String summerVacation = "夏季休暇";
+  static String winterVacation = "冬季休暇";
+  static String nurseCareLeave = "介護休暇";
+  static String childCareLeave = "育児休暇";
+  static String prenatalAndPostnatalLeave = "産前産後休暇";
+  static String accordingToOurCalendar = "当社カレンダーによる";
+  static String sundayAndPublicHoliday = "日曜‧祝日";
+  static String fourTwoFiveTwoOff = "4勤2休5勤2休";
+
+  //Under Remark
+  static String salaryIncrease = "昇給あり";
+  static String uniform = "制服あり";
+  static String socialInsurance2 = "社会保険あり";
+  static String bonuses = "賞与あり";
+  static String mealsAssAvailable = "まかない‧食事補助あり";
+  static String companyDiscountAvailable = "社割あり";
+  static String employeePromotionAvailable = "社員登用あり";
+  static String qualificationAcqSupportSystem = "資格取得支援制度";
+  static String overtimeAllowance = "残業手当";
+  static String lateNightAllowance = "深夜手当";
+  static String holidayAllowance = "休日手当";
+  static String dormCompanyHouseHousingAllowanceAvailable = "寮‧社宅‧住宅手当あり";
+  static String qualificationAllowance = "資格手当";
+  static String perfectAttendanceAllowance = "皆勤手当 ";
+  static String familyAllowance = "家族手当";
+
+  //work term
+  static String minimumWorkTerm = "最低勤務 期間";
+  static String minimumNumberOfWorkingDays = "最低勤務 日数";
+  static String minimumNumberOfWorkingTime = "最低勤務 時間";
+  static String shiftCycle = "シフトサイクル";
+  static String shiftSubPeriod = "シフト提出時期";
+  static String shiftFixingPeriod = "シフト確定時期";
 }
 
 List<String> eligibilityApplicationList = [
