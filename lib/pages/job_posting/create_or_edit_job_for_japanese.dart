@@ -1,14 +1,11 @@
 import 'package:air_job_management/api/job_posting.dart';
-import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/providers/job_posting_for_japanese.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
-import 'package:air_job_management/widgets/multi_select.dart';
 import 'package:air_job_management/widgets/radio_listtile.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
@@ -223,94 +220,16 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
                         AppSize.spaceHeight16,
                         aboutEmployee(),
                         AppSize.spaceHeight16,
-                        //Basic Info
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.check_circle,
-                              color: AppColor.primaryColor,
-                            ),
-                            AppSize.spaceWidth8,
-                            Text(
-                              JapaneseText.applicantSearch,
-                              style: titleStyle,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [buildTitleOverviewAndContent(), AppSize.spaceWidth16, buildChooseProfile()],
-                        ),
-                        const Divider(),
-                        AppSize.spaceHeight16,
-                        buildOccupation(),
-                        AppSize.spaceHeight16,
-                        buildEmploymentContractProvisioning(),
-                        AppSize.spaceHeight16,
-                        buildTrailPeriod(),
+                        aboutJobContent(),
                         AppSize.spaceHeight16,
                         const Divider(),
                         AppSize.spaceHeight16,
-                        buildBonus(),
+                        workEnvironment(),
                         AppSize.spaceHeight16,
                         const Divider(),
                         AppSize.spaceHeight16,
-                        buildNumberOfAnnualHolidayAndDetail(),
-                        AppSize.spaceHeight16,
+                        aboutApplication(),
                         const Divider(),
-                        AppSize.spaceHeight16,
-                        buildWifiAndMore(),
-                        AppSize.spaceHeight16,
-                        const Divider(),
-                        AppSize.spaceHeight16,
-                        buildOnlineInterview(),
-                        AppSize.spaceHeight16,
-                        buildContentOfTest(),
-                        AppSize.spaceHeight16,
-                        buildSelectStatusOfRecident(),
-                        AppSize.spaceHeight16,
-                        buildHotelCleaningItem(),
-                        AppSize.spaceHeight16,
-                        const Divider(),
-                        AppSize.spaceHeight16,
-                        //Application Requirements
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.check_circle,
-                              color: AppColor.primaryColor,
-                            ),
-                            AppSize.spaceWidth8,
-                            Text(
-                              JapaneseText.applicationRequirement,
-                              style: titleStyle,
-                            ),
-                          ],
-                        ),
-                        AppSize.spaceHeight16,
-                        buildApplicationRequirementAndJapanSkill(),
-                        AppSize.spaceHeight16,
-                        const Divider(),
-                        AppSize.spaceHeight16,
-                        //Application Requirements
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.check_circle,
-                              color: AppColor.primaryColor,
-                            ),
-                            AppSize.spaceWidth8,
-                            Text(
-                              JapaneseText.employmentCondition,
-                              style: titleStyle,
-                            ),
-                          ],
-                        ),
-                        AppSize.spaceHeight16,
-                        buildEmploymentCondition(),
                         AppSize.spaceHeight50,
                         Center(
                           child: SizedBox(
@@ -1243,6 +1162,1161 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
     );
   }
 
+  aboutJobContent() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.check_circle,
+              color: AppColor.primaryColor,
+            ),
+            AppSize.spaceWidth8,
+            Text(
+              JapaneseText.aboutJobContent,
+              style: titleStyle,
+            ),
+          ],
+        ),
+        AppSize.spaceHeight16,
+        SizedBox(
+            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  JapaneseText.supplementaryExplanationOfSalary,
+                  style: normalTextStyle,
+                ),
+                AppSize.spaceHeight5,
+                PrimaryTextField(
+                  controller: provider.supplementary,
+                  hint: '',
+                  marginBottom: 5,
+                  maxLine: 6,
+                  textInputAction: TextInputAction.newline,
+                  textInputType: TextInputType.multiline,
+                ),
+              ],
+            )),
+        AppSize.spaceHeight5,
+        InkWell(
+          onTap: () async {
+            await CompanyApiServices().uploadImageToFirebase(provider);
+          },
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              height: 230,
+              width: AppSize.getDeviceWidth(context) * 0.55 + 16,
+              decoration: BoxDecoration(
+                border: Border.all(width: 1, color: AppColor.primaryColor),
+              ),
+              alignment: Alignment.center,
+              child: provider.imageUrl.isEmpty
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "診療報酬明細をここにドラッグ&ドロップ",
+                          style: normalTextStyle,
+                        ),
+                        AppSize.spaceHeight16,
+                        ButtonWidget(
+                          title: "またはファイルを選択する",
+                          color: AppColor.primaryColor,
+                          onPress: () async {
+                            await CompanyApiServices().uploadImageToFirebase(provider);
+                          },
+                        )
+                      ],
+                    )
+                  : Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Positioned(
+                          left: 0,
+                          top: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: Image.network(
+                            provider.imageUrl,
+                            fit: BoxFit.cover,
+                            width: 230,
+                          ),
+                        ),
+                        Positioned(
+                          top: 10,
+                          right: 10,
+                          child: IconButton(
+                              onPressed: () {
+                                provider.onChangeImageUrl("");
+                              },
+                              icon: const Icon(
+                                Icons.close,
+                                color: Colors.redAccent,
+                              )),
+                        ),
+                      ],
+                    ),
+            ),
+          ),
+        ),
+        AppSize.spaceHeight8,
+        SizedBox(
+          width: AppSize.getDeviceWidth(context) * 0.55 + 16,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(JapaneseText.recruitmentStart, style: normalTextStyle),
+                    AppSize.spaceHeight5,
+                    PrimaryTextField(
+                      controller: provider.startRecruitDate,
+                      hint: '',
+                      isRequired: true,
+                      onTap: () async {
+                        var date = await showDatePicker(
+                            locale: const Locale("ja", "JP"),
+                            context: context,
+                            initialDate: provider.startRecruitDate.text.isNotEmpty ? DateTime.parse(provider.startRecruitDate.text) : now,
+                            firstDate: now,
+                            lastDate: DateTime.now().add(const Duration(days: 3000)));
+                        if (date != null) {
+                          provider.startRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              AppSize.spaceWidth16,
+              const Padding(padding: EdgeInsets.only(top: 35), child: Text("~")),
+              AppSize.spaceWidth16,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      JapaneseText.end,
+                      style: normalTextStyle,
+                    ),
+                    AppSize.spaceHeight5,
+                    PrimaryTextField(
+                      controller: provider.endRecruitDate,
+                      hint: '',
+                      isRequired: true,
+                      onTap: () async {
+                        var date = await showDatePicker(
+                            locale: const Locale("ja", "JP"),
+                            context: context,
+                            initialDate: provider.endRecruitDate.text.isNotEmpty ? DateTime.parse(provider.endRecruitDate.text) : now,
+                            firstDate: now,
+                            lastDate: now.add(const Duration(days: 3000)));
+                        if (date != null) {
+                          provider.endRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: AppSize.getDeviceWidth(context) * 0.55 + 16,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(JapaneseText.location, style: normalTextStyle),
+              AppSize.spaceHeight5,
+              PrimaryTextField(
+                controller: provider.companyLocation,
+                hint: '',
+                isRequired: true,
+              ),
+            ],
+          ),
+        ),
+        AppSize.spaceHeight8,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(JapaneseText.companyLatLng, style: normalTextStyle),
+                AppSize.spaceHeight5,
+                SizedBox(
+                  width: 200,
+                  child: PrimaryTextField(
+                    controller: provider.companyLocationLatLng,
+                    hint: '',
+                    isRequired: true,
+                  ),
+                ),
+              ],
+            ),
+            AppSize.spaceWidth32,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(JapaneseText.numberOfPeopleRecruiting, style: normalTextStyle),
+                AppSize.spaceHeight5,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 100,
+                      child: PrimaryTextField(
+                        controller: provider.numberOfRecruitPeople,
+                        hint: '',
+                        isRequired: true,
+                        isPhoneNumber: true,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4, top: 15),
+                      child: Text("人", style: normalTextStyle),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+        AppSize.spaceHeight16,
+        Text(
+          JapaneseText.occupationAndExp,
+          style: normalTextStyle,
+        ),
+        AppSize.spaceHeight5,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.houseWivesHouseHusbandsWelcome,
+                val: provider.houseWivesHouseHusbandsWelcome,
+                onChange: (v) {
+                  setState(() {
+                    provider.houseWivesHouseHusbandsWelcome = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.partTimeWelcome,
+                val: provider.partTimeWelcome,
+                onChange: (v) {
+                  setState(() {
+                    provider.partTimeWelcome = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.universityStudentWelcome,
+                val: provider.universityStudentWelcome,
+                onChange: (v) {
+                  setState(() {
+                    provider.universityStudentWelcome = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.highSchoolStudent,
+                val: provider.highSchoolStudent,
+                onChange: (v) {
+                  setState(() {
+                    provider.highSchoolStudent = v;
+                  });
+                }),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.seniorSupport,
+                val: provider.seniorSupport,
+                onChange: (v) {
+                  setState(() {
+                    provider.seniorSupport = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.noEducationRequire,
+                val: provider.noEducationRequire,
+                onChange: (v) {
+                  setState(() {
+                    provider.noEducationRequire = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.noExpBeginnerIsOk,
+                val: provider.noExpBeginnerIsOk,
+                onChange: (v) {
+                  setState(() {
+                    provider.noExpBeginnerIsOk = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.blankOk,
+                val: provider.blankOk,
+                onChange: (v) {
+                  setState(() {
+                    provider.blankOk = v;
+                  });
+                }),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 230,
+                title: JapaneseText.expAndQualifiedPeopleWelcome,
+                val: provider.expAndQualifiedPeopleWelcome,
+                onChange: (v) {
+                  setState(() {
+                    provider.expAndQualifiedPeopleWelcome = v;
+                  });
+                }),
+          ],
+        ),
+        AppSize.spaceHeight16,
+        //Shift Day
+        Text(
+          JapaneseText.shiftDayOfTheWeek,
+          style: normalTextStyle,
+        ),
+        AppSize.spaceHeight5,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.shiftSystem,
+                val: provider.shiftSystem2,
+                onChange: (v) {
+                  setState(() {
+                    provider.shiftSystem2 = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 280,
+                title: JapaneseText.youCanChooseTheTimeAndDayOfTheWeek,
+                val: provider.youCanChooseTheTimeAndDayOfTheWeek,
+                onChange: (v) {
+                  setState(() {
+                    provider.youCanChooseTheTimeAndDayOfTheWeek = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.onlyOnWeekDayOK,
+                val: provider.onlyOnWeekDayOK,
+                onChange: (v) {
+                  setState(() {
+                    provider.onlyOnWeekDayOK = v;
+                  });
+                }),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.satSunHolidayOK,
+                val: provider.satSunHolidayOK,
+                onChange: (v) {
+                  setState(() {
+                    provider.satSunHolidayOK = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 280,
+                title: JapaneseText.fourAndMoreDayAWeekOK,
+                val: provider.fourAndMoreDayAWeekOK,
+                onChange: (v) {
+                  setState(() {
+                    provider.fourAndMoreDayAWeekOK = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.singleDayOK,
+                val: provider.singleDayOK,
+                onChange: (v) {
+                  setState(() {
+                    provider.singleDayOK = v;
+                  });
+                }),
+          ],
+        ),
+        AppSize.spaceHeight16,
+        //Way of Working
+        Text(
+          JapaneseText.wayOfWorking,
+          style: normalTextStyle,
+        ),
+        AppSize.spaceHeight5,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.sameDayWorkOK,
+                val: provider.sameDayWorkOK,
+                onChange: (v) {
+                  setState(() {
+                    provider.sameDayWorkOK = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 180,
+                title: JapaneseText.fullTimeWelcome,
+                val: provider.fullTimeWelcome,
+                onChange: (v) {
+                  setState(() {
+                    provider.fullTimeWelcome = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.workDependentsOK,
+                val: provider.workDependentsOK,
+                onChange: (v) {
+                  setState(() {
+                    provider.workDependentsOK = v;
+                  });
+                }),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.longTermWelcome,
+                val: provider.longTermWelcome,
+                onChange: (v) {
+                  setState(() {
+                    provider.longTermWelcome = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.sideJoBDoubleWorkOK,
+                val: provider.sideJoBDoubleWorkOK,
+                onChange: (v) {
+                  setState(() {
+                    provider.sideJoBDoubleWorkOK = v;
+                  });
+                }),
+          ],
+        ),
+        AppSize.spaceHeight16,
+        //Commuting Style
+        Text(
+          JapaneseText.commutingStyle,
+          style: normalTextStyle,
+        ),
+        AppSize.spaceHeight5,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.nearOrInsideStation,
+                val: provider.nearOrInsideStation,
+                onChange: (v) {
+                  setState(() {
+                    provider.nearOrInsideStation = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.commutingNearByOK,
+                val: provider.commutingNearByOK,
+                onChange: (v) {
+                  setState(() {
+                    provider.commutingNearByOK = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.commutingByBikeOK,
+                val: provider.commutingByBikeOK,
+                onChange: (v) {
+                  setState(() {
+                    provider.commutingByBikeOK = v;
+                  });
+                }),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.hairStyleColorFree,
+                val: provider.hairStyleColorFree,
+                onChange: (v) {
+                  setState(() {
+                    provider.hairStyleColorFree = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.clothFree,
+                val: provider.clothFree,
+                onChange: (v) {
+                  setState(() {
+                    provider.clothFree = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.canApplyWithFri,
+                val: provider.canApplyWithFri,
+                onChange: (v) {
+                  setState(() {
+                    provider.canApplyWithFri = v;
+                  });
+                }),
+          ],
+        ),
+        AppSize.spaceHeight16,
+        //Other
+        Text(
+          JapaneseText.other,
+          style: normalTextStyle,
+        ),
+        AppSize.spaceHeight5,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 230,
+                title: JapaneseText.ovenStaff,
+                val: provider.ovenStaff,
+                onChange: (v) {
+                  setState(() {
+                    provider.ovenStaff = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.shortTerm,
+                val: provider.shortTerm,
+                onChange: (v) {
+                  setState(() {
+                    provider.shortTerm = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 160,
+                title: JapaneseText.trainingAvailable,
+                val: provider.trainingAvailable,
+                onChange: (v) {
+                  setState(() {
+                    provider.trainingAvailable = v;
+                  });
+                }),
+          ],
+        ),
+      ],
+    );
+  }
+
+  workEnvironment() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.check_circle,
+              color: AppColor.primaryColor,
+            ),
+            AppSize.spaceWidth8,
+            Text(
+              JapaneseText.workEnvAtmosphere,
+              style: titleStyle,
+            ),
+          ],
+        ),
+        AppSize.spaceHeight16,
+        Text(
+          JapaneseText.areGroup,
+          style: normalTextStyle,
+        ),
+        AppSize.spaceHeight5,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 120,
+                title: JapaneseText.manyTeenagers,
+                val: provider.manyTeenagers,
+                onChange: (v) {
+                  setState(() {
+                    provider.manyTeenagers = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 120,
+                title: JapaneseText.manyInTheir20,
+                val: provider.manyInTheir20,
+                onChange: (v) {
+                  setState(() {
+                    provider.manyInTheir20 = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 120,
+                title: JapaneseText.manyInTheir30,
+                val: provider.manyInTheir30,
+                onChange: (v) {
+                  setState(() {
+                    provider.manyInTheir30 = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 120,
+                title: JapaneseText.manyInTheir40,
+                val: provider.manyInTheir40,
+                onChange: (v) {
+                  setState(() {
+                    provider.manyInTheir40 = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 120,
+                title: JapaneseText.manyInTheir50,
+                val: provider.manyInTheir50,
+                onChange: (v) {
+                  setState(() {
+                    provider.manyInTheir50 = v;
+                  });
+                }),
+          ],
+        ),
+        AppSize.spaceHeight16,
+        Text(
+          JapaneseText.genderRatio,
+          style: normalTextStyle,
+        ),
+        AppSize.spaceHeight5,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 140,
+                title: JapaneseText.manyMen,
+                val: provider.manyMen,
+                onChange: (v) {
+                  setState(() {
+                    provider.manyMen = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 140,
+                title: JapaneseText.manyWomen,
+                val: provider.manyWomen,
+                onChange: (v) {
+                  setState(() {
+                    provider.manyWomen = v;
+                  });
+                }),
+          ],
+        ),
+        AppSize.spaceHeight16,
+        Text(
+          JapaneseText.atmosphere,
+          style: normalTextStyle,
+        ),
+        AppSize.spaceHeight5,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 230,
+                title: JapaneseText.livelyWorkplace,
+                val: provider.livelyWorkplace,
+                onChange: (v) {
+                  setState(() {
+                    provider.livelyWorkplace = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 200,
+                title: JapaneseText.calmWorkplace,
+                val: provider.calmWorkplace,
+                onChange: (v) {
+                  setState(() {
+                    provider.calmWorkplace = v;
+                  });
+                }),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 230,
+                title: JapaneseText.manyInteractionsOutsideOfWork,
+                val: provider.manyInteractionsOutsideOfWork,
+                onChange: (v) {
+                  setState(() {
+                    provider.manyInteractionsOutsideOfWork = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 200,
+                title: JapaneseText.fewInteractionsOutsideOfWork,
+                val: provider.fewInteractionsOutsideOfWork,
+                onChange: (v) {
+                  setState(() {
+                    provider.fewInteractionsOutsideOfWork = v;
+                  });
+                }),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 230,
+                title: JapaneseText.atHome,
+                val: provider.atHome,
+                onChange: (v) {
+                  setState(() {
+                    provider.atHome = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 200,
+                title: JapaneseText.businessLike,
+                val: provider.businessLike,
+                onChange: (v) {
+                  setState(() {
+                    provider.businessLike = v;
+                  });
+                }),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 230,
+                title: JapaneseText.beginnersAreActivelyWorking,
+                val: provider.beginnersAreActivelyWorking,
+                onChange: (v) {
+                  setState(() {
+                    provider.beginnersAreActivelyWorking = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 200,
+                title: JapaneseText.youCanWorkForAlongTime,
+                val: provider.youCanWorkForAlongTime,
+                onChange: (v) {
+                  setState(() {
+                    provider.youCanWorkForAlongTime = v;
+                  });
+                }),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 230,
+                title: JapaneseText.easyToAdjustToYourConvenience,
+                val: provider.easyToAdjustToYourConvenience,
+                onChange: (v) {
+                  setState(() {
+                    provider.easyToAdjustToYourConvenience = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 230,
+                title: JapaneseText.scheduledTimeExactly,
+                val: provider.scheduledTimeExactly,
+                onChange: (v) {
+                  setState(() {
+                    provider.scheduledTimeExactly = v;
+                  });
+                }),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 230,
+                title: JapaneseText.collaborative,
+                val: provider.collaborative,
+                onChange: (v) {
+                  setState(() {
+                    provider.collaborative = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 200,
+                title: JapaneseText.individualityCanBeUtilized,
+                val: provider.individualityCanBeUtilized,
+                onChange: (v) {
+                  setState(() {
+                    provider.individualityCanBeUtilized = v;
+                  });
+                }),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 230,
+                title: JapaneseText.standingWork,
+                val: provider.standingWork,
+                onChange: (v) {
+                  setState(() {
+                    provider.standingWork = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 200,
+                title: JapaneseText.deskWork,
+                val: provider.deskWork,
+                onChange: (v) {
+                  setState(() {
+                    provider.deskWork = v;
+                  });
+                }),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 230,
+                title: JapaneseText.tooMuchInteractionWithCustomers,
+                val: provider.tooMuchInteractionWithCustomers,
+                onChange: (v) {
+                  setState(() {
+                    provider.tooMuchInteractionWithCustomers = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 230,
+                title: JapaneseText.lessInteractionWithCustomers,
+                val: provider.lessInteractionWithCustomers,
+                onChange: (v) {
+                  setState(() {
+                    provider.lessInteractionWithCustomers = v;
+                  });
+                }),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 230,
+                title: JapaneseText.lotsOfManualLabor,
+                val: provider.lotsOfManualLabor,
+                onChange: (v) {
+                  setState(() {
+                    provider.lotsOfManualLabor = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 200,
+                title: JapaneseText.littleOfManualLabor,
+                val: provider.littleOfManualLabor,
+                onChange: (v) {
+                  setState(() {
+                    provider.littleOfManualLabor = v;
+                  });
+                }),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            checkBoxTile(
+                size: 230,
+                title: JapaneseText.knowledgeAndExperience,
+                val: provider.knowledgeAndExperience,
+                onChange: (v) {
+                  setState(() {
+                    provider.knowledgeAndExperience = v;
+                  });
+                }),
+            checkBoxTile(
+                size: 200,
+                title: JapaneseText.noKnowledgeOrExperienceRequired,
+                val: provider.noKnowledgeOrExperienceRequired,
+                onChange: (v) {
+                  setState(() {
+                    provider.noKnowledgeOrExperienceRequired = v;
+                  });
+                }),
+          ],
+        ),
+        AppSize.spaceHeight16,
+        SizedBox(
+            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  JapaneseText.remark,
+                  style: normalTextStyle,
+                ),
+                AppSize.spaceHeight5,
+                PrimaryTextField(
+                  controller: provider.remarkAtmosphere,
+                  hint: '補足があれば入力してください',
+                  marginBottom: 5,
+                  maxLine: 6,
+                  isRequired: false,
+                  textInputAction: TextInputAction.newline,
+                  textInputType: TextInputType.multiline,
+                ),
+              ],
+            )),
+        AppSize.spaceHeight16,
+        SizedBox(
+            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  JapaneseText.oneDayWorkFlow,
+                  style: normalTextStyle,
+                ),
+                AppSize.spaceHeight5,
+                PrimaryTextField(
+                  controller: provider.oneDayWorkFlow,
+                  hint: '補足があれば入力してください',
+                  marginBottom: 5,
+                  maxLine: 6,
+                  isRequired: false,
+                  textInputAction: TextInputAction.newline,
+                  textInputType: TextInputType.multiline,
+                ),
+              ],
+            )),
+        AppSize.spaceHeight16,
+        SizedBox(
+            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  JapaneseText.shiftIncomeExample,
+                  style: normalTextStyle,
+                ),
+                AppSize.spaceHeight5,
+                PrimaryTextField(
+                  controller: provider.shiftIncomeExample,
+                  hint: '補足があれば入力してください',
+                  marginBottom: 5,
+                  maxLine: 6,
+                  isRequired: false,
+                  textInputAction: TextInputAction.newline,
+                  textInputType: TextInputType.multiline,
+                ),
+              ],
+            )),
+        AppSize.spaceHeight16,
+        SizedBox(
+            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  JapaneseText.aWordFromASeniorStaffMember,
+                  style: normalTextStyle,
+                ),
+                AppSize.spaceHeight5,
+                PrimaryTextField(
+                  controller: provider.aWordFromASeniorStaffMember,
+                  hint: '補足があれば入力してください',
+                  marginBottom: 5,
+                  maxLine: 6,
+                  isRequired: false,
+                  textInputAction: TextInputAction.newline,
+                  textInputType: TextInputType.multiline,
+                ),
+              ],
+            )),
+      ],
+    );
+  }
+
+  aboutApplication() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.check_circle,
+              color: AppColor.primaryColor,
+            ),
+            AppSize.spaceWidth8,
+            Text(
+              JapaneseText.aboutApplication,
+              style: titleStyle,
+            ),
+          ],
+        ),
+        AppSize.spaceHeight16,
+        SizedBox(
+            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  JapaneseText.flowAfterApplication,
+                  style: normalTextStyle,
+                ),
+                AppSize.spaceHeight5,
+                PrimaryTextField(
+                  controller: provider.flowAfterApplication,
+                  hint: '補足があれば入力してください',
+                  marginBottom: 5,
+                  maxLine: 6,
+                  isRequired: false,
+                  textInputAction: TextInputAction.newline,
+                  textInputType: TextInputType.multiline,
+                ),
+              ],
+            )),
+        AppSize.spaceHeight16,
+        SizedBox(
+            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  JapaneseText.plannedNumberOfEmployee,
+                  style: normalTextStyle,
+                ),
+                AppSize.spaceHeight5,
+                PrimaryTextField(
+                  controller: provider.plannedNumberOfEmployee,
+                  hint: '補足があれば入力してください',
+                  marginBottom: 5,
+                  maxLine: 6,
+                  isRequired: false,
+                  textInputAction: TextInputAction.newline,
+                  textInputType: TextInputType.multiline,
+                ),
+              ],
+            )),
+        AppSize.spaceHeight16,
+        SizedBox(
+            width: AppSize.getDeviceWidth(context) * 0.3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  JapaneseText.inquiryPhoneNumber,
+                  style: normalTextStyle,
+                ),
+                AppSize.spaceHeight5,
+                PrimaryTextField(
+                  controller: provider.inquiryPhoneNumber,
+                  hint: '',
+                  isRequired: false,
+                  isPhoneNumber: true,
+                )
+              ],
+            )),
+        AppSize.spaceHeight16,
+        const Divider(),
+        AppSize.spaceHeight16,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.check_circle,
+              color: AppColor.primaryColor,
+            ),
+            AppSize.spaceWidth8,
+            Text(
+              JapaneseText.regardingInputItemsOnTheApplicationScreen,
+              style: titleStyle,
+            ),
+          ],
+        ),
+        AppSize.spaceHeight16,
+        Text(
+          JapaneseText.informationToObtain,
+          style: normalTextStyle,
+        ),
+        AppSize.spaceHeight5,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 180,
+              child: RadioListTile(
+                  activeColor: AppColor.primaryColor,
+                  contentPadding: EdgeInsets.zero,
+                  groupValue: true,
+                  title: Text(
+                    JapaneseText.getOnlyBasicInformation,
+                    style: normalTextStyle.copyWith(fontSize: 12),
+                  ),
+                  value: provider.informationToObtain == JapaneseText.getOnlyBasicInformation,
+                  dense: true,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  onChanged: (v) => provider.onChangeInformationToObtain(JapaneseText.getOnlyBasicInformation)),
+            ),
+            AppSize.spaceWidth16,
+            SizedBox(
+              width: 220,
+              child: RadioListTile(
+                  activeColor: AppColor.primaryColor,
+                  contentPadding: EdgeInsets.zero,
+                  groupValue: false,
+                  title: Text(
+                    JapaneseText.obtainEducationalBackground,
+                    style: normalTextStyle.copyWith(fontSize: 12),
+                  ),
+                  value: provider.informationToObtain == JapaneseText.obtainEducationalBackground,
+                  dense: true,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  onChanged: (v) => provider.onChangeInformationToObtain(JapaneseText.obtainEducationalBackground)),
+            )
+          ],
+        )
+      ],
+    );
+  }
+
   checkBoxTile({required String title, required bool val, required Function onChange, double size = 80}) {
     return SizedBox(
       width: size,
@@ -1335,1643 +2409,6 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
             )
           ],
         ),
-      ],
-    );
-  }
-
-  buildTitleOverviewAndContent() {
-    return Column(
-      children: [
-        //Title
-        SizedBox(
-            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  JapaneseText.workCatchPhrase,
-                  style: normalTextStyle,
-                ),
-                AppSize.spaceHeight5,
-                PrimaryTextField(
-                  controller: provider.title,
-                  hint: '',
-                  marginBottom: 5,
-                ),
-              ],
-            )),
-        AppSize.spaceHeight16,
-        //Overview or Description
-        SizedBox(
-            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  JapaneseText.overview,
-                  style: normalTextStyle,
-                ),
-                AppSize.spaceHeight5,
-                PrimaryTextField(
-                  controller: provider.overview,
-                  hint: '',
-                  marginBottom: 5,
-                  maxLine: 6,
-                  textInputAction: TextInputAction.newline,
-                  textInputType: TextInputType.multiline,
-                ),
-              ],
-            )),
-        AppSize.spaceHeight16,
-        //Content or Access
-        SizedBox(
-            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  JapaneseText.content,
-                  style: normalTextStyle,
-                ),
-                AppSize.spaceHeight5,
-                PrimaryTextField(
-                  controller: provider.content,
-                  hint: '',
-                  marginBottom: 5,
-                  maxLine: 6,
-                  textInputAction: TextInputAction.newline,
-                  textInputType: TextInputType.multiline,
-                ),
-              ],
-            )),
-        AppSize.spaceHeight16,
-      ],
-    );
-  }
-
-  buildChooseProfile() {
-    return Expanded(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(JapaneseText.profileCom),
-        AppSize.spaceHeight5,
-        InkWell(
-          onTap: () async {
-            await CompanyApiServices().uploadImageToFirebase(provider);
-          },
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
-              height: 230,
-              decoration: BoxDecoration(
-                border: Border.all(width: 1, color: AppColor.darkBlueColor),
-              ),
-              alignment: Alignment.center,
-              child: provider.imageUrl.isEmpty
-                  ? Text(
-                      "ここにファイルをアップロード",
-                      style: normalTextStyle,
-                    )
-                  : Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Positioned(
-                          left: 0,
-                          top: 0,
-                          right: 0,
-                          bottom: 0,
-                          child: Image.network(
-                            provider.imageUrl,
-                            fit: BoxFit.cover,
-                            width: 230,
-                          ),
-                        ),
-                        Positioned(
-                          top: 10,
-                          right: 10,
-                          child: IconButton(
-                              onPressed: () {
-                                provider.onChangeImageUrl("");
-                              },
-                              icon: const Icon(
-                                Icons.close,
-                                color: Colors.redAccent,
-                              )),
-                        ),
-                      ],
-                    ),
-            ),
-          ),
-        ),
-        AppSize.spaceHeight8,
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(JapaneseText.recruitmentStart, style: normalTextStyle),
-                  AppSize.spaceHeight5,
-                  PrimaryTextField(
-                    controller: provider.startRecruitDate,
-                    hint: '',
-                    isRequired: true,
-                    onTap: () async {
-                      var date = await showDatePicker(
-                          locale: const Locale("ja", "JP"),
-                          context: context,
-                          initialDate: provider.startRecruitDate.text.isNotEmpty ? DateTime.parse(provider.startRecruitDate.text) : now,
-                          firstDate: now,
-                          lastDate: DateTime.now().add(const Duration(days: 3000)));
-                      if (date != null) {
-                        provider.startRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-            AppSize.spaceWidth16,
-            const Padding(padding: EdgeInsets.only(top: 35), child: Text("~")),
-            AppSize.spaceWidth16,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    JapaneseText.end,
-                    style: normalTextStyle,
-                  ),
-                  AppSize.spaceHeight5,
-                  PrimaryTextField(
-                    controller: provider.endRecruitDate,
-                    hint: '',
-                    isRequired: true,
-                    onTap: () async {
-                      var date = await showDatePicker(
-                          locale: const Locale("ja", "JP"),
-                          context: context,
-                          initialDate: provider.endRecruitDate.text.isNotEmpty ? DateTime.parse(provider.endRecruitDate.text) : now,
-                          firstDate: now,
-                          lastDate: now.add(const Duration(days: 3000)));
-                      if (date != null) {
-                        provider.endRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(JapaneseText.location, style: normalTextStyle),
-            AppSize.spaceHeight5,
-            PrimaryTextField(
-              controller: provider.companyLocation,
-              hint: '',
-              isRequired: true,
-            ),
-          ],
-        ),
-        AppSize.spaceHeight8,
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(JapaneseText.companyLatLng, style: normalTextStyle),
-                AppSize.spaceHeight5,
-                SizedBox(
-                  width: 200,
-                  child: PrimaryTextField(
-                    controller: provider.companyLocationLatLng,
-                    hint: '',
-                    isRequired: true,
-                  ),
-                ),
-              ],
-            ),
-            AppSize.spaceWidth32,
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(JapaneseText.numberOfPeopleRecruiting, style: normalTextStyle),
-                AppSize.spaceHeight5,
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 100,
-                      child: PrimaryTextField(
-                        controller: provider.numberOfRecruitPeople,
-                        hint: '',
-                        isRequired: true,
-                        isPhoneNumber: true,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4, top: 15),
-                      child: Text("人", style: normalTextStyle),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        )
-      ],
-    ));
-  }
-
-  buildOccupation() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.occupation,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 140,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: true,
-                      title: Text(
-                        JapaneseText.specifiedSkill,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.chooseOccupationSkill,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeOccupationSkill(true)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 160,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: false,
-                      title: Text(
-                        JapaneseText.otherThanSpecifiedSkills,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.chooseOccupationSkill,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeOccupationSkill(false)),
-                )
-              ],
-            )
-          ],
-        ),
-        AppSize.spaceWidth32,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.occupation,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            CustomDropDownWidget(
-              list: provider.occupationList.map((e) => e.toString()).toList(),
-              onChange: (e) => provider.onChangeOccupation(e),
-              width: AppSize.getDeviceWidth(context) * 0.3,
-              selectItem: provider.selectedOccupation,
-            )
-          ],
-        ),
-      ],
-    );
-  }
-
-  buildEmploymentContractProvisioning() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.employmentContract,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: JapaneseText.yes,
-                      title: Text(
-                        JapaneseText.yes,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.contractProvisioning,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeContractProvisioning(JapaneseText.yes)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: JapaneseText.no,
-                      title: Text(
-                        JapaneseText.no,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.contractProvisioning,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeContractProvisioning(JapaneseText.no)),
-                )
-              ],
-            )
-          ],
-        ),
-        const SizedBox(
-          width: 90,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.employmentStatus,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            CustomDropDownWidget(
-              list: provider.employmentType.map((e) => e.toString()).toList(),
-              onChange: (e) => provider.onChangeEmploymentType(e),
-              width: AppSize.getDeviceWidth(context) * 0.3,
-              selectItem: provider.selectedEmploymentType,
-            )
-          ],
-        ),
-      ],
-    );
-  }
-
-  buildTrailPeriod() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.trailPeriod,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: true,
-                      title: Text(
-                        JapaneseText.yes,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.trailPeriod,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeTrailPeriod(true)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: false,
-                      title: Text(
-                        JapaneseText.no,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.trailPeriod,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeTrailPeriod(false)),
-                )
-              ],
-            )
-          ],
-        ),
-        AppSize.spaceWidth32,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.salaryFrom,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 100,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: JapaneseText.monthlySalary,
-                      title: Text(
-                        JapaneseText.monthlySalary,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.salaryType,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeSalaryType(JapaneseText.monthlySalary)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 100,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: JapaneseText.hourlyWage,
-                      title: Text(
-                        JapaneseText.hourlyWage,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.salaryType,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeSalaryType(JapaneseText.hourlyWage)),
-                )
-              ],
-            )
-          ],
-        ),
-        AppSize.spaceWidth32,
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: AppSize.getDeviceWidth(context) * 0.15,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(JapaneseText.startWorkingHourPerDay, style: normalTextStyle),
-                  AppSize.spaceHeight5,
-                  PrimaryTextField(
-                    controller: provider.startWorkTime,
-                    hint: '',
-                    isRequired: true,
-                    onTap: () async {
-                      var date = await showTimePicker(
-                          initialEntryMode: TimePickerEntryMode.dialOnly,
-                          cancelText: JapaneseText.cancel,
-                          confirmText: JapaneseText.saveChange,
-                          context: context,
-                          initialTime: provider.startTime != null
-                              ? TimeOfDay(hour: provider.startTime!.hour, minute: provider.startTime!.minute)
-                              : TimeOfDay(hour: now.hour, minute: now.minute));
-                      if (date != null) {
-                        provider.startWorkTime.text = dateTimeToHourAndMinute(DateTime(2023, 1, 1, date.hour, date.minute));
-                        provider.onChangeStartWorkTime(DateTime(2023, 1, 1, date.hour, date.minute));
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-            AppSize.spaceWidth16,
-            const Padding(padding: EdgeInsets.only(top: 35), child: Text("~")),
-            AppSize.spaceWidth16,
-            SizedBox(
-              width: AppSize.getDeviceWidth(context) * 0.15,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(JapaneseText.end, style: normalTextStyle),
-                  AppSize.spaceHeight5,
-                  PrimaryTextField(
-                    controller: provider.endWorkTime,
-                    hint: '',
-                    isRequired: true,
-                    onTap: () async {
-                      var date = await showTimePicker(
-                          initialEntryMode: TimePickerEntryMode.dialOnly,
-                          cancelText: JapaneseText.cancel,
-                          confirmText: JapaneseText.saveChange,
-                          context: context,
-                          initialTime: provider.endTime != null
-                              ? TimeOfDay(hour: provider.endTime!.hour, minute: provider.endTime!.minute)
-                              : TimeOfDay(hour: now.hour, minute: now.minute));
-                      if (date != null) {
-                        provider.endWorkTime.text = dateTimeToHourAndMinute(DateTime(2023, 1, 1, date.hour, date.minute));
-                        provider.onChangeEndWorkTime(DateTime(2023, 1, 1, date.hour, date.minute));
-                      }
-                    },
-                  ),
-                ],
-              ),
-            ),
-            AppSize.spaceWidth16,
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(JapaneseText.breakTimeOfTheDay, style: normalTextStyle),
-                AppSize.spaceHeight5,
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 80,
-                      child: PrimaryTextField(
-                        controller: provider.breakTimeMinute,
-                        hint: '',
-                        isRequired: true,
-                        isPhoneNumber: true,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4, top: 15),
-                      child: Text("分", style: normalTextStyle),
-                    ),
-                  ],
-                ),
-              ],
-            )
-          ],
-        ),
-      ],
-    );
-  }
-
-  buildBonus() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.bonus,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: true,
-                      title: Text(
-                        JapaneseText.yes,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.bonus,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeBonus(true)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: false,
-                      title: Text(
-                        JapaneseText.no,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.bonus,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeBonus(false)),
-                )
-              ],
-            )
-          ],
-        ),
-        AppSize.spaceWidth32,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.raise,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: true,
-                      title: Text(
-                        JapaneseText.yes,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.raise,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeRaise(true)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: false,
-                      title: Text(
-                        JapaneseText.no,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.raise,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeRaise(false)),
-                )
-              ],
-            )
-          ],
-        ),
-        AppSize.spaceWidth32,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.offHours,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: true,
-                      title: Text(
-                        JapaneseText.yes,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.offHour,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeOffHour(true)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: false,
-                      title: Text(
-                        JapaneseText.no,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.offHour,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeOffHour(false)),
-                )
-              ],
-            )
-          ],
-        ),
-        AppSize.spaceWidth32,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.paidHoliday,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: true,
-                      title: Text(
-                        JapaneseText.yes,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.paidHoliday,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangePaidHoliday(true)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: false,
-                      title: Text(
-                        JapaneseText.no,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.paidHoliday,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangePaidHoliday(false)),
-                )
-              ],
-            )
-          ],
-        ),
-      ],
-    );
-  }
-
-  buildNumberOfAnnualHolidayAndDetail() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            JapaneseText.numberOfHolidays,
-            style: normalTextStyle,
-          ),
-          AppSize.spaceHeight5,
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: AppSize.getDeviceWidth(context) * 0.15,
-                child: PrimaryTextField(
-                  controller: provider.numberOfAnnualHolidays,
-                  hint: '',
-                  isRequired: true,
-                  isPhoneNumber: true,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 4, top: 15),
-                child: Text("⽇", style: normalTextStyle),
-              ),
-            ],
-          ),
-        ]),
-        const SizedBox(
-          width: 50,
-        ),
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            JapaneseText.holidayDetail,
-            style: normalTextStyle,
-          ),
-          AppSize.spaceHeight5,
-          SizedBox(
-            width: AppSize.getDeviceWidth(context) * 0.3,
-            child: PrimaryTextField(
-              controller: provider.holidayDetail,
-              hint: '',
-              isRequired: true,
-            ),
-          )
-        ])
-      ],
-    );
-  }
-
-  buildWifiAndMore() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.dormOrCompanyHouse,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      groupValue: true,
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        JapaneseText.yes,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.dorm,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeDorm(true)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      groupValue: false,
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        JapaneseText.no,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.dorm,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeDorm(false)),
-                )
-              ],
-            )
-          ],
-        ),
-        AppSize.spaceWidth32,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.wifiAbility,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: true,
-                      title: Text(
-                        JapaneseText.yes,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.wifi,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeWifi(true)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      groupValue: false,
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        JapaneseText.no,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.wifi,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeWifi(false)),
-                )
-              ],
-            )
-          ],
-        ),
-        AppSize.spaceWidth32,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.mealsAbility,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: true,
-                      title: Text(
-                        JapaneseText.yes,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.meals,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeMeals(true)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: false,
-                      title: Text(
-                        JapaneseText.no,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.meals,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeMeals(false)),
-                )
-              ],
-            )
-          ],
-        ),
-        AppSize.spaceWidth32,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.transportExpense,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: true,
-                      title: Text(
-                        JapaneseText.yes,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.transportExpense,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeTransportExpense(true)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: false,
-                      title: Text(
-                        JapaneseText.no,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.transportExpense,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeTransportExpense(false)),
-                )
-              ],
-            )
-          ],
-        ),
-      ],
-    );
-  }
-
-  buildOnlineInterview() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.isThereRemoteInterview,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: true,
-                      title: Text(
-                        JapaneseText.yes,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.isThereRemoteInterview,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeRemoteInterview(true)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 80,
-                  child: RadioListTile(
-                      activeColor: AppColor.primaryColor,
-                      contentPadding: EdgeInsets.zero,
-                      groupValue: false,
-                      title: Text(
-                        JapaneseText.no,
-                        style: normalTextStyle.copyWith(fontSize: 12),
-                      ),
-                      value: provider.isThereRemoteInterview,
-                      dense: true,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (v) => provider.onChangeRemoteInterview(false)),
-                )
-              ],
-            )
-          ],
-        ),
-        AppSize.spaceWidth32,
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  JapaneseText.interviewLocation,
-                  style: normalTextStyle,
-                ),
-                AppSize.spaceHeight5,
-                SizedBox(
-                    width: AppSize.getDeviceWidth(context) * 0.4,
-                    child: PrimaryTextField(
-                      controller: provider.interviewLocation,
-                      hint: "",
-                      isRequired: true,
-                    ))
-              ],
-            ),
-            AppSize.spaceWidth32,
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  JapaneseText.interviewLatLng,
-                  style: normalTextStyle,
-                ),
-                AppSize.spaceHeight5,
-                SizedBox(
-                    width: AppSize.getDeviceWidth(context) * 0.2,
-                    child: PrimaryTextField(
-                      controller: provider.interviewLocationLatLng,
-                      hint: "",
-                      isRequired: true,
-                    ))
-              ],
-            )
-          ],
-        ),
-      ],
-    );
-  }
-
-  buildContentOfTest() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          JapaneseText.contentOfTest,
-          style: normalTextStyle,
-        ),
-        AppSize.spaceHeight5,
-        Container(
-          width: AppSize.getDeviceWidth(context) * 0.6,
-          // height: 100,
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(color: Colors.white, border: Border.all(width: 0.3, color: Colors.grey), borderRadius: BorderRadius.circular(16)),
-          child: MultiSelectDialogField2(
-            dialogWidth: 400,
-            dialogHeight: 300,
-            isOffice: true,
-            initialValue: provider.selectedContentOfTest,
-            items: provider.contentOfTestStaff.map((e) => MultiSelectItem(e, e)).toList(),
-            cancelText: Text(JapaneseText.cancel),
-            confirmText: Text(JapaneseText.saveChange),
-            title: Text(JapaneseText.contentOfTest),
-            buttonText: Text(JapaneseText.contentOfTest),
-            buttonIcon: const Icon(Icons.arrow_drop_down_rounded),
-            listType: MultiSelectListType.LIST,
-            onConfirm: (values) {
-              provider.onChangeContentOfTest(values);
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  buildSelectStatusOfRecident() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.statusOfResidence,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            Container(
-              width: AppSize.getDeviceWidth(context) * 0.3,
-              // height: 100,
-              padding: const EdgeInsets.all(8),
-              decoration:
-                  BoxDecoration(color: Colors.white, border: Border.all(width: 0.3, color: Colors.grey), borderRadius: BorderRadius.circular(16)),
-              child: MultiSelectDialogField2(
-                dialogWidth: 400,
-                dialogHeight: 300,
-                isOffice: true,
-                initialValue: provider.selectedStatusOfRecident,
-                items: provider.statusOfRecident.map((e) => MultiSelectItem(e, e)).toList(),
-                cancelText: Text(JapaneseText.cancel),
-                confirmText: Text(JapaneseText.saveChange),
-                title: Text(JapaneseText.statusOfResidence),
-                buttonText: Text(JapaneseText.statusOfResidence),
-                buttonIcon: const Icon(Icons.arrow_drop_down_rounded),
-                listType: MultiSelectListType.LIST,
-                onConfirm: (values) {
-                  provider.onChangeStatusOfRecident(values);
-                },
-              ),
-            ),
-          ],
-        ),
-        AppSize.spaceWidth32,
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              JapaneseText.otherQualification,
-              style: normalTextStyle,
-            ),
-            AppSize.spaceHeight5,
-            SizedBox(
-                width: AppSize.getDeviceWidth(context) * 0.3,
-                child: PrimaryTextField(
-                  controller: provider.otherQualification,
-                  hint: "",
-                  isRequired: true,
-                ))
-          ],
-        ),
-      ],
-    );
-  }
-
-  buildHotelCleaningItem() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          JapaneseText.hotelCleanLearningItems,
-          style: normalTextStyle,
-        ),
-        AppSize.spaceHeight5,
-        Container(
-          width: AppSize.getDeviceWidth(context) * 0.3,
-          // height: 100,
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(color: Colors.white, border: Border.all(width: 0.3, color: Colors.grey), borderRadius: BorderRadius.circular(16)),
-          child: MultiSelectDialogField2(
-            dialogWidth: 400,
-            dialogHeight: 300,
-            isOffice: true,
-            initialValue: provider.selectedHotelCleaningItemLearn,
-            items: provider.hotelCleaningItemLearn.map((e) => MultiSelectItem(e, e)).toList(),
-            cancelText: Text(JapaneseText.cancel),
-            confirmText: Text(JapaneseText.saveChange),
-            title: Text(JapaneseText.hotelCleanLearningItems),
-            buttonText: Text(JapaneseText.hotelCleanLearningItems),
-            buttonIcon: const Icon(Icons.arrow_drop_down_rounded),
-            listType: MultiSelectListType.LIST,
-            onConfirm: (values) {
-              provider.onChangeHotelCleaningItemLearn(values);
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  buildApplicationRequirementAndJapanSkill() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(JapaneseText.titleOfApplicationRequirement, style: normalTextStyle),
-        AppSize.spaceHeight5,
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  JapaneseText.desiredGender,
-                  style: normalTextStyle,
-                ),
-                AppSize.spaceHeight5,
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 80,
-                      child: RadioListTile(
-                          activeColor: AppColor.primaryColor,
-                          contentPadding: EdgeInsets.zero,
-                          groupValue: JapaneseText.male,
-                          title: Text(
-                            JapaneseText.male,
-                            style: normalTextStyle.copyWith(fontSize: 12),
-                          ),
-                          value: provider.selectedDesiredGender,
-                          dense: true,
-                          controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) => provider.onChangeChooseGender(JapaneseText.male)),
-                    ),
-                    AppSize.spaceWidth16,
-                    SizedBox(
-                      width: 80,
-                      child: RadioListTile(
-                          activeColor: AppColor.primaryColor,
-                          contentPadding: EdgeInsets.zero,
-                          groupValue: JapaneseText.female,
-                          title: Text(
-                            JapaneseText.female,
-                            style: normalTextStyle.copyWith(fontSize: 12),
-                          ),
-                          value: provider.selectedDesiredGender,
-                          dense: true,
-                          controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) => provider.onChangeChooseGender(JapaneseText.female)),
-                    ),
-                    AppSize.spaceWidth16,
-                    SizedBox(
-                      width: 140,
-                      child: RadioListTile(
-                          activeColor: AppColor.primaryColor,
-                          contentPadding: EdgeInsets.zero,
-                          groupValue: JapaneseText.bothGender,
-                          title: Text(
-                            JapaneseText.bothGender,
-                            style: normalTextStyle.copyWith(fontSize: 12),
-                          ),
-                          value: provider.selectedDesiredGender,
-                          dense: true,
-                          controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) => provider.onChangeChooseGender(JapaneseText.bothGender)),
-                    )
-                  ],
-                )
-              ],
-            ),
-            AppSize.spaceWidth32,
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                JapaneseText.desiredNationality,
-                style: normalTextStyle,
-              ),
-              AppSize.spaceHeight5,
-              CustomDropDownWidget(
-                list: provider.nationalityList,
-                onChange: (v) => provider.onChangeNationality(v),
-                selectItem: provider.selectedNationality,
-              )
-            ])
-          ],
-        ),
-        AppSize.spaceHeight16,
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            JapaneseText.necessaryJapanSkill,
-            style: normalTextStyle,
-          ),
-          AppSize.spaceHeight5,
-          CustomDropDownWidget(
-            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
-            list: provider.necessaryJapanSkillList,
-            onChange: (v) => provider.onChangeNecessaryJapanSkill(v),
-            selectItem: provider.selectedNecessaryJapanSkill,
-          )
-        ]),
-        AppSize.spaceHeight16,
-        SizedBox(
-            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  JapaneseText.remark,
-                  style: normalTextStyle,
-                ),
-                AppSize.spaceHeight5,
-                PrimaryTextField(
-                  controller: provider.remark,
-                  hint: '',
-                  marginBottom: 5,
-                  maxLine: 6,
-                  isRequired: false,
-                  textInputAction: TextInputAction.newline,
-                  textInputType: TextInputType.multiline,
-                ),
-              ],
-            )),
-      ],
-    );
-  }
-
-  buildEmploymentCondition() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(JapaneseText.socialInsurance, style: normalTextStyle),
-            AppSize.spaceHeight5,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 100,
-                  child: CheckboxListTile(
-                      activeColor: AppColor.primaryColor,
-                      value: provider.isEmployment,
-                      contentPadding: EdgeInsets.zero,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      title: Text(JapaneseText.employment, style: normalTextStyle),
-                      dense: true,
-                      onChanged: (val) => provider.onChangeEmployment(val!)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 100,
-                  child: CheckboxListTile(
-                      activeColor: AppColor.primaryColor,
-                      value: provider.isIndustrialAccident,
-                      contentPadding: EdgeInsets.zero,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      title: Text(JapaneseText.workerCompensation, style: normalTextStyle),
-                      dense: true,
-                      onChanged: (val) => provider.onChangeIndustrialAccident(val!)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 100,
-                  child: CheckboxListTile(
-                      activeColor: AppColor.primaryColor,
-                      value: provider.isHealth,
-                      contentPadding: EdgeInsets.zero,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      title: Text(JapaneseText.health, style: normalTextStyle),
-                      dense: true,
-                      onChanged: (val) => provider.onChangeHealth(val!)),
-                ),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 100,
-                  child: CheckboxListTile(
-                      activeColor: AppColor.primaryColor,
-                      value: provider.isWelfare,
-                      contentPadding: EdgeInsets.zero,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      title: Text(JapaneseText.welfare, style: normalTextStyle),
-                      dense: true,
-                      onChanged: (val) => provider.onChangeWelfare(val!)),
-                ),
-              ],
-            )
-          ],
-        ),
-        AppSize.spaceHeight16,
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(JapaneseText.childCareLeaveSystem, style: normalTextStyle),
-                AppSize.spaceHeight5,
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 80,
-                      child: RadioListTile(
-                          activeColor: AppColor.primaryColor,
-                          contentPadding: EdgeInsets.zero,
-                          groupValue: true,
-                          title: Text(
-                            JapaneseText.yes,
-                            style: normalTextStyle.copyWith(fontSize: 12),
-                          ),
-                          value: provider.isChildCareSystem,
-                          dense: true,
-                          controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) => provider.onChangeChildCare(true)),
-                    ),
-                    AppSize.spaceWidth16,
-                    SizedBox(
-                      width: 80,
-                      child: RadioListTile(
-                          activeColor: AppColor.primaryColor,
-                          contentPadding: EdgeInsets.zero,
-                          groupValue: false,
-                          title: Text(
-                            JapaneseText.no,
-                            style: normalTextStyle.copyWith(fontSize: 12),
-                          ),
-                          value: provider.isChildCareSystem,
-                          dense: true,
-                          controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) => provider.onChangeChildCare(false)),
-                    )
-                  ],
-                )
-              ],
-            ),
-            AppSize.spaceWidth32,
-            AppSize.spaceWidth16,
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(JapaneseText.retirementSystem, style: normalTextStyle),
-                AppSize.spaceHeight5,
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 80,
-                      child: RadioListTile(
-                          activeColor: AppColor.primaryColor,
-                          contentPadding: EdgeInsets.zero,
-                          groupValue: true,
-                          title: Text(
-                            JapaneseText.yes,
-                            style: normalTextStyle.copyWith(fontSize: 12),
-                          ),
-                          value: provider.isRetirementSystem,
-                          dense: true,
-                          controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) => provider.onChangeRetirement(true)),
-                    ),
-                    AppSize.spaceWidth16,
-                    SizedBox(
-                      width: 80,
-                      child: RadioListTile(
-                          activeColor: AppColor.primaryColor,
-                          contentPadding: EdgeInsets.zero,
-                          groupValue: false,
-                          title: Text(
-                            JapaneseText.no,
-                            style: normalTextStyle.copyWith(fontSize: 12),
-                          ),
-                          value: provider.isRetirementSystem,
-                          dense: true,
-                          controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) => provider.onChangeRetirement(false)),
-                    )
-                  ],
-                )
-              ],
-            ),
-          ],
-        ),
-        AppSize.spaceHeight16,
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(JapaneseText.rehire, style: normalTextStyle),
-                AppSize.spaceHeight5,
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 80,
-                      child: RadioListTile(
-                          activeColor: AppColor.primaryColor,
-                          contentPadding: EdgeInsets.zero,
-                          groupValue: true,
-                          title: Text(
-                            JapaneseText.yes,
-                            style: normalTextStyle.copyWith(fontSize: 12),
-                          ),
-                          value: provider.isReemployment,
-                          dense: true,
-                          controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) => provider.onChangeReemployment(true)),
-                    ),
-                    AppSize.spaceWidth16,
-                    SizedBox(
-                      width: 80,
-                      child: RadioListTile(
-                          activeColor: AppColor.primaryColor,
-                          contentPadding: EdgeInsets.zero,
-                          groupValue: false,
-                          title: Text(
-                            JapaneseText.no,
-                            style: normalTextStyle.copyWith(fontSize: 12),
-                          ),
-                          value: provider.isReemployment,
-                          dense: true,
-                          controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) => provider.onChangeReemployment(false)),
-                    )
-                  ],
-                )
-              ],
-            ),
-            AppSize.spaceWidth32,
-            AppSize.spaceWidth16,
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(JapaneseText.severancePay, style: normalTextStyle),
-                AppSize.spaceHeight5,
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 80,
-                      child: RadioListTile(
-                          activeColor: AppColor.primaryColor,
-                          contentPadding: EdgeInsets.zero,
-                          groupValue: true,
-                          title: Text(
-                            JapaneseText.yes,
-                            style: normalTextStyle.copyWith(fontSize: 12),
-                          ),
-                          value: provider.isRetirementBenefits,
-                          dense: true,
-                          controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) => provider.onChangeRetirementBenefits(true)),
-                    ),
-                    AppSize.spaceWidth16,
-                    SizedBox(
-                      width: 80,
-                      child: RadioListTile(
-                          activeColor: AppColor.primaryColor,
-                          contentPadding: EdgeInsets.zero,
-                          groupValue: false,
-                          title: Text(
-                            JapaneseText.no,
-                            style: normalTextStyle.copyWith(fontSize: 12),
-                          ),
-                          value: provider.isRetirementBenefits,
-                          dense: true,
-                          controlAffinity: ListTileControlAffinity.leading,
-                          onChanged: (v) => provider.onChangeRetirementBenefits(false)),
-                    )
-                  ],
-                )
-              ],
-            ),
-          ],
-        )
       ],
     );
   }

@@ -56,6 +56,13 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
   late TextEditingController shiftCycle;
   late TextEditingController shiftSubPeriod;
   late TextEditingController shiftFixingPeriod;
+  late TextEditingController remarkAtmosphere;
+  late TextEditingController oneDayWorkFlow;
+  late TextEditingController shiftIncomeExample;
+  late TextEditingController aWordFromASeniorStaffMember;
+  late TextEditingController flowAfterApplication;
+  late TextEditingController plannedNumberOfEmployee;
+  late TextEditingController inquiryPhoneNumber;
 
   String? selectedOccupation;
   bool chooseOccupationSkill = false;
@@ -194,6 +201,86 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
   bool qualificationAllowance = false;
   bool perfectAttendanceAllowance = false;
   bool familyAllowance = false;
+
+  bool houseWivesHouseHusbandsWelcome = false;
+  bool partTimeWelcome = false;
+  bool universityStudentWelcome = false;
+  bool highSchoolStudent = false;
+  bool seniorSupport = false;
+  bool noEducationRequire = false;
+  bool noExpBeginnerIsOk = false;
+  bool blankOk = false;
+  bool expAndQualifiedPeopleWelcome = false;
+
+  bool shiftSystem2 = false;
+  bool youCanChooseTheTimeAndDayOfTheWeek = false;
+  bool onlyOnWeekDayOK = false;
+  bool satSunHolidayOK = false;
+  bool fourAndMoreDayAWeekOK = false;
+  bool singleDayOK = false;
+
+  bool sameDayWorkOK = false;
+  bool fullTimeWelcome = false;
+  bool workDependentsOK = false;
+  bool longTermWelcome = false;
+  bool sideJoBDoubleWorkOK = false;
+
+  bool nearOrInsideStation = false;
+  bool commutingNearByOK = false;
+  bool commutingByBikeOK = false;
+  bool hairStyleColorFree = false;
+  bool clothFree = false;
+  bool canApplyWithFri = false;
+
+  bool ovenStaff = false;
+  bool shortTerm = false;
+  bool trainingAvailable = false;
+
+  bool manyTeenagers = false;
+  bool manyInTheir20 = false;
+  bool manyInTheir30 = false;
+  bool manyInTheir40 = false;
+  bool manyInTheir50 = false;
+
+  bool manyMen = false;
+  bool manyWomen = false;
+
+  bool livelyWorkplace = false;
+  bool calmWorkplace = false;
+
+  bool manyInteractionsOutsideOfWork = false;
+  bool fewInteractionsOutsideOfWork = false;
+
+  bool atHome = false;
+  bool businessLike = false;
+
+  bool beginnersAreActivelyWorking = false;
+  bool youCanWorkForAlongTime = false;
+
+  bool easyToAdjustToYourConvenience = false;
+  bool scheduledTimeExactly = false;
+
+  bool collaborative = false;
+  bool individualityCanBeUtilized = false;
+
+  bool standingWork = false;
+  bool deskWork = false;
+
+  bool tooMuchInteractionWithCustomers = false;
+  bool lessInteractionWithCustomers = false;
+
+  bool lotsOfManualLabor = false;
+  bool littleOfManualLabor = false;
+
+  bool knowledgeAndExperience = false;
+  bool noKnowledgeOrExperienceRequired = false;
+
+  String informationToObtain = JapaneseText.getOnlyBasicInformation;
+
+  onChangeInformationToObtain(String val) {
+    informationToObtain = val;
+    notifyListeners();
+  }
 
   onChangeRetirementBenefits(bool val) {
     isRetirementBenefits = val;
@@ -417,6 +504,13 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
     shiftCycle = TextEditingController(text: "");
     shiftSubPeriod = TextEditingController(text: "");
     shiftFixingPeriod = TextEditingController(text: "");
+    remarkAtmosphere = TextEditingController(text: "");
+    oneDayWorkFlow = TextEditingController(text: "");
+    shiftIncomeExample = TextEditingController(text: "");
+    aWordFromASeniorStaffMember = TextEditingController(text: "");
+    flowAfterApplication = TextEditingController(text: "");
+    plannedNumberOfEmployee = TextEditingController(text: "");
+    inquiryPhoneNumber = TextEditingController(text: "");
   }
 
   onInitForJobPostingDetail(String? id) async {

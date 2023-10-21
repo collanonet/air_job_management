@@ -7,6 +7,7 @@ import 'package:air_job_management/pages/job_posting/create_or_edit_job_for_japa
 import 'package:air_job_management/pages/job_seeker/create_job_seeker.dart';
 import 'package:air_job_management/pages/job_seeker/job_seeker_detail/job_seeker_detail.dart';
 import 'package:air_job_management/pages/login.dart';
+import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart' as auth;
 import 'package:air_job_management/providers/company.dart';
 import 'package:air_job_management/providers/home.dart';
@@ -49,7 +50,7 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
-        return const CreateOrEditJobForJapanesePage(jobPostId: null);
+        return const SplashScreen();
       },
       routes: <RouteBase>[
         GoRoute(

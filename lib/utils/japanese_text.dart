@@ -403,6 +403,121 @@ class JapaneseText {
   static String shiftCycle = "シフトサイクル";
   static String shiftSubPeriod = "シフト提出時期";
   static String shiftFixingPeriod = "シフト確定時期";
+
+  //About Job Content
+  static String aboutJobContent = "仕事内容について";
+
+  static String occupationAndExp = "職業‧経験";
+
+  static String houseWivesHouseHusbandsWelcome = "主婦‧主夫歓迎";
+  static String partTimeWelcome = "フリーター歓迎";
+  static String universityStudentWelcome = "大学生歓迎";
+  static String highSchoolStudent = "高校生応援";
+
+  static String seniorSupport = "シニア応援";
+  static String noEducationRequire = "学歴不問";
+  static String noExpBeginnerIsOk = "未経験‧初心者OK";
+  static String blankOk = "ブランクOK";
+
+  static String expAndQualifiedPeopleWelcome = "経験者‧有資格者歓迎";
+
+  //shift day
+  static String shiftDayOfTheWeek = "シフト‧曜日";
+
+  //static String shiftSystem = "シフト制";
+  static String youCanChooseTheTimeAndDayOfTheWeek = "時間や曜日が選べる‧シフト自由";
+  static String onlyOnWeekDayOK = "平日のみOK";
+  static String satSunHolidayOK = "土日祝のみOK";
+  static String fourAndMoreDayAWeekOK = "週4日以上OK";
+  static String singleDayOK = "単発‧1日OK";
+
+  //Way of Working
+  static String wayOfWorking = "働き方";
+
+  static String sameDayWorkOK = "即日勤務OK";
+  static String fullTimeWelcome = "フルタイム歓迎";
+  static String workDependentsOK = "扶養内勤務OK";
+  static String longTermWelcome = "⻑期歓迎 ";
+  static String sideJoBDoubleWorkOK = "副業‧WワークOK";
+
+  //Commuting‧Style
+  static String commutingStyle = "通勤‧スタイル";
+
+  static String nearOrInsideStation = "駅チカ‧駅ナカ";
+  static String commutingNearByOK = "車通勤OK";
+  static String commutingByBikeOK = "バイク通勤OK ";
+  static String hairStyleColorFree = "⻑髪型‧髪色自由 ";
+  static String clothFree = "服装自由 ";
+  static String canApplyWithFri = "友達と応募OK ";
+
+  // static String other = "その他";
+  static String ovenStaff = "オーブニングスタッフ";
+  static String shortTerm = "短期 ";
+  static String trainingAvailable = "研修あり ";
+
+  //Work environment/atmosphere
+  static String workEnvAtmosphere = "研修あり ";
+
+  static String areGroup = "年齢層";
+
+  static String manyTeenagers = "10代多数";
+  static String manyInTheir20 = "20代多数";
+  static String manyInTheir30 = "30代多数";
+  static String manyInTheir40 = "40代多数";
+  static String manyInTheir50 = "50代多数";
+
+  static String genderRatio = "男女比";
+  static String manyMen = "男性が多い";
+  static String manyWomen = "女性が多い";
+
+  //atmosphere
+  static String atmosphere = "雰囲気";
+
+  static String livelyWorkplace = "にぎやかな職場";
+  static String calmWorkplace = "落ち着いた職場";
+
+  static String manyInteractionsOutsideOfWork = "業務外交流多い";
+  static String fewInteractionsOutsideOfWork = " 業務外交流少ない";
+
+  static String atHome = "アットホーム";
+  static String businessLike = "ビジネスライク";
+
+  static String beginnersAreActivelyWorking = "初心者活躍中";
+  static String youCanWorkForAlongTime = "⻑く働ける";
+
+  static String easyToAdjustToYourConvenience = "自分の都合に合わせやすい";
+  static String scheduledTimeExactly = "決められた時間できっちり";
+
+  static String collaborative = "協調性がある";
+  static String individualityCanBeUtilized = "個性が活かせる";
+
+  static String standingWork = "立ち仕事";
+  static String deskWork = "デスクワーク";
+
+  static String tooMuchInteractionWithCustomers = "お客様との対話は多い";
+  static String lessInteractionWithCustomers = "お客様との対話は少ない";
+
+  static String lotsOfManualLabor = "力仕事が多い";
+  static String littleOfManualLabor = "力仕事が少ない";
+
+  static String knowledgeAndExperience = "知識、経験豊富";
+  static String noKnowledgeOrExperienceRequired = "知識、経験不要";
+
+  static String oneDayWorkFlow = "1日の仕事の流れ";
+  static String shiftIncomeExample = "シフト‧収入例";
+  static String aWordFromASeniorStaffMember = "先輩スタッフからの一言";
+
+  //about application
+  static String aboutApplication = "応募について";
+
+  static String flowAfterApplication = "応募後の流れ";
+  static String plannedNumberOfEmployee = "採用予定人数";
+  static String inquiryPhoneNumber = "問い合わせ電話番号";
+
+  static String regardingInputItemsOnTheApplicationScreen = "応募画面の入力項目について";
+  static String informationToObtain = "取得する情報";
+  static String getOnlyBasicInformation = "基本情報のみ取得する";
+  static String obtainEducationalBackground = "学歴‧資格‧職務経験も取得する";
 }
 
 List<String> eligibilityApplicationList = [
