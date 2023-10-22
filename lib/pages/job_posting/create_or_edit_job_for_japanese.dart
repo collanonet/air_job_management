@@ -1,5 +1,6 @@
 import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/models/job_posting.dart';
+import 'package:air_job_management/providers/job_posting.dart';
 import 'package:air_job_management/providers/job_posting_for_japanese.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/radio_listtile.dart';
@@ -34,6 +35,7 @@ class CreateOrEditJobForJapanesePage extends StatefulWidget {
 class _CreateOrEditJobForJapanesePageState
     extends State<CreateOrEditJobForJapanesePage> with AfterBuildMixin {
   late JobPostingForJapaneseProvider provider;
+  late JobPostingProvider jobPostingProvider;
   DateTime now = DateTime.now();
   final _formKey = GlobalKey<FormState>();
 
@@ -44,12 +46,12 @@ class _CreateOrEditJobForJapanesePageState
       if (end.isBefore(start)) {
         // End date is before start date validation
         toastMessageError("募集終了日が募集開始日より前です", context);
-      } else if (!provider.interviewLocationLatLng.text.contains(", ") ||
-          !provider.companyLocationLatLng.text.contains(", ")) {
+      } else if (!provider.companyLocationLatLng.text.contains(", ")) {
         //Invalid latitude and longitude of company location or interview location.
         toastMessageError("会社の所在地または面接の場所の緯度と経度が無効です。", context);
       } else {
         //Continue to create job posting
+        print("Start Job post");
         JobPosting c = JobPosting(
             status: "",
             uid: widget.jobPostId ?? "",
@@ -63,8 +65,7 @@ class _CreateOrEditJobForJapanesePageState
             company: provider.selectedCompany,
             companyId: provider.selectedCompanyId,
             content: provider.content.text,
-            contentOfTheTest:
-                provider.selectedContentOfTest.map((e) => e).toList(),
+            contentOfTheTest: [],
             description: provider.overview.text,
             desiredGender: provider.selectedDesiredGender,
             desiredNationality: provider.selectedNationality,
@@ -74,14 +75,13 @@ class _CreateOrEditJobForJapanesePageState
             employmentType: provider.selectedEmploymentType,
             endTimeHour: provider.startWorkTime.text,
             holidayDetail: provider.holidayDetail.text,
-            hotelCleaningLearningItem:
-                provider.selectedHotelCleaningItemLearn.map((e) => e).toList(),
+            hotelCleaningLearningItem: [],
             image: provider.imageUrl,
             interviewLocation: Location(
-                name: provider.interviewLocation.text,
-                des: provider.interviewLocation.text,
-                lat: provider.interviewLocationLatLng.text.split(", ")[0],
-                lng: provider.interviewLocationLatLng.text.split(", ")[1]),
+                name: provider.companyLocationLatLng.text,
+                des: provider.companyLocationLatLng.text,
+                lat: provider.companyLocationLatLng.text.split(", ")[0],
+                lng: provider.companyLocationLatLng.text.split(", ")[1]),
             isRemoteInterview: provider.isThereRemoteInterview,
             location: Location(
                 name: provider.companyLocation.text,
@@ -105,8 +105,7 @@ class _CreateOrEditJobForJapanesePageState
             severancePay: provider.isRetirementBenefits,
             socialInsurance: "",
             startTimeHour: provider.startWorkTime.text,
-            statusOfResidence:
-                provider.selectedStatusOfRecident.map((e) => e).toList(),
+            statusOfResidence: [],
             trailPeriod: provider.trailPeriod,
             transportExpense: provider.transportExpense,
             wifi: provider.wifi,
@@ -244,6 +243,7 @@ class _CreateOrEditJobForJapanesePageState
         } else {
           val = await JobPostingApiService().createJob(c);
         }
+        print("end Job post");
         provider.onChangeLoading(false);
         if (val == ConstValue.success) {
           toastMessageSuccess(
@@ -251,7 +251,7 @@ class _CreateOrEditJobForJapanesePageState
                   ? JapaneseText.successUpdate
                   : JapaneseText.successCreate,
               context);
-          await provider.getAllJobPost();
+          await jobPostingProvider.getAllJobPost();
           context.pop();
           context.go(MyRoute.job);
         } else {
@@ -290,6 +290,7 @@ class _CreateOrEditJobForJapanesePageState
   @override
   Widget build(BuildContext context) {
     provider = Provider.of<JobPostingForJapaneseProvider>(context);
+    jobPostingProvider = Provider.of<JobPostingProvider>(context);
     return Form(
       key: _formKey,
       child: Scaffold(
@@ -2478,7 +2479,7 @@ class _CreateOrEditJobForJapanesePageState
                     JapaneseText.obtainEducationalBackground,
                     style: normalTextStyle.copyWith(fontSize: 12),
                   ),
-                  value: provider.informationToObtain ==
+                  value: provider.informationToObtain !=
                       JapaneseText.obtainEducationalBackground,
                   dense: true,
                   controlAffinity: ListTileControlAffinity.leading,

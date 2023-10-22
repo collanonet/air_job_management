@@ -24,7 +24,8 @@ class JobPostingCardWidget extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () => context.go("${MyRoute.job}/${jobPosting.uid}"),
+          onTap: () => context.go("${MyRoute.job}/${jobPosting.uid}",
+              extra: jobPosting.form),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Row(
