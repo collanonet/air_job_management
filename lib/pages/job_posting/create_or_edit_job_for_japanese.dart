@@ -38,6 +38,7 @@ class _CreateOrEditJobForJapanesePageState
   late JobPostingProvider jobPostingProvider;
   DateTime now = DateTime.now();
   final _formKey = GlobalKey<FormState>();
+  ScrollController controller = ScrollController();
 
   onSaveUserData() async {
     if (_formKey.currentState!.validate()) {
@@ -308,78 +309,85 @@ class _CreateOrEditJobForJapanesePageState
                   width: AppSize.getDeviceWidth(context),
                   height: AppSize.getDeviceHeight(context) - 110,
                   decoration: boxDecoration,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                            width: AppSize.getDeviceWidth(context) * 0.55 + 16,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  JapaneseText.workCatchPhrase,
-                                  style: normalTextStyle,
-                                ),
-                                AppSize.spaceHeight5,
-                                PrimaryTextField(
-                                  controller: provider.title,
-                                  hint: '',
-                                  marginBottom: 5,
-                                ),
-                              ],
-                            )),
-                        AppSize.spaceHeight16,
-                        const Divider(),
-                        AppSize.spaceHeight16,
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.check_circle,
-                              color: AppColor.primaryColor,
-                            ),
-                            AppSize.spaceWidth8,
-                            Text(
-                              JapaneseText.applicationGuidelines,
-                              style: titleStyle,
-                            ),
-                          ],
-                        ),
-                        AppSize.spaceHeight16,
-                        chooseCompany(),
-                        AppSize.spaceHeight16,
-                        employmentStatus(),
-                        AppSize.spaceHeight16,
-                        chooseOccupation(),
-                        AppSize.spaceHeight16,
-                        chooseSalaryType(),
-                        AppSize.spaceHeight16,
-                        supplementaryExplanationExamAndTraining(),
-                        AppSize.spaceHeight16,
-                        aboutEmployee(),
-                        AppSize.spaceHeight16,
-                        aboutJobContent(),
-                        AppSize.spaceHeight16,
-                        const Divider(),
-                        AppSize.spaceHeight16,
-                        workEnvironment(),
-                        AppSize.spaceHeight16,
-                        const Divider(),
-                        AppSize.spaceHeight16,
-                        aboutApplication(),
-                        const Divider(),
-                        AppSize.spaceHeight50,
-                        Center(
-                          child: SizedBox(
-                            width: AppSize.getDeviceWidth(context) * 0.2,
-                            child: ButtonWidget(
-                                title: JapaneseText.save,
+                  child: Scrollbar(
+                    controller: controller,
+                    isAlwaysShown: true,
+                    interactive: true,
+                    child: SingleChildScrollView(
+                      controller: controller,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                              width:
+                                  AppSize.getDeviceWidth(context) * 0.55 + 16,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    JapaneseText.workCatchPhrase,
+                                    style: normalTextStyle,
+                                  ),
+                                  AppSize.spaceHeight5,
+                                  PrimaryTextField(
+                                    controller: provider.title,
+                                    hint: '',
+                                    marginBottom: 5,
+                                  ),
+                                ],
+                              )),
+                          AppSize.spaceHeight16,
+                          const Divider(),
+                          AppSize.spaceHeight16,
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.check_circle,
                                 color: AppColor.primaryColor,
-                                onPress: () => onSaveUserData()),
+                              ),
+                              AppSize.spaceWidth8,
+                              Text(
+                                JapaneseText.applicationGuidelines,
+                                style: titleStyle,
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                          AppSize.spaceHeight16,
+                          chooseCompany(),
+                          AppSize.spaceHeight16,
+                          employmentStatus(),
+                          AppSize.spaceHeight16,
+                          chooseOccupation(),
+                          AppSize.spaceHeight16,
+                          chooseSalaryType(),
+                          AppSize.spaceHeight16,
+                          supplementaryExplanationExamAndTraining(),
+                          AppSize.spaceHeight16,
+                          aboutEmployee(),
+                          AppSize.spaceHeight16,
+                          aboutJobContent(),
+                          AppSize.spaceHeight16,
+                          const Divider(),
+                          AppSize.spaceHeight16,
+                          workEnvironment(),
+                          AppSize.spaceHeight16,
+                          const Divider(),
+                          AppSize.spaceHeight16,
+                          aboutApplication(),
+                          const Divider(),
+                          AppSize.spaceHeight50,
+                          Center(
+                            child: SizedBox(
+                              width: AppSize.getDeviceWidth(context) * 0.2,
+                              child: ButtonWidget(
+                                  title: JapaneseText.save,
+                                  color: AppColor.primaryColor,
+                                  onPress: () => onSaveUserData()),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 )

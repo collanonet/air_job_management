@@ -37,6 +37,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
   late JobPostingProvider provider;
   DateTime now = DateTime.now();
   final _formKey = GlobalKey<FormState>();
+  ScrollController controller = ScrollController();
 
   onSaveUserData() async {
     if (_formKey.currentState!.validate()) {
@@ -182,117 +183,123 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage>
                 width: AppSize.getDeviceWidth(context),
                 height: AppSize.getDeviceHeight(context) - 110,
                 decoration: boxDecoration,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      chooseCompany(),
-                      AppSize.spaceHeight16,
-                      const Divider(),
-                      AppSize.spaceHeight16,
-                      //Basic Info
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.check_circle,
-                            color: AppColor.primaryColor,
-                          ),
-                          AppSize.spaceWidth8,
-                          Text(
-                            JapaneseText.applicantSearch,
-                            style: titleStyle,
-                          ),
-                        ],
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          buildTitleOverviewAndContent(),
-                          AppSize.spaceWidth16,
-                          buildChooseProfile()
-                        ],
-                      ),
-                      const Divider(),
-                      AppSize.spaceHeight16,
-                      buildOccupation(),
-                      AppSize.spaceHeight16,
-                      buildEmploymentContractProvisioning(),
-                      AppSize.spaceHeight16,
-                      buildTrailPeriod(),
-                      AppSize.spaceHeight16,
-                      const Divider(),
-                      AppSize.spaceHeight16,
-                      buildBonus(),
-                      AppSize.spaceHeight16,
-                      const Divider(),
-                      AppSize.spaceHeight16,
-                      buildNumberOfAnnualHolidayAndDetail(),
-                      AppSize.spaceHeight16,
-                      const Divider(),
-                      AppSize.spaceHeight16,
-                      buildWifiAndMore(),
-                      AppSize.spaceHeight16,
-                      const Divider(),
-                      AppSize.spaceHeight16,
-                      buildOnlineInterview(),
-                      AppSize.spaceHeight16,
-                      buildContentOfTest(),
-                      AppSize.spaceHeight16,
-                      buildSelectStatusOfRecident(),
-                      AppSize.spaceHeight16,
-                      buildHotelCleaningItem(),
-                      AppSize.spaceHeight16,
-                      const Divider(),
-                      AppSize.spaceHeight16,
-                      //Application Requirements
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.check_circle,
-                            color: AppColor.primaryColor,
-                          ),
-                          AppSize.spaceWidth8,
-                          Text(
-                            JapaneseText.applicationRequirement,
-                            style: titleStyle,
-                          ),
-                        ],
-                      ),
-                      AppSize.spaceHeight16,
-                      buildApplicationRequirementAndJapanSkill(),
-                      AppSize.spaceHeight16,
-                      const Divider(),
-                      AppSize.spaceHeight16,
-                      //Application Requirements
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.check_circle,
-                            color: AppColor.primaryColor,
-                          ),
-                          AppSize.spaceWidth8,
-                          Text(
-                            JapaneseText.employmentCondition,
-                            style: titleStyle,
-                          ),
-                        ],
-                      ),
-                      AppSize.spaceHeight16,
-                      buildEmploymentCondition(),
-                      AppSize.spaceHeight50,
-                      Center(
-                        child: SizedBox(
-                          width: AppSize.getDeviceWidth(context) * 0.2,
-                          child: ButtonWidget(
-                              title: JapaneseText.save,
+                child: Scrollbar(
+                  controller: controller,
+                  isAlwaysShown: true,
+                  interactive: true,
+                  child: SingleChildScrollView(
+                    controller: controller,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        chooseCompany(),
+                        AppSize.spaceHeight16,
+                        const Divider(),
+                        AppSize.spaceHeight16,
+                        //Basic Info
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.check_circle,
                               color: AppColor.primaryColor,
-                              onPress: () => onSaveUserData()),
+                            ),
+                            AppSize.spaceWidth8,
+                            Text(
+                              JapaneseText.applicantSearch,
+                              style: titleStyle,
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            buildTitleOverviewAndContent(),
+                            AppSize.spaceWidth16,
+                            buildChooseProfile()
+                          ],
+                        ),
+                        const Divider(),
+                        AppSize.spaceHeight16,
+                        buildOccupation(),
+                        AppSize.spaceHeight16,
+                        buildEmploymentContractProvisioning(),
+                        AppSize.spaceHeight16,
+                        buildTrailPeriod(),
+                        AppSize.spaceHeight16,
+                        const Divider(),
+                        AppSize.spaceHeight16,
+                        buildBonus(),
+                        AppSize.spaceHeight16,
+                        const Divider(),
+                        AppSize.spaceHeight16,
+                        buildNumberOfAnnualHolidayAndDetail(),
+                        AppSize.spaceHeight16,
+                        const Divider(),
+                        AppSize.spaceHeight16,
+                        buildWifiAndMore(),
+                        AppSize.spaceHeight16,
+                        const Divider(),
+                        AppSize.spaceHeight16,
+                        buildOnlineInterview(),
+                        AppSize.spaceHeight16,
+                        buildContentOfTest(),
+                        AppSize.spaceHeight16,
+                        buildSelectStatusOfRecident(),
+                        AppSize.spaceHeight16,
+                        buildHotelCleaningItem(),
+                        AppSize.spaceHeight16,
+                        const Divider(),
+                        AppSize.spaceHeight16,
+                        //Application Requirements
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.check_circle,
+                              color: AppColor.primaryColor,
+                            ),
+                            AppSize.spaceWidth8,
+                            Text(
+                              JapaneseText.applicationRequirement,
+                              style: titleStyle,
+                            ),
+                          ],
+                        ),
+                        AppSize.spaceHeight16,
+                        buildApplicationRequirementAndJapanSkill(),
+                        AppSize.spaceHeight16,
+                        const Divider(),
+                        AppSize.spaceHeight16,
+                        //Application Requirements
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.check_circle,
+                              color: AppColor.primaryColor,
+                            ),
+                            AppSize.spaceWidth8,
+                            Text(
+                              JapaneseText.employmentCondition,
+                              style: titleStyle,
+                            ),
+                          ],
+                        ),
+                        AppSize.spaceHeight16,
+                        buildEmploymentCondition(),
+                        AppSize.spaceHeight50,
+                        Center(
+                          child: SizedBox(
+                            width: AppSize.getDeviceWidth(context) * 0.2,
+                            child: ButtonWidget(
+                                title: JapaneseText.save,
+                                color: AppColor.primaryColor,
+                                onPress: () => onSaveUserData()),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )
