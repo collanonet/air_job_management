@@ -23,13 +23,16 @@ import '../../widgets/custom_textfield.dart';
 
 class CreateOrEditJobForJapanesePage extends StatefulWidget {
   final String? jobPostId;
-  const CreateOrEditJobForJapanesePage({Key? key, required this.jobPostId}) : super(key: key);
+  const CreateOrEditJobForJapanesePage({Key? key, required this.jobPostId})
+      : super(key: key);
 
   @override
-  State<CreateOrEditJobForJapanesePage> createState() => _CreateOrEditJobForJapanesePageState();
+  State<CreateOrEditJobForJapanesePage> createState() =>
+      _CreateOrEditJobForJapanesePageState();
 }
 
-class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapanesePage> with AfterBuildMixin {
+class _CreateOrEditJobForJapanesePageState
+    extends State<CreateOrEditJobForJapanesePage> with AfterBuildMixin {
   late JobPostingForJapaneseProvider provider;
   DateTime now = DateTime.now();
   final _formKey = GlobalKey<FormState>();
@@ -41,7 +44,8 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
       if (end.isBefore(start)) {
         // End date is before start date validation
         toastMessageError("募集終了日が募集開始日より前です", context);
-      } else if (!provider.interviewLocationLatLng.text.contains(", ") || !provider.companyLocationLatLng.text.contains(", ")) {
+      } else if (!provider.interviewLocationLatLng.text.contains(", ") ||
+          !provider.companyLocationLatLng.text.contains(", ")) {
         //Invalid latitude and longitude of company location or interview location.
         toastMessageError("会社の所在地または面接の場所の緯度と経度が無効です。", context);
       } else {
@@ -59,16 +63,19 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
             company: provider.selectedCompany,
             companyId: provider.selectedCompanyId,
             content: provider.content.text,
-            contentOfTheTest: provider.selectedContentOfTest.map((e) => e).toList(),
+            contentOfTheTest:
+                provider.selectedContentOfTest.map((e) => e).toList(),
             description: provider.overview.text,
             desiredGender: provider.selectedDesiredGender,
             desiredNationality: provider.selectedNationality,
             dormOrCompanyHouse: provider.dorm,
-            employmentContractProvisioning: provider.contractProvisioning == JapaneseText.yes,
+            employmentContractProvisioning:
+                provider.contractProvisioning == JapaneseText.yes,
             employmentType: provider.selectedEmploymentType,
             endTimeHour: provider.startWorkTime.text,
             holidayDetail: provider.holidayDetail.text,
-            hotelCleaningLearningItem: provider.selectedHotelCleaningItemLearn.map((e) => e).toList(),
+            hotelCleaningLearningItem:
+                provider.selectedHotelCleaningItemLearn.map((e) => e).toList(),
             image: provider.imageUrl,
             interviewLocation: Location(
                 name: provider.interviewLocation.text,
@@ -98,7 +105,8 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
             severancePay: provider.isRetirementBenefits,
             socialInsurance: "",
             startTimeHour: provider.startWorkTime.text,
-            statusOfResidence: provider.selectedStatusOfRecident.map((e) => e).toList(),
+            statusOfResidence:
+                provider.selectedStatusOfRecident.map((e) => e).toList(),
             trailPeriod: provider.trailPeriod,
             transportExpense: provider.transportExpense,
             wifi: provider.wifi,
@@ -106,7 +114,130 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
             employment: provider.isEmployment,
             health: provider.isHealth,
             industrialAccident: provider.isIndustrialAccident,
-            publicWelfare: provider.isWelfare);
+            publicWelfare: provider.isWelfare,
+            sun: provider.sun,
+            sat: provider.sat,
+            fri: provider.sat,
+            thu: provider.thu,
+            mon: provider.mon,
+            salaryRange: provider.salaryRangeType,
+            tue: provider.tue,
+            accordingToOurCalendar: provider.accordingToOurCalendar,
+            amountOfPayrollFrom: provider.fromSalaryAmount.text,
+            wed: provider.wed,
+            amountOfPayrollTo: provider.toSalaryAmount.text,
+            applicationProcess: "",
+            atHome: provider.atHome,
+            atmosphereRemark: provider.remarkAtmosphere.text,
+            beginnersAreActivelyWorking: provider.beginnersAreActivelyWorking,
+            blankOk: provider.blankOk,
+            bonuses: provider.bonuses,
+            bonusRemark: provider.remarkBonus.text,
+            businessLike: provider.businessLike,
+            calmWorkplace: provider.calmWorkplace,
+            canApplyWithFri: provider.canApplyWithFri,
+            childCareLeave: provider.childCareLeave,
+            clothFree: provider.clothFree,
+            collaborative: provider.collaborative,
+            commutingByBikeOK: provider.commutingByBikeOK,
+            commutingNearByOK: provider.commutingNearByOK,
+            companyDiscountAvailable: provider.companyDiscountAvailable,
+            dailyWorkFlow: provider.oneDayWorkFlow.text,
+            deskWork: provider.deskWork,
+            dormCompanyHouseHousingAllowanceAvailable:
+                provider.dormCompanyHouseHousingAllowanceAvailable,
+            easyToAdjustToYourConvenience:
+                provider.easyToAdjustToYourConvenience,
+            eligibilityForApplication: provider.eligibilityForApp.text,
+            employeePromotionAvailable: provider.employeePromotionAvailable,
+            examinationOfTraining: provider.examAndTraining,
+            exampleOfShiftAndIncome: provider.shiftIncomeExample.text,
+            expAndQualifiedPeopleWelcome: provider.expAndQualifiedPeopleWelcome,
+            expectedNumberOfRecruits: provider.plannedNumberOfEmployee.text,
+            familyAllowance: provider.familyAllowance,
+            fewInteractionsOutsideOfWork: provider.fewInteractionsOutsideOfWork,
+            form: ConstValue.japanese,
+            fourAndMoreDayAWeekOK: provider.fourAndMoreDayAWeekOK,
+            fourTwoFiveTwoOff: provider.fourTwoFiveTwoOff,
+            fullTimeWelcome: provider.fullTimeWelcome,
+            hairStyleColorFree: provider.hairStyleColorFree,
+            highSchoolStudent: provider.highSchoolStudent,
+            holidayAllowance: provider.holidayAllowance,
+            holidayRemark: provider.remarkHoliday.text,
+            houseWivesHouseHusbandsWelcome:
+                provider.houseWivesHouseHusbandsWelcome,
+            individualityCanBeUtilized: provider.individualityCanBeUtilized,
+            infoToBeObtains: provider.informationToObtain,
+            knowledgeAndExperience: provider.knowledgeAndExperience,
+            lateNightAllowance: provider.lateNightAllowance,
+            lessInteractionWithCustomers: provider.lessInteractionWithCustomers,
+            littleOfManualLabor: provider.littleOfManualLabor,
+            livelyWorkplace: provider.livelyWorkplace,
+            longTermWelcome: provider.longTermWelcome,
+            lotsOfManualLabor: provider.lotsOfManualLabor,
+            manyInteractionsOutsideOfWork:
+                provider.manyInteractionsOutsideOfWork,
+            manyInTheir20: provider.manyInTheir20,
+            manyInTheir30: provider.manyInTheir30,
+            manyInTheir40: provider.manyInTheir40,
+            manyInTheir50: provider.manyInTheir50,
+            manyMen: provider.manyMen,
+            manyTeenagers: provider.manyTeenagers,
+            manyWomen: provider.manyWomen,
+            mealsAssAvailable: provider.mealsAssAvailable,
+            messageFromSeniorStaff: provider.aWordFromASeniorStaffMember.text,
+            minimumNumberOfWorkingDays:
+                provider.minimumNumberOfWorkingDays.text,
+            minimumNumberOfWorkingTime:
+                provider.minimumNumberOfWorkingTime.text,
+            minimumWorkTerm: provider.minimumWorkTerm.text,
+            nearOrInsideStation: provider.nearOrInsideStation,
+            noEducationRequire: provider.noEducationRequire,
+            noExpBeginnerIsOk: provider.noExpBeginnerIsOk,
+            noKnowledgeOrExperienceRequired:
+                provider.noKnowledgeOrExperienceRequired,
+            nurseCareLeave: provider.nurseCareLeave,
+            offHours: provider.offHours.text,
+            onlyOnWeekDayOK: provider.onlyOnWeekDayOK,
+            ovenStaff: provider.ovenStaff,
+            overtimeAllowance: provider.overtimeAllowance,
+            paidHoliday2: provider.paidHoliday2,
+            partTimeWelcome: provider.partTimeWelcome,
+            perfectAttendanceAllowance: provider.perfectAttendanceAllowance,
+            phoneNumber: provider.inquiryPhoneNumber.text,
+            prenatalAndPostnatalLeave: provider.prenatalAndPostnatalLeave,
+            qualificationAcqSupportSystem:
+                provider.qualificationAcqSupportSystem,
+            qualificationAllowance: provider.qualificationAllowance,
+            salaryIncrease: provider.salaryIncrease,
+            sameDayWorkOK: provider.sameDayWorkOK,
+            satSunHolidayOK: provider.satSunHolidayOK,
+            scheduledTimeExactly: provider.scheduledTimeExactly,
+            seniorSupport: provider.seniorSupport,
+            shiftCycle: provider.shiftCycle.text,
+            shiftFixingPeriod: provider.shiftFixingPeriod.text,
+            shiftSubPeriod: provider.shiftSubPeriod.text,
+            shiftSystem2: provider.shiftSystem2,
+            shiftSystem: provider.shiftSystem,
+            shortTerm: provider.shortTerm,
+            sideJoBDoubleWorkOK: provider.sideJoBDoubleWorkOK,
+            singleDayOK: provider.singleDayOK,
+            socialInsurance2: provider.socialInsurance2,
+            standingWork: provider.standingWork,
+            summerVacation: provider.summerVacation,
+            sundayAndPublicHoliday: provider.sundayAndPublicHoliday,
+            supplementaryExplanationOfSalary: provider.supplementary.text,
+            tooMuchInteractionWithCustomers:
+                provider.tooMuchInteractionWithCustomers,
+            trainingAvailable: provider.trainingAvailable,
+            transportRemark: provider.remarkTransport.text,
+            uniform: provider.uniform,
+            universityStudentWelcome: provider.universityStudentWelcome,
+            winterVacation: provider.winterVacation,
+            workDependentsOK: provider.workDependentsOK,
+            youCanChooseTheTimeAndDayOfTheWeek:
+                provider.youCanChooseTheTimeAndDayOfTheWeek,
+            youCanWorkForAlongTime: provider.youCanWorkForAlongTime);
         String? val;
         if (widget.jobPostId != null) {
           val = await JobPostingApiService().updateJobPostingInfo(c);
@@ -115,7 +246,11 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
         }
         provider.onChangeLoading(false);
         if (val == ConstValue.success) {
-          toastMessageSuccess(widget.jobPostId != null ? JapaneseText.successUpdate : JapaneseText.successCreate, context);
+          toastMessageSuccess(
+              widget.jobPostId != null
+                  ? JapaneseText.successUpdate
+                  : JapaneseText.successCreate,
+              context);
           await provider.getAllJobPost();
           context.pop();
           context.go(MyRoute.job);
@@ -128,9 +263,12 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
 
   @override
   void initState() {
-    Provider.of<JobPostingForJapaneseProvider>(context, listen: false).setLoading = true;
-    Provider.of<JobPostingForJapaneseProvider>(context, listen: false).setAllController = [];
-    Provider.of<JobPostingForJapaneseProvider>(context, listen: false).setImage = "";
+    Provider.of<JobPostingForJapaneseProvider>(context, listen: false)
+        .setLoading = true;
+    Provider.of<JobPostingForJapaneseProvider>(context, listen: false)
+        .setAllController = [];
+    Provider.of<JobPostingForJapaneseProvider>(context, listen: false)
+        .setImage = "";
     super.initState();
   }
 
@@ -234,7 +372,10 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
                         Center(
                           child: SizedBox(
                             width: AppSize.getDeviceWidth(context) * 0.2,
-                            child: ButtonWidget(title: JapaneseText.save, color: AppColor.primaryColor, onPress: () => onSaveUserData()),
+                            child: ButtonWidget(
+                                title: JapaneseText.save,
+                                color: AppColor.primaryColor,
+                                onPress: () => onSaveUserData()),
                           ),
                         ),
                       ],
@@ -278,7 +419,8 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
         ),
         AppSize.spaceHeight5,
         CustomDropDownWidget(
-          list: provider.allCompany.map((e) => e.companyName.toString()).toList(),
+          list:
+              provider.allCompany.map((e) => e.companyName.toString()).toList(),
           onChange: (e) => provider.onChangeSelectCompanyForDetail(e),
           width: AppSize.getDeviceWidth(context) * 0.6,
           selectItem: provider.selectedCompany,
@@ -301,42 +443,52 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
           children: [
             RadioListTileWidget(
                 title: JapaneseText.hourlyWage,
-                onChange: (v) => provider.onChangeSalaryType(JapaneseText.hourlyWage),
+                onChange: (v) =>
+                    provider.onChangeSalaryType(JapaneseText.hourlyWage),
                 size: 100,
                 val: provider.salaryType),
             AppSize.spaceWidth16,
             RadioListTileWidget(
                 title: JapaneseText.dailyWage,
-                onChange: (v) => provider.onChangeSalaryType(JapaneseText.dailyWage),
+                onChange: (v) =>
+                    provider.onChangeSalaryType(JapaneseText.dailyWage),
                 size: 100,
                 val: provider.salaryType),
             AppSize.spaceWidth16,
             RadioListTileWidget(
                 title: JapaneseText.monthlySalary,
-                onChange: (v) => provider.onChangeSalaryType(JapaneseText.monthlySalary),
+                onChange: (v) =>
+                    provider.onChangeSalaryType(JapaneseText.monthlySalary),
                 size: 100,
                 val: provider.salaryType),
             AppSize.spaceWidth16,
             RadioListTileWidget(
                 title: JapaneseText.annualWage,
-                onChange: (v) => provider.onChangeSalaryType(JapaneseText.annualWage),
+                onChange: (v) =>
+                    provider.onChangeSalaryType(JapaneseText.annualWage),
                 size: 100,
                 val: provider.salaryType),
             AppSize.spaceWidth16,
             RadioListTileWidget(
                 title: JapaneseText.onePanel,
-                onChange: (v) => provider.onChangeSalaryType(JapaneseText.onePanel),
+                onChange: (v) =>
+                    provider.onChangeSalaryType(JapaneseText.onePanel),
                 size: 100,
                 val: provider.salaryType),
             AppSize.spaceWidth16,
             RadioListTileWidget(
                 title: JapaneseText.oneWorkday,
-                onChange: (v) => provider.onChangeSalaryType(JapaneseText.oneWorkday),
+                onChange: (v) =>
+                    provider.onChangeSalaryType(JapaneseText.oneWorkday),
                 size: 100,
                 val: provider.salaryType),
             AppSize.spaceWidth16,
             RadioListTileWidget(
-                title: JapaneseText.other, onChange: (v) => provider.onChangeSalaryType(JapaneseText.other), size: 140, val: provider.salaryType),
+                title: JapaneseText.other,
+                onChange: (v) =>
+                    provider.onChangeSalaryType(JapaneseText.other),
+                size: 140,
+                val: provider.salaryType),
           ],
         ),
         AppSize.spaceHeight16,
@@ -347,17 +499,20 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
         AppSize.spaceHeight5,
         RadioListTileWidget(
             title: JapaneseText.salaryRangeFrom1200,
-            onChange: (v) => provider.onChangeSalaryRangeType(JapaneseText.salaryRangeFrom1200),
+            onChange: (v) => provider
+                .onChangeSalaryRangeType(JapaneseText.salaryRangeFrom1200),
             size: AppSize.getDeviceWidth(context) * 0.4,
             val: provider.salaryRangeType),
         RadioListTileWidget(
             title: JapaneseText.salaryRangeUnder1200,
-            onChange: (v) => provider.onChangeSalaryRangeType(JapaneseText.salaryRangeUnder1200),
+            onChange: (v) => provider
+                .onChangeSalaryRangeType(JapaneseText.salaryRangeUnder1200),
             size: AppSize.getDeviceWidth(context) * 0.4,
             val: provider.salaryRangeType),
         RadioListTileWidget(
             title: JapaneseText.salaryRangeFixed1200,
-            onChange: (v) => provider.onChangeSalaryRangeType(JapaneseText.salaryRangeFixed1200),
+            onChange: (v) => provider
+                .onChangeSalaryRangeType(JapaneseText.salaryRangeFixed1200),
             size: AppSize.getDeviceWidth(context) * 0.4,
             val: provider.salaryRangeType),
         AppSize.spaceHeight16,
@@ -436,25 +591,29 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
           children: [
             RadioListTileWidget(
                 title: JapaneseText.neither,
-                onChange: (v) => provider.onChangeExamAndTraining(JapaneseText.neither),
+                onChange: (v) =>
+                    provider.onChangeExamAndTraining(JapaneseText.neither),
                 size: 130,
                 val: provider.examAndTraining),
             AppSize.spaceWidth16,
             RadioListTileWidget(
                 title: JapaneseText.trailPeriodYes,
-                onChange: (v) => provider.onChangeExamAndTraining(JapaneseText.trailPeriodYes),
+                onChange: (v) => provider
+                    .onChangeExamAndTraining(JapaneseText.trailPeriodYes),
                 size: 130,
                 val: provider.examAndTraining),
             AppSize.spaceWidth16,
             RadioListTileWidget(
                 title: JapaneseText.trainingPeriodYes,
-                onChange: (v) => provider.onChangeExamAndTraining(JapaneseText.trainingPeriodYes),
+                onChange: (v) => provider
+                    .onChangeExamAndTraining(JapaneseText.trainingPeriodYes),
                 size: 130,
                 val: provider.examAndTraining),
             AppSize.spaceWidth16,
             RadioListTileWidget(
                 title: JapaneseText.desInTheText,
-                onChange: (v) => provider.onChangeExamAndTraining(JapaneseText.desInTheText),
+                onChange: (v) =>
+                    provider.onChangeExamAndTraining(JapaneseText.desInTheText),
                 size: 130,
                 val: provider.examAndTraining),
             AppSize.spaceWidth16,
@@ -1229,7 +1388,8 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
                           title: "またはファイルを選択する",
                           color: AppColor.primaryColor,
                           onPress: () async {
-                            await CompanyApiServices().uploadImageToFirebase(provider);
+                            await CompanyApiServices()
+                                .uploadImageToFirebase(provider);
                           },
                         )
                       ],
@@ -1286,11 +1446,16 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
                         var date = await showDatePicker(
                             locale: const Locale("ja", "JP"),
                             context: context,
-                            initialDate: provider.startRecruitDate.text.isNotEmpty ? DateTime.parse(provider.startRecruitDate.text) : now,
+                            initialDate: provider
+                                    .startRecruitDate.text.isNotEmpty
+                                ? DateTime.parse(provider.startRecruitDate.text)
+                                : now,
                             firstDate: now,
-                            lastDate: DateTime.now().add(const Duration(days: 3000)));
+                            lastDate:
+                                DateTime.now().add(const Duration(days: 3000)));
                         if (date != null) {
-                          provider.startRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
+                          provider.startRecruitDate.text =
+                              DateFormat('yyyy-MM-dd').format(date);
                         }
                       },
                     ),
@@ -1298,7 +1463,8 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
                 ),
               ),
               AppSize.spaceWidth16,
-              const Padding(padding: EdgeInsets.only(top: 35), child: Text("~")),
+              const Padding(
+                  padding: EdgeInsets.only(top: 35), child: Text("~")),
               AppSize.spaceWidth16,
               Expanded(
                 child: Column(
@@ -1317,11 +1483,14 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
                         var date = await showDatePicker(
                             locale: const Locale("ja", "JP"),
                             context: context,
-                            initialDate: provider.endRecruitDate.text.isNotEmpty ? DateTime.parse(provider.endRecruitDate.text) : now,
+                            initialDate: provider.endRecruitDate.text.isNotEmpty
+                                ? DateTime.parse(provider.endRecruitDate.text)
+                                : now,
                             firstDate: now,
                             lastDate: now.add(const Duration(days: 3000)));
                         if (date != null) {
-                          provider.endRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
+                          provider.endRecruitDate.text =
+                              DateFormat('yyyy-MM-dd').format(date);
                         }
                       },
                     ),
@@ -1369,7 +1538,8 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(JapaneseText.numberOfPeopleRecruiting, style: normalTextStyle),
+                Text(JapaneseText.numberOfPeopleRecruiting,
+                    style: normalTextStyle),
                 AppSize.spaceHeight5,
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -2290,10 +2460,12 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
                     JapaneseText.getOnlyBasicInformation,
                     style: normalTextStyle.copyWith(fontSize: 12),
                   ),
-                  value: provider.informationToObtain == JapaneseText.getOnlyBasicInformation,
+                  value: provider.informationToObtain ==
+                      JapaneseText.getOnlyBasicInformation,
                   dense: true,
                   controlAffinity: ListTileControlAffinity.leading,
-                  onChanged: (v) => provider.onChangeInformationToObtain(JapaneseText.getOnlyBasicInformation)),
+                  onChanged: (v) => provider.onChangeInformationToObtain(
+                      JapaneseText.getOnlyBasicInformation)),
             ),
             AppSize.spaceWidth16,
             SizedBox(
@@ -2306,10 +2478,12 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
                     JapaneseText.obtainEducationalBackground,
                     style: normalTextStyle.copyWith(fontSize: 12),
                   ),
-                  value: provider.informationToObtain == JapaneseText.obtainEducationalBackground,
+                  value: provider.informationToObtain ==
+                      JapaneseText.obtainEducationalBackground,
                   dense: true,
                   controlAffinity: ListTileControlAffinity.leading,
-                  onChanged: (v) => provider.onChangeInformationToObtain(JapaneseText.obtainEducationalBackground)),
+                  onChanged: (v) => provider.onChangeInformationToObtain(
+                      JapaneseText.obtainEducationalBackground)),
             )
           ],
         )
@@ -2317,7 +2491,11 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
     );
   }
 
-  checkBoxTile({required String title, required bool val, required Function onChange, double size = 80}) {
+  checkBoxTile(
+      {required String title,
+      required bool val,
+      required Function onChange,
+      double size = 80}) {
     return SizedBox(
       width: size,
       child: CheckboxListTile(
@@ -2341,11 +2519,13 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
         if (provider.eligibilityForApp.text.contains(title)) {
           if (provider.eligibilityForApp.text.split(", ")[0] == title) {
             setState(() {
-              provider.eligibilityForApp.text = provider.eligibilityForApp.text.replaceAll(title, "");
+              provider.eligibilityForApp.text =
+                  provider.eligibilityForApp.text.replaceAll(title, "");
             });
           } else {
             setState(() {
-              provider.eligibilityForApp.text = provider.eligibilityForApp.text.replaceAll(", $title", "");
+              provider.eligibilityForApp.text =
+                  provider.eligibilityForApp.text.replaceAll(", $title", "");
             });
           }
         } else {
@@ -2365,7 +2545,9 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
         padding: const EdgeInsets.only(left: 20, right: 20),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            color: provider.eligibilityForApp.text.contains(title) ? AppColor.primaryColor.withOpacity(0.5) : Colors.white,
+            color: provider.eligibilityForApp.text.contains(title)
+                ? AppColor.primaryColor.withOpacity(0.5)
+                : Colors.white,
             border: Border.all(width: 0.5, color: Colors.grey)),
         child: Text(title),
       ),
@@ -2428,7 +2610,10 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
             JapaneseText.applicantSearch + " (Japanese)",
             style: titleStyle,
           ),
-          IconButton(splashRadius: 30, onPressed: () => context.pop(), icon: const Icon(Icons.close))
+          IconButton(
+              splashRadius: 30,
+              onPressed: () => context.pop(),
+              icon: const Icon(Icons.close))
         ],
       ),
     );
