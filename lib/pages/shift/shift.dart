@@ -10,8 +10,8 @@ class ShiftPage extends StatefulWidget {
 class _ShiftPageState extends State<ShiftPage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder(
-      child: Text("Shift Page"),
+    return const Center(
+      child: Text("We are going to develop Shift page soon!!!!"),
     );
   }
 }

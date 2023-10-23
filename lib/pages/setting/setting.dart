@@ -10,8 +10,8 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder(
-      child: Text("Setting"),
+    return const Center(
+      child: Text("We are going to develop Setting page soon!!!!"),
     );
   }
 }

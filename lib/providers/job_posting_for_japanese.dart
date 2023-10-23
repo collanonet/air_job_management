@@ -521,54 +521,188 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
     allCompany = await CompanyApiServices().getAllCompany();
     if (id != null) {
       jobPosting = await JobPostingApiService().getAJobPosting(id);
-      if (jobPosting!.companyId != null) {
-        for (var c in allCompany) {
-          if (c.uid == jobPosting!.companyId) {
-            selectedCompany = c.companyName;
-            selectedCompanyId = c.uid;
-          }
-        }
-      }
-      imageUrl = jobPosting?.image ?? "";
-      title.text = jobPosting?.title ?? "";
-      overview.text = jobPosting?.description ?? "";
-      content.text = jobPosting?.content ?? "";
-      startRecruitDate.text = jobPosting?.startDate ?? "";
-      endRecruitDate.text = jobPosting?.endDate ?? "";
-      if (jobPosting!.location != null) {
-        companyLocation.text = jobPosting?.location?.name ?? "";
-        if (jobPosting?.location?.lat != null && jobPosting?.location?.lat != "") {
-          companyLocationLatLng.text = "${jobPosting?.location?.lat}, ${jobPosting?.location?.lng}";
-        }
-      }
-      numberOfRecruitPeople.text = jobPosting?.numberOfRecruit ?? "";
-      breakTimeMinute.text = jobPosting?.breakTimeAsMinute ?? "";
-      startWorkTime.text = jobPosting?.startTimeHour ?? "";
-      endWorkTime.text = jobPosting?.endTimeHour ?? "";
-      numberOfAnnualHolidays.text = jobPosting?.annualHoliday ?? "";
-      holidayDetail.text = jobPosting?.holidayDetail ?? "";
-      selectedOccupation = jobPosting?.occupationType;
-      chooseOccupationSkill = jobPosting?.occupation ?? false;
-      selectedEmploymentType = jobPosting?.employmentType;
-      selectedNationality = jobPosting?.desiredNationality;
-      selectedNecessaryJapanSkill = jobPosting?.necessaryJapanSkill;
-      selectedContentOfTest = jobPosting?.contentOfTheTest ?? [];
-      selectedStatusOfRecident = jobPosting?.statusOfResidence ?? [];
-      selectedHotelCleaningItemLearn = jobPosting?.hotelCleaningLearningItem ?? [];
-      contractProvisioning = jobPosting?.employmentContractProvisioning == true ? JapaneseText.yes : JapaneseText.no;
-      if (jobPosting!.interviewLocation != null) {
-        interviewLocation.text = jobPosting?.interviewLocation?.name ?? "";
-        if (jobPosting?.interviewLocation?.lat != null && jobPosting?.interviewLocation?.lat != "") {
-          interviewLocationLatLng.text = "${jobPosting?.interviewLocation?.lat}, ${jobPosting?.interviewLocation?.lng}";
-        }
-      }
-      otherQualification.text = jobPosting?.otherQualification ?? "";
-      remark.text = jobPosting?.remarkOfRequirement ?? "";
-      isIndustrialAccident = jobPosting?.industrialAccident ?? false;
-      isEmployment = jobPosting?.employment ?? false;
-      isHealth = jobPosting?.health ?? false;
-      isWelfare = jobPosting?.publicWelfare ?? false;
     }
+    if (jobPosting?.companyId != null) {
+      for (var c in allCompany) {
+        if (c.uid == jobPosting!.companyId) {
+          selectedCompany = c.companyName;
+          selectedCompanyId = c.uid;
+        }
+      }
+    }
+    imageUrl = jobPosting?.image ?? "";
+    title.text = jobPosting?.title ?? "";
+    overview.text = jobPosting?.description ?? "";
+    content.text = jobPosting?.content ?? "";
+    startRecruitDate.text = jobPosting?.startDate ?? "";
+    endRecruitDate.text = jobPosting?.endDate ?? "";
+    if (jobPosting?.location != null) {
+      companyLocation.text = jobPosting?.location?.name ?? "";
+      if (jobPosting?.location?.lat != null && jobPosting?.location?.lat != "") {
+        companyLocationLatLng.text = "${jobPosting?.location?.lat}, ${jobPosting?.location?.lng}";
+      }
+    }
+    numberOfRecruitPeople.text = jobPosting?.numberOfRecruit ?? "";
+    breakTimeMinute.text = jobPosting?.breakTimeAsMinute ?? "";
+    startWorkTime.text = jobPosting?.startTimeHour ?? "";
+    endWorkTime.text = jobPosting?.endTimeHour ?? "";
+    numberOfAnnualHolidays.text = jobPosting?.annualHoliday ?? "";
+    holidayDetail.text = jobPosting?.holidayDetail ?? "";
+    selectedOccupation = jobPosting?.occupationType;
+    chooseOccupationSkill = jobPosting?.occupation ?? false;
+    selectedEmploymentType = jobPosting?.employmentType;
+    selectedNationality = jobPosting?.desiredNationality;
+    selectedNecessaryJapanSkill = jobPosting?.necessaryJapanSkill;
+    selectedContentOfTest = jobPosting?.contentOfTheTest ?? [];
+    selectedStatusOfRecident = jobPosting?.statusOfResidence ?? [];
+    selectedHotelCleaningItemLearn = jobPosting?.hotelCleaningLearningItem ?? [];
+    contractProvisioning = jobPosting?.employmentContractProvisioning == true ? JapaneseText.yes : JapaneseText.no;
+    if (jobPosting?.interviewLocation != null) {
+      interviewLocation.text = jobPosting?.interviewLocation?.name ?? "";
+      if (jobPosting?.interviewLocation?.lat != null && jobPosting?.interviewLocation?.lat != "") {
+        interviewLocationLatLng.text = "${jobPosting?.interviewLocation?.lat}, ${jobPosting?.interviewLocation?.lng}";
+      }
+    }
+    otherQualification.text = jobPosting?.otherQualification ?? "";
+    remark.text = jobPosting?.remarkOfRequirement ?? "";
+    isIndustrialAccident = jobPosting?.industrialAccident ?? false;
+    isEmployment = jobPosting?.employment ?? false;
+    isHealth = jobPosting?.health ?? false;
+    isWelfare = jobPosting?.publicWelfare ?? false;
+    salaryRangeType = jobPosting?.salaryRange ?? "";
+    fromSalaryAmount.text = jobPosting?.amountOfPayrollFrom ?? "";
+    toSalaryAmount.text = jobPosting?.amountOfPayrollTo ?? "";
+    supplementary.text = jobPosting?.supplementaryExplanationOfSalary ?? "";
+    examAndTraining = jobPosting?.examinationOfTraining ?? "";
+    eligibilityForApp.text = jobPosting?.eligibilityForApplication ?? "";
+    offHours.text = jobPosting?.offHours ?? "";
+    //Work Day
+    mon = jobPosting?.mon ?? false;
+    tue = jobPosting?.tue ?? false;
+    wed = jobPosting?.wed ?? false;
+    thu = jobPosting?.thu ?? false;
+    fri = jobPosting?.fri ?? false;
+    sat = jobPosting?.sat ?? false;
+    sun = jobPosting?.sun ?? false;
+    //Holiday
+    remarkHoliday.text = jobPosting?.holidayRemark ?? "";
+    shiftSystem = jobPosting?.shiftSystem ?? false;
+    paidHoliday2 = jobPosting?.paidHoliday2 ?? false;
+    summerVacation = jobPosting?.summerVacation ?? false;
+    winterVacation = jobPosting?.winterVacation ?? false;
+    nurseCareLeave = jobPosting?.nurseCareLeave ?? false;
+    childCareLeave = jobPosting?.childCareLeave ?? false;
+    prenatalAndPostnatalLeave = jobPosting?.prenatalAndPostnatalLeave ?? false;
+    accordingToOurCalendar = jobPosting?.accordingToOurCalendar ?? false;
+    sundayAndPublicHoliday = jobPosting?.sundayAndPublicHoliday ?? false;
+    fourTwoFiveTwoOff = jobPosting?.fourTwoFiveTwoOff ?? false;
+    //Bonus
+    remarkBonus.text = jobPosting?.bonusRemark ?? "";
+    salaryIncrease = jobPosting?.salaryIncrease ?? false;
+    uniform = jobPosting?.uniform ?? false;
+    socialInsurance2 = jobPosting?.socialInsurance2 ?? false;
+    bonuses = jobPosting?.bonuses ?? false;
+
+    mealsAssAvailable = jobPosting?.mealsAssAvailable ?? false;
+    companyDiscountAvailable = jobPosting?.companyDiscountAvailable ?? false;
+    employeePromotionAvailable = jobPosting?.employeePromotionAvailable ?? false;
+    qualificationAcqSupportSystem = jobPosting?.qualificationAcqSupportSystem ?? false;
+    overtimeAllowance = jobPosting?.overtimeAllowance ?? false;
+    lateNightAllowance = jobPosting?.lateNightAllowance ?? false;
+    holidayAllowance = jobPosting?.holidayAllowance ?? false;
+    dormCompanyHouseHousingAllowanceAvailable = jobPosting?.dormCompanyHouseHousingAllowanceAvailable ?? false;
+    qualificationAllowance = jobPosting?.qualificationAllowance ?? false;
+    perfectAttendanceAllowance = jobPosting?.perfectAttendanceAllowance ?? false;
+    familyAllowance = jobPosting?.familyAllowance ?? false;
+
+    remarkTransport.text = jobPosting?.transportRemark ?? "";
+    minimumWorkTerm.text = jobPosting?.minimumWorkTerm ?? "";
+    minimumNumberOfWorkingDays.text = jobPosting?.minimumNumberOfWorkingDays ?? "";
+    minimumNumberOfWorkingTime.text = jobPosting?.minimumNumberOfWorkingTime ?? "";
+    shiftCycle.text = jobPosting?.shiftCycle ?? "";
+    shiftSubPeriod.text = jobPosting?.shiftSubPeriod ?? "";
+    shiftFixingPeriod.text = jobPosting?.shiftFixingPeriod ?? "";
+
+    //Occupation Exp
+    houseWivesHouseHusbandsWelcome = jobPosting?.houseWivesHouseHusbandsWelcome ?? false;
+    partTimeWelcome = jobPosting?.partTimeWelcome ?? false;
+    universityStudentWelcome = jobPosting?.universityStudentWelcome ?? false;
+    highSchoolStudent = jobPosting?.highSchoolStudent ?? false;
+    seniorSupport = jobPosting?.seniorSupport ?? false;
+    noEducationRequire = jobPosting?.noEducationRequire ?? false;
+    noExpBeginnerIsOk = jobPosting?.noExpBeginnerIsOk ?? false;
+    blankOk = jobPosting?.blankOk ?? false;
+    expAndQualifiedPeopleWelcome = jobPosting?.expAndQualifiedPeopleWelcome ?? false;
+
+    //Shift day of the week
+    shiftSystem2 = jobPosting?.shiftSystem2 ?? false;
+    youCanChooseTheTimeAndDayOfTheWeek = jobPosting?.youCanChooseTheTimeAndDayOfTheWeek ?? false;
+    onlyOnWeekDayOK = jobPosting?.onlyOnWeekDayOK ?? false;
+    satSunHolidayOK = jobPosting?.satSunHolidayOK ?? false;
+    fourAndMoreDayAWeekOK = jobPosting?.fourAndMoreDayAWeekOK ?? false;
+    singleDayOK = jobPosting?.singleDayOK ?? false;
+
+    //how to work
+    sameDayWorkOK = jobPosting?.sameDayWorkOK ?? false;
+    fullTimeWelcome = jobPosting?.fullTimeWelcome ?? false;
+    workDependentsOK = jobPosting?.workDependentsOK ?? false;
+    longTermWelcome = jobPosting?.longTermWelcome ?? false;
+    sideJoBDoubleWorkOK = jobPosting?.sideJoBDoubleWorkOK ?? false;
+
+    //commuting style
+    nearOrInsideStation = jobPosting?.nearOrInsideStation ?? false;
+    commutingNearByOK = jobPosting?.commutingNearByOK ?? false;
+    commutingByBikeOK = jobPosting?.commutingByBikeOK ?? false;
+    hairStyleColorFree = jobPosting?.hairStyleColorFree ?? false;
+    clothFree = jobPosting?.clothFree ?? false;
+    canApplyWithFri = jobPosting?.canApplyWithFri ?? false;
+
+    ovenStaff = jobPosting?.ovenStaff ?? false;
+    shortTerm = jobPosting?.shortTerm ?? false;
+    trainingAvailable = jobPosting?.trainingAvailable ?? false;
+
+    //Work Env
+    //age range
+    manyTeenagers = jobPosting?.manyTeenagers ?? false;
+    manyInTheir20 = jobPosting?.manyInTheir20 ?? false;
+    manyInTheir30 = jobPosting?.manyInTheir30 ?? false;
+    manyInTheir40 = jobPosting?.manyInTheir40 ?? false;
+    manyInTheir50 = jobPosting?.manyInTheir50 ?? false;
+
+    manyMen = jobPosting?.manyMen ?? false;
+    manyWomen = jobPosting?.manyWomen ?? false;
+
+    //Atmosphere
+    remarkAtmosphere.text = jobPosting?.atmosphereRemark ?? "";
+    livelyWorkplace = jobPosting?.livelyWorkplace ?? false;
+    calmWorkplace = jobPosting?.calmWorkplace ?? false;
+    manyInteractionsOutsideOfWork = jobPosting?.manyInteractionsOutsideOfWork ?? false;
+    fewInteractionsOutsideOfWork = jobPosting?.fewInteractionsOutsideOfWork ?? false;
+    atHome = jobPosting?.atHome ?? false;
+    businessLike = jobPosting?.businessLike ?? false;
+    beginnersAreActivelyWorking = jobPosting?.beginnersAreActivelyWorking ?? false;
+    youCanWorkForAlongTime = jobPosting?.youCanWorkForAlongTime ?? false;
+    easyToAdjustToYourConvenience = jobPosting?.easyToAdjustToYourConvenience ?? false;
+    scheduledTimeExactly = jobPosting?.scheduledTimeExactly ?? false;
+    collaborative = jobPosting?.collaborative ?? false;
+    individualityCanBeUtilized = jobPosting?.individualityCanBeUtilized ?? false;
+    standingWork = jobPosting?.standingWork ?? false;
+    deskWork = jobPosting?.deskWork ?? false;
+    tooMuchInteractionWithCustomers = jobPosting?.tooMuchInteractionWithCustomers ?? false;
+    lessInteractionWithCustomers = jobPosting?.lessInteractionWithCustomers ?? false;
+    lotsOfManualLabor = jobPosting?.lotsOfManualLabor ?? false;
+    littleOfManualLabor = jobPosting?.littleOfManualLabor ?? false;
+    knowledgeAndExperience = jobPosting?.knowledgeAndExperience ?? false;
+    noKnowledgeOrExperienceRequired = jobPosting?.noKnowledgeOrExperienceRequired ?? false;
+
+    oneDayWorkFlow.text = jobPosting?.dailyWorkFlow ?? "";
+    shiftIncomeExample.text = jobPosting?.exampleOfShiftAndIncome ?? "";
+    aWordFromASeniorStaffMember.text = jobPosting?.messageFromSeniorStaff ?? "";
+    flowAfterApplication.text = jobPosting?.applicationProcess ?? "";
+    plannedNumberOfEmployee.text = jobPosting?.expectedNumberOfRecruits ?? "";
+    inquiryPhoneNumber.text = jobPosting?.phoneNumber ?? "";
+
+    informationToObtain = jobPosting?.infoToBeObtains ?? "";
     onChangeLoading(false);
   }
 

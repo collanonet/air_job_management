@@ -349,54 +349,54 @@ class JobPostingProvider with ChangeNotifier {
     allCompany = await CompanyApiServices().getAllCompany();
     if (id != null) {
       jobPosting = await JobPostingApiService().getAJobPosting(id);
-      if (jobPosting!.companyId != null) {
-        for (var c in allCompany) {
-          if (c.uid == jobPosting!.companyId) {
-            selectedCompany = c.companyName;
-            selectedCompanyId = c.uid;
-          }
-        }
-      }
-      imageUrl = jobPosting?.image ?? "";
-      title.text = jobPosting?.title ?? "";
-      overview.text = jobPosting?.description ?? "";
-      content.text = jobPosting?.content ?? "";
-      startRecruitDate.text = jobPosting?.startDate ?? "";
-      endRecruitDate.text = jobPosting?.endDate ?? "";
-      if (jobPosting!.location != null) {
-        companyLocation.text = jobPosting?.location?.name ?? "";
-        if (jobPosting?.location?.lat != null && jobPosting?.location?.lat != "") {
-          companyLocationLatLng.text = "${jobPosting?.location?.lat}, ${jobPosting?.location?.lng}";
-        }
-      }
-      numberOfRecruitPeople.text = jobPosting?.numberOfRecruit ?? "";
-      breakTimeMinute.text = jobPosting?.breakTimeAsMinute ?? "";
-      startWorkTime.text = jobPosting?.startTimeHour ?? "";
-      endWorkTime.text = jobPosting?.endTimeHour ?? "";
-      numberOfAnnualHolidays.text = jobPosting?.annualHoliday ?? "";
-      holidayDetail.text = jobPosting?.holidayDetail ?? "";
-      selectedOccupation = jobPosting?.occupationType;
-      chooseOccupationSkill = jobPosting?.occupation ?? false;
-      selectedEmploymentType = jobPosting?.employmentType;
-      selectedNationality = jobPosting?.desiredNationality;
-      selectedNecessaryJapanSkill = jobPosting?.necessaryJapanSkill;
-      selectedContentOfTest = jobPosting?.contentOfTheTest ?? [];
-      selectedStatusOfRecident = jobPosting?.statusOfResidence ?? [];
-      selectedHotelCleaningItemLearn = jobPosting?.hotelCleaningLearningItem ?? [];
-      contractProvisioning = jobPosting?.employmentContractProvisioning == true ? JapaneseText.yes : JapaneseText.no;
-      if (jobPosting!.interviewLocation != null) {
-        interviewLocation.text = jobPosting?.interviewLocation?.name ?? "";
-        if (jobPosting?.interviewLocation?.lat != null && jobPosting?.interviewLocation?.lat != "") {
-          interviewLocationLatLng.text = "${jobPosting?.interviewLocation?.lat}, ${jobPosting?.interviewLocation?.lng}";
-        }
-      }
-      otherQualification.text = jobPosting?.otherQualification ?? "";
-      remark.text = jobPosting?.remarkOfRequirement ?? "";
-      isIndustrialAccident = jobPosting?.industrialAccident ?? false;
-      isEmployment = jobPosting?.employment ?? false;
-      isHealth = jobPosting?.health ?? false;
-      isWelfare = jobPosting?.publicWelfare ?? false;
     }
+    if (jobPosting?.companyId != null) {
+      for (var c in allCompany) {
+        if (c.uid == jobPosting!.companyId) {
+          selectedCompany = c.companyName;
+          selectedCompanyId = c.uid;
+        }
+      }
+    }
+    imageUrl = jobPosting?.image ?? "";
+    title.text = jobPosting?.title ?? "";
+    overview.text = jobPosting?.description ?? "";
+    content.text = jobPosting?.content ?? "";
+    startRecruitDate.text = jobPosting?.startDate ?? "";
+    endRecruitDate.text = jobPosting?.endDate ?? "";
+    if (jobPosting?.location != null) {
+      companyLocation.text = jobPosting?.location?.name ?? "";
+      if (jobPosting?.location?.lat != null && jobPosting?.location?.lat != "") {
+        companyLocationLatLng.text = "${jobPosting?.location?.lat}, ${jobPosting?.location?.lng}";
+      }
+    }
+    numberOfRecruitPeople.text = jobPosting?.numberOfRecruit ?? "";
+    breakTimeMinute.text = jobPosting?.breakTimeAsMinute ?? "";
+    startWorkTime.text = jobPosting?.startTimeHour ?? "";
+    endWorkTime.text = jobPosting?.endTimeHour ?? "";
+    numberOfAnnualHolidays.text = jobPosting?.annualHoliday ?? "";
+    holidayDetail.text = jobPosting?.holidayDetail ?? "";
+    selectedOccupation = jobPosting?.occupationType;
+    chooseOccupationSkill = jobPosting?.occupation ?? false;
+    selectedEmploymentType = jobPosting?.employmentType;
+    selectedNationality = jobPosting?.desiredNationality;
+    selectedNecessaryJapanSkill = jobPosting?.necessaryJapanSkill;
+    selectedContentOfTest = jobPosting?.contentOfTheTest ?? [];
+    selectedStatusOfRecident = jobPosting?.statusOfResidence ?? [];
+    selectedHotelCleaningItemLearn = jobPosting?.hotelCleaningLearningItem ?? [];
+    contractProvisioning = jobPosting?.employmentContractProvisioning == true ? JapaneseText.yes : JapaneseText.no;
+    if (jobPosting?.interviewLocation != null) {
+      interviewLocation.text = jobPosting?.interviewLocation?.name ?? "";
+      if (jobPosting?.interviewLocation?.lat != null && jobPosting?.interviewLocation?.lat != "") {
+        interviewLocationLatLng.text = "${jobPosting?.interviewLocation?.lat}, ${jobPosting?.interviewLocation?.lng}";
+      }
+    }
+    otherQualification.text = jobPosting?.otherQualification ?? "";
+    remark.text = jobPosting?.remarkOfRequirement ?? "";
+    isIndustrialAccident = jobPosting?.industrialAccident ?? false;
+    isEmployment = jobPosting?.employment ?? false;
+    isHealth = jobPosting?.health ?? false;
+    isWelfare = jobPosting?.publicWelfare ?? false;
     onChangeLoading(false);
   }
 
