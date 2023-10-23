@@ -2,11 +2,11 @@ import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/providers/job_posting.dart';
 import 'package:air_job_management/providers/job_posting_for_japanese.dart';
+import 'package:air_job_management/utils/date_time_utils.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/radio_listtile.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
@@ -39,8 +39,8 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
 
   onSaveUserData() async {
     if (_formKey.currentState!.validate()) {
-      DateTime start = DateTime.parse(provider.startRecruitDate.text);
-      DateTime end = DateTime.parse(provider.endRecruitDate.text);
+      DateTime start = MyDateTimeUtils.fromApiToLocal(provider.startRecruitDate.text);
+      DateTime end = MyDateTimeUtils.fromApiToLocal(provider.endRecruitDate.text);
       if (end.isBefore(start)) {
         // End date is before start date validation
         toastMessageError("募集終了日が募集開始日より前です", context);
@@ -1415,7 +1415,7 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
                             firstDate: now,
                             lastDate: DateTime.now().add(const Duration(days: 3000)));
                         if (date != null) {
-                          provider.startRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
+                          provider.startRecruitDate.text = MyDateTimeUtils.convertDateToString(date);
                         }
                       },
                     ),
@@ -1446,7 +1446,7 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
                             firstDate: now,
                             lastDate: now.add(const Duration(days: 3000)));
                         if (date != null) {
-                          provider.endRecruitDate.text = DateFormat('yyyy-MM-dd').format(date);
+                          provider.endRecruitDate.text = MyDateTimeUtils.convertDateToString(date);
                         }
                       },
                     ),
