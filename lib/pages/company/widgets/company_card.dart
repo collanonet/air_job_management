@@ -15,9 +15,7 @@ class CompanyCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: AppSize.getDeviceWidth(context),
-      decoration: BoxDecoration(
-          border: Border.all(width: 1, color: AppColor.primaryColor),
-          borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(border: Border.all(width: 1, color: AppColor.primaryColor), borderRadius: BorderRadius.circular(12)),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -33,9 +31,7 @@ class CompanyCardWidget extends StatelessWidget {
                       Container(
                         width: 30,
                         height: 30,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColor.primaryColor),
+                        decoration: BoxDecoration(shape: BoxShape.circle, color: AppColor.primaryColor),
                         alignment: Alignment.center,
                         child: const Icon(
                           Icons.home_work_outlined,
@@ -49,8 +45,7 @@ class CompanyCardWidget extends StatelessWidget {
                         children: [
                           Text(
                             "${company.companyName}",
-                            style: normalTextStyle.copyWith(
-                                fontSize: 13, color: AppColor.primaryColor),
+                            style: normalTextStyle.copyWith(fontSize: 13, color: AppColor.primaryColor),
                           ),
                           AppSize.spaceHeight5,
                           Text(
@@ -64,18 +59,15 @@ class CompanyCardWidget extends StatelessWidget {
                   flex: 4,
                 ),
                 Expanded(
-                  child:
-                      Text("大阪", style: normalTextStyle.copyWith(fontSize: 13)),
+                  child: Text(company.area ?? "", style: normalTextStyle.copyWith(fontSize: 13)),
                   flex: 3,
                 ),
                 Expanded(
-                  child: Text("01.農林業",
-                      style: normalTextStyle.copyWith(fontSize: 13)),
+                  child: Text(company.industry ?? "", style: normalTextStyle.copyWith(fontSize: 13)),
                   flex: 3,
                 ),
                 Expanded(
-                  child:
-                      Text("7", style: normalTextStyle.copyWith(fontSize: 13)),
+                  child: Text(company.numberOfJobOpening ?? "", style: normalTextStyle.copyWith(fontSize: 13)),
                   flex: 3,
                 ),
                 Expanded(

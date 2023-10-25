@@ -16,9 +16,14 @@ class Company {
   String? content;
   String? uid;
   String? status;
+  String? area;
+  String? industry;
+  String? numberOfJobOpening;
 
   Company(
       {this.uid,
+      this.area,
+      this.industry,
       this.companyName,
       this.companyLatLng,
       this.companyProfile,
@@ -34,9 +39,12 @@ class Company {
       this.email,
       this.tax,
       this.tel,
+      this.numberOfJobOpening,
       this.status});
 
   factory Company.fromJson(Map<String, dynamic> json) => Company(
+        area: json["area"],
+        industry: json["industry"],
         companyLatLng: json["lat_lng"],
         status: json["status"],
         tel: json["tel"],
@@ -56,6 +64,8 @@ class Company {
       );
 
   Map<String, dynamic> toJson() => {
+        "area": area,
+        "industry": industry,
         "lat_lng": companyLatLng,
         "tel": tel,
         "status": status,

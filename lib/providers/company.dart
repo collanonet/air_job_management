@@ -1,7 +1,9 @@
 import 'dart:html';
 
 import 'package:air_job_management/api/company.dart';
+import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/models/company.dart';
+import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +38,8 @@ class CompanyProvider with ChangeNotifier {
   late TextEditingController kanji;
   late TextEditingController kana;
   late TextEditingController content;
+  late TextEditingController area;
+  late TextEditingController industry;
   List<Map<String, TextEditingController>> managerList = [];
   File? fileImage;
   bool isShow = true;
@@ -46,6 +50,16 @@ class CompanyProvider with ChangeNotifier {
 
   getAllCompany({bool? isNotify}) async {
     companyList = await CompanyApiServices().getAllCompany();
+    List<JobPosting> allJob = await JobPostingApiService().getAllJobPost();
+    for (var com in companyList) {
+      int num = 0;
+      for (var job in allJob) {
+        if (com.uid == job.companyId) {
+          num++;
+        }
+      }
+      companyList[companyList.indexOf(com)].numberOfJobOpening = num.toString();
+    }
     if (isNotify == true) {
       notifyListeners();
     }
@@ -63,6 +77,8 @@ class CompanyProvider with ChangeNotifier {
     managerList = [];
     if (id != null) {
       company = await CompanyApiServices().getACompany(id);
+      area.text = company!.area ?? "";
+      industry.text = company!.industry ?? "";
       companyName.text = company!.companyName ?? "";
       profileCom.text = company!.companyProfile ?? "";
       postalCode.text = company!.postalCode ?? "";
@@ -95,6 +111,8 @@ class CompanyProvider with ChangeNotifier {
   initialController() {
     isLoadingForDetail = true;
     imageUrl = "";
+    area = TextEditingController(text: "");
+    industry = TextEditingController(text: "");
     companyName = TextEditingController(text: "");
     profileCom = TextEditingController(text: "");
     postalCode = TextEditingController(text: "");
@@ -131,6 +149,8 @@ class CompanyProvider with ChangeNotifier {
     kanji.dispose();
     kana.dispose();
     content.dispose();
+    area.dispose();
+    industry.dispose();
   }
 
   set setImage(String val) {

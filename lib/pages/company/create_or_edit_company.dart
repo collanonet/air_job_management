@@ -34,6 +34,8 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with 
     if (_formKey.currentState!.validate()) {
       provider.onChangeLoadingForDetail(true);
       Company c = Company(
+          area: provider.area.text,
+          industry: provider.industry.text,
           uid: widget.id,
           email: provider.email.text.trim(),
           affiliate: provider.affiliate.text,
@@ -269,6 +271,46 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with 
                       PrimaryTextField(
                         controller: provider.capital,
                         isRequired: true,
+                        hint: '',
+                        marginBottom: 5,
+                      ),
+                    ],
+                  )),
+            ],
+          ),
+        ),
+        AppSize.spaceHeight16,
+        SizedBox(
+          width: AppSize.getDeviceWidth(context) * 0.55 + 16,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                  width: AppSize.getDeviceWidth(context) * 0.22,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(JapaneseText.area),
+                      AppSize.spaceHeight5,
+                      PrimaryTextField(
+                        isRequired: false,
+                        controller: provider.area,
+                        hint: '',
+                        marginBottom: 5,
+                      ),
+                    ],
+                  )),
+              AppSize.spaceWidth16,
+              SizedBox(
+                  width: AppSize.getDeviceWidth(context) * 0.22,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(JapaneseText.industry),
+                      AppSize.spaceHeight5,
+                      PrimaryTextField(
+                        isRequired: false,
+                        controller: provider.industry,
                         hint: '',
                         marginBottom: 5,
                       ),
