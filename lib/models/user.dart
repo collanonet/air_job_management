@@ -18,6 +18,7 @@ class MyUser {
   String? jobTitle;
   String? jobId;
   String? status;
+  String? gender;
 
   MyUser(
       {this.email,
@@ -36,10 +37,12 @@ class MyUser {
       this.jobDetail,
       this.jobTitle,
       this.status,
-      this.jobId});
+      this.jobId,
+      this.gender});
 
   factory MyUser.fromJson(Map<String, dynamic> json) {
     return MyUser(
+        gender: json["gender"] ?? "",
         workingStatus: json["working_status"] ?? "",
         profileImage: json["profile"] ?? "",
         firstName: json["first_name"] ?? "",
@@ -59,12 +62,12 @@ class MyUser {
   }
 
   Map<String, dynamic> toJson() => {
-        "status": status,
+        "status": status ?? "",
         "profile": profileImage,
         "first_name": firstName,
         "email": email,
         "role": "staff",
-        "dob": dob,
+        "dob": dob ?? "",
         "name_fu": nameFu,
         "name_kanji": nameKanJi,
         "note": note,
@@ -75,6 +78,7 @@ class MyUser {
         "job_detail": jobDetail,
         "job_title": jobTitle,
         "job_id": jobId,
+        "gender": gender ?? "",
         "working_status": workingStatus ?? ""
       };
 }
