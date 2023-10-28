@@ -10,4 +10,7 @@ class AppColor {
   static Color redColor = Colors.red;
   static Color success = Colors.green;
   static Color failed = Colors.red;
+
+  static Color duringCorrespondingColor = Color(0xff6DC9E5);
+  static Color endColor = Color(0xff98A6B5);
 }

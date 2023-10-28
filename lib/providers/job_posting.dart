@@ -5,13 +5,16 @@ import 'package:flutter/cupertino.dart';
 
 import '../api/company.dart';
 import '../models/company.dart';
+import '../utils/date_time_utils.dart';
 
 class JobPostingProvider with ChangeNotifier {
   //For Job Posting List
   List<JobPosting> jobPostingList = [];
-  List<String> statusList = [JapaneseText.allData, JapaneseText.duringCorrespondence, JapaneseText.noContact, JapaneseText.contact];
+  List<String> statusList = [JapaneseText.allData, JapaneseText.duringCorrespondence, JapaneseText.end];
 
   String? selectedStatus;
+  DateTime? startDateForFilter;
+  DateTime? endDateForFilter;
 
   List<String> newArrivalList = [JapaneseText.allData, JapaneseText.newArrival, JapaneseText.interview];
   String? selectedNewArrival;
@@ -140,6 +143,77 @@ class JobPostingProvider with ChangeNotifier {
   bool isRetirementSystem = false;
   bool isReemployment = false;
   bool isRetirementBenefits = false;
+
+  onFilterData() async {
+    jobPostingList = await JobPostingApiService().getAllJobPost();
+    List<JobPosting> filteredJobByStatus = [];
+    if (selectedStatus == statusList[0]) {
+      filteredJobByStatus = jobPostingList;
+    } else {
+      for (var job in jobPostingList) {
+        DateTime now = DateTime.now();
+        DateTime endDate = MyDateTimeUtils.fromApiToLocal(job.endDate ?? job.startDate!);
+        String status = endDate.isBefore(now) ? JapaneseText.end : JapaneseText.duringCorrespondence;
+        if (selectedStatus == status) {
+          filteredJobByStatus.add(job);
+        } else if (selectedStatus == status) {
+          filteredJobByStatus.add(job);
+        }
+      }
+    }
+    List<JobPosting> filteredJobByDate = [];
+    if (startDateForFilter != null && endDateForFilter != null) {
+      for (var job in filteredJobByStatus) {
+        if (job.startDate != null && job.endDate != null) {
+          DateTime startDate = MyDateTimeUtils.fromApiToLocal(job.startDate!);
+          DateTime endDate = MyDateTimeUtils.fromApiToLocal(job.endDate!);
+          final isInRange = isBetweenRangeDates(startDateForFilter!, endDateForFilter!, startDate, endDate);
+          if (isInRange) {
+            filteredJobByDate.add(job);
+          }
+        } else if (job.startDate != null) {
+          DateTime startDate = MyDateTimeUtils.fromApiToLocal(job.startDate!);
+          final isInRange = isDateWithinRangeDates(startDate, startDateForFilter!, endDateForFilter!);
+          if (isInRange) {
+            filteredJobByDate.add(job);
+          }
+        } else if (job.endDate != null) {
+          DateTime endDate = MyDateTimeUtils.fromApiToLocal(job.startDate!);
+          final isInRange = isDateWithinRangeDates(endDate, startDateForFilter!, endDateForFilter!);
+          if (isInRange) {
+            filteredJobByDate.add(job);
+          }
+        }
+      }
+    } else {
+      filteredJobByDate = filteredJobByStatus;
+    }
+    jobPostingList = filteredJobByDate;
+    notifyListeners();
+  }
+
+  bool isBetweenRangeDates(DateTime startDate1, DateTime endDate1, DateTime startDate2, DateTime endDate2) {
+    return (startDate1.isAfter(startDate2) || startDate1 == startDate2) &&
+        (startDate1.isBefore(endDate2) || startDate1 == endDate2) &&
+        (endDate1.isAfter(startDate2) || endDate1 == startDate2) &&
+        (endDate1.isBefore(endDate2) || endDate1 == endDate2);
+  }
+
+  bool isDateWithinRangeDates(DateTime selectedDate, DateTime startDate1, DateTime endDate1) {
+    return ((selectedDate.isAfter(startDate1) || selectedDate == startDate1) && (selectedDate.isBefore(endDate1) || selectedDate == endDate1));
+  }
+
+  onChangeStartDate(DateTime? date) {
+    startDateForFilter = date;
+    onFilterData();
+    notifyListeners();
+  }
+
+  onChangeEndDate(DateTime? date) {
+    endDateForFilter = date;
+    onFilterData();
+    notifyListeners();
+  }
 
   onChangeRetirementBenefits(bool val) {
     isRetirementBenefits = val;
@@ -315,6 +389,8 @@ class JobPostingProvider with ChangeNotifier {
   }
 
   onInitForList() {
+    startDateForFilter = null;
+    endDateForFilter = null;
     selectedStatus = null;
     selectedNewArrival = null;
     isLoading = true;
@@ -419,6 +495,7 @@ class JobPostingProvider with ChangeNotifier {
 
   onChangeStatus(String? val) {
     selectedStatus = val;
+    onFilterData();
     notifyListeners();
   }
 

@@ -95,4 +95,40 @@ class StatusUtils {
       );
     }
   }
+
+  static displayStatusForJobPosting(String? status) {
+    if (status == null || status == "" || status == "null" || status == JapaneseText.duringCorrespondence) {
+      return Center(
+        child: Container(
+          width: 80,
+          height: 35,
+          decoration: BoxDecoration(
+            color: AppColor.duringCorrespondingColor,
+            borderRadius: BorderRadius.circular(25),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            JapaneseText.duringCorrespondence,
+            style: subTitle.copyWith(color: Colors.white, fontSize: 13),
+          ),
+        ),
+      );
+    } else {
+      return Center(
+        child: Container(
+          width: 70,
+          height: 35,
+          decoration: BoxDecoration(
+            color: AppColor.endColor,
+            borderRadius: BorderRadius.circular(25),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            JapaneseText.end,
+            style: subTitle.copyWith(color: Colors.white, fontSize: 13),
+          ),
+        ),
+      );
+    }
+  }
 }

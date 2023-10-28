@@ -1,4 +1,5 @@
 import 'package:air_job_management/models/job_posting.dart';
+import 'package:air_job_management/pages/job_posting/widgets/job_post_filter.dart';
 import 'package:air_job_management/pages/job_posting/widgets/job_posting_card.dart';
 import 'package:air_job_management/pages/job_posting/widgets/sign_up_or_delete.dart';
 import 'package:air_job_management/providers/job_posting.dart';
@@ -13,7 +14,6 @@ import '../../utils/japanese_text.dart';
 import '../../utils/style.dart';
 import '../../widgets/empty_data.dart';
 import '../../widgets/loading.dart';
-import '../company/widgets/filter_company.dart';
 
 class JobPage extends StatefulWidget {
   const JobPage({Key? key}) : super(key: key);
@@ -54,7 +54,7 @@ class _JobPageState extends State<JobPage> with AfterBuildMixin {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            const CompanyFilterDataWidget(),
+            const JobPostingFilterFilterDataWidget(),
             SignUpOrDeleteJobPostWidget(
               context2: context,
             ),
@@ -76,6 +76,7 @@ class _JobPageState extends State<JobPage> with AfterBuildMixin {
                         IconButton(
                             onPressed: () async {
                               jobPostingProvider.onChangeLoading(true);
+                              jobPostingProvider.onInitForList();
                               getData();
                             },
                             icon: const Icon(Icons.refresh))

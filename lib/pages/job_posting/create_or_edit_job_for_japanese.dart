@@ -1411,8 +1411,10 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
                         var date = await showDatePicker(
                             locale: const Locale("ja", "JP"),
                             context: context,
-                            initialDate: provider.startRecruitDate.text.isNotEmpty ? DateTime.parse(provider.startRecruitDate.text) : now,
-                            firstDate: now,
+                            initialDate:
+                                provider.startRecruitDate.text.isNotEmpty ? MyDateTimeUtils.fromApiToLocal(provider.startRecruitDate.text) : now,
+                            firstDate:
+                                provider.startRecruitDate.text.isNotEmpty ? MyDateTimeUtils.fromApiToLocal(provider.startRecruitDate.text) : now,
                             lastDate: DateTime.now().add(const Duration(days: 3000)));
                         if (date != null) {
                           provider.startRecruitDate.text = MyDateTimeUtils.convertDateToString(date);
@@ -1442,8 +1444,9 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
                         var date = await showDatePicker(
                             locale: const Locale("ja", "JP"),
                             context: context,
-                            initialDate: provider.endRecruitDate.text.isNotEmpty ? DateTime.parse(provider.endRecruitDate.text) : now,
-                            firstDate: now,
+                            initialDate: provider.endRecruitDate.text.isNotEmpty ? MyDateTimeUtils.fromApiToLocal(provider.endRecruitDate.text) : now,
+                            firstDate:
+                                provider.startRecruitDate.text.isNotEmpty ? MyDateTimeUtils.fromApiToLocal(provider.startRecruitDate.text) : now,
                             lastDate: now.add(const Duration(days: 3000)));
                         if (date != null) {
                           provider.endRecruitDate.text = MyDateTimeUtils.convertDateToString(date);
