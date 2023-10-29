@@ -39,7 +39,7 @@ class AirJobManagementWidget extends StatelessWidget {
               ),
               AppSize.spaceHeight8,
               const Text(
-                "Version: 1.0.0",
+                "Version: 1.0.0+1",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 10),
               ),
