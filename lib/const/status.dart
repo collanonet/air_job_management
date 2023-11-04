@@ -131,4 +131,88 @@ class StatusUtils {
       );
     }
   }
+
+  static displayStatusForJobSeeker(String? status) {
+    if (status == null || status == "" || status == "null" || status == JapaneseText.noContact) {
+      return Center(
+        child: Container(
+          width: 70,
+          height: 35,
+          decoration: BoxDecoration(
+            color: AppColor.endColor,
+            borderRadius: BorderRadius.circular(25),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            JapaneseText.noContact,
+            style: subTitle.copyWith(color: Colors.white, fontSize: 13),
+          ),
+        ),
+      );
+    } else if (status == JapaneseText.duringCorrespondence) {
+      return Center(
+        child: Container(
+          width: 80,
+          height: 35,
+          decoration: BoxDecoration(
+            color: AppColor.duringCorrespondingColor,
+            borderRadius: BorderRadius.circular(25),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            JapaneseText.duringCorrespondence,
+            style: subTitle.copyWith(color: Colors.white, fontSize: 13),
+          ),
+        ),
+      );
+    } else if (status == JapaneseText.interview) {
+      return Center(
+        child: Container(
+          width: 80,
+          height: 35,
+          decoration: BoxDecoration(
+            color: AppColor.primaryColor,
+            borderRadius: BorderRadius.circular(25),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            JapaneseText.interview,
+            style: subTitle.copyWith(color: Colors.white, fontSize: 13),
+          ),
+        ),
+      );
+    } else if (status == JapaneseText.contact) {
+      return Center(
+        child: Container(
+          width: 80,
+          height: 35,
+          decoration: BoxDecoration(
+            color: AppColor.primaryColor,
+            borderRadius: BorderRadius.circular(25),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            JapaneseText.contact,
+            style: subTitle.copyWith(color: Colors.white, fontSize: 13),
+          ),
+        ),
+      );
+    } else {
+      return Center(
+        child: Container(
+          width: 70,
+          height: 35,
+          decoration: BoxDecoration(
+            color: AppColor.endColor,
+            borderRadius: BorderRadius.circular(25),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            JapaneseText.noContact,
+            style: subTitle.copyWith(color: Colors.white, fontSize: 13),
+          ),
+        ),
+      );
+    }
+  }
 }

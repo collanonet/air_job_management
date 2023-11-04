@@ -1,11 +1,15 @@
 import 'package:air_job_management/const/status.dart';
 import 'package:air_job_management/models/user.dart';
+import 'package:air_job_management/providers/job_seeker_detail.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+
+import '../../../utils/japanese_text.dart';
 
 class JobSeekerCardWidget extends StatelessWidget {
   final MyUser user;
@@ -15,9 +19,7 @@ class JobSeekerCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: AppSize.getDeviceWidth(context),
-      decoration: BoxDecoration(
-          border: Border.all(width: 1, color: AppColor.primaryColor),
-          borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(border: Border.all(width: 1, color: AppColor.primaryColor), borderRadius: BorderRadius.circular(12)),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -33,9 +35,7 @@ class JobSeekerCardWidget extends StatelessWidget {
                       Container(
                         width: 30,
                         height: 30,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColor.primaryColor),
+                        decoration: BoxDecoration(shape: BoxShape.circle, color: AppColor.primaryColor),
                         alignment: Alignment.center,
                         child: const Icon(
                           Icons.person,
@@ -49,8 +49,7 @@ class JobSeekerCardWidget extends StatelessWidget {
                         children: [
                           Text(
                             "${user.nameKanJi}",
-                            style: normalTextStyle.copyWith(
-                                fontSize: 13, color: AppColor.primaryColor),
+                            style: normalTextStyle.copyWith(fontSize: 13, color: AppColor.primaryColor),
                           ),
                           AppSize.spaceHeight5,
                           Text(
@@ -64,16 +63,13 @@ class JobSeekerCardWidget extends StatelessWidget {
                   flex: 2,
                 ),
                 Expanded(
-                  child: Text("${user.jobDetail}",
-                      style: normalTextStyle.copyWith(fontSize: 13)),
+                  child: Text("${user.jobDetail}", style: normalTextStyle.copyWith(fontSize: 13)),
                   flex: 3,
                 ),
                 Expanded(
                   child: Container(
                     height: 50,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: Colors.grey, width: 1)),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), border: Border.all(color: Colors.grey, width: 1)),
                     padding: EdgeInsets.all(8),
                     alignment: Alignment.centerLeft,
                     child: Text("${user.note}"),
@@ -81,15 +77,21 @@ class JobSeekerCardWidget extends StatelessWidget {
                   flex: 3,
                 ),
                 Expanded(
-                  child: Center(
-                      child: Icon(
-                    Icons.email_rounded,
-                    color: AppColor.primaryColor,
-                  )),
+                  child: GestureDetector(
+                    onTap: () {
+                      Provider.of<JobSeekerDetailProvider>(context, listen: false).onChangeMenu(JapaneseText.chat);
+                      context.go("${MyRoute.jobSeeker}/${user.uid}");
+                    },
+                    child: Center(
+                        child: Icon(
+                      Icons.email_rounded,
+                      color: AppColor.primaryColor,
+                    )),
+                  ),
                   flex: 1,
                 ),
                 Expanded(
-                  child: StatusUtils.displayStatus(user.status),
+                  child: StatusUtils.displayStatusForJobSeeker(user.workingStatus),
                   flex: 1,
                 )
               ],

@@ -2,6 +2,7 @@ import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/my_route.dart';
+import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -30,7 +31,9 @@ class CreateSeekerOrDownloadListWidget extends StatelessWidget {
             ButtonWidget(
                 title: JapaneseText.downloadSeekerList,
                 color: AppColor.primaryColor,
-                onPress: () {}),
+                onPress: () {
+                  toastMessageSuccess("We are going to implement this function, currently not yet available", context);
+                }),
           ],
         ),
       ),

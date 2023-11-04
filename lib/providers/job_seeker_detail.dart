@@ -22,7 +22,7 @@ class JobSeekerDetailProvider with ChangeNotifier {
   }
 
   onInit() {
-    selectMenu = JapaneseText.basicInformation;
+    selectMenu ??= JapaneseText.basicInformation;
     isLoading = true;
   }
 

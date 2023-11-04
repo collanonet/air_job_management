@@ -156,7 +156,7 @@ class JapaneseText {
   //Job Seeker
   //Filter
   static String applicantSearch = "応募者検索";
-  static String createJobSeeker = "手動登録";
+  static String createJobSeeker = "新規登録";
   static String downloadSeekerList = "応募一覧をダウンロード";
   static String newArrival = "新着";
   static String interview = "面接";

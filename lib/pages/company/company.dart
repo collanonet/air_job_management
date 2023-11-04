@@ -66,7 +66,7 @@ class _CompanyPageState extends State<CompanyPage> with AfterBuildMixin {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          JapaneseText.listApplication,
+                          "求人企業一覧",
                           style: titleStyle,
                         ),
                         IconButton(
@@ -90,32 +90,23 @@ class _CompanyPageState extends State<CompanyPage> with AfterBuildMixin {
                           flex: 4,
                         ),
                         Expanded(
-                          child: Text(JapaneseText.area,
-                              style: normalTextStyle.copyWith(fontSize: 13)),
+                          child: Text(JapaneseText.area, style: normalTextStyle.copyWith(fontSize: 13)),
                           flex: 3,
                         ),
                         Expanded(
-                          child: Text(JapaneseText.industry,
-                              style: normalTextStyle.copyWith(fontSize: 13)),
+                          child: Text(JapaneseText.industry, style: normalTextStyle.copyWith(fontSize: 13)),
                           flex: 3,
                         ),
                         Expanded(
-                          child: Text(JapaneseText.numberOfJobOpening,
-                              style: normalTextStyle.copyWith(fontSize: 13)),
+                          child: Text(JapaneseText.numberOfJobOpening, style: normalTextStyle.copyWith(fontSize: 13)),
                           flex: 3,
                         ),
                         Expanded(
-                          child: Center(
-                              child: Text(JapaneseText.message,
-                                  style:
-                                      normalTextStyle.copyWith(fontSize: 13))),
+                          child: Center(child: Text(JapaneseText.message, style: normalTextStyle.copyWith(fontSize: 13))),
                           flex: 3,
                         ),
                         Expanded(
-                          child: Center(
-                              child: Text(JapaneseText.correspondenceStatus,
-                                  style:
-                                      normalTextStyle.copyWith(fontSize: 13))),
+                          child: Center(child: Text(JapaneseText.correspondenceStatus, style: normalTextStyle.copyWith(fontSize: 13))),
                           flex: 3,
                         )
                       ],
@@ -142,12 +133,8 @@ class _CompanyPageState extends State<CompanyPage> with AfterBuildMixin {
         return ListView.separated(
             itemCount: companyProvider.companyList.length,
             shrinkWrap: true,
-            separatorBuilder: (context, index) => Padding(
-                padding: EdgeInsets.only(
-                    top: 10,
-                    bottom: index + 1 == companyProvider.companyList.length
-                        ? 20
-                        : 0)),
+            separatorBuilder: (context, index) =>
+                Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == companyProvider.companyList.length ? 20 : 0)),
             itemBuilder: (context, index) {
               Company company = companyProvider.companyList[index];
               return CompanyCardWidget(company: company);

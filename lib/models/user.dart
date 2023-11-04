@@ -19,9 +19,11 @@ class MyUser {
   String? jobId;
   String? status;
   String? gender;
+  String? jobStatus;
 
   MyUser(
-      {this.email,
+      {this.jobStatus,
+      this.email,
       this.firstName,
       this.lastName,
       this.uid,
@@ -43,7 +45,7 @@ class MyUser {
   factory MyUser.fromJson(Map<String, dynamic> json) {
     return MyUser(
         gender: json["gender"] ?? "",
-        workingStatus: json["working_status"] ?? "",
+        workingStatus: (json["working_status"] != null && json["working_status"] != "") ? json["working_status"] : JapaneseText.noContact,
         profileImage: json["profile"] ?? "",
         firstName: json["first_name"] ?? "",
         lastName: json["last_name"] ?? "",

@@ -68,11 +68,28 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
   bool chooseOccupationSkill = false;
 
   List<String> occupationList = [
-    JapaneseText.constructionWorker,
-    JapaneseText.worker,
-    JapaneseText.teacher,
-    JapaneseText.hotelStaff,
-    JapaneseText.barista
+    "管理的職業",
+    "研究・技術の職業",
+    "法務・経営・文化芸術等の専門的職業",
+    "医療・看護・保健の職業",
+    "保育・教育の職業",
+    "事務的職業",
+    "販売・営業の職業",
+    "福祉・介護の職業",
+    "サービスの職業",
+    "警備・保安の職業",
+    "農林漁業の職業",
+    "製造・修理・塗装・製図等の職業",
+    "配送・輸送・機械運転の職業",
+    "建設・土木・電気工事の職業",
+    "運搬・清掃・包装・選別等の職業",
+  ];
+
+  List<dynamic> occupationSmallList = [
+    {
+      "総合設備管理",
+      "空港施設の総合設備管理業務",
+    }
   ];
 
   String? selectedEmploymentType;
