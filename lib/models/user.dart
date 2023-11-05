@@ -20,9 +20,11 @@ class MyUser {
   String? status;
   String? gender;
   String? jobStatus;
+  List<String>? messageList;
 
   MyUser(
       {this.jobStatus,
+      this.messageList,
       this.email,
       this.firstName,
       this.lastName,
@@ -45,7 +47,10 @@ class MyUser {
   factory MyUser.fromJson(Map<String, dynamic> json) {
     return MyUser(
         gender: json["gender"] ?? "",
-        workingStatus: (json["working_status"] != null && json["working_status"] != "") ? json["working_status"] : JapaneseText.noContact,
+        workingStatus:
+            (json["working_status"] != null && json["working_status"] != "")
+                ? json["working_status"]
+                : JapaneseText.noContact,
         profileImage: json["profile"] ?? "",
         firstName: json["first_name"] ?? "",
         lastName: json["last_name"] ?? "",
@@ -60,12 +65,16 @@ class MyUser {
         jobDetail: json["job_detail"] ?? "",
         jobId: json["job_id"] ?? "",
         jobTitle: json["job_title"] ?? "",
+        messageList: json["message_list"] != null
+            ? List<String>.from(json["message_list"].map((e) => e))
+            : [],
         hash_password: json["hash_password"]);
   }
 
   Map<String, dynamic> toJson() => {
         "status": status ?? "",
         "profile": profileImage,
+        "message_list": messageList != null ? messageList!.map((e) => e) : [],
         "first_name": firstName,
         "email": email,
         "role": "staff",
