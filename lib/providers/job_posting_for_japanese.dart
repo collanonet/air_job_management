@@ -2,6 +2,7 @@ import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
 
 import '../api/company.dart';
 import '../models/company.dart';
@@ -530,6 +531,8 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
     inquiryPhoneNumber = TextEditingController(text: "");
   }
 
+  final formatter = NumberFormat.simpleCurrency(locale: "ja", name: "");
+
   onInitForJobPostingDetail(String? id) async {
     selectedCompany = null;
     selectedCompanyId = null;
@@ -589,6 +592,12 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
     salaryRangeType = jobPosting?.salaryRange ?? "";
     fromSalaryAmount.text = jobPosting?.amountOfPayrollFrom ?? "";
     toSalaryAmount.text = jobPosting?.amountOfPayrollTo ?? "";
+    if (fromSalaryAmount.text.isNotEmpty) {
+      fromSalaryAmount.text = formatter.format(int.parse(fromSalaryAmount.text)).replaceAll(".00", "");
+    }
+    if (toSalaryAmount.text.isNotEmpty) {
+      toSalaryAmount.text = formatter.format(int.parse(toSalaryAmount.text)).replaceAll(".00", "");
+    }
     supplementary.text = jobPosting?.supplementaryExplanationOfSalary ?? "";
     examAndTraining = jobPosting?.examinationOfTraining ?? "";
     eligibilityForApp.text = jobPosting?.eligibilityForApplication ?? "";

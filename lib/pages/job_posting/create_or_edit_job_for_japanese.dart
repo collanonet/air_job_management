@@ -7,6 +7,7 @@ import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/radio_listtile.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
@@ -36,6 +37,7 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
   DateTime now = DateTime.now();
   final _formKey = GlobalKey<FormState>();
   ScrollController controller = ScrollController();
+  var maskFormatter = new MaskTextInputFormatter(mask: '###,###,###,###', filter: {"#": RegExp(r'[0-9]')});
 
   onSaveUserData() async {
     if (_formKey.currentState!.validate()) {
@@ -49,7 +51,6 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
         toastMessageError("会社の所在地または面接の場所の緯度と経度が無効です。", context);
       } else {
         //Continue to create job posting
-        print("Start Job post");
         JobPosting c = JobPosting(
             status: "",
             uid: widget.jobPostId ?? "",
@@ -119,9 +120,9 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
             salaryRange: provider.salaryRangeType,
             tue: provider.tue,
             accordingToOurCalendar: provider.accordingToOurCalendar,
-            amountOfPayrollFrom: provider.fromSalaryAmount.text,
+            amountOfPayrollFrom: provider.fromSalaryAmount.text.replaceAll(",", ""),
             wed: provider.wed,
-            amountOfPayrollTo: provider.toSalaryAmount.text,
+            amountOfPayrollTo: provider.toSalaryAmount.text.replaceAll(",", ""),
             applicationProcess: provider.flowAfterApplication.text,
             atHome: provider.atHome,
             atmosphereRemark: provider.remarkAtmosphere.text,
@@ -498,9 +499,10 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
               width: 170,
               child: PrimaryTextField(
                 controller: provider.fromSalaryAmount,
-                hint: '1200',
+                hint: '1,200',
                 isRequired: true,
                 isPhoneNumber: true,
+                inputFormat: [maskFormatter],
               ),
             ),
             Padding(
@@ -511,9 +513,10 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
               width: 170,
               child: PrimaryTextField(
                 controller: provider.toSalaryAmount,
-                hint: '20000',
+                hint: '20,000',
                 isRequired: true,
                 isPhoneNumber: true,
+                inputFormat: [maskFormatter],
               ),
             ),
             Padding(
