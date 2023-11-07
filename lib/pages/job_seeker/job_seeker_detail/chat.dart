@@ -75,14 +75,12 @@ class _ChatPageState extends State<ChatPage> with AfterBuildMixin {
                       return const SizedBox();
                     }
                     return ListTile(
-                      onTap: () {
-                        var companyID = item.split("_").last;
-                        for (var c in companyList) {
-                          if (c.uid == companyID) {
-                            selectedCompanyName = c.companyName;
-                            break;
-                          }
-                        }
+                      onTap: () async {
+                        setState(() {
+                          clickedMessage = null;
+                          selectedCompanyName = company?.companyName ?? "";
+                        });
+                        await Future.delayed(const Duration(milliseconds: 300));
                         setState(() {
                           clickedMessage = item;
                         });
@@ -116,12 +114,19 @@ class _ChatPageState extends State<ChatPage> with AfterBuildMixin {
             decoration: boxDecoration,
             height: AppSize.getDeviceHeight(context) * 0.7,
             child: clickedMessage == null
-                ? const CircularProgressIndicator()
+                ? const Center(
+                    child: Text("メッセージを表示するには、チャットを選択してください。 "),
+                  )
                 : MessagePage(
                     companyID: clickedMessage!.split("_").last,
                     companyImageUrl: myUser!.profileImage,
                     userId: widget.id,
                     companyName: "${myUser!.lastName} ${myUser!.firstName} ($selectedCompanyName)",
+                    onClose: () {
+                      setState(() {
+                        clickedMessage = null;
+                      });
+                    },
                   ),
           ))
         ],
@@ -167,10 +172,12 @@ class MessagePage extends StatefulWidget {
   final String? companyName;
   final String? companyImageUrl;
   final String? userId;
+  final Function onClose;
 
   const MessagePage({
     super.key,
     required this.companyID,
+    required this.onClose,
     this.companyName,
     this.companyImageUrl,
     this.userId,
@@ -205,7 +212,13 @@ class _MessagePageState extends State<MessagePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              widget.onClose();
+            }),
         titleSpacing: 0,
+        backgroundColor: AppColor.primaryColor,
         title: Row(
           children: [
             CircleAvatar(
