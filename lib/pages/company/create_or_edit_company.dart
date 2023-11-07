@@ -29,6 +29,7 @@ class CreateOrEditCompanyPage extends StatefulWidget {
 class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with AfterBuildMixin {
   late CompanyProvider provider;
   final _formKey = GlobalKey<FormState>();
+  ScrollController scrollController = ScrollController();
 
   onSaveUserData() async {
     if (_formKey.currentState!.validate()) {
@@ -104,47 +105,52 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with 
               Container(
                 padding: const EdgeInsets.all(12),
                 width: AppSize.getDeviceWidth(context),
-                height: AppSize.getDeviceHeight(context) - 110,
+                height: AppSize.getDeviceHeight(context) - 150,
                 decoration: boxDecoration,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      //Basic Info
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.check_circle,
-                            color: AppColor.primaryColor,
-                          ),
-                          AppSize.spaceWidth8,
-                          Text(
-                            JapaneseText.applicantSearch,
-                            style: titleStyle,
-                          ),
-                        ],
-                      ),
-                      // Company Name, Public Date, Profile ...
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Company Name, Public Date
-                          buildNamePostalLocationAndPublicDate(),
-                          // Profile Picture
-                          AppSize.spaceWidth16,
-                          buildChooseProfile()
-                        ],
-                      ),
-                      buildTelFaxAndEmail(),
-                      buildUrlAndAfficiate(),
-                      const Divider(),
-                      buildManagerAndContent(),
-                      AppSize.spaceHeight16,
-                      SizedBox(
-                        width: AppSize.getDeviceWidth(context) * 0.1,
-                        child: ButtonWidget(title: JapaneseText.save, color: AppColor.primaryColor, onPress: () => onSaveUserData()),
-                      ),
-                    ],
+                child: Scrollbar(
+                  controller: scrollController,
+                  isAlwaysShown: true,
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    child: Column(
+                      children: [
+                        //Basic Info
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.check_circle,
+                              color: AppColor.primaryColor,
+                            ),
+                            AppSize.spaceWidth8,
+                            Text(
+                              "基本情報",
+                              style: titleStyle,
+                            ),
+                          ],
+                        ),
+                        // Company Name, Public Date, Profile ...
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Company Name, Public Date
+                            buildNamePostalLocationAndPublicDate(),
+                            // Profile Picture
+                            AppSize.spaceWidth16,
+                            buildChooseProfile()
+                          ],
+                        ),
+                        buildTelFaxAndEmail(),
+                        buildUrlAndAfficiate(),
+                        const Divider(),
+                        buildManagerAndContent(),
+                        AppSize.spaceHeight16,
+                        SizedBox(
+                          width: AppSize.getDeviceWidth(context) * 0.1,
+                          child: ButtonWidget(title: JapaneseText.save, color: AppColor.primaryColor, onPress: () => onSaveUserData()),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )
@@ -653,15 +659,45 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with 
   titleWidget() {
     return Container(
       width: AppSize.getDeviceWidth(context),
-      height: 60,
+      height: 90,
       decoration: boxDecoration,
       padding: const EdgeInsets.all(12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            JapaneseText.applicantSearch,
-            style: titleStyle,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(30),
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  child: Image.network(
+                    provider.imageUrl,
+                    fit: BoxFit.cover,
+                    width: 60,
+                    height: 60,
+                  ),
+                ),
+              ),
+              AppSize.spaceWidth16,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    provider.companyName.text,
+                    style: titleStyle,
+                  ),
+                  AppSize.spaceHeight5,
+                  Text(
+                    provider.location.text,
+                    style: subTitle.copyWith(color: Colors.grey),
+                  ),
+                ],
+              ),
+            ],
           ),
           IconButton(onPressed: () => context.pop(), icon: const Icon(Icons.close))
         ],
