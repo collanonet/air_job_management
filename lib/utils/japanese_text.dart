@@ -171,6 +171,18 @@ class JapaneseText {
   static String note = "メモ";
   static String clearInput = "クリア入力";
 
+  static String selectionInformation = "選考情報";
+  static String scheduleInterviewDateAndTime = "面接予定日時";
+
+  static String career = "経歴";
+  static String finalEducation = "最終学歴";
+  static String graduationSchoolFacultyDepartment = "卒業校‧学部‧学科";
+  static String academicBackground = "学歴";
+  static String workHistory = "職歴";
+  static String ordinaryAutomaticLicense = "普通自動免許";
+  static String otherQualifications = "その他資格";
+  static String employmentHistory = "在籍履歴";
+
   //Seeker List
   static String listApplication = "応募者一覧";
   static String application = "応募者";
