@@ -89,17 +89,17 @@ class _BasicInfoPageState extends State<BasicInfoPage> {
     scheduleInterview.text = widget.seeker.interviewDate ?? "";
     finalEdu.text = widget.seeker.finalEdu ?? "";
     graduateSchoolFaculty.text = widget.seeker.graduationSchool ?? "";
-    if (widget.seeker.academicBgList != null) {
+    if (widget.seeker.academicBgList != null && widget.seeker.academicBgList!.isNotEmpty) {
       academicBgList = widget.seeker.academicBgList!.map((e) => TextEditingController(text: e.toString())).toList();
     }
-    if (widget.seeker.workHistoryList != null) {
+    if (widget.seeker.workHistoryList != null && widget.seeker.workHistoryList!.isNotEmpty) {
       workHistory = widget.seeker.workHistoryList!.map((e) => TextEditingController(text: e.toString())).toList();
     }
     ordinaryAutoLisence.text = widget.seeker.ordinaryAutomaticLicence ?? "";
-    if (widget.seeker.otherQualificationList != null) {
+    if (widget.seeker.otherQualificationList != null && widget.seeker.otherQualificationList!.isNotEmpty) {
       otherQualList = widget.seeker.otherQualificationList!.map((e) => TextEditingController(text: e.toString())).toList();
     }
-    if (widget.seeker.employmentHistoryList != null) {
+    if (widget.seeker.employmentHistoryList != null && widget.seeker.employmentHistoryList!.isNotEmpty) {
       employmentHistoryList = widget.seeker.employmentHistoryList!.map((e) => TextEditingController(text: e.toString())).toList();
     }
     super.initState();
@@ -605,9 +605,11 @@ class _BasicInfoPageState extends State<BasicInfoPage> {
                 ),
               ),
               AppSize.spaceHeight16,
-              SizedBox(
-                width: AppSize.getDeviceWidth(context) * 0.1,
-                child: ButtonWidget(title: JapaneseText.save, color: AppColor.primaryColor, onPress: () => onSaveUserData()),
+              Center(
+                child: SizedBox(
+                  width: AppSize.getDeviceWidth(context) * 0.1,
+                  child: ButtonWidget(title: JapaneseText.save, color: AppColor.primaryColor, onPress: () => onSaveUserData()),
+                ),
               ),
             ],
           ),

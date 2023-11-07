@@ -637,7 +637,7 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
                         AppSize.spaceHeight16,
                         AppSize.spaceHeight16,
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SizedBox(
                               width: AppSize.getDeviceWidth(context) * 0.1,
