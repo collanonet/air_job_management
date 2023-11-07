@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
 import '../utils/app_color.dart';
@@ -92,7 +91,6 @@ class PrimaryTextField extends StatelessWidget {
                 ? <TextInputFormatter>[
                     FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                     FilteringTextInputFormatter.digitsOnly,
-                    MaskTextInputFormatter(mask: '###,###', filter: {"#": RegExp(r'[0-9]')})
                   ]
                 : [],
         decoration: InputDecoration(
