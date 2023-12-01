@@ -209,6 +209,7 @@ class MyApp extends StatelessWidget {
             Locale('en', 'US'), // English, no country code
             Locale('ja', 'JP'), // Hebrew, no country code
           ],
+          themeMode: ThemeMode.light,
           debugShowCheckedModeBanner: false,
           title: 'Air Job',
           routerConfig: _router,
