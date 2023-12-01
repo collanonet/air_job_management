@@ -5,8 +5,7 @@ import '../../../utils/app_size.dart';
 
 class AirJobManagementWidget extends StatelessWidget {
   final Function onPress;
-  const AirJobManagementWidget({Key? key, required this.onPress})
-      : super(key: key);
+  const AirJobManagementWidget({Key? key, required this.onPress}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +38,7 @@ class AirJobManagementWidget extends StatelessWidget {
               ),
               AppSize.spaceHeight8,
               const Text(
-                "Version: 1.0.0+1",
+                "Version: 1.0.0+2",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 10),
               ),

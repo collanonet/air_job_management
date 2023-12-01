@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class MyPageRoute {
-  static void goTo(Widget widget, BuildContext context) {
+  static void goTo(BuildContext context, Widget widget) {
     Navigator.push(context, MaterialPageRoute(builder: (context) => widget));
   }
 
-  static void goToWithReplacement(Widget widget, BuildContext context, {Function? onBack}) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => widget));
+  static void goToReplace(context, child) {
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => child));
   }
 
-  static void goToAndRemoveAllPages(Widget widget, BuildContext context) {
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => widget), (Route<dynamic> route) => false);
+  static void goAndRemoveAll(context, child) {
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => child), (Route<dynamic> route) => false);
   }
 }

@@ -25,6 +25,8 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
   startTime() async {
     FirebaseAuth.instance.authStateChanges().listen((user) async {
       if (user != null) {
+        // await FirebaseAuth.instance.currentUser?.reload();
+        // bool isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
         context.go(MyRoute.dashboard);
       } else {
         context.go(MyRoute.login);

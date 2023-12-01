@@ -13,6 +13,16 @@ class UserApiServices {
   final CollectionReference userRef = FirebaseFirestore.instance.collection('user');
   final CollectionReference jobRef = FirebaseFirestore.instance.collection('job');
 
+  Future<String?> saveUserData(MyUser myUser) async {
+    try {
+      await userRef.doc(myUser.uid).set(myUser.toJson());
+      return "success";
+    } catch (e) {
+      print("Error =>> ${e.toString()}");
+      return null;
+    }
+  }
+
   updateUserData(MyUser myUser) async {
     try {
       await userRef.doc(myUser.uid).update(myUser.toJson());

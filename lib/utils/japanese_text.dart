@@ -1,4 +1,22 @@
 class JapaneseText {
+  static String notWorking = "働いていない";
+  static String contractJob = "契約社員";
+  static String fullTimeJob = "正社員";
+  static String partTimeJob = "アルバイト・パートタイム";
+  static String temporary = "派遣社員";
+  static String gigWork2 = "アルバイト・パートタイム";
+
+  static String have = "あり";
+  static String none = "なし";
+  static String province = "都道府県";
+  static String city = "市区町村";
+  static String street = "町名番地";
+  static String building = "建物名";
+  static String remark = "備考";
+
+  static String other = "その他";
+  static String fullName = "フルネーム";
+
   static String empty = "空の";
   static String successCreate = "作成しました";
   static String failCreate = "作成に失敗しました。";
@@ -68,7 +86,6 @@ class JapaneseText {
   static String foreignersStayWithFamily = "家族滞在の外国人";
   static String specifiedSkill = "特定技能";
   static String technicalIntern = "技能実習";
-  static String other = "その他";
 
   static String limit28HourMsg = "28時間を超えているため、就業時間を訂正してください。";
 
@@ -303,7 +320,6 @@ class JapaneseText {
   static String good = "良い";
   static String poor = "貧しい";
   static String notRequire = "必要ありません";
-  static String remark = "備考";
 
   //Job Posting Check 3
   static String employmentCondition = "雇用条件";

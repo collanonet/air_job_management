@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models/user.dart';
+import '../utils/encrypt_utils.dart';
 
 class AuthProvider with ChangeNotifier {
   bool _isLoading = false;
@@ -16,6 +17,17 @@ class AuthProvider with ChangeNotifier {
   get errorMessage => _errorMessage;
   get isLoading => _isLoading;
   get isLogin => _isLogin;
+
+  int step = 1;
+
+  onChangeStep(int index) {
+    step = index;
+    notifyListeners();
+  }
+
+  set setStep(int index) {
+    step = 1;
+  }
 
   set setProfile(MyUser myUser) {
     this.myUser = myUser;
@@ -32,45 +44,44 @@ class AuthProvider with ChangeNotifier {
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
-  // Future registerAccount(String email, String password, String fullName) async {
-  //   try {
-  //     setLoading(true);
-  //     UserCredential authResult = await firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
-  //     print(authResult.user);
-  //     User? user = authResult.user;
-  //     String message = await ApiService().saveProfileUser(email: email.trim(), username: fullName, uid: user!.uid);
-  //     _profile = Profile(uid: user.uid, email: email.trim(), fullName: fullName, imageUrl: ConstValue.defaultImage);
-  //     await Future.delayed(Duration(seconds: 1));
-  //     if (message == "success") {
-  //       setLoading(false);
-  //       return user;
-  //     } else {
-  //       setLoading(false);
-  //       await logout();
-  //       setErrorMessage(message);
-  //       return null;
-  //     }
-  //   } on SocketException {
-  //     setLoading(false);
-  //     setErrorMessage("No internet, please connect to internet");
-  //     return null;
-  //   } catch (e) {
-  //     await Future.delayed(Duration(seconds: 1));
-  //     setLoading(false);
-  //     print(e);
-  //     if (e.toString().contains("user-not-found")) {
-  //       setErrorMessage("ユーザーが見つかりません");
-  //     } else if (e.toString().contains("wrong-password")) {
-  //       setErrorMessage("無効な,ID, パスワードです");
-  //     } else if (e.toString().contains("invalid-email")) {
-  //       setErrorMessage("無効なメールアドレス");
-  //     } else {
-  //       setErrorMessage("何かがうまくいかなかった");
-  //     }
-  //     notifyListeners();
-  //     return null;
-  //   }
-  // }
+  Future<MyUser?> registerAccount(String email, String password, MyUser myUser) async {
+    try {
+      setLoading(true);
+      UserCredential authResult = await firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+      User? user = authResult.user;
+      String base64Encrypted = EncryptUtils.encryptPassword(password);
+      myUser.hash_password = base64Encrypted;
+      myUser.uid = user?.uid ?? "";
+      String? message = await UserApiServices().saveUserData(myUser);
+      if (message == "success") {
+        setLoading(false);
+        return myUser;
+      } else {
+        setLoading(false);
+        await firebaseAuth.signOut();
+        setErrorMessage(message);
+        return null;
+      }
+    } on SocketException {
+      setLoading(false);
+      setErrorMessage("インターネットはありません。 インターネットに接続してください。");
+      return null;
+    } catch (e) {
+      setLoading(false);
+      debugPrint("Error while register account $e");
+      if (e.toString().contains("email-already-in-use")) {
+        setErrorMessage("あなたのメールアドレスはすでに別のアカウントで使用されています。");
+      } else if (e.toString().contains("wrong-password")) {
+        setErrorMessage("無効な,ID, パスワードです");
+      } else if (e.toString().contains("invalid-email")) {
+        setErrorMessage("無効なメールアドレス");
+      } else {
+        setErrorMessage("何かがうまくいかなかった");
+      }
+      notifyListeners();
+      return null;
+    }
+  }
 
   Future<MyUser?> loginAccount(String email, String password) async {
     try {

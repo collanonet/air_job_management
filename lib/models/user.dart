@@ -29,6 +29,17 @@ class MyUser {
   String? ordinaryAutomaticLicence;
   List<String>? otherQualificationList;
   List<String>? employmentHistoryList;
+  String? verifyDoc;
+  String? postalCode;
+  String? province;
+  String? city;
+  String? street;
+  String? building;
+  bool? notWorking;
+  bool? contractJob;
+  bool? fullTimeJob;
+  bool? temporary;
+  bool? partTimeJob;
 
   MyUser(
       {this.jobStatus,
@@ -58,16 +69,37 @@ class MyUser {
       this.interviewDate,
       this.ordinaryAutomaticLicence,
       this.otherQualificationList,
-      this.workHistoryList});
+      this.workHistoryList,
+      this.verifyDoc,
+      this.postalCode,
+      this.province,
+      this.city,
+      this.street,
+      this.building,
+      this.notWorking,
+      this.contractJob,
+      this.fullTimeJob,
+      this.temporary,
+      this.partTimeJob});
 
   factory MyUser.fromJson(Map<String, dynamic> json) {
     return MyUser(
+      verifyDoc: json["verifyDoc"] ?? "",
+      postalCode: json["postalCode"] ?? "",
+      province: json["province"] ?? "",
+      city: json["city"] ?? "",
+      building: json["building"] ?? "",
+      notWorking: json["notWorking"] ?? false,
+      contractJob: json["contractJob"] ?? false,
+      fullTimeJob: json["fullTimeJob"] ?? false,
+      temporary: json["temporary"] ?? false,
+      partTimeJob: json["partTimeJob"] ?? false,
       gender: json["gender"] ?? "",
       workingStatus: (json["working_status"] != null && json["working_status"] != "") ? json["working_status"] : JapaneseText.noContact,
       profileImage: json["profile"] ?? "",
       firstName: json["first_name"] ?? "",
       lastName: json["last_name"] ?? "",
-      role: json["role"] ?? "",
+      role: json["role"] ?? "worker",
       email: json["email"] ?? "",
       status: json["status"] ?? JapaneseText.free,
       dob: json["dob"] ?? "",
@@ -97,7 +129,7 @@ class MyUser {
         "message_list": messageList != null ? messageList!.map((e) => e) : [],
         "first_name": firstName,
         "email": email,
-        "role": "staff",
+        "role": role,
         "dob": dob ?? "",
         "name_fu": nameFu,
         "name_kanji": nameKanJi,
@@ -119,5 +151,15 @@ class MyUser {
         "ordinaryAutomaticLicence": ordinaryAutomaticLicence,
         "employmentHistoryList": employmentHistoryList != null ? employmentHistoryList!.map((e) => e) : [],
         "otherQualificationList": otherQualificationList != null ? otherQualificationList!.map((e) => e) : [],
+        'verifyDoc': verifyDoc,
+        'postalCode': postalCode,
+        'province': province,
+        'city': city,
+        'building': building,
+        'notWorking': notWorking,
+        'contractJob': contractJob,
+        'temporary': temporary,
+        'partTimeJob': partTimeJob,
+        'fullTimeJob': fullTimeJob
       };
 }

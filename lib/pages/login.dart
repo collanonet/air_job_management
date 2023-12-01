@@ -22,8 +22,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late AuthProvider authProvider;
   bool isShowPassword = false;
-  TextEditingController email = TextEditingController(text: 'admin@gmail.com');
-  TextEditingController password = TextEditingController(text: '123456');
+  TextEditingController email = TextEditingController(text: '');
+  TextEditingController password = TextEditingController(text: '');
   TextEditingController username = TextEditingController(text: 'Admin ABC');
 
   @override
@@ -118,11 +118,19 @@ class _LoginPageState extends State<LoginPage> {
           ),
           AppSize.spaceHeight16,
           SizedBox(
-            width: AppSize.getDeviceWidth(context) * 0.20,
+            width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.20),
             child: ButtonWidget(
                 title: authProvider.isLogin ? "ログイン" : "Register",
                 color: AppColor.primaryColor,
                 onPress: () => authProvider.isLogin ? onLogin() : onRegister()),
+          ),
+          AppSize.spaceHeight16,
+          //Register Account as a gig-worker
+          Center(
+            child: TextButton(
+              child: const Text("ギグワーカーとしてアカウントを登録する"),
+              onPressed: () => context.go(MyRoute.registerAsGigWorker),
+            ),
           ),
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
