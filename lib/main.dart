@@ -9,7 +9,7 @@ import 'package:air_job_management/pages/job_seeker/job_seeker_detail/job_seeker
 import 'package:air_job_management/pages/login.dart';
 import 'package:air_job_management/pages/register/register.dart';
 import 'package:air_job_management/pages/splash_page.dart';
-import 'package:air_job_management/providers/auth.dart' as auth;
+import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company.dart';
 import 'package:air_job_management/providers/home.dart';
 import 'package:air_job_management/providers/job_posting.dart';
@@ -189,8 +189,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider<auth.AuthProvider>.value(value: auth.AuthProvider()),
-          StreamProvider.value(value: auth.AuthProvider().user, initialData: null),
+          // ChangeNotifierProvider<auth.AuthProvider>.value(value: auth.AuthProvider()),
+          // StreamProvider.value(value: auth.AuthProvider().user, initialData: null),
+          ChangeNotifierProvider(create: (_) => AuthProvider()),
           ChangeNotifierProvider(create: (_) => HomeProvider()),
           ChangeNotifierProvider(create: (_) => JobSeekerProvider()),
           ChangeNotifierProvider(create: (_) => JobSeekerDetailProvider()),

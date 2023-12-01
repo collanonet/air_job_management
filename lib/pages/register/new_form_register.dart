@@ -1,12 +1,13 @@
 import 'package:air_job_management/pages/register/widget/check_box.dart';
 import 'package:air_job_management/pages/register/widget/register_step.dart';
-import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/utils/app_color.dart';
+import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +17,6 @@ import '../../models/user.dart';
 import '../../providers/auth.dart';
 import '../../utils/app_size.dart';
 import '../../utils/japanese_text.dart';
-import '../../utils/page_route.dart';
 import '../../utils/style.dart';
 import '../../utils/toast_message_util.dart';
 import '../../widgets/custom_loading_overlay.dart';
@@ -173,9 +173,10 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
       isLoading = false;
     });
     if (val == ConstValue.success) {
-      await FirebaseAuth.instance.signOut();
       toastMessageSuccess(JapaneseText.successUpdate, context);
-      MyPageRoute.goAndRemoveAll(context, SplashScreen());
+      await Future.delayed(const Duration(milliseconds: 300));
+      await FirebaseAuth.instance.signOut();
+      context.go(MyRoute.login);
     } else {
       toastMessageError("$val", context);
     }

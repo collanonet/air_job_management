@@ -69,7 +69,7 @@ class _VerifyUserEmailPageState extends State<VerifyUserEmailPage> with AfterBui
                             child: ButtonWidget(color: AppColor.primaryColor, onPress: () => verifyAccount(), title: "送信する")),
                       ),
                       //Test
-                      // AppSize.spaceHeight16,
+                      AppSize.spaceHeight16,
                       // Center(
                       //   child: SizedBox(
                       //       width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.20),
@@ -113,10 +113,16 @@ class _VerifyUserEmailPageState extends State<VerifyUserEmailPage> with AfterBui
     if (isEmailVerified) {
       MyPageRoute.goTo(context, NewFormRegistrationPage(myUser: widget.myUser));
     } else {
-      await FirebaseAuth.instance.currentUser?.sendEmailVerification();
-      setState(() {
-        isLoading = false;
-      });
+      try {
+        await FirebaseAuth.instance.currentUser?.sendEmailVerification();
+        setState(() {
+          isLoading = false;
+        });
+      } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 }

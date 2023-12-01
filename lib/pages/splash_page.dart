@@ -1,3 +1,6 @@
+import 'package:air_job_management/api/user_api.dart';
+import 'package:air_job_management/helper/role_helper.dart';
+import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/widgets/loading.dart';
@@ -17,21 +20,23 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
   late var user;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   startTime() async {
     FirebaseAuth.instance.authStateChanges().listen((user) async {
       if (user != null) {
-        // await FirebaseAuth.instance.currentUser?.reload();
-        // bool isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
-        context.go(MyRoute.dashboard);
+        MyUser? users = await UserApiServices().getProfileUser(user.uid);
+        if (users!.role == RoleHelper.admin) {
+          context.go(MyRoute.dashboard);
+        }
       } else {
         context.go(MyRoute.login);
       }
     });
+  }
+
+  @override
+  void initState() {
+    startTime();
+    super.initState();
   }
 
   @override
@@ -45,6 +50,6 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
 
   @override
   void afterBuild(BuildContext context) {
-    startTime();
+    // startTime();
   }
 }

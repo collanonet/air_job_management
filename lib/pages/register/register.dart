@@ -1,5 +1,6 @@
 import 'package:air_job_management/pages/register/verify_user.dart';
 import 'package:air_job_management/utils/my_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -169,7 +170,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             child: ButtonWidget(title: "新規登録する", color: AppColor.primaryColor, onPress: () => createAccount()),
                           ),
                         ),
-                        //Test
+                        // Test
                         // AppSize.spaceHeight16,
                         // Center(
                         //   child: SizedBox(
@@ -216,9 +217,15 @@ class _RegisterPageState extends State<RegisterPage> {
           myUser.employmentHistoryList = [];
           MyUser? user = await authProvider.registerAccount(email.text.trim(), password.text.trim(), myUser);
           if (user != null) {
-            MyPageRoute.goToReplace(context, VerifyUserEmailPage(myUser: myUser));
+            MyPageRoute.goTo(context, VerifyUserEmailPage(myUser: myUser));
           } else {
-            toastMessageError("${authProvider.errorMessage}", context);
+            await FirebaseAuth.instance.currentUser?.reload();
+            bool isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
+            if (authProvider.errorMessage == "あなたのメールアドレスはすでに別のアカウントで使用されています。" && isEmailVerified == false) {
+              MyPageRoute.goTo(context, VerifyUserEmailPage(myUser: myUser));
+            } else {
+              toastMessageError("${authProvider.errorMessage}", context);
+            }
           }
         } else {
           toastMessageError("メールが無効です。", context);
