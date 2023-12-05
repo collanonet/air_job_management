@@ -83,6 +83,12 @@ dependencies:
   flutter_datetime_picker_plus: ^2.0.1
   mask_text_input_formatter: ^2.5.0
 
+  like_button: ^2.0.5
+  webview_flutter: ^4.4.1
+  flutter_rating_bar: ^4.0.1
+  calendar_timeline: ^1.1.2
+  cached_network_image: ^3.2.3
+
 dependency_overrides:
   firebase_core_platform_interface: 4.8.0
   intl: ^0.18.0

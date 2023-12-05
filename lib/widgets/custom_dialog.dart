@@ -49,6 +49,30 @@ class CustomDialog {
             ));
   }
 
+  static void confirmDialog({required BuildContext context, required Function onApprove, String? title}) {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              title: const Text(
+                "確認する",
+              ),
+              content: Text(title ?? "この求人に応募してもよろしいですか？"),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      "キャンセル",
+                    )),
+                TextButton(
+                    onPressed: () => onApprove(),
+                    child: const Text(
+                      "はい",
+                    )),
+              ],
+            ));
+  }
+
   static void confirmDelete({required BuildContext context, required Function onDelete}) {
     showDialog(
         context: context,

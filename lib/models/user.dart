@@ -1,6 +1,8 @@
 import 'package:air_job_management/utils/japanese_text.dart';
 
 class MyUser {
+  String? balance;
+  String? rating;
   String? uid;
   String? email;
   String? firstName;
@@ -80,10 +82,12 @@ class MyUser {
       this.contractJob,
       this.fullTimeJob,
       this.temporary,
-      this.partTimeJob});
+      this.partTimeJob,
+      this.balance});
 
   factory MyUser.fromJson(Map<String, dynamic> json) {
     return MyUser(
+      balance: json["balance"] ?? "",
       verifyDoc: json["verifyDoc"] ?? "",
       postalCode: json["postalCode"] ?? "",
       province: json["province"] ?? "",

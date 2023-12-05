@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/helper/role_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 import '../models/user.dart';
 import '../utils/encrypt_utils.dart';
@@ -40,6 +40,17 @@ class AuthProvider with ChangeNotifier {
 
   set initialLoading(isLoading) {
     _isLoading = isLoading;
+  }
+
+  Future getUser(String uid) async {
+    try {
+      myUser = await UserApiServices().getProfileUser(uid);
+      notifyListeners();
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint(e.toString());
+      }
+    }
   }
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
