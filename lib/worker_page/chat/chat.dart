@@ -1,5 +1,6 @@
 import 'package:air_job_management/api/worker_api/chat_api.dart';
 import 'package:air_job_management/providers/auth.dart';
+import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/page_route.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:air_job_management/worker_page/chat/message_page.dart';
@@ -16,7 +17,16 @@ class ChatPage extends StatelessWidget {
     var list = provider.myUser?.messageList ?? [];
     return Scaffold(
       appBar: AppBar(
-        title: const Text("メッセージ"),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
+        centerTitle: true,
+        title: Text("メッセージ", style: TextStyle(fontSize: 30, color: AppColor.primaryColor)),
       ),
       body: list.isEmpty
           ? const Center(child: EmptyDataWidget())

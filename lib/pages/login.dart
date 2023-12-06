@@ -1,3 +1,4 @@
+import 'package:air_job_management/helper/role_helper.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
@@ -22,8 +23,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late AuthProvider authProvider;
   bool isShowPassword = false;
-  TextEditingController email = TextEditingController(text: '');
-  TextEditingController password = TextEditingController(text: '');
+  TextEditingController email = TextEditingController(text: 'sopheadavid44@gmail.com');
+  TextEditingController password = TextEditingController(text: '123456');
   TextEditingController username = TextEditingController(text: 'Admin ABC');
 
   @override
@@ -148,7 +149,11 @@ class _LoginPageState extends State<LoginPage> {
       authProvider.setLoading(true);
       MyUser? user = await authProvider.loginAccount(email.text.trim(), password.text.trim());
       if (user != null) {
-        context.go(MyRoute.dashboard);
+        if (user.role == RoleHelper.admin) {
+          context.go(MyRoute.dashboard);
+        } else {
+          context.go(MyRoute.workerJobSearch);
+        }
       } else {
         MessageWidget.show("${authProvider.errorMessage}");
       }

@@ -13,12 +13,20 @@ class JobScreen extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+              onPressed: () {},
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              )),
           title: TabBar(
             labelColor: AppColor.primaryColor,
             labelStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             tabs: const [
               Tab(
-                text: "Fuure Job",
+                text: "Future Job",
               ),
               Tab(text: "Past Job"),
             ],

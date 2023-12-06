@@ -11,14 +11,21 @@ import 'package:air_job_management/pages/register/register.dart';
 import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company.dart';
+import 'package:air_job_management/providers/favorite_provider.dart';
 import 'package:air_job_management/providers/home.dart';
 import 'package:air_job_management/providers/job_posting.dart';
 import 'package:air_job_management/providers/job_posting_for_japanese.dart';
 import 'package:air_job_management/providers/job_seeker.dart';
 import 'package:air_job_management/providers/job_seeker_detail.dart';
+import 'package:air_job_management/providers/root_provider.dart';
 import 'package:air_job_management/utils/extension.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/my_route.dart';
+import 'package:air_job_management/worker_page/chat/chat.dart';
+import 'package:air_job_management/worker_page/favorite/favorite.dart';
+import 'package:air_job_management/worker_page/myjob/future_screen.dart';
+import 'package:air_job_management/worker_page/root/root_page.dart';
+import 'package:air_job_management/worker_page/viewprofile/viewprofile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -171,6 +178,36 @@ final GoRouter _router = GoRouter(
           },
         ),
         GoRoute(
+          path: MyRoute.workerJobSearch.removeSlash(),
+          builder: (BuildContext context, GoRouterState state) {
+            return RootPage("uid");
+          },
+        ),
+        GoRoute(
+          path: MyRoute.workerChat.removeSlash(),
+          builder: (BuildContext context, GoRouterState state) {
+            return ChatPage();
+          },
+        ),
+        GoRoute(
+          path: MyRoute.workerFavourite.removeSlash(),
+          builder: (BuildContext context, GoRouterState state) {
+            return FavoriteSreen();
+          },
+        ),
+        GoRoute(
+          path: MyRoute.workerSetting.removeSlash(),
+          builder: (BuildContext context, GoRouterState state) {
+            return ViewProfile();
+          },
+        ),
+        GoRoute(
+          path: MyRoute.workerMyJob.removeSlash(),
+          builder: (BuildContext context, GoRouterState state) {
+            return FutureJob();
+          },
+        ),
+        GoRoute(
           path: MyRoute.login.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {
             return LoginPage();
@@ -197,7 +234,9 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => JobSeekerDetailProvider()),
           ChangeNotifierProvider(create: (_) => JobPostingProvider()),
           ChangeNotifierProvider(create: (_) => JobPostingForJapaneseProvider()),
-          ChangeNotifierProvider(create: (_) => CompanyProvider())
+          ChangeNotifierProvider(create: (_) => CompanyProvider()),
+          ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+          ChangeNotifierProvider(create: (_) => RootProvider()),
         ],
         child: MaterialApp.router(
           localizationsDelegates: const [

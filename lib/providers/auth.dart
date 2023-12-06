@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:air_job_management/api/user_api.dart';
-import 'package:air_job_management/helper/role_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
@@ -100,9 +99,8 @@ class AuthProvider with ChangeNotifier {
       UserCredential authResult = await firebaseAuth.signInWithEmailAndPassword(email: email.trim(), password: password);
       User? user = authResult.user;
       myUser = await UserApiServices().getProfileUser(user!.uid);
-      print("My user is ${myUser?.email} ${myUser?.role}");
       setLoading(false);
-      if (myUser != null && (myUser!.role == RoleHelper.admin)) {
+      if (myUser != null) {
         return myUser;
       } else {
         await logout();

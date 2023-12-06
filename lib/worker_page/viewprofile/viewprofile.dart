@@ -104,7 +104,14 @@ class _ViewProfileState extends State<ViewProfile> {
     Color colorxd2 = const Color(0xFFEDAD34);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         elevation: 0,
+        leading: IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
         centerTitle: true,
         title: Text(
           "マイページ",

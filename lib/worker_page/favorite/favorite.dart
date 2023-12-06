@@ -52,6 +52,14 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
     print(favorite);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            )),
         centerTitle: true,
         title: Text(
           'お気に入り',

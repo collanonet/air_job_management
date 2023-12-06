@@ -12,4 +12,10 @@ class MyRoute {
   static var job = "/job";
   static var createJob = "/job/create";
   static var registerAsGigWorker = "/register-as-gig-worker";
+  static var workerJobSearch = "/worker-job-search";
+  static var workerFavourite = "/worker/favourite";
+  static var workerMyJob = "/worker/my_job";
+  static var workerChat = "/worker/chat";
+  static var workerSetting = "/worker/setting";
+  static var workerRoot = "/worker/root";
 }

@@ -23,9 +23,13 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
   startTime() async {
     FirebaseAuth.instance.authStateChanges().listen((user) async {
       if (user != null) {
+        await FirebaseAuth.instance.currentUser?.reload();
+        bool isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
         MyUser? users = await UserApiServices().getProfileUser(user.uid);
         if (users!.role == RoleHelper.admin) {
           context.go(MyRoute.dashboard);
+        } else if (users.role == RoleHelper.worker && isEmailVerified == true) {
+          context.go(MyRoute.workerJobSearch);
         }
       } else {
         context.go(MyRoute.login);
@@ -41,6 +45,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
 
   @override
   Widget build(BuildContext context) {
+    print("Location ${GoRouter.of(context).location.toString()}");
     user = Provider.of<User?>(context);
     return Scaffold(
       backgroundColor: AppColor.primaryColor,
