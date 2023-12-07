@@ -1,10 +1,9 @@
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/api/worker_api/withdraw_api.dart';
 import 'package:air_job_management/models/user.dart';
-import 'package:air_job_management/pages/login.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
-import 'package:air_job_management/utils/page_route.dart';
+import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_dialog.dart';
 import 'package:air_job_management/widgets/loading.dart';
@@ -13,6 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import 'private_policy.dart';
@@ -128,11 +128,14 @@ class _ViewProfileState extends State<ViewProfile> {
                     onApprove: () async {
                       Navigator.pop(context);
                       await FirebaseAuth.instance.signOut();
-                      MyPageRoute.goAndRemoveAll(context, LoginPage());
+                      context.go(MyRoute.login);
                     },
                     title: "アカウントをログアウトしてもよろしいですか?");
               },
-              icon: const Icon(Icons.logout))
+              icon: Icon(
+                Icons.logout,
+                color: AppColor.primaryColor,
+              ))
         ],
       ),
       body: isLoading.value

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:air_job_management/const/const.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/utils/app_color.dart';
@@ -8,8 +6,9 @@ import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:air_job_management/worker_page/viewprofile/pickimage.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../../api/user_api.dart';
@@ -44,14 +43,18 @@ class _EditProfileState extends State<EditProfile> {
   DateTime dateTime = DateTime.now();
   ScrollController scrollController = ScrollController();
   String imageUrl = "";
-  File? _image;
+  Uint8List? _image;
   final _formKey = GlobalKey<FormState>();
 
   void selectImage() async {
-    File img = await pickImage(ImageSource.gallery);
-    setState(() {
-      _image = img;
-    });
+    var img = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+    if (img != null) {
+      setState(() {
+        _image = img.files.first.bytes;
+      });
+    }
   }
 
   onSaveUserData() async {
@@ -163,9 +166,14 @@ class _EditProfileState extends State<EditProfile> {
                             ?
                             // imageUrl: myUser?.profile ?? "",
 
-                            CircleAvatar(
-                                radius: 80,
-                                backgroundImage: FileImage(_image!),
+                            ClipRRect(
+                                borderRadius: BorderRadius.circular(80),
+                                child: Container(
+                                  width: 160,
+                                  height: 160,
+                                  decoration: BoxDecoration(shape: BoxShape.circle),
+                                  child: Image.memory(_image!),
+                                ),
                               )
                             : imageUrl.isNotEmpty
                                 ? CircleAvatar(

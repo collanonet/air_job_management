@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/pages/job_seeker/job_seeker_detail/chat.dart';
 import 'package:air_job_management/providers/auth.dart';
@@ -323,8 +321,8 @@ class _MessagePageState extends State<MessagePage> {
                           .child(
                             "${isImage ? "images" : "files"}/chat_${authProvider.myUser?.uid}_${widget.companyID}/${DateTime.now().millisecondsSinceEpoch}.${value1?.files.first.extension}",
                           )
-                          .putFile(
-                            File(value1!.files.first.path!),
+                          .putData(
+                            value1!.files.first.bytes!,
                           )
                           .then((value2) async {
                         var message = MessageModel(

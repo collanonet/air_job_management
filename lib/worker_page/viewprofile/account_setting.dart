@@ -1,13 +1,11 @@
 //profile screen -- to show signed in user info
-import 'dart:io';
-import 'dart:math';
-
 import 'package:air_job_management/api/worker_api/API.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/worker_page/viewprofile/dialogs.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 late Size mq;
@@ -23,7 +21,7 @@ class AccountSetting extends StatefulWidget {
 
 class _AccountSettingState extends State<AccountSetting> {
   final _formKey = GlobalKey<FormState>();
-  String? _image;
+  Uint8List? _image;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +49,7 @@ class _AccountSettingState extends State<AccountSetting> {
                             //local image
                             ClipRRect(
                                 borderRadius: BorderRadius.circular(mq.height * .1),
-                                child: Image.file(File(_image!), width: mq.height * .2, height: mq.height * .2, fit: BoxFit.cover))
+                                child: Image.memory(_image!, width: mq.height * .2, height: mq.height * .2, fit: BoxFit.cover))
                             :
 
                             //image from server
@@ -174,12 +172,11 @@ class _AccountSettingState extends State<AccountSetting> {
                         // Pick an image
                         final XFile? image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
                         if (image != null) {
-                          log('Image Path: ${image.path}' as num);
-                          setState(() {
-                            _image = image.path;
+                          setState(() async {
+                            _image = await image.readAsBytes();
                           });
 
-                          APIs.updateProfilePicture(File(_image!));
+                          APIs.updateProfilePicture(_image!);
                           // for hiding bottom sheet
                           Navigator.pop(context);
                         }
@@ -196,12 +193,11 @@ class _AccountSettingState extends State<AccountSetting> {
                         // Pick an image
                         final XFile? image = await picker.pickImage(source: ImageSource.camera, imageQuality: 80);
                         if (image != null) {
-                          log('Image Path: ${image.path}' as num);
-                          setState(() {
-                            _image = image.path;
+                          setState(() async {
+                            _image = await image.readAsBytes();
                           });
 
-                          APIs.updateProfilePicture(File(_image!));
+                          APIs.updateProfilePicture(_image!);
                           // for hiding bottom sheet
                           Navigator.pop(context);
                         }
