@@ -1,4 +1,5 @@
 class MyRoute {
+  static var jobOption = "/job_options";
   static var dashboard = "/dashboard";
   static var login = "/login";
   static var users = "/users";

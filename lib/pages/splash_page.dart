@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
         if (users!.role == RoleHelper.admin) {
           context.go(MyRoute.dashboard);
         } else if (users.role == RoleHelper.worker && isEmailVerified == true) {
-          context.go(MyRoute.workerJobSearch);
+          context.go(MyRoute.jobOption);
         }
       } else {
         context.go(MyRoute.login);

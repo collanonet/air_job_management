@@ -1,7 +1,8 @@
 import 'package:air_job_management/providers/root_provider.dart';
 import 'package:air_job_management/worker_page/chat/chat.dart';
+import 'package:air_job_management/worker_page/manage/full_time_sceen.dart';
+import 'package:air_job_management/worker_page/manage/part_time_sreen.dart';
 import 'package:air_job_management/worker_page/myjob/job_screen.dart';
-import 'package:air_job_management/worker_page/search/search_sreen.dart';
 import 'package:air_job_management/worker_page/viewprofile/viewprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,8 @@ import '../favorite/favorite.dart';
 
 class RootPage extends StatefulWidget {
   final String uid;
-  const RootPage(this.uid);
+  final bool isFullTime;
+  const RootPage(this.uid, {required this.isFullTime});
   //const RootPage({Key? key}) : super(key: key);
 
   @override
@@ -18,22 +20,25 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
-  List<Widget> get pages => [
-        SearchScreen(),
-        const Center(
-          child: JobScreen(),
-        ),
-        Center(
-          child: FavoriteSreen(),
-        ),
-        const ChatPage(),
-        const Center(
-          child: ViewProfile(), //Text("Menu"),
-        ),
-      ];
+  List<Widget> pages = [
+    PartTimeJob(),
+    const Center(
+      child: JobScreen(),
+    ),
+    Center(
+      child: FavoriteSreen(),
+    ),
+    const ChatPage(),
+    const Center(
+      child: ViewProfile(), //Text("Menu"),
+    ),
+  ];
 
   @override
   void initState() {
+    if (widget.isFullTime) {
+      pages[0] = FullTimeJob();
+    }
     Provider.of<RootProvider>(context, listen: false).onInit();
     super.initState();
   }
@@ -47,7 +52,8 @@ class _RootPageState extends State<RootPage> {
           body: pages.elementAt(rootProvider.selectIndex),
           bottomNavigationBar: NavigationBar(
             backgroundColor: Colors.white,
-            destinations: rootProvider.allDestinations.map<Widget>((Destination destination) {
+            destinations: rootProvider.allDestinations
+                .map<Widget>((Destination destination) {
               return NavigationDestination(
                 icon: destination.icon,
                 label: destination.title,
