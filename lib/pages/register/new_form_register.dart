@@ -4,7 +4,6 @@ import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -175,8 +174,8 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
     if (val == ConstValue.success) {
       toastMessageSuccess(JapaneseText.successUpdate, context);
       await Future.delayed(const Duration(milliseconds: 300));
-      await FirebaseAuth.instance.signOut();
-      context.go(MyRoute.login);
+      // await FirebaseAuth.instance.signOut();
+      context.go(MyRoute.jobOption);
     } else {
       toastMessageError("$val", context);
     }

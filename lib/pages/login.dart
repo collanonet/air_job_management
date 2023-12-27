@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
-          const Text("Version 1.0.0"),
+          const Text("Version 1.0.1"),
         ],
       ),
     );
@@ -151,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
       MyUser? user = await authProvider.loginAccount(email.text.trim(), password.text.trim());
       if (user != null) {
         if (user.role == RoleHelper.admin) {
-          context.go(MyRoute.dashboard);
+          context.go(MyRoute.jobOption);
         } else {
           context.go(MyRoute.workerJobSearch);
         }
