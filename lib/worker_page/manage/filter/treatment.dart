@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../../providers/worker/filter.dart';
 import '../../../utils/app_color.dart';
 import '../../../widgets/custom_button.dart';
 
@@ -11,87 +13,67 @@ class Treatment extends StatefulWidget {
 }
 
 class _TreatmentState extends State<Treatment> {
-  int _selectedIndex = 0;
-  List<String> data = [
-    '未経験歓迎',
-    'まかないあり',
-    '服装自由',
-    '髪型/ヘアカラー自由',
-    '交通費支給',
-    'バイク/車通勤可',
-    '自転車通勤可',
-  ];
+  List<String> selected = [];
+  late WorkerFilter provider;
+
+  @override
+  void initState() {
+    selected =
+        Provider.of<WorkerFilter>(context, listen: false).selectedTreatment;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<WorkerFilter>(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('時間帯')),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Column(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.7,
-              child: GridView.builder(
-                itemCount: data.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 10 / 18,
-                    mainAxisExtent: 60,
-                    mainAxisSpacing: 5,
-                    crossAxisSpacing: 5),
-                itemBuilder: (context, index) {
-                  var item = data[index];
-                  return Container(
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color:
-                          index == _selectedIndex ? Colors.amber : Colors.white,
-                      border: Border.all(
-                        color: AppColor.darkBlueColor,
-                        width: 1,
-                      ),
-                    ),
-                    child: ListTile(
-                      title: Text(item),
-                      selected: index == _selectedIndex,
-                      onTap: () {
-                        setState(() {
-                          _selectedIndex = index;
-                        });
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-            const Spacer(),
-            ButtonWidget(
+      appBar: AppBar(
+          backgroundColor: AppColor.primaryColor, title: const Text('時間帯')),
+      body: Column(
+        children: [
+          Column(
+            children: [
+              item('未経験歓迎'),
+              item('まかないあり'),
+              item('服装自由'),
+              item('髪型/ヘアカラー自由'),
+              item('交通費支給'),
+              item('バイク/車通勤可'),
+              item('自転車通勤可'),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+            child: ButtonWidget(
               color: AppColor.primaryColor,
               title: 'OK',
-              onPress: () {},
-            )
-          ],
-        ),
+              onPress: () {
+                provider.onChangeTreatment(selected);
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget builbox(var item, int index) {
-    return Container(
-      width: 160,
-      height: 60,
-      decoration: BoxDecoration(
-        color: index == _selectedIndex ? Colors.amber : Colors.white,
-        border: Border.all(color: Colors.black, width: 2),
-      ),
-      child: ListTile(
-        title: Text(item),
-        selected: index == _selectedIndex,
-        onTap: () {
-          setState(() {
-            _selectedIndex = index;
-          });
+  Widget item(String title) {
+    return Card(
+      child: CheckboxListTile(
+        controlAffinity: ListTileControlAffinity.leading,
+        activeColor: Colors.red,
+        checkColor: Colors.white,
+        title: Text(title),
+        value: selected.contains(title),
+        onChanged: (bool? value) {
+          if (selected.contains(title)) {
+            selected.remove(title);
+          } else {
+            selected.add(title);
+          }
+
+          setState(() {});
         },
       ),
     );

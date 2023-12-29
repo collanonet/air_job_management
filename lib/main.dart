@@ -18,6 +18,7 @@ import 'package:air_job_management/providers/job_posting_for_japanese.dart';
 import 'package:air_job_management/providers/job_seeker.dart';
 import 'package:air_job_management/providers/job_seeker_detail.dart';
 import 'package:air_job_management/providers/root_provider.dart';
+import 'package:air_job_management/providers/worker/filter.dart';
 import 'package:air_job_management/utils/extension.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/my_route.dart';
@@ -262,6 +263,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => CompanyProvider()),
           ChangeNotifierProvider(create: (_) => FavoriteProvider()),
           ChangeNotifierProvider(create: (_) => RootProvider()),
+          ChangeNotifierProvider(create: (_) => WorkerFilter()),
         ],
         child: MaterialApp.router(
           localizationsDelegates: const [

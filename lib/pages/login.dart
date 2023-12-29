@@ -53,11 +53,14 @@ class _LoginPageState extends State<LoginPage> {
   buildBody() {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(topLeft: Radius.circular(32), bottomRight: Radius.circular(32)),
+        borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(32), bottomRight: Radius.circular(32)),
         color: AppColor.whiteColor,
       ),
-      padding: EdgeInsets.symmetric(vertical: AppSize.getDeviceHeight(context) * 0.1),
-      width: AppSize.getDeviceWidth(context) * (Responsive.isDesktop(context) ? 0.5 : 0.8),
+      padding: EdgeInsets.symmetric(
+          vertical: AppSize.getDeviceHeight(context) * 0.1),
+      width: AppSize.getDeviceWidth(context) *
+          (Responsive.isDesktop(context) ? 0.5 : 0.8),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -67,7 +70,8 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               Image.asset(
                 "assets/svgs/img.png",
-                width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.3),
+                width: AppSize.getDeviceWidth(context) *
+                    (Responsive.isMobile(context) ? 0.6 : 0.3),
               ),
               Positioned(
                   right: 0,
@@ -76,7 +80,10 @@ class _LoginPageState extends State<LoginPage> {
                   child: Center(
                     child: Text(
                       "求人企業",
-                      style: TextStyle(color: AppColor.primaryColor, fontWeight: FontWeight.w600, fontSize: 18),
+                      style: TextStyle(
+                          color: AppColor.primaryColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18),
                     ),
                   ))
             ],
@@ -85,14 +92,23 @@ class _LoginPageState extends State<LoginPage> {
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
-            child: PrimaryTextField(isRequired: true, hint: "スタッフ番号", controller: email, isObsecure: false),
+            padding: EdgeInsets.symmetric(
+                horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            child: PrimaryTextField(
+                isRequired: true,
+                hint: "スタッフ番号",
+                controller: email,
+                isObsecure: false),
           ),
           AppSize.spaceHeight16,
-          !authProvider.isLogin ? PrimaryTextField(hint: "Username", controller: username, isObsecure: false) : SizedBox(),
+          !authProvider.isLogin
+              ? PrimaryTextField(
+                  hint: "Username", controller: username, isObsecure: false)
+              : SizedBox(),
           !authProvider.isLogin ? AppSize.spaceHeight16 : SizedBox(),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            padding: EdgeInsets.symmetric(
+                horizontal: AppSize.getDeviceWidth(context) * 0.1),
             child: PrimaryTextField(
               hint: "パスワード",
               controller: password,
@@ -105,7 +121,8 @@ class _LoginPageState extends State<LoginPage> {
                           isShow = !isShow;
                         });
                       },
-                      icon: Icon(FlutterIcons.eye_ent, color: AppColor.primaryColor),
+                      icon: Icon(FlutterIcons.eye_ent,
+                          color: AppColor.primaryColor),
                     )
                   : IconButton(
                       onPressed: () {
@@ -113,13 +130,15 @@ class _LoginPageState extends State<LoginPage> {
                           isShow = !isShow;
                         });
                       },
-                      icon: Icon(FlutterIcons.eye_with_line_ent, color: AppColor.primaryColor),
+                      icon: Icon(FlutterIcons.eye_with_line_ent,
+                          color: AppColor.primaryColor),
                     ),
             ),
           ),
           AppSize.spaceHeight16,
           SizedBox(
-            width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.20),
+            width: AppSize.getDeviceWidth(context) *
+                (Responsive.isMobile(context) ? 0.6 : 0.20),
             child: ButtonWidget(
                 title: authProvider.isLogin ? "ログイン" : "Register",
                 color: AppColor.primaryColor,
@@ -135,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
-          const Text("Version 1.0.1"),
+          const Text("Version 1.0.2"),
         ],
       ),
     );
@@ -148,7 +167,8 @@ class _LoginPageState extends State<LoginPage> {
       MessageWidget.show("スタッフ番号またはパスワードが必要です");
     } else {
       authProvider.setLoading(true);
-      MyUser? user = await authProvider.loginAccount(email.text.trim(), password.text.trim());
+      MyUser? user = await authProvider.loginAccount(
+          email.text.trim(), password.text.trim());
       if (user != null) {
         if (user.role == RoleHelper.admin) {
           context.go(MyRoute.jobOption);
@@ -165,7 +185,9 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       width: 150,
       height: 45,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: isSelected ? AppColor.primaryColor : AppColor.secondaryColor),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: isSelected ? AppColor.primaryColor : AppColor.secondaryColor),
       child: InkWell(
         onTap: () {
           if (title == "Login") {
@@ -177,7 +199,8 @@ class _LoginPageState extends State<LoginPage> {
         child: Center(
           child: Text(
             title,
-            style: TextStyle(color: isSelected ? AppColor.whiteColor : AppColor.blackColor),
+            style: TextStyle(
+                color: isSelected ? AppColor.whiteColor : AppColor.blackColor),
           ),
         ),
       ),

@@ -42,14 +42,16 @@ class _PartTimeJobState extends State<PartTimeJob> {
     if (data.size > 0) {
       for (var d in data.docs) {
         var info = SearchJob.fromJson(d.data());
-        info.uid = d.id;
-        DateTime startDate = MyDateTimeUtils.fromApiToLocal(info.startDate!);
-        startDate =
-            DateTime(startDate.year, startDate.month, startDate.day, 0, 0);
-        DateTime endDate = MyDateTimeUtils.fromApiToLocal(info.endDate!);
-        endDate = DateTime(endDate.year, endDate.month, endDate.day, 0, 0);
-        if (isDateInRange(_selectedDate, startDate, endDate)) {
-          jobSearchList.add(info);
+        if (info.employmentType != "正社員") {
+          info.uid = d.id;
+          DateTime startDate = MyDateTimeUtils.fromApiToLocal(info.startDate!);
+          startDate =
+              DateTime(startDate.year, startDate.month, startDate.day, 0, 0);
+          DateTime endDate = MyDateTimeUtils.fromApiToLocal(info.endDate!);
+          endDate = DateTime(endDate.year, endDate.month, endDate.day, 0, 0);
+          if (isDateInRange(_selectedDate, startDate, endDate)) {
+            jobSearchList.add(info);
+          }
         }
       }
       loading.value = false;

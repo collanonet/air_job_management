@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../providers/worker/filter.dart';
+import '../../../utils/app_color.dart';
+import '../../../widgets/custom_button.dart';
 
 enum SingingCharacter { a, b, c, d }
 
@@ -10,34 +15,67 @@ class RadioExample extends StatefulWidget {
 }
 
 class _RadioExampleState extends State<RadioExample> {
-  SingingCharacter? _character = SingingCharacter.a;
-  List item = ['3,000円〜', '5,000円〜', '8,000円〜', '10,000円〜'];
+  late WorkerFilter provider;
+  String? selected;
+
+  @override
+  void initState() {
+    selected = Provider.of<WorkerFilter>(context, listen: false).selectedReward;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<WorkerFilter>(context);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColor.primaryColor,
         centerTitle: true,
         title: const Text('報酬'),
       ),
       body: SafeArea(
         child: Column(
-            children: List.generate(4, (index) {
-          var value = item[index];
-          return data(context, value);
-        })),
+          children: [
+            ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: provider.rewardList.length,
+                itemBuilder: (context, index) {
+                  String value = provider.rewardList[index];
+                  return data(context, value);
+                }),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+              child: ButtonWidget(
+                color: AppColor.primaryColor,
+                title: 'OK',
+                onPress: () {
+                  provider.onChangeReward(selected);
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget data(BuildContext context, var value) {
     return ListTile(
+      onTap: () {
+        setState(() {
+          selected = value;
+        });
+      },
       title: Text(value),
-      leading: Radio<SingingCharacter>(
-        value: SingingCharacter.b,
-        groupValue: _character,
-        onChanged: (SingingCharacter? value) {
+      leading: Radio<String?>(
+        value: value,
+        groupValue: selected,
+        activeColor: AppColor.primaryColor,
+        onChanged: (value) {
           setState(() {
-            _character = value;
+            selected = value;
           });
         },
       ),

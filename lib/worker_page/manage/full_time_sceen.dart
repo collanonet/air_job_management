@@ -1,8 +1,11 @@
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/style.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../../const/const.dart';
+import '../../models/worker_model/search_job.dart';
 import '../../utils/respnsive.dart';
 
 class FullTimeJob extends StatefulWidget {
@@ -64,88 +67,122 @@ class _FullTimeJobState extends State<FullTimeJob> {
     '鹿児島県',
     '沖縄県',
   ];
+  List<SearchJob> jobSearchList = [];
+  ValueNotifier<bool> loading = ValueNotifier<bool>(true);
+  onGetData() async {
+    jobSearchList = [];
+    var data = await FirebaseFirestore.instance
+        .collection("search_job")
+        .where('employment_type', isEqualTo: '正社員')
+        .get();
+    if (data.size > 0) {
+      for (var d in data.docs) {
+        var info = SearchJob.fromJson(d.data());
+
+        jobSearchList.add(info);
+      }
+      loading.value = false;
+      setState(() {});
+    } else {
+      loading.value = false;
+      setState(() {});
+    }
+  }
+
+  @override
+  void initState() {
+    onGetData();
+    super.initState();
+  }
+
   TextEditingController searcontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 250,
-              padding: EdgeInsets.only(left: 16, right: 16),
-              decoration: BoxDecoration(
-                color: AppColor.primaryColor,
-              ),
-              child: Column(
-                children: [
-                  AppSize.spaceHeight5,
-                  SizedBox(
-                    width: AppSize.getDeviceWidth(context),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.asset(
-                            'assets/svgs/img.png',
-                            width: Responsive.isMobile(context)
-                                ? 100
-                                : MediaQuery.of(context).size.width * 0.1,
+      body: loading.value
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 230,
+                      padding: EdgeInsets.only(left: 16, right: 16),
+                      decoration: BoxDecoration(
+                        color: AppColor.primaryColor,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          AppSize.spaceHeight5,
+                          SizedBox(
+                            width: AppSize.getDeviceWidth(context),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Image.asset(
+                                    'assets/svgs/img.png',
+                                    width: Responsive.isMobile(context)
+                                        ? 100
+                                        : MediaQuery.of(context).size.width *
+                                            0.1,
+                                  ),
+                                ),
+                                Container(
+                                  width: 100,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: AppColor.whiteColor,
+                                        width: 2,
+                                      )),
+                                  child: const Center(
+                                    child: Text('条件を保存'),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                        Container(
-                          width: 100,
-                          height: 30,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: AppColor.whiteColor,
-                                width: 2,
-                              )),
-                          child: const Center(
-                            child: Text('条件を保存'),
+                          AppSize.spaceHeight5,
+                          dropdown(),
+                          searchbox(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 5),
+                            child: Divider(
+                              height: 2,
+                              color: AppColor.whiteColor,
+                            ),
                           ),
-                        )
-                      ],
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 20, bottom: 10),
+                            child: Row(
+                              children: const [
+                                Text('検索履歴・保存条件'),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                  AppSize.spaceHeight5,
-                  dropdown(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      searchbox(),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: Divider(
-                      height: 2,
-                      color: AppColor.whiteColor,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: Row(
-                      children: const [
-                        Text('検索履歴・保存条件'),
-                      ],
-                    ),
-                  )
-                ],
+                    Column(
+                      children: List.generate(jobSearchList.length, (index) {
+                        var info = jobSearchList[index];
+
+                        return item(info);
+                      }),
+                    )
+                  ],
+                ),
               ),
             ),
-            Column(
-              children: List.generate(3, (index) {
-                return item();
-              }),
-            )
-          ],
-        ),
-      ),
     );
   }
 
@@ -156,7 +193,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
         children: [
           Expanded(
             child: Container(
-              height: 60,
+              height: 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
                 color: Colors.white,
@@ -182,7 +219,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
             onTap: () {},
             child: Container(
               width: 100,
-              height: 60,
+              height: 50,
               decoration: BoxDecoration(
                   color: Colors.deepOrange.withOpacity(0.4),
                   borderRadius: BorderRadius.circular(5),
@@ -200,8 +237,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
     );
   }
 
-  // produc
-  Widget item() {
+  Widget item(var info) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: Column(
@@ -224,8 +260,8 @@ class _FullTimeJobState extends State<FullTimeJob> {
                   ]),
               child: Column(
                 children: [
-                  under(),
-                  data(),
+                  under(info),
+                  data(info),
                 ],
               ),
             ),
@@ -235,20 +271,20 @@ class _FullTimeJobState extends State<FullTimeJob> {
     );
   }
 
-  Widget data() {
+  Widget data(var info) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Column(
         children: [
           Text(
-            '<綺麗なホテル＊>ルームメイク/未経験OK/車通勤可/駅近/週2日～',
-            style: normalTextStyle,
+            info.title.toString(),
+            style: titleStyle.copyWith(color: Colors.black),
           ),
           AppSize.spaceHeight5,
           Row(
-            children: const [
+            children: [
               Text(
-                'ホテルクリーンサービス株式会社',
+                info.company.toString(),
               ),
             ],
           ),
@@ -259,7 +295,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
                 color: AppColor.primaryColor,
               ),
               AppSize.spaceWidth5,
-              const Text('大阪府大阪市中央区西心斎橋')
+              Text(info.location.des.toString())
             ],
           ),
           Row(
@@ -269,7 +305,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
                 color: AppColor.primaryColor,
               ),
               AppSize.spaceWidth5,
-              const Text('時給1300円以上')
+              Text('${info.fee ?? info.salaryRange}')
             ],
           ),
           Row(
@@ -279,7 +315,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
                 color: AppColor.primaryColor,
               ),
               AppSize.spaceWidth5,
-              const Text('警備・清掃・ビル管理')
+              Text(info.occupationType.toString())
             ],
           )
         ],
@@ -287,20 +323,21 @@ class _FullTimeJobState extends State<FullTimeJob> {
     );
   }
 
-  Widget under() {
+  Widget under(var info) {
     return Stack(
       children: [
         Container(
           width: double.infinity,
           height: 165,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(10),
               topRight: Radius.circular(10),
             ),
             image: DecorationImage(
-                image: NetworkImage(
-                    'https://img.freepik.com/free-photo/cute-brunette-girl-barista-cafe-staff-pouring-water-from-kettle-brewing-filter-coffee-cou_1258-138367.jpg'),
+                image: NetworkImage(info.image != null && info.image != ""
+                    ? info.image
+                    : ConstValue.defaultBgImage),
                 fit: BoxFit.cover),
           ),
         ),

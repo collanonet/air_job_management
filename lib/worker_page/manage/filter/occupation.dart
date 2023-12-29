@@ -1,4 +1,6 @@
+import 'package:air_job_management/providers/worker/filter.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../utils/app_color.dart';
 import '../../../widgets/custom_button.dart';
@@ -12,12 +14,22 @@ class Occupation extends StatefulWidget {
 
 class _OccupationState extends State<Occupation> {
   bool isChecked = false;
-  final notification = [];
+  List<String> selected = [];
+  late WorkerFilter provider;
+
+  @override
+  void initState() {
+    selected =
+        Provider.of<WorkerFilter>(context, listen: false).selectedOccupation;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    provider = Provider.of<WorkerFilter>(context);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppColor.primaryColor,
         centerTitle: true,
         title: const Text('職種'),
       ),
@@ -42,7 +54,10 @@ class _OccupationState extends State<Occupation> {
             child: ButtonWidget(
               color: AppColor.primaryColor,
               title: 'OK',
-              onPress: () {},
+              onPress: () {
+                provider.onChangeOccupation(selected);
+                Navigator.pop(context);
+              },
             ),
           ),
         ],
@@ -57,11 +72,38 @@ class _OccupationState extends State<Occupation> {
         activeColor: Colors.red,
         checkColor: Colors.white,
         title: Text(title),
-        value: isChecked,
+        value: selected.contains(title),
         onChanged: (bool? value) {
-          setState(() {
-            isChecked = value!;
-          });
+          if (title == 'すべて') {
+            if (title == 'すべて' &&
+                selected.length == provider.occupationList.length) {
+              selected = [];
+            } else {
+              selected = [
+                'すべて',
+                '軽作業',
+                '配達・運転',
+                '販売',
+                '飲食',
+                'オフィスワーク',
+                'イベント・キャンペーン',
+                '専門職',
+                '接客',
+                'エンタメ',
+              ];
+            }
+          } else {
+            if (selected.contains("すべて")) {
+              selected.remove("すべて");
+            }
+            if (selected.contains(title)) {
+              selected.remove(title);
+            } else {
+              selected.add(title);
+            }
+          }
+
+          setState(() {});
         },
       ),
     );

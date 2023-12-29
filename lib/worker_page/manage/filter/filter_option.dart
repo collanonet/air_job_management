@@ -1,9 +1,11 @@
+import 'package:air_job_management/providers/worker/filter.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/page_route.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/worker_page/manage/filter/reward.dart';
 import 'package:air_job_management/worker_page/manage/filter/treatment.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../utils/app_color.dart';
 import '../../../widgets/custom_button.dart';
@@ -18,8 +20,11 @@ class FilterOption extends StatefulWidget {
 }
 
 class _FilterOptionState extends State<FilterOption> {
+  late WorkerFilter workerFilter;
+
   @override
   Widget build(BuildContext context) {
+    workerFilter = Provider.of<WorkerFilter>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColor.primaryColor,
@@ -35,16 +40,27 @@ class _FilterOptionState extends State<FilterOption> {
           children: [
             menu('職種', () {
               MyPageRoute.goTo(context, const Occupation());
-            }),
+            },
+                workerFilter.selectedOccupation.isEmpty ||
+                        workerFilter.selectedOccupation.length ==
+                            workerFilter.occupationList.length
+                    ? "すべて"
+                    : workerFilter.selectedOccupation.map((e) => e).toString()),
             menu('報酬', () {
               MyPageRoute.goTo(context, const RadioExample());
-            }),
+            }, workerFilter.selectedReward ?? "指定なし"),
             menu('時間帯', () {
               MyPageRoute.goTo(context, const FlatTime());
-            }),
+            },
+                workerFilter.selectedRangeTime.isEmpty
+                    ? "指定なし"
+                    : workerFilter.selectedRangeTime.map((e) => e).toString()),
             menu('待遇', () {
               MyPageRoute.goTo(context, const Treatment());
-            }),
+            },
+                workerFilter.selectedTreatment.isEmpty
+                    ? "指定なし"
+                    : workerFilter.selectedTreatment.map((e) => e).toString()),
             const Spacer(),
             Center(
               child: ButtonWidget(
@@ -60,7 +76,7 @@ class _FilterOptionState extends State<FilterOption> {
     );
   }
 
-  Widget menu(String text, void Function()? onTap) {
+  Widget menu(String text, void Function()? onTap, String selection) {
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -71,11 +87,12 @@ class _FilterOptionState extends State<FilterOption> {
             style: normalTextStyle,
           ),
           trailing: SizedBox(
-            width: 80,
+            width: AppSize.getDeviceWidth(context) * 0.8,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  "すべて",
+                  selection,
                   style: normalTextStyle,
                 ),
                 const Icon(Icons.arrow_forward_ios_rounded, size: 18),
