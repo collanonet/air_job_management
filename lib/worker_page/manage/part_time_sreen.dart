@@ -79,7 +79,7 @@ class _PartTimeJobState extends State<PartTimeJob> {
 
   // lists dropdown
   List<String> list = <String>[
-    '海外 ',
+    '海外',
     '北海道',
     '青森県',
     '岩手県',
@@ -375,29 +375,34 @@ class _PartTimeJobState extends State<PartTimeJob> {
       ),
       child: Stack(
         children: [
-          Card(
-            color: AppColor.whiteColor,
-            child: DropdownMenu<String>(
-              width: MediaQuery.of(context).size.width,
-              textStyle: kTitleText,
-              leadingIcon: Icon(
-                Icons.location_pin,
-                color: AppColor.primaryColor,
-                size: 30,
+          SizedBox(
+            width: AppSize.getDeviceWidth(context),
+            child: Container(
+              color: AppColor.whiteColor,
+              child: DropdownButtonHideUnderline(
+                child: DropdownMenu<String>(
+                  width: MediaQuery.of(context).size.width - 32,
+                  textStyle: kTitleText,
+                  leadingIcon: Icon(
+                    Icons.location_pin,
+                    color: AppColor.primaryColor,
+                    size: 30,
+                  ),
+                  trailingIcon: SizedBox(),
+                  initialSelection: list.first,
+                  onSelected: (String? value) {
+                    list.first = value!;
+                    // This is called when the user selects an item.
+                  },
+                  dropdownMenuEntries:
+                      list.map<DropdownMenuEntry<String>>((String value) {
+                    return DropdownMenuEntry<String>(
+                      value: value,
+                      label: value,
+                    );
+                  }).toList(),
+                ),
               ),
-              trailingIcon: SizedBox(),
-              initialSelection: list.first,
-              onSelected: (String? value) {
-                list.first = value!;
-                // This is called when the user selects an item.
-              },
-              dropdownMenuEntries:
-                  list.map<DropdownMenuEntry<String>>((String value) {
-                return DropdownMenuEntry<String>(
-                  value: value,
-                  label: value,
-                );
-              }).toList(),
             ),
           ),
           Positioned(

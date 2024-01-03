@@ -42,6 +42,7 @@ class MyUser {
   bool? fullTimeJob;
   bool? temporary;
   bool? partTimeJob;
+  bool? isFullTimeStaff;
 
   MyUser(
       {this.jobStatus,
@@ -83,10 +84,12 @@ class MyUser {
       this.fullTimeJob,
       this.temporary,
       this.partTimeJob,
-      this.balance});
+      this.balance,
+      this.isFullTimeStaff});
 
   factory MyUser.fromJson(Map<String, dynamic> json) {
     return MyUser(
+      isFullTimeStaff: json["is_full_time_staff"] ?? false,
       balance: json["balance"] ?? "",
       verifyDoc: json["verifyDoc"] ?? "",
       postalCode: json["postalCode"] ?? "",
@@ -99,7 +102,10 @@ class MyUser {
       temporary: json["temporary"] ?? false,
       partTimeJob: json["partTimeJob"] ?? false,
       gender: json["gender"] ?? "",
-      workingStatus: (json["working_status"] != null && json["working_status"] != "") ? json["working_status"] : JapaneseText.noContact,
+      workingStatus:
+          (json["working_status"] != null && json["working_status"] != "")
+              ? json["working_status"]
+              : JapaneseText.noContact,
       profileImage: json["profile"] ?? "",
       firstName: json["first_name"] ?? "",
       lastName: json["last_name"] ?? "",
@@ -114,16 +120,26 @@ class MyUser {
       jobDetail: json["job_detail"] ?? "",
       jobId: json["job_id"] ?? "",
       jobTitle: json["job_title"] ?? "",
-      messageList: json["message_list"] != null ? List<String>.from(json["message_list"].map((e) => e)) : [],
+      messageList: json["message_list"] != null
+          ? List<String>.from(json["message_list"].map((e) => e))
+          : [],
       hash_password: json["hash_password"],
       interviewDate: json["interviewDate"] ?? "",
       finalEdu: json["finalEdu"] ?? "",
       graduationSchool: json["graduationSchool"] ?? "",
-      academicBgList: json["academicBgList"] != null ? List<String>.from(json["academicBgList"].map((e) => e)) : [],
-      workHistoryList: json["workHistoryList"] != null ? List<String>.from(json["workHistoryList"].map((e) => e)) : [],
+      academicBgList: json["academicBgList"] != null
+          ? List<String>.from(json["academicBgList"].map((e) => e))
+          : [],
+      workHistoryList: json["workHistoryList"] != null
+          ? List<String>.from(json["workHistoryList"].map((e) => e))
+          : [],
       ordinaryAutomaticLicence: json["ordinaryAutomaticLicence"] ?? "",
-      employmentHistoryList: json["employmentHistoryList"] != null ? List<String>.from(json["employmentHistoryList"].map((e) => e)) : [],
-      otherQualificationList: json["otherQualificationList"] != null ? List<String>.from(json["otherQualificationList"].map((e) => e)) : [],
+      employmentHistoryList: json["employmentHistoryList"] != null
+          ? List<String>.from(json["employmentHistoryList"].map((e) => e))
+          : [],
+      otherQualificationList: json["otherQualificationList"] != null
+          ? List<String>.from(json["otherQualificationList"].map((e) => e))
+          : [],
     );
   }
 
@@ -150,11 +166,17 @@ class MyUser {
         "interviewDate": interviewDate,
         "finalEdu": finalEdu,
         "graduationSchool": graduationSchool,
-        "academicBgList": academicBgList != null ? academicBgList!.map((e) => e) : [],
-        "workHistoryList": workHistoryList != null ? workHistoryList!.map((e) => e) : [],
+        "academicBgList":
+            academicBgList != null ? academicBgList!.map((e) => e) : [],
+        "workHistoryList":
+            workHistoryList != null ? workHistoryList!.map((e) => e) : [],
         "ordinaryAutomaticLicence": ordinaryAutomaticLicence,
-        "employmentHistoryList": employmentHistoryList != null ? employmentHistoryList!.map((e) => e) : [],
-        "otherQualificationList": otherQualificationList != null ? otherQualificationList!.map((e) => e) : [],
+        "employmentHistoryList": employmentHistoryList != null
+            ? employmentHistoryList!.map((e) => e)
+            : [],
+        "otherQualificationList": otherQualificationList != null
+            ? otherQualificationList!.map((e) => e)
+            : [],
         'verifyDoc': verifyDoc,
         'postalCode': postalCode,
         'province': province,

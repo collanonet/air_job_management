@@ -94,7 +94,6 @@ class _FlatTimeState extends State<FlatTime> {
               selected.add(title);
             }
           }
-
           setState(() {});
         },
       ),

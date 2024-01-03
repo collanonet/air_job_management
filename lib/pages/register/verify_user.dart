@@ -1,3 +1,4 @@
+import 'package:air_job_management/pages/register/new_register_form_for_part_time.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,13 +17,17 @@ import 'new_form_register.dart';
 
 class VerifyUserEmailPage extends StatefulWidget {
   final MyUser myUser;
-  const VerifyUserEmailPage({Key? key, required this.myUser}) : super(key: key);
+  final bool isFullTime;
+  const VerifyUserEmailPage(
+      {Key? key, required this.myUser, required this.isFullTime})
+      : super(key: key);
 
   @override
   State<VerifyUserEmailPage> createState() => _VerifyUserEmailPageState();
 }
 
-class _VerifyUserEmailPageState extends State<VerifyUserEmailPage> with AfterBuildMixin {
+class _VerifyUserEmailPageState extends State<VerifyUserEmailPage>
+    with AfterBuildMixin {
   bool isLoading = true;
 
   @override
@@ -50,7 +55,8 @@ class _VerifyUserEmailPageState extends State<VerifyUserEmailPage> with AfterBui
                       Align(
                           alignment: Alignment.centerLeft,
                           child: IconButton(
-                              onPressed: () => MyPageRoute.goToReplace(context, LoginPage()),
+                              onPressed: () =>
+                                  MyPageRoute.goToReplace(context, LoginPage()),
                               icon: Icon(
                                 Icons.arrow_back,
                                 color: AppColor.primaryColor,
@@ -58,15 +64,21 @@ class _VerifyUserEmailPageState extends State<VerifyUserEmailPage> with AfterBui
                       Center(
                           child: Image.asset(
                         "assets/svgs/img.png",
-                        width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.3),
+                        width: AppSize.getDeviceWidth(context) *
+                            (Responsive.isMobile(context) ? 0.6 : 0.3),
                       )),
                       //Email & Pass
-                      const Text("登録を行います。\nまずはメールアドレスに届いたURLをクリックし認証を行ってください。\nその後こちらの「送信する」をクリックしてください。"),
+                      const Text(
+                          "登録を行います。\nまずはメールアドレスに届いたURLをクリックし認証を行ってください。\nその後こちらの「送信する」をクリックしてください。"),
                       AppSize.spaceHeight30,
                       Center(
                         child: SizedBox(
-                            width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.20),
-                            child: ButtonWidget(color: AppColor.primaryColor, onPress: () => verifyAccount(), title: "送信する")),
+                            width: AppSize.getDeviceWidth(context) *
+                                (Responsive.isMobile(context) ? 0.6 : 0.20),
+                            child: ButtonWidget(
+                                color: AppColor.primaryColor,
+                                onPress: () => verifyAccount(),
+                                title: "送信する")),
                       ),
                       //Test
                       AppSize.spaceHeight16,
@@ -101,7 +113,13 @@ class _VerifyUserEmailPageState extends State<VerifyUserEmailPage> with AfterBui
       isLoading = false;
     });
     if (isEmailVerified) {
-      MyPageRoute.goTo(context, NewFormRegistrationPage(myUser: widget.myUser));
+      if (widget.isFullTime) {
+        MyPageRoute.goTo(
+            context, NewFormRegistrationPage(myUser: widget.myUser));
+      } else {
+        MyPageRoute.goTo(
+            context, NewFormRegistrationForPartTimePage(myUser: widget.myUser));
+      }
     } else {
       toastMessageError("検証に失敗しました。 メールにアクセスし、送信されたURLを再度ご確認ください。", context);
     }
@@ -109,9 +127,16 @@ class _VerifyUserEmailPageState extends State<VerifyUserEmailPage> with AfterBui
 
   @override
   void afterBuild(BuildContext context) async {
-    bool isEmailVerified = FirebaseAuth.instance.currentUser?.emailVerified ?? false;
+    bool isEmailVerified =
+        FirebaseAuth.instance.currentUser?.emailVerified ?? false;
     if (isEmailVerified) {
-      MyPageRoute.goTo(context, NewFormRegistrationPage(myUser: widget.myUser));
+      if (widget.myUser.isFullTimeStaff == true) {
+        MyPageRoute.goTo(
+            context, NewFormRegistrationPage(myUser: widget.myUser));
+      } else {
+        MyPageRoute.goTo(
+            context, NewFormRegistrationForPartTimePage(myUser: widget.myUser));
+      }
     } else {
       try {
         await FirebaseAuth.instance.currentUser?.sendEmailVerification();

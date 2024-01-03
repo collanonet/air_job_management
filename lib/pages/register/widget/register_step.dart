@@ -6,7 +6,10 @@ import '../../../utils/app_size.dart';
 
 class RegisterStepWidget extends StatelessWidget {
   final AuthProvider provider;
-  const RegisterStepWidget({Key? key, required this.provider}) : super(key: key);
+  final bool isFullTime;
+  const RegisterStepWidget(
+      {Key? key, required this.provider, required this.isFullTime})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,7 @@ class RegisterStepWidget extends StatelessWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             scrollDirection: Axis.horizontal,
-            itemCount: 5,
+            itemCount: isFullTime ? 5 : 4,
             padding: EdgeInsets.zero,
             itemBuilder: (context, index) {
               return GestureDetector(
@@ -31,10 +34,13 @@ class RegisterStepWidget extends StatelessWidget {
                       width: 30,
                       height: 30,
                       padding: EdgeInsets.zero,
-                      decoration:
-                          BoxDecoration(shape: BoxShape.circle, color: (provider.step == index + 1) ? AppColor.primaryColor : AppColor.thirdColor),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: (provider.step == index + 1)
+                              ? AppColor.primaryColor
+                              : AppColor.thirdColor),
                     ),
-                    index == 4
+                    index == 4 || (isFullTime == false && index == 3)
                         ? const SizedBox()
                         : Container(
                             width: width * 0.09,

@@ -20,7 +20,8 @@ import '../../widgets/custom_textfield.dart';
 import '../../widgets/loading.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+  final bool isFullTime;
+  const RegisterPage({Key? key, required this.isFullTime}) : super(key: key);
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -82,7 +83,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         Center(
                             child: Image.asset(
                           "assets/svgs/img.png",
-                          width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.3),
+                          width: AppSize.getDeviceWidth(context) *
+                              (Responsive.isMobile(context) ? 0.6 : 0.3),
                         )),
                         //Email & Pass
                         Column(
@@ -124,14 +126,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                                 Positioned(
                                     top: 0,
-                                    right: AppSize.getDeviceWidth(context) * 0.1,
+                                    right:
+                                        AppSize.getDeviceWidth(context) * 0.1,
                                     child: IconButton(
                                         onPressed: () {
                                           setState(() {
                                             isSecure = !isSecure;
                                           });
                                         },
-                                        icon: Icon(isSecure ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye)))
+                                        icon: Icon(isSecure
+                                            ? FontAwesomeIcons.eyeSlash
+                                            : FontAwesomeIcons.eye)))
                               ],
                             )
                           ],
@@ -151,14 +156,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                                 Positioned(
                                     top: 0,
-                                    right: AppSize.getDeviceWidth(context) * 0.1,
+                                    right:
+                                        AppSize.getDeviceWidth(context) * 0.1,
                                     child: IconButton(
                                         onPressed: () {
                                           setState(() {
                                             isSecure1 = !isSecure1;
                                           });
                                         },
-                                        icon: Icon(isSecure1 ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye)))
+                                        icon: Icon(isSecure1
+                                            ? FontAwesomeIcons.eyeSlash
+                                            : FontAwesomeIcons.eye)))
                               ],
                             )
                           ],
@@ -166,8 +174,12 @@ class _RegisterPageState extends State<RegisterPage> {
                         AppSize.spaceHeight16,
                         Center(
                           child: SizedBox(
-                            width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.20),
-                            child: ButtonWidget(title: "新規登録する", color: AppColor.primaryColor, onPress: () => createAccount()),
+                            width: AppSize.getDeviceWidth(context) *
+                                (Responsive.isMobile(context) ? 0.6 : 0.20),
+                            child: ButtonWidget(
+                                title: "新規登録する",
+                                color: AppColor.primaryColor,
+                                onPress: () => createAccount()),
                           ),
                         ),
                         // Test
@@ -198,10 +210,21 @@ class _RegisterPageState extends State<RegisterPage> {
     FocusScope.of(context).unfocus();
     if (_formKey.currentState!.validate()) {
       if (password.text == confirmPassword.text) {
-        if (RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email.text)) {
-          MyUser myUser =
-              MyUser(nameKanJi: "", nameFu: "", lastName: "", firstName: "", role: "worker", uid: "", dob: "", email: email.text.trim(), gender: "");
+        if (RegExp(
+                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+            .hasMatch(email.text)) {
+          MyUser myUser = MyUser(
+              nameKanJi: "",
+              nameFu: "",
+              lastName: "",
+              firstName: "",
+              role: "worker",
+              uid: "",
+              dob: "",
+              email: email.text.trim(),
+              gender: "");
           myUser.nameKanJi = "";
+          myUser.isFullTimeStaff = widget.isFullTime;
           myUser.nameFu = "";
           myUser.note = "";
           myUser.email = email.text;
@@ -215,14 +238,28 @@ class _RegisterPageState extends State<RegisterPage> {
           myUser.ordinaryAutomaticLicence = "";
           myUser.otherQualificationList = [];
           myUser.employmentHistoryList = [];
-          MyUser? user = await authProvider.registerAccount(email.text.trim(), password.text.trim(), myUser);
+          MyUser? user = await authProvider.registerAccount(
+              email.text.trim(), password.text.trim(), myUser);
           if (user != null) {
-            MyPageRoute.goTo(context, VerifyUserEmailPage(myUser: myUser));
+            MyPageRoute.goTo(
+                context,
+                VerifyUserEmailPage(
+                  myUser: myUser,
+                  isFullTime: widget.isFullTime,
+                ));
           } else {
             await FirebaseAuth.instance.currentUser?.reload();
-            bool isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
-            if (authProvider.errorMessage == "あなたのメールアドレスはすでに別のアカウントで使用されています。" && isEmailVerified == false) {
-              MyPageRoute.goTo(context, VerifyUserEmailPage(myUser: myUser));
+            bool isEmailVerified =
+                FirebaseAuth.instance.currentUser!.emailVerified;
+            if (authProvider.errorMessage ==
+                    "あなたのメールアドレスはすでに別のアカウントで使用されています。" &&
+                isEmailVerified == false) {
+              MyPageRoute.goTo(
+                  context,
+                  VerifyUserEmailPage(
+                    myUser: myUser,
+                    isFullTime: widget.isFullTime,
+                  ));
             } else {
               toastMessageError("${authProvider.errorMessage}", context);
             }

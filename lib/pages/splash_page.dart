@@ -1,9 +1,12 @@
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/helper/role_helper.dart';
 import 'package:air_job_management/models/user.dart';
+import 'package:air_job_management/pages/register/verify_user.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/my_route.dart';
+import 'package:air_job_management/utils/page_route.dart';
 import 'package:air_job_management/widgets/loading.dart';
+import 'package:air_job_management/worker_page/root/root_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -29,7 +32,29 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
         if (users!.role == RoleHelper.admin) {
           context.go(MyRoute.dashboard);
         } else if (users.role == RoleHelper.worker && isEmailVerified == true) {
-          context.go(MyRoute.jobOption);
+          if (users.isFullTimeStaff == true) {
+            MyPageRoute.goToReplace(
+                context,
+                RootPage(
+                  users.uid!,
+                  isFullTime: true,
+                ));
+          } else {
+            MyPageRoute.goToReplace(
+                context,
+                RootPage(
+                  users.uid!,
+                  isFullTime: false,
+                ));
+          }
+        } else if (users.role == RoleHelper.worker &&
+            isEmailVerified == false) {
+          MyPageRoute.goToReplace(
+              context,
+              VerifyUserEmailPage(
+                myUser: users,
+                isFullTime: users.isFullTimeStaff!,
+              ));
         }
       } else {
         context.go(MyRoute.login);

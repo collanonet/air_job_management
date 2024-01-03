@@ -14,6 +14,8 @@ import 'package:provider/provider.dart';
 
 import '../models/user.dart';
 import '../utils/my_route.dart';
+import '../utils/page_route.dart';
+import '../worker_page/root/root_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -149,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
           Center(
             child: TextButton(
               child: const Text("ギグワーカーとしてアカウントを登録する"),
-              onPressed: () => context.go(MyRoute.registerAsGigWorker),
+              onPressed: () => context.go(MyRoute.jobOption),
             ),
           ),
           AppSize.spaceHeight16,
@@ -171,7 +173,21 @@ class _LoginPageState extends State<LoginPage> {
           email.text.trim(), password.text.trim());
       if (user != null) {
         if (user.role == RoleHelper.admin) {
-          context.go(MyRoute.jobOption);
+          if (user.isFullTimeStaff == true) {
+            MyPageRoute.goToReplace(
+                context,
+                RootPage(
+                  user.uid!,
+                  isFullTime: true,
+                ));
+          } else {
+            MyPageRoute.goToReplace(
+                context,
+                RootPage(
+                  user.uid!,
+                  isFullTime: false,
+                ));
+          }
         } else {
           context.go(MyRoute.workerJobSearch);
         }

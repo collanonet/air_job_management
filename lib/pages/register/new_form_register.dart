@@ -24,10 +24,12 @@ import '../../widgets/radio_listtile.dart';
 
 class NewFormRegistrationPage extends StatefulWidget {
   final MyUser myUser;
-  const NewFormRegistrationPage({Key? key, required this.myUser}) : super(key: key);
+  const NewFormRegistrationPage({Key? key, required this.myUser})
+      : super(key: key);
 
   @override
-  State<NewFormRegistrationPage> createState() => _NewFormRegistrationPageState();
+  State<NewFormRegistrationPage> createState() =>
+      _NewFormRegistrationPageState();
 }
 
 class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
@@ -54,7 +56,9 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
   bool partTimeJob = false;
   TextEditingController finalEdu = TextEditingController(text: "");
   TextEditingController graduateSchoolFaculty = TextEditingController(text: "");
-  List<TextEditingController> academicBgList = [TextEditingController(text: "")];
+  List<TextEditingController> academicBgList = [
+    TextEditingController(text: "")
+  ];
   List<TextEditingController> workHistory = [TextEditingController(text: "")];
   String driverLicence = JapaneseText.have;
   TextEditingController otherQual = TextEditingController(text: "");
@@ -96,6 +100,7 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
             child: Column(
               children: [
                 RegisterStepWidget(
+                  isFullTime: true,
                   provider: provider,
                 ),
                 AppSize.spaceHeight16,
@@ -473,7 +478,8 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
                             child: IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    academicBgList.add(TextEditingController(text: ""));
+                                    academicBgList
+                                        .add(TextEditingController(text: ""));
                                   });
                                 },
                                 icon: Icon(
@@ -524,7 +530,8 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
                             child: IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    workHistory.add(TextEditingController(text: ""));
+                                    workHistory
+                                        .add(TextEditingController(text: ""));
                                   });
                                 },
                                 icon: Icon(
@@ -609,7 +616,9 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
       Container(
         width: AppSize.getDeviceWidth(context),
         height: 230,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), border: Border.all(width: 2, color: AppColor.primaryColor)),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(width: 2, color: AppColor.primaryColor)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -626,8 +635,10 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
                 color: AppColor.primaryColor,
                 title: "撮影または画像選択する",
                 onPress: () async {
-                  var file = await FilePicker.platform
-                      .pickFiles(type: FileType.custom, allowMultiple: false, allowedExtensions: ["pdf", "jpg", "png", "jpeg", "db"]);
+                  var file = await FilePicker.platform.pickFiles(
+                      type: FileType.custom,
+                      allowMultiple: false,
+                      allowedExtensions: ["pdf", "jpg", "png", "jpeg", "db"]);
                   if (file != null) {
                     setState(() {
                       selectedFile = file;
@@ -715,7 +726,10 @@ fileToUrl(FilePickerResult? file, String folderName) async {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   //Create a reference to the location you want to upload to in firebase
   try {
-    var snap = await _storage.ref().child("/$folderName/${file!.files.first.name}").putData(file.files.first.bytes!);
+    var snap = await _storage
+        .ref()
+        .child("/$folderName/${file!.files.first.name}")
+        .putData(file.files.first.bytes!);
     String dowUrl = await snap.ref.getDownloadURL();
 
     //returns the download url

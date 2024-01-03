@@ -59,8 +59,10 @@ class JapaneseText {
   static String dontHaveScheduleMessage = "編集するスケジュールがありません。";
   static String dontHaveWorkRecordMessage = "編集する勤務実績がありません。";
 
-  static String canNotCreateAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
-  static String canNotEditAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
+  static String canNotCreateAllWorkgroupMessage =
+      "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
+  static String canNotEditAllWorkgroupMessage =
+      "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
   static String workday = "勤務日";
   static String fixedDayOff = "所定休日";
   static String lawDayOff = "法定休日";
@@ -546,6 +548,49 @@ class JapaneseText {
   static String informationToObtain = "取得する情報";
   static String getOnlyBasicInformation = "基本情報のみ取得する";
   static String obtainEducationalBackground = "学歴‧資格‧職務経験も取得する";
+
+  /// Register info as a part time worker
+  /// Register step 2 Affiliation
+  static String affiliationStep2 = "所属";
+  static String highSchoolStudent2 = "高校生";
+  static String vocationalStudent = "専門学生";
+  static String universityOrGraduatedStudent = "大学生・大学院生";
+  static String partTimeJob2 = "パート・アルバイト";
+  static String companyEmployeeFullTime = "会社員（正社員）";
+  static String companyEmployeeContractOrTemporary = "会社員（契約社員/派遣社員）";
+  static String freelanceOrSelfEmployed = "自営業・フリーランス";
+  static String houseWife = "専業主婦・主夫";
+  static String unemployed = "無職";
+  static String notApplicable = "該当なし";
+
+  /// Register step 3 Qualifications held
+  static String qualificationsFieldStep3 = "保有資格";
+
+  static String driveLicenseNormal = "運転免許(普通)";
+  static String driveLicenseMediumOrLarge = "運転免許(中.大型)";
+  static String driveLicenseMoto = "運転免許(原付.二輪)";
+  static String forkliftDrivingSkill = "フォークリフト運転技能者";
+  static String hazardousMaterialsHandlerABC = "危険物取扱者(甲.乙.丙種)";
+  static String personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel2 =
+      "介護職員初任者研修修了者(ホームヘルパー2級)";
+  static String personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel1 =
+      "介護職員初任者研修修了者(ホームヘルパー1級)";
+  static String careWorker = "介護福祉士";
+  static String nursingCareSupportSpecialist = "介護支援専門員(ケアマネージャー)";
+  static String nurseTeacher = "保育士";
+  static String doctor = "医師";
+  static String pharmacist = "薬剤師";
+  static String nurseAssociateNurse = "看護師.准看護師";
+  static String physicalTherapistOccupational = "理学療法士.作業療法士.言語覚士";
+  static String registeredSeller = "登録販売者(一般医品)";
+  static String chef = "調理師";
+  static String registeredDietitianNutritionist = "管理栄養士.栄養士";
+  static String itSupport = "ITパスポート";
+  static String basicInformationEngineer = "基本情報技術者";
+  static String appliedInformationEngineer = "応用情報技術者";
+  static String itStrategist = "ITストラテジスト";
+  static String hairdresserBarber = "美容師.理容師";
+  static String massageTherapist = "あん摩マッサージ指圧師・はり師・きゅう師";
 }
 
 List<String> eligibilityApplicationList = [
