@@ -1,12 +1,10 @@
 import 'package:air_job_management/pages/register/widget/check_box.dart';
 import 'package:air_job_management/pages/register/widget/register_step.dart';
 import 'package:air_job_management/utils/app_color.dart';
-import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -16,11 +14,13 @@ import '../../models/user.dart';
 import '../../providers/auth.dart';
 import '../../utils/app_size.dart';
 import '../../utils/japanese_text.dart';
+import '../../utils/page_route.dart';
 import '../../utils/style.dart';
 import '../../utils/toast_message_util.dart';
 import '../../widgets/custom_loading_overlay.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/radio_listtile.dart';
+import '../../worker_page/root/root_page.dart';
 
 class NewFormRegistrationPage extends StatefulWidget {
   final MyUser myUser;
@@ -100,7 +100,7 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
             child: Column(
               children: [
                 RegisterStepWidget(
-                  isFullTime: true,
+                  isFullTime: false,
                   provider: provider,
                 ),
                 AppSize.spaceHeight16,
@@ -119,22 +119,18 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
       child: ButtonWidget(
           color: AppColor.primaryColor,
           onPress: () async {
-            if (provider.step == 5) {
+            if (provider.step == 4) {
               onSaveUserData();
             } else {
               if (_formKey.currentState!.validate()) {
-                if (provider.step == 4 && selectedFile == null) {
-                  toastMessageError("本人確認書類をアップロードする必要があります。", context);
-                } else {
-                  provider.onChangeStep(provider.step + 1);
-                }
+                provider.onChangeStep(provider.step + 1);
               } else {
                 //Please double check each step and enter data in the required fields.
                 toastMessageError("各ステップを再確認し、必須フィールドにデータを入力してください。", context);
               }
             }
           },
-          title: provider.step == 5 ? "終わり" : "次へ"),
+          title: provider.step == 4 ? "この内容で登録する" : "次へ"),
     );
   }
 
@@ -180,7 +176,8 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
       toastMessageSuccess(JapaneseText.successUpdate, context);
       await Future.delayed(const Duration(milliseconds: 300));
       // await FirebaseAuth.instance.signOut();
-      context.go(MyRoute.jobOption);
+      // context.go(MyRoute.jobOption);
+      MyPageRoute.goTo(context, RootPage(widget.myUser.uid!, isFullTime: true));
     } else {
       toastMessageError("$val", context);
     }
@@ -194,7 +191,7 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
     } else if (provider.step == 3) {
       return step3();
     } else if (provider.step == 4) {
-      return step4();
+      return step5();
     } else {
       return step5();
     }
@@ -234,7 +231,7 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
                 val: gender,
                 onChange: (v) {
                   setState(() {
-                    gender = v;
+                    gender = JapaneseText.male;
                   });
                 },
               ),
@@ -245,7 +242,7 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
                 val: gender,
                 onChange: (v) {
                   setState(() {
-                    gender = v;
+                    gender = JapaneseText.female;
                   });
                 },
               ),
@@ -256,7 +253,7 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
                 val: gender,
                 onChange: (v) {
                   setState(() {
-                    gender = v;
+                    gender = JapaneseText.other;
                   });
                 },
               ),
@@ -706,18 +703,56 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
   }
 
   step5() {
-    return Center(
+    return SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "すべての登録が完了しました",
+            "データをプレビューする",
             style: kTitleText.copyWith(color: AppColor.primaryColor),
           ),
           AppSize.spaceHeight16,
+          displayDataStep4(JapaneseText.nameKanJi, nameKanJi.text),
+          displayDataStep4(JapaneseText.nameFugigana, nameFurigana.text),
+          displayDataStep4(JapaneseText.dob, dob.text),
+          displayDataStep4(JapaneseText.gender, gender),
+          displayDataStep4(JapaneseText.phone, phone.text),
+          displayDataStep4(JapaneseText.email, widget.myUser.email ?? ""),
+          // displayDataStep4(JapaneseText.affiliationStep2, finalEdu.text),
+          // displayDataStep4(JapaneseText.qualificationsFieldStep3, otherQual.text),
+          displayDataStep4(JapaneseText.location,
+              "${street.text}, ${building.text}, ${province.text}, ${postalCode.text} ${city.text}"),
+          displayDataStep4(JapaneseText.remark, addressRemark.text),
+          displayDataStep4(JapaneseText.employmentStatus, employeeHistory.text),
+          displayDataStep4(JapaneseText.finalEducation, finalEdu.text),
+          displayDataStep4(JapaneseText.workHistory,
+              workHistory.map((e) => e.text).toString()),
+          displayDataStep4(JapaneseText.finalEducation, finalEdu.text),
+          displayDataStep4(JapaneseText.driverLicense, driverLicence),
+          displayDataStep4(JapaneseText.otherQualification, otherQual.text),
           AppSize.spaceHeight50,
           nextButtonWidget(),
         ],
       ),
+    );
+  }
+
+  displayDataStep4(String title, String data) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: kNormalText.copyWith(
+              fontWeight: FontWeight.w600, color: Colors.grey),
+        ),
+        AppSize.spaceHeight5,
+        Text(
+          data,
+          style: kNormalText.copyWith(fontWeight: FontWeight.normal),
+        ),
+        AppSize.spaceHeight16,
+      ],
     );
   }
 }

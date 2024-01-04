@@ -1,12 +1,12 @@
 import 'package:air_job_management/pages/register/widget/register_step.dart';
 import 'package:air_job_management/pages/register/widget/select_box_tile.dart';
 import 'package:air_job_management/utils/app_color.dart';
-import 'package:air_job_management/utils/my_route.dart';
+import 'package:air_job_management/utils/page_route.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
+import 'package:air_job_management/worker_page/root/root_page.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -120,7 +120,7 @@ class _NewFormRegistrationForPartTimePageState
       child: ButtonWidget(
           color: AppColor.primaryColor,
           onPress: () async {
-            if (provider.step == 5) {
+            if (provider.step == 4) {
               onSaveUserData();
             } else {
               if (_formKey.currentState!.validate()) {
@@ -147,10 +147,12 @@ class _NewFormRegistrationForPartTimePageState
       isLoading = true;
     });
     String imageUrl = "";
-    if (selectedFile != null) {
-      imageUrl = await fileToUrl(selectedFile!, "verify_doc");
-      // widget.myUser.profile = imageUrl;
-    }
+    // if (selectedFile != null) {
+    //   imageUrl = await fileToUrl(selectedFile!, "verify_doc");
+    //   // widget.myUser.profile = imageUrl;
+    // }
+    widget.myUser.affiliation = selectedAffiliation;
+    widget.myUser.qualificationFields = selectedQualificationsField;
     widget.myUser.notWorking = notWorking;
     widget.myUser.contractJob = contractJob;
     widget.myUser.fullTimeJob = fullTimeJob;
@@ -184,7 +186,8 @@ class _NewFormRegistrationForPartTimePageState
       toastMessageSuccess(JapaneseText.successUpdate, context);
       await Future.delayed(const Duration(milliseconds: 300));
       // await FirebaseAuth.instance.signOut();
-      context.go(MyRoute.jobOption);
+      MyPageRoute.goTo(
+          context, RootPage(widget.myUser.uid!, isFullTime: false));
     } else {
       toastMessageError("$val", context);
     }
@@ -237,7 +240,7 @@ class _NewFormRegistrationForPartTimePageState
                 val: gender,
                 onChange: (v) {
                   setState(() {
-                    gender = v;
+                    gender = JapaneseText.male;
                   });
                 },
               ),
@@ -248,7 +251,7 @@ class _NewFormRegistrationForPartTimePageState
                 val: gender,
                 onChange: (v) {
                   setState(() {
-                    gender = v;
+                    gender = JapaneseText.female;
                   });
                 },
               ),
@@ -259,7 +262,7 @@ class _NewFormRegistrationForPartTimePageState
                 val: gender,
                 onChange: (v) {
                   setState(() {
-                    gender = v;
+                    gender = JapaneseText.other;
                   });
                 },
               ),
@@ -964,18 +967,46 @@ class _NewFormRegistrationForPartTimePageState
   }
 
   step4() {
-    return Center(
-      child: Column(
-        children: [
-          Text(
-            "すべての登録が完了しました",
-            style: kTitleText.copyWith(color: AppColor.primaryColor),
-          ),
-          AppSize.spaceHeight16,
-          AppSize.spaceHeight50,
-          nextButtonWidget(),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "データをプレビューする",
+          style: kTitleText.copyWith(color: AppColor.primaryColor),
+        ),
+        AppSize.spaceHeight16,
+        displayDataStep4(JapaneseText.nameKanJi, nameKanJi.text),
+        displayDataStep4(JapaneseText.nameFugigana, nameFurigana.text),
+        displayDataStep4(JapaneseText.dob, dob.text),
+        displayDataStep4(JapaneseText.gender, gender),
+        displayDataStep4(JapaneseText.phone, phone.text),
+        displayDataStep4(JapaneseText.email, widget.myUser.email ?? ""),
+        displayDataStep4(
+            JapaneseText.affiliationStep2, selectedAffiliation ?? ""),
+        displayDataStep4(JapaneseText.qualificationsFieldStep3,
+            selectedQualificationsField ?? ""),
+        AppSize.spaceHeight50,
+        nextButtonWidget(),
+      ],
+    );
+  }
+
+  displayDataStep4(String title, String data) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: kNormalText.copyWith(
+              fontWeight: FontWeight.w600, color: Colors.grey),
+        ),
+        AppSize.spaceHeight5,
+        Text(
+          data,
+          style: kNormalText.copyWith(fontWeight: FontWeight.normal),
+        ),
+        AppSize.spaceHeight16,
+      ],
     );
   }
 }

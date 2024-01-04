@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/pages/company/create_or_edit_company.dart';
 import 'package:air_job_management/pages/home/home.dart';
 import 'package:air_job_management/pages/job_posting/create_or_edit_job.dart';
@@ -8,7 +7,7 @@ import 'package:air_job_management/pages/job_posting/create_or_edit_job_for_japa
 import 'package:air_job_management/pages/job_seeker/create_job_seeker.dart';
 import 'package:air_job_management/pages/job_seeker/job_seeker_detail/job_seeker_detail.dart';
 import 'package:air_job_management/pages/login.dart';
-import 'package:air_job_management/pages/register/new_register_form_for_part_time.dart';
+import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company.dart';
 import 'package:air_job_management/providers/favorite_provider.dart';
@@ -60,9 +59,7 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
-        return NewFormRegistrationForPartTimePage(
-          myUser: MyUser(),
-        );
+        return const SplashScreen();
       },
       routes: <RouteBase>[
         GoRoute(

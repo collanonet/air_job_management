@@ -248,18 +248,22 @@ class _RegisterPageState extends State<RegisterPage> {
                   isFullTime: widget.isFullTime,
                 ));
           } else {
-            await FirebaseAuth.instance.currentUser?.reload();
-            bool isEmailVerified =
-                FirebaseAuth.instance.currentUser!.emailVerified;
-            if (authProvider.errorMessage ==
-                    "あなたのメールアドレスはすでに別のアカウントで使用されています。" &&
-                isEmailVerified == false) {
-              MyPageRoute.goTo(
-                  context,
-                  VerifyUserEmailPage(
-                    myUser: myUser,
-                    isFullTime: widget.isFullTime,
-                  ));
+            if (FirebaseAuth.instance.currentUser != null) {
+              await FirebaseAuth.instance.currentUser?.reload();
+              bool isEmailVerified =
+                  FirebaseAuth.instance.currentUser!.emailVerified;
+              if (authProvider.errorMessage ==
+                      "あなたのメールアドレスはすでに別のアカウントで使用されています。" &&
+                  isEmailVerified == false) {
+                MyPageRoute.goTo(
+                    context,
+                    VerifyUserEmailPage(
+                      myUser: myUser,
+                      isFullTime: widget.isFullTime,
+                    ));
+              } else {
+                toastMessageError("${authProvider.errorMessage}", context);
+              }
             } else {
               toastMessageError("${authProvider.errorMessage}", context);
             }

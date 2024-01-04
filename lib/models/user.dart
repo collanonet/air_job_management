@@ -43,9 +43,13 @@ class MyUser {
   bool? temporary;
   bool? partTimeJob;
   bool? isFullTimeStaff;
+  String? affiliation;
+  String? qualificationFields;
 
   MyUser(
-      {this.jobStatus,
+      {this.affiliation,
+      this.qualificationFields,
+      this.jobStatus,
       this.messageList,
       this.email,
       this.firstName,
@@ -89,6 +93,8 @@ class MyUser {
 
   factory MyUser.fromJson(Map<String, dynamic> json) {
     return MyUser(
+      qualificationFields: json["qualification_fields"],
+      affiliation: json["affiliation"],
       isFullTimeStaff: json["is_full_time_staff"] ?? false,
       balance: json["balance"] ?? "",
       verifyDoc: json["verifyDoc"] ?? "",
