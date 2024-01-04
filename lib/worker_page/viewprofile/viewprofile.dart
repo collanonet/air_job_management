@@ -2,12 +2,14 @@ import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/api/worker_api/withdraw_api.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/utils/app_color.dart';
+import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/my_route.dart';
+import 'package:air_job_management/utils/page_route.dart';
+import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_dialog.dart';
 import 'package:air_job_management/widgets/loading.dart';
-import 'package:air_job_management/worker_page/viewprofile/edit_profile.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import 'edit_profile.dart';
 import 'private_policy.dart';
 import 'tab_review_penalty.dart';
 import 'term_of_use.dart';
@@ -29,48 +32,6 @@ class ViewProfile extends StatefulWidget {
 
 class _ViewProfileState extends State<ViewProfile> {
   double rating = 0;
-  var ListViewProfile = [
-    {
-      "title": "アカウント設定",
-      "icon": Icons.arrow_forward_ios,
-    },
-    {
-      "title": "レビューとペナルティ",
-      "icon": Icons.arrow_forward_ios,
-    },
-    {
-      "title": "あなたのスキル",
-      "icon": Icons.arrow_forward_ios,
-    },
-    {
-      "title": "過去の業務と報酬",
-      "icon": Icons.arrow_forward_ios,
-    },
-    {
-      "title": "プッシュ通知設定",
-      "icon": Icons.arrow_forward_ios,
-    },
-    {
-      "title": "サポート",
-      "icon": Icons.arrow_forward_ios,
-    },
-    {
-      "title": "よくある質問",
-      "icon": Icons.arrow_forward_ios,
-    },
-    {
-      "title": "プライバシーポリシー",
-      "icon": Icons.arrow_forward_ios,
-    },
-    {
-      "title": "利用規約",
-      "icon": Icons.arrow_forward_ios,
-    },
-    {
-      "title": "退会手続き",
-      "icon": Icons.arrow_forward_ios,
-    },
-  ];
   ValueNotifier<bool> isLoading = ValueNotifier(true);
   MyUser? myUser;
 
@@ -144,8 +105,10 @@ class _ViewProfileState extends State<ViewProfile> {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ClipRRect(
                             borderRadius: BorderRadius.circular(50),
@@ -154,17 +117,22 @@ class _ViewProfileState extends State<ViewProfile> {
                               width: 100,
                               height: 100,
                               fit: BoxFit.cover,
-                              errorWidget: (_, str, s) => const CircleAvatar(
-                                backgroundImage: AssetImage("assets/image1.jpg"),
-                                backgroundColor: Color.fromARGB(255, 206, 205, 205),
-                                radius: 80,
-                              ),
+                              errorWidget: (_, str, s) => ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.asset(
+                                    "assets/image1.jpg",
+                                    width: 100,
+                                    height: 100,
+                                  )),
                             )),
                         Column(
                           children: [
                             Text(
                               "${myUser?.nameKanJi} ${myUser?.nameFu}",
-                              style: TextStyle(color: colorxd = const Color(0xFFEDAD34), fontWeight: FontWeight.bold, fontSize: 25),
+                              style: TextStyle(
+                                  color: colorxd = const Color(0xFFEDAD34),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25),
                             ),
                             const SizedBox(
                               height: 15,
@@ -173,7 +141,10 @@ class _ViewProfileState extends State<ViewProfile> {
                               width: 50,
                               height: 25,
                               decoration: BoxDecoration(
-                                  border: Border.all(color: colorxd = const Color(0xFFF38301), width: 3), borderRadius: BorderRadius.circular(5)),
+                                  border: Border.all(
+                                      color: colorxd = const Color(0xFFF38301),
+                                      width: 3),
+                                  borderRadius: BorderRadius.circular(5)),
                               child: Text(
                                 "GOLD",
                                 style: TextStyle(
@@ -194,10 +165,12 @@ class _ViewProfileState extends State<ViewProfile> {
                                       itemSize: 35,
                                       allowHalfRating: true,
                                       initialRating: rating,
-                                      itemPadding: const EdgeInsets.symmetric(horizontal: 5),
+                                      itemPadding: const EdgeInsets.symmetric(
+                                          horizontal: 5),
                                       itemBuilder: (((context, _) => Icon(
                                             Icons.grade,
-                                            color: colorxd = const Color(0xFFEDAD34),
+                                            color: colorxd =
+                                                const Color(0xFFEDAD34),
                                           ))),
                                       onRatingUpdate: (rating) => setState(() {
                                             this.rating = rating;
@@ -213,7 +186,9 @@ class _ViewProfileState extends State<ViewProfile> {
                     Container(
                       width: 360,
                       height: 195,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: const Color.fromARGB(255, 234, 233, 233)),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.white),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
@@ -222,12 +197,17 @@ class _ViewProfileState extends State<ViewProfile> {
                               width: 60,
                               height: 28,
                               decoration: BoxDecoration(
-                                border: Border.all(color: colorxd = const Color(0xFFF38301), width: 2),
+                                border: Border.all(
+                                    color: colorxd = const Color(0xFFF38301),
+                                    width: 2),
                                 borderRadius: BorderRadius.circular(15),
                               ),
+                              alignment: Alignment.center,
                               child: Text(
                                 "残高",
-                                style: TextStyle(color: colorxd = const Color(0xFFF38301), fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    color: colorxd = const Color(0xFFF38301),
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                             const SizedBox(
@@ -246,36 +226,16 @@ class _ViewProfileState extends State<ViewProfile> {
                             const SizedBox(
                               height: 30,
                             ),
-                            // Container(
-                            //   width: 310,
-                            //   height: 50,
-                            //   decoration: BoxDecoration(
-                            //     borderRadius: BorderRadius.circular(7),
-                            //     color: colorxd = const Color(0xFFF38301),
-                            //   ),
-                            //   child: const Padding(
-                            //     padding: EdgeInsets.only(top: 10, left: 110),
-                            //     child: Text(
-                            //       "Withdraw",
-                            //       style: TextStyle(fontSize: 17, color: Colors.white, fontWeight: FontWeight.bold),
-                            //     ),
-                            //   ),
-                            // ),
                             GestureDetector(
                               onTap: () {
-                                //print("clicked withdraw");
-                                //print('full name in view profile${myUser?.firstName} + ${myUser?.lastName}');
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(builder: (context) => ConfirmWithdraw(myUser?.balance,myUser?.uid,"${myUser?.firstName} ${myUser?.lastName}")),
-                                // );
-
                                 showDialog(
                                     context: context,
                                     builder: (context) {
                                       return AlertDialog(
-                                        title: Text("出金の確認", style: TextStyle(color: colorxd2)),
-                                        content: Text("本当に退会しますか ¥${myUser?.balance}?"),
+                                        title: Text("出金の確認",
+                                            style: TextStyle(color: colorxd2)),
+                                        content: Text(
+                                            "本当に退会しますか ¥${myUser?.balance}?"),
                                         actions: [
                                           ElevatedButton(
                                               onPressed: () {
@@ -290,30 +250,49 @@ class _ViewProfileState extends State<ViewProfile> {
                                           ElevatedButton(
                                               onPressed: () async {
                                                 //print("clicked Yes");
-                                                bool checkPending = await WithdrawApi().isPending(myUser?.uid);
+                                                bool checkPending =
+                                                    await WithdrawApi()
+                                                        .isPending(myUser?.uid);
                                                 if (checkPending) {
                                                   Navigator.pop(context);
                                                   //You already requested this amount!  Please waiting for approval from admin.
-                                                  toastMessageError("この金額はすでにリクエストされています。 管理者からの承認を待ってください。", context);
+                                                  toastMessageError(
+                                                      "この金額はすでにリクエストされています。 管理者からの承認を待ってください。",
+                                                      context);
                                                 } else {
                                                   try {
                                                     await WithdrawApi().Withdraw(
                                                         amount: myUser?.balance,
-                                                        createdAt: DateTime.now(),
-                                                        date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                                                        createdAt:
+                                                            DateTime.now(),
+                                                        date: DateFormat(
+                                                                'yyyy-MM-dd')
+                                                            .format(
+                                                                DateTime.now()),
                                                         status: "pending",
-                                                        time: DateFormat('kk:mm').format(DateTime.now()),
-                                                        updatedAt: DateTime.now(),
+                                                        time: DateFormat(
+                                                                'kk:mm')
+                                                            .format(
+                                                                DateTime.now()),
+                                                        updatedAt:
+                                                            DateTime.now(),
                                                         workerID: myUser?.uid,
-                                                        workerName: "${myUser?.firstName} ${myUser?.lastName}");
+                                                        workerName:
+                                                            "${myUser?.firstName} ${myUser?.lastName}");
                                                     Navigator.pop(context);
-                                                    toastMessageSuccess(JapaneseText.successCreate, context);
+                                                    toastMessageSuccess(
+                                                        JapaneseText
+                                                            .successCreate,
+                                                        context);
                                                   } catch (e) {
-                                                    toastMessageError(e.toString(), context);
+                                                    toastMessageError(
+                                                        e.toString(), context);
                                                   }
                                                 }
                                               },
-                                              child: Text(JapaneseText.yes, style: TextStyle(color: colorxd2)))
+                                              child: Text(JapaneseText.yes,
+                                                  style: TextStyle(
+                                                      color: colorxd2)))
                                         ],
                                       );
                                     });
@@ -329,7 +308,10 @@ class _ViewProfileState extends State<ViewProfile> {
                                   padding: EdgeInsets.only(top: 10, left: 110),
                                   child: Text(
                                     "引き出す",
-                                    style: TextStyle(fontSize: 17, color: Colors.white, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        fontSize: 17,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ),
@@ -341,7 +323,29 @@ class _ViewProfileState extends State<ViewProfile> {
                     const SizedBox(
                       height: 20,
                     ),
-                    chatListWidget(),
+                    // chatListWidget(),
+                    Container(
+                      width: AppSize.getDeviceWidth(context),
+                      margin: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16)),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            buildAccount(),
+                            AppSize.spaceHeight16,
+                            buildJobHistory(),
+                            AppSize.spaceHeight16,
+                            buildSetting(),
+                            buildOtherSetting()
+                          ],
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -349,65 +353,110 @@ class _ViewProfileState extends State<ViewProfile> {
     );
   }
 
-  Widget chatListWidget() {
-    return ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemCount: ListViewProfile.length,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          return chatListItem(ListViewProfile[index]);
-        });
+  Widget buildAccount() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          JapaneseText.account,
+          style: kNormalText.copyWith(
+              fontWeight: FontWeight.w600, color: AppColor.primaryColor),
+        ),
+        AppSize.spaceHeight16,
+        customListTile(JapaneseText.identification, onTap: () => {}),
+        customListTile(JapaneseText.editProfile, onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => EditProfile(
+                        seeker: myUser!,
+                      ))).then((value) {
+            if (value != null) {
+              setState(() {
+                myUser = value;
+              });
+            }
+          });
+        }),
+        customListTile(JapaneseText.reviewHistory, onTap: () => {}),
+      ],
+    );
   }
 
-  Widget chatListItem(var item) {
+  Widget buildJobHistory() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InkWell(
-          onTap: () => {
-            if (item == ListViewProfile[0])
-              {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => EditProfile(
-                              seeker: myUser!,
-                            ))).then((value) {
-                  if (value != null) {
-                    setState(() {
-                      myUser = value;
-                    });
-                  }
-                })
-                //  Navigator.push(context, MaterialPageRoute(builder: (context)=> AccountSetting(user: MyUser,)))
-              }
-            else if (item == ListViewProfile[1])
-              {Navigator.push(context, MaterialPageRoute(builder: (context) => const TabReviewPenalty()))}
-            else if (item == ListViewProfile[7])
-              {Navigator.push(context, MaterialPageRoute(builder: (context) => const PrivatePolicy()))}
-            else if (item == ListViewProfile[8])
-              {Navigator.push(context, MaterialPageRoute(builder: (context) => const TermOfUse()))}
-            else if (item == ListViewProfile[9])
-              {Navigator.push(context, MaterialPageRoute(builder: (context) => const WithDrawProcedures()))}
-          },
-          child: Column(
-            children: [
-              ListTile(
-                title: Text(item["title"], style: const TextStyle(color: Color(0xFFEDAD34), fontWeight: FontWeight.bold)),
-                trailing: Icon(
-                  item["icon"],
-                  color: const Color.fromARGB(255, 253, 196, 50),
-                ),
-              ),
-              const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Divider(
-                    endIndent: 10,
-                    color: Color.fromARGB(255, 144, 144, 144),
-                  ))
-            ],
+        Text(
+          JapaneseText.jobHistory,
+          style: kNormalText.copyWith(
+              fontWeight: FontWeight.w600, color: AppColor.primaryColor),
+        ),
+        AppSize.spaceHeight16,
+        customListTile(JapaneseText.compensationManagement, onTap: () => {}),
+        customListTile(JapaneseText.completedWork, onTap: () => {}),
+        customListTile(JapaneseText.checkingAndPrintingTheWithholdingTaxSlip,
+            onTap: () => {}),
+      ],
+    );
+  }
+
+  Widget buildSetting() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          JapaneseText.setting,
+          style: kNormalText.copyWith(
+              fontWeight: FontWeight.w600, color: AppColor.primaryColor),
+        ),
+        AppSize.spaceHeight16,
+        customListTile(JapaneseText.accountSetting, onTap: () => {}),
+        customListTile(JapaneseText.locationInfoSetting, onTap: () {}),
+        customListTile(JapaneseText.pushNotificationSetting, onTap: () => {}),
+        AppSize.spaceHeight16,
+        Text(
+          JapaneseText.support,
+          style: kNormalText.copyWith(
+              fontWeight: FontWeight.w600, color: AppColor.primaryColor),
+        ),
+        AppSize.spaceHeight16,
+        customListTile(JapaneseText.faq, onTap: () => {}),
+        customListTile(JapaneseText.inquiry, onTap: () {}),
+      ],
+    );
+  }
+
+  Widget buildOtherSetting() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        customListTile(JapaneseText.privacy,
+            onTap: () => MyPageRoute.goTo(context, const PrivatePolicy())),
+        customListTile(JapaneseText.termsOfService,
+            onTap: () => MyPageRoute.goTo(context, const TermOfUse())),
+        customListTile(JapaneseText.rangeOfOccupationsHandled,
+            onTap: () => MyPageRoute.goTo(context, const WithDrawProcedures())),
+        customListTile(JapaneseText.unsubscribed,
+            onTap: () => MyPageRoute.goTo(context, const TabReviewPenalty())),
+      ],
+    );
+  }
+
+  customListTile(String title, {required Function onTap}) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListTile(
+          onTap: () => onTap(),
+          title: Text(title, style: kNormalText),
+          trailing: Icon(
+            Icons.arrow_forward_ios_rounded,
+            color: AppColor.primaryColor,
           ),
         ),
+        const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20), child: Divider())
       ],
     );
   }

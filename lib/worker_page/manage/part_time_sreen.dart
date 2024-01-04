@@ -1,4 +1,5 @@
 import 'package:air_job_management/utils/style.dart';
+import 'package:air_job_management/widgets/loading.dart';
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -135,8 +136,8 @@ class _PartTimeJobState extends State<PartTimeJob> {
     return Scaffold(
         backgroundColor: Color.fromARGB(255, 240, 240, 240),
         body: loading.value
-            ? const Center(
-                child: CircularProgressIndicator(),
+            ? Center(
+                child: LoadingWidget(AppColor.primaryColor),
               )
             : SizedBox(
                 width: MediaQuery.of(context).size.width,

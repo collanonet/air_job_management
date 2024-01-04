@@ -591,6 +591,30 @@ class JapaneseText {
   static String itStrategist = "ITストラテジスト";
   static String hairdresserBarber = "美容師.理容師";
   static String massageTherapist = "あん摩マッサージ指圧師・はり師・きゅう師";
+
+  ///Account Setting for part time staff
+  static String account = "アカウント";
+  static String identification = "本人確認";
+  static String editProfile = "プロフィール編集";
+  static String reviewHistory = "レビュー履歴";
+
+  static String jobHistory = "お仕事";
+  static String compensationManagement = "報酬管理";
+  static String completedWork = "完了した仕事";
+  static String checkingAndPrintingTheWithholdingTaxSlip = "源泉徴収票の確認と印刷";
+
+  static String accountSetting = "アカウント設定";
+  static String locationInfoSetting = "位置情報の設定";
+  static String pushNotificationSetting = "プッシュ通知設定";
+
+  static String support = "サポート";
+  static String faq = "よくあるご質問";
+  static String inquiry = "お問い合わせ";
+
+  static String privacy = "プライバシーポリシー";
+  static String termsOfService = "利用規約";
+  static String rangeOfOccupationsHandled = "取扱職種の範囲";
+  static String unsubscribed = "退会手続き";
 }
 
 List<String> eligibilityApplicationList = [

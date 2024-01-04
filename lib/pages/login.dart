@@ -156,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
-          const Text("Version 1.0.2"),
+          const Text("Version 1.0.3"),
         ],
       ),
     );
