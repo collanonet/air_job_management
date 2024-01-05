@@ -25,7 +25,8 @@ import 'term_of_use.dart';
 import 'withdraw_procedures.dart';
 
 class ViewProfile extends StatefulWidget {
-  const ViewProfile({super.key});
+  final bool isFullTime;
+  const ViewProfile({super.key, required this.isFullTime});
 
   @override
   State<ViewProfile> createState() => _ViewProfileState();
@@ -88,7 +89,12 @@ class _ViewProfileState extends State<ViewProfile> {
         actions: [
           myUser == null
               ? IconButton(
-                  onPressed: () => MyPageRoute.goTo(context, LoginPage()),
+                  onPressed: () => MyPageRoute.goTo(
+                      context,
+                      LoginPage(
+                        isFromWorker: true,
+                        isFullTime: widget.isFullTime,
+                      )),
                   icon: Icon(
                     Icons.login,
                     color: AppColor.primaryColor,

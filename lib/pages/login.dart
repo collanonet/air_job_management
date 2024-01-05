@@ -7,6 +7,7 @@ import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:air_job_management/widgets/custom_textfield.dart';
 import 'package:air_job_management/widgets/show_message.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:go_router/go_router.dart';
@@ -15,9 +16,14 @@ import 'package:provider/provider.dart';
 import '../models/user.dart';
 import '../utils/my_route.dart';
 import '../utils/page_route.dart';
+import '../utils/style.dart';
 import '../worker_page/root/root_page.dart';
 
 class LoginPage extends StatefulWidget {
+  final bool isFromWorker;
+  final bool isFullTime;
+  const LoginPage({required this.isFromWorker, required this.isFullTime});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -43,9 +49,9 @@ class _LoginPageState extends State<LoginPage> {
       isLoading: authProvider.isLoading,
       child: Scaffold(
         backgroundColor: AppColor.primaryColor,
-        appBar: AppBar(
-          backgroundColor: AppColor.primaryColor,
-        ),
+        // appBar: AppBar(
+        //   backgroundColor: AppColor.primaryColor,
+        // ),
         body: Center(
           child: buildBody(),
         ),
@@ -84,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                   bottom: Responsive.isMobile(context) ? -20 : -10,
                   child: Center(
                     child: Text(
-                      "求人企業",
+                      "",
                       style: TextStyle(
                           color: AppColor.primaryColor,
                           fontWeight: FontWeight.w600,
@@ -94,6 +100,28 @@ class _LoginPageState extends State<LoginPage> {
             ],
           ),
           AppSize.spaceHeight16,
+          socialLoginButton(
+              assets: "assets/google.png",
+              title: "Googleでログイン",
+              colors: Color(0xffCDD6DD),
+              onTap: () {}),
+          AppSize.spaceHeight16,
+          socialLoginButton(
+              assets: "assets/x.png",
+              title: "Xでログイン",
+              colors: Color(0xff495960),
+              onTap: () {}),
+          AppSize.spaceHeight16,
+          AppSize.spaceHeight16,
+          Center(
+            child: Text(
+              "またはメールアドレスで登録",
+              style: TextStyle(
+                  color: AppColor.primaryColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18),
+            ),
+          ),
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
           Padding(
@@ -141,22 +169,27 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           AppSize.spaceHeight16,
-          SizedBox(
-            width: AppSize.getDeviceWidth(context) *
-                (Responsive.isMobile(context) ? 0.6 : 0.20),
-            child: ButtonWidget(
-                title: authProvider.isLogin ? "ログイン" : "Register",
-                color: AppColor.primaryColor,
-                onPress: () => authProvider.isLogin ? onLogin() : onRegister()),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            child: SizedBox(
+              width: AppSize.getDeviceWidth(context),
+              child: ButtonWidget(
+                  title: authProvider.isLogin ? "ログイン" : "Register",
+                  color: AppColor.primaryColor,
+                  onPress: () =>
+                      authProvider.isLogin ? onLogin() : onRegister()),
+            ),
           ),
           AppSize.spaceHeight16,
           //Register Account as a gig-worker
           Center(
             child: TextButton(
               child: const Text("ギグワーカーとしてアカウントを登録する"),
-              onPressed: () => context.go(MyRoute.jobOption),
+              onPressed: () => context.go(MyRoute.registerAsGigWorker),
             ),
           ),
+          AppSize.spaceHeight16,
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
           const Text("Version 1.0.3"),
@@ -166,6 +199,45 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   onRegister() {}
+
+  socialLoginButton(
+      {required String assets,
+      required String title,
+      required Color colors,
+      required Function onTap}) {
+    return Container(
+      height: 50,
+      width: AppSize.getDeviceWidth(context) - 32,
+      margin: EdgeInsets.symmetric(
+          horizontal: AppSize.getDeviceWidth(context) * 0.1),
+      decoration:
+          BoxDecoration(borderRadius: BorderRadius.circular(4), color: colors),
+      child: CupertinoButton(
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            AppSize.spaceWidth16,
+            Image.asset(
+              assets,
+              width: 35,
+              height: 35,
+            ),
+            AppSize.spaceWidth16,
+            AppSize.spaceWidth16,
+            Text(
+              title,
+              style: normalTextStyle.copyWith(
+                  color: title.contains("X") ? Colors.white : Colors.black,
+                  fontSize: 18),
+            ),
+          ],
+        ),
+        onPressed: () => onTap(),
+      ),
+    );
+  }
 
   onLogin() async {
     if (email.text.isEmpty || password.text.isEmpty) {

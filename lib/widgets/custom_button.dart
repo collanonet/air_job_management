@@ -12,9 +12,9 @@ class ButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 40,
-      decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(30), color: color),
+      height: 50,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4), color: Color(0xfff38301)),
       child: CupertinoButton(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
         child: Text(

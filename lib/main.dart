@@ -7,6 +7,7 @@ import 'package:air_job_management/pages/job_posting/create_or_edit_job_for_japa
 import 'package:air_job_management/pages/job_seeker/create_job_seeker.dart';
 import 'package:air_job_management/pages/job_seeker/job_seeker_detail/job_seeker_detail.dart';
 import 'package:air_job_management/pages/login.dart';
+import 'package:air_job_management/pages/register/register.dart';
 import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company.dart';
@@ -215,9 +216,18 @@ final GoRouter _router = GoRouter(
           },
         ),
         GoRoute(
+          path: MyRoute.registerAsGigWorker.removeSlash(),
+          builder: (BuildContext context, GoRouterState state) {
+            return RegisterPage(isFullTime: isFullTimeGlobal);
+          },
+        ),
+        GoRoute(
           path: MyRoute.login.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {
-            return LoginPage();
+            return LoginPage(
+              isFullTime: false,
+              isFromWorker: false,
+            );
           },
         ),
       ],

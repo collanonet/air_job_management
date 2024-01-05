@@ -55,8 +55,12 @@ class _VerifyUserEmailPageState extends State<VerifyUserEmailPage>
                       Align(
                           alignment: Alignment.centerLeft,
                           child: IconButton(
-                              onPressed: () =>
-                                  MyPageRoute.goToReplace(context, LoginPage()),
+                              onPressed: () => MyPageRoute.goToReplace(
+                                  context,
+                                  LoginPage(
+                                    isFullTime: widget.isFullTime,
+                                    isFromWorker: true,
+                                  )),
                               icon: Icon(
                                 Icons.arrow_back,
                                 color: AppColor.primaryColor,

@@ -37,8 +37,10 @@ class _RootPageState extends State<RootPage> {
         ),
       ),
       const ChatPage(),
-      const Center(
-        child: ViewProfile(), //Text("Menu"),
+      Center(
+        child: ViewProfile(
+          isFullTime: widget.isFullTime,
+        ), //Text("Menu"),
       ),
     ];
     if (widget.isFullTime) {

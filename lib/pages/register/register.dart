@@ -19,6 +19,8 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/loading.dart';
 
+bool isFullTimeGlobal = false;
+
 class RegisterPage extends StatefulWidget {
   final bool isFullTime;
   const RegisterPage({Key? key, required this.isFullTime}) : super(key: key);
@@ -42,6 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void dispose() {
+    isFullTimeGlobal = widget.isFullTime;
     email.dispose();
     password.dispose();
     super.dispose();
