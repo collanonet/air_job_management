@@ -20,22 +20,27 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
-  List<Widget> pages = [
-    PartTimeJob(),
-    const Center(
-      child: JobScreen(),
-    ),
-    Center(
-      child: FavoriteSreen(),
-    ),
-    const ChatPage(),
-    const Center(
-      child: ViewProfile(), //Text("Menu"),
-    ),
-  ];
+  List<Widget> pages = [];
 
   @override
   void initState() {
+    pages = [
+      PartTimeJob(),
+      Center(
+        child: JobScreen(
+          uid: widget.uid,
+        ),
+      ),
+      Center(
+        child: FavoriteSreen(
+          uid: widget.uid,
+        ),
+      ),
+      const ChatPage(),
+      const Center(
+        child: ViewProfile(), //Text("Menu"),
+      ),
+    ];
     if (widget.isFullTime) {
       pages[0] = FullTimeJob();
     }

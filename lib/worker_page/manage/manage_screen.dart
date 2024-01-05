@@ -1,7 +1,7 @@
-import 'package:air_job_management/pages/register/register.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/page_route.dart';
 import 'package:air_job_management/utils/style.dart';
+import 'package:air_job_management/worker_page/root/root_page.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/app_color.dart';
@@ -27,8 +27,10 @@ class _ManageScreenState extends State<ManageScreen> {
             AppSize.spaceHeight50,
             GestureDetector(
               onTap: () {
+                // MyPageRoute.goTo(
+                //     context, const RegisterPage(isFullTime: false));
                 MyPageRoute.goTo(
-                    context, const RegisterPage(isFullTime: false));
+                    context, const RootPage("", isFullTime: false));
               },
               child: Container(
                 width: 300,
@@ -48,7 +50,8 @@ class _ManageScreenState extends State<ManageScreen> {
             AppSize.spaceHeight30,
             GestureDetector(
               onTap: () {
-                MyPageRoute.goTo(context, const RegisterPage(isFullTime: true));
+                // MyPageRoute.goTo(context, const RegisterPage(isFullTime: true));
+                MyPageRoute.goTo(context, const RootPage("", isFullTime: true));
               },
               child: Container(
                 width: 300,

@@ -1,6 +1,7 @@
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/api/worker_api/withdraw_api.dart';
 import 'package:air_job_management/models/user.dart';
+import 'package:air_job_management/pages/login.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
@@ -55,6 +56,9 @@ class _ViewProfileState extends State<ViewProfile> {
           isLoading.value = false;
           setState(() {});
         }
+      } else {
+        isLoading.value = false;
+        setState(() {});
       }
     });
   }
@@ -82,21 +86,28 @@ class _ViewProfileState extends State<ViewProfile> {
           ),
         ),
         actions: [
-          IconButton(
-              onPressed: () {
-                CustomDialog.confirmDialog(
-                    context: context,
-                    onApprove: () async {
-                      Navigator.pop(context);
-                      await FirebaseAuth.instance.signOut();
-                      context.go(MyRoute.login);
-                    },
-                    title: "アカウントをログアウトしてもよろしいですか?");
-              },
-              icon: Icon(
-                Icons.logout,
-                color: AppColor.primaryColor,
-              ))
+          myUser == null
+              ? IconButton(
+                  onPressed: () => MyPageRoute.goTo(context, LoginPage()),
+                  icon: Icon(
+                    Icons.login,
+                    color: AppColor.primaryColor,
+                  ))
+              : IconButton(
+                  onPressed: () {
+                    CustomDialog.confirmDialog(
+                        context: context,
+                        onApprove: () async {
+                          Navigator.pop(context);
+                          await FirebaseAuth.instance.signOut();
+                          context.go(MyRoute.login);
+                        },
+                        title: "アカウントをログアウトしてもよろしいですか?");
+                  },
+                  icon: Icon(
+                    Icons.logout,
+                    color: AppColor.primaryColor,
+                  ))
         ],
       ),
       body: isLoading.value
@@ -107,242 +118,271 @@ class _ViewProfileState extends State<ViewProfile> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: CachedNetworkImage(
-                              imageUrl: myUser?.profileImage ?? "",
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
-                              errorWidget: (_, str, s) => ClipRRect(
+                    myUser == null
+                        ? SizedBox()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ClipRRect(
                                   borderRadius: BorderRadius.circular(50),
-                                  child: Image.asset(
-                                    "assets/image1.jpg",
+                                  child: CachedNetworkImage(
+                                    imageUrl: myUser?.profileImage ?? "",
                                     width: 100,
                                     height: 100,
+                                    fit: BoxFit.cover,
+                                    errorWidget: (_, str, s) => ClipRRect(
+                                        borderRadius: BorderRadius.circular(50),
+                                        child: Image.asset(
+                                          "assets/image1.jpg",
+                                          width: 100,
+                                          height: 100,
+                                        )),
                                   )),
-                            )),
-                        Column(
-                          children: [
-                            Text(
-                              "${myUser?.nameKanJi} ${myUser?.nameFu}",
-                              style: TextStyle(
-                                  color: colorxd = const Color(0xFFEDAD34),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Container(
-                              width: 50,
-                              height: 25,
-                              decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: colorxd = const Color(0xFFF38301),
-                                      width: 3),
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Text(
-                                "GOLD",
-                                style: TextStyle(
-                                  color: colorxd = const Color(0xFFF38301),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Center(
-                                  child: RatingBar.builder(
-                                      minRating: 1,
-                                      updateOnDrag: true,
-                                      itemSize: 35,
-                                      allowHalfRating: true,
-                                      initialRating: rating,
-                                      itemPadding: const EdgeInsets.symmetric(
-                                          horizontal: 5),
-                                      itemBuilder: (((context, _) => Icon(
-                                            Icons.grade,
-                                            color: colorxd =
-                                                const Color(0xFFEDAD34),
-                                          ))),
-                                      onRatingUpdate: (rating) => setState(() {
-                                            this.rating = rating;
-                                          })),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 40),
-                    Container(
-                      width: 360,
-                      height: 195,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: Colors.white),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 60,
-                              height: 28,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: colorxd = const Color(0xFFF38301),
-                                    width: 2),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "残高",
-                                style: TextStyle(
-                                    color: colorxd = const Color(0xFFF38301),
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Container(
-                              child: Text(
-                                "¥ ${myUser?.balance}",
-                                style: TextStyle(
-                                  color: colorxd = const Color(0xFFF38301),
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: Text("出金の確認",
-                                            style: TextStyle(color: colorxd2)),
-                                        content: Text(
-                                            "本当に退会しますか ¥${myUser?.balance}?"),
-                                        actions: [
-                                          ElevatedButton(
-                                              onPressed: () {
-                                                //MyPageRoute.goToReplace(context, const ViewProfile());
-                                                setState(() {
-                                                  isPending = false;
-                                                  //print('setState ' + isPending.toString());
-                                                });
-                                                Navigator.pop(context);
-                                              },
-                                              child: Text(JapaneseText.cancel)),
-                                          ElevatedButton(
-                                              onPressed: () async {
-                                                //print("clicked Yes");
-                                                bool checkPending =
-                                                    await WithdrawApi()
-                                                        .isPending(myUser?.uid);
-                                                if (checkPending) {
-                                                  Navigator.pop(context);
-                                                  //You already requested this amount!  Please waiting for approval from admin.
-                                                  toastMessageError(
-                                                      "この金額はすでにリクエストされています。 管理者からの承認を待ってください。",
-                                                      context);
-                                                } else {
-                                                  try {
-                                                    await WithdrawApi().Withdraw(
-                                                        amount: myUser?.balance,
-                                                        createdAt:
-                                                            DateTime.now(),
-                                                        date: DateFormat(
-                                                                'yyyy-MM-dd')
-                                                            .format(
-                                                                DateTime.now()),
-                                                        status: "pending",
-                                                        time: DateFormat(
-                                                                'kk:mm')
-                                                            .format(
-                                                                DateTime.now()),
-                                                        updatedAt:
-                                                            DateTime.now(),
-                                                        workerID: myUser?.uid,
-                                                        workerName:
-                                                            "${myUser?.firstName} ${myUser?.lastName}");
-                                                    Navigator.pop(context);
-                                                    toastMessageSuccess(
-                                                        JapaneseText
-                                                            .successCreate,
-                                                        context);
-                                                  } catch (e) {
-                                                    toastMessageError(
-                                                        e.toString(), context);
-                                                  }
-                                                }
-                                              },
-                                              child: Text(JapaneseText.yes,
-                                                  style: TextStyle(
-                                                      color: colorxd2)))
-                                        ],
-                                      );
-                                    });
-                              },
-                              child: Container(
-                                width: 310,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(7),
-                                  color: colorxd = const Color(0xFFF38301),
-                                ),
-                                child: const Padding(
-                                  padding: EdgeInsets.only(top: 10, left: 110),
-                                  child: Text(
-                                    "引き出す",
+                              Column(
+                                children: [
+                                  Text(
+                                    "${myUser?.nameKanJi} ${myUser?.nameFu}",
                                     style: TextStyle(
-                                        fontSize: 17,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
+                                        color: colorxd =
+                                            const Color(0xFFEDAD34),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 25),
                                   ),
-                                ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Container(
+                                    width: 50,
+                                    height: 25,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: colorxd =
+                                                const Color(0xFFF38301),
+                                            width: 3),
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Text(
+                                      "GOLD",
+                                      style: TextStyle(
+                                        color: colorxd =
+                                            const Color(0xFFF38301),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Center(
+                                        child: RatingBar.builder(
+                                            minRating: 1,
+                                            updateOnDrag: true,
+                                            itemSize: 35,
+                                            allowHalfRating: true,
+                                            initialRating: rating,
+                                            itemPadding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 5),
+                                            itemBuilder: (((context, _) => Icon(
+                                                  Icons.grade,
+                                                  color: colorxd =
+                                                      const Color(0xFFEDAD34),
+                                                ))),
+                                            onRatingUpdate: (rating) =>
+                                                setState(() {
+                                                  this.rating = rating;
+                                                })),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                            ],
+                          ),
+                    const SizedBox(height: 40),
+                    myUser == null
+                        ? SizedBox()
+                        : Container(
+                            width: 360,
+                            height: 195,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                color: Colors.white),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width: 60,
+                                    height: 28,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: colorxd =
+                                              const Color(0xFFF38301),
+                                          width: 2),
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "残高",
+                                      style: TextStyle(
+                                          color: colorxd =
+                                              const Color(0xFFF38301),
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    child: Text(
+                                      "¥ ${myUser?.balance}",
+                                      style: TextStyle(
+                                        color: colorxd =
+                                            const Color(0xFFF38301),
+                                        fontSize: 40,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 30,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: Text("出金の確認",
+                                                  style: TextStyle(
+                                                      color: colorxd2)),
+                                              content: Text(
+                                                  "本当に退会しますか ¥${myUser?.balance}?"),
+                                              actions: [
+                                                ElevatedButton(
+                                                    onPressed: () {
+                                                      //MyPageRoute.goToReplace(context, const ViewProfile());
+                                                      setState(() {
+                                                        isPending = false;
+                                                        //print('setState ' + isPending.toString());
+                                                      });
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text(
+                                                        JapaneseText.cancel)),
+                                                ElevatedButton(
+                                                    onPressed: () async {
+                                                      //print("clicked Yes");
+                                                      bool checkPending =
+                                                          await WithdrawApi()
+                                                              .isPending(
+                                                                  myUser?.uid);
+                                                      if (checkPending) {
+                                                        Navigator.pop(context);
+                                                        //You already requested this amount!  Please waiting for approval from admin.
+                                                        toastMessageError(
+                                                            "この金額はすでにリクエストされています。 管理者からの承認を待ってください。",
+                                                            context);
+                                                      } else {
+                                                        try {
+                                                          await WithdrawApi().Withdraw(
+                                                              amount: myUser
+                                                                  ?.balance,
+                                                              createdAt:
+                                                                  DateTime
+                                                                      .now(),
+                                                              date: DateFormat(
+                                                                      'yyyy-MM-dd')
+                                                                  .format(DateTime
+                                                                      .now()),
+                                                              status: "pending",
+                                                              time: DateFormat(
+                                                                      'kk:mm')
+                                                                  .format(DateTime
+                                                                      .now()),
+                                                              updatedAt:
+                                                                  DateTime
+                                                                      .now(),
+                                                              workerID:
+                                                                  myUser?.uid,
+                                                              workerName:
+                                                                  "${myUser?.firstName} ${myUser?.lastName}");
+                                                          Navigator.pop(
+                                                              context);
+                                                          toastMessageSuccess(
+                                                              JapaneseText
+                                                                  .successCreate,
+                                                              context);
+                                                        } catch (e) {
+                                                          toastMessageError(
+                                                              e.toString(),
+                                                              context);
+                                                        }
+                                                      }
+                                                    },
+                                                    child: Text(
+                                                        JapaneseText.yes,
+                                                        style: TextStyle(
+                                                            color: colorxd2)))
+                                              ],
+                                            );
+                                          });
+                                    },
+                                    child: Container(
+                                      width: 310,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(7),
+                                        color: colorxd =
+                                            const Color(0xFFF38301),
+                                      ),
+                                      child: const Padding(
+                                        padding:
+                                            EdgeInsets.only(top: 10, left: 110),
+                                        child: Text(
+                                          "引き出す",
+                                          style: TextStyle(
+                                              fontSize: 17,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                    myUser == null
+                        ? SizedBox()
+                        : const SizedBox(
+                            height: 20,
+                          ),
                     // chatListWidget(),
-                    Container(
-                      width: AppSize.getDeviceWidth(context),
-                      margin: const EdgeInsets.all(16),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16)),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            buildAccount(),
-                            AppSize.spaceHeight16,
-                            buildJobHistory(),
-                            AppSize.spaceHeight16,
-                            buildSetting(),
-                            buildOtherSetting()
-                          ],
+                    AbsorbPointer(
+                      absorbing: myUser == null ? true : false,
+                      child: Container(
+                        width: AppSize.getDeviceWidth(context),
+                        margin: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16)),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              buildAccount(),
+                              AppSize.spaceHeight16,
+                              buildJobHistory(),
+                              AppSize.spaceHeight16,
+                              buildSetting(),
+                              buildOtherSetting()
+                            ],
+                          ),
                         ),
                       ),
                     )

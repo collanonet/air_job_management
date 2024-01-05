@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import '../../widgets/custom_listview_job.dart';
 
 class PastJobScreen extends StatefulWidget {
-  const PastJobScreen({super.key});
+  final String uid;
+  const PastJobScreen({super.key, required this.uid});
 
   @override
   State<PastJobScreen> createState() => _PastJobScreenState();
@@ -19,8 +20,13 @@ class _PastJobScreenState extends State<PastJobScreen> {
   onGetData() async {
     jobSearchList = [];
 
-    var bigdata = await FirebaseFirestore.instance.collection("search_job").get();
-    var data = await FirebaseFirestore.instance.collection("job").where("status", isEqualTo: "completed").get();
+    var bigdata =
+        await FirebaseFirestore.instance.collection("search_job").get();
+    var data = await FirebaseFirestore.instance
+        .collection("job")
+        .where("status", isEqualTo: "completed")
+        .where("user_id", isEqualTo: widget.uid)
+        .get();
     if (data.size > 0) {
       for (var d in data.docs) {
         var info = Myjob.fromJson(d.data());
@@ -74,10 +80,13 @@ class _PastJobScreenState extends State<PastJobScreen> {
       height: 130,
       child: CustomListItem(
         subtitle: "${info.startDate.toString()}~${info.endDate.toString()}",
-        salary: "${info.salaryRange.toString()} ${info.amountOfPayrollFrom} ${info.amountOfPayrollTo}",
+        salary:
+            "${info.salaryRange.toString()} ${info.amountOfPayrollFrom} ${info.amountOfPayrollTo}",
         thumbnail: Container(
           decoration: BoxDecoration(
-              image: DecorationImage(image: NetworkImage(info.image.toString()), fit: BoxFit.cover),
+              image: DecorationImage(
+                  image: NetworkImage(info.image.toString()),
+                  fit: BoxFit.cover),
               color: Colors.blue,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(10),

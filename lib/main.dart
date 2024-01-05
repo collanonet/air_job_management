@@ -21,12 +21,8 @@ import 'package:air_job_management/providers/worker/filter.dart';
 import 'package:air_job_management/utils/extension.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/my_route.dart';
-import 'package:air_job_management/worker_page/chat/chat.dart';
-import 'package:air_job_management/worker_page/favorite/favorite.dart';
 import 'package:air_job_management/worker_page/manage/manage_screen.dart';
-import 'package:air_job_management/worker_page/myjob/future_screen.dart';
 import 'package:air_job_management/worker_page/root/root_page.dart';
-import 'package:air_job_management/worker_page/viewprofile/viewprofile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -59,14 +55,31 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
-        return const SplashScreen();
+        print("Initial called ${state.location}");
+        return const SplashScreen(
+          isFromWorker: false,
+        );
       },
       routes: <RouteBase>[
         GoRoute(
+            path: MyRoute.workerPage.removeSlash(),
+            builder: (BuildContext context, GoRouterState state) {
+              return const SplashScreen(
+                isFromWorker: true,
+              );
+            },
+            routes: [
+              GoRoute(
+                path: "job-options",
+                builder: (BuildContext context, GoRouterState state) {
+                  return const ManageScreen();
+                },
+              ),
+            ]),
+        GoRoute(
           path: MyRoute.jobOption.removeSlash(),
-          builder: (BuildContext context, GoRouterState state) {
-            return const ManageScreen();
-          },
+          redirect: (BuildContext context, GoRouterState state) =>
+              MyRoute.jobOption,
         ),
         GoRoute(
           path: MyRoute.dashboard.removeSlash(),
@@ -192,12 +205,6 @@ final GoRouter _router = GoRouter(
             return HomePage(selectItem: JapaneseText.setting);
           },
         ),
-        // GoRoute(
-        //   path: MyRoute.registerAsGigWorker.removeSlash(),
-        //   builder: (BuildContext context, GoRouterState state) {
-        //     return RegisterPage();
-        //   },
-        // ),
         GoRoute(
           path: MyRoute.workerJobSearch.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {
@@ -205,30 +212,6 @@ final GoRouter _router = GoRouter(
               "uid",
               isFullTime: false,
             );
-          },
-        ),
-        GoRoute(
-          path: MyRoute.workerChat.removeSlash(),
-          builder: (BuildContext context, GoRouterState state) {
-            return ChatPage();
-          },
-        ),
-        GoRoute(
-          path: MyRoute.workerFavourite.removeSlash(),
-          builder: (BuildContext context, GoRouterState state) {
-            return FavoriteSreen();
-          },
-        ),
-        GoRoute(
-          path: MyRoute.workerSetting.removeSlash(),
-          builder: (BuildContext context, GoRouterState state) {
-            return ViewProfile();
-          },
-        ),
-        GoRoute(
-          path: MyRoute.workerMyJob.removeSlash(),
-          builder: (BuildContext context, GoRouterState state) {
-            return FutureJob();
           },
         ),
         GoRoute(

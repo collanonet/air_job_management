@@ -43,6 +43,9 @@ class _LoginPageState extends State<LoginPage> {
       isLoading: authProvider.isLoading,
       child: Scaffold(
         backgroundColor: AppColor.primaryColor,
+        appBar: AppBar(
+          backgroundColor: AppColor.primaryColor,
+        ),
         body: Center(
           child: buildBody(),
         ),

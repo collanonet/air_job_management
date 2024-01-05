@@ -3,7 +3,6 @@ import 'package:air_job_management/widgets/loading.dart';
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:like_button/like_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../const/const.dart';
@@ -34,30 +33,37 @@ class _PartTimeJobState extends State<PartTimeJob> {
 
   onGetData() async {
     jobSearchList = [];
-    var data = await FirebaseFirestore.instance
-        .collection("search_job")
-        .where("end_date",
-            isGreaterThanOrEqualTo:
-                MyDateTimeUtils.convertDateToString(_selectedDate))
-        .get();
-    if (data.size > 0) {
-      for (var d in data.docs) {
-        var info = SearchJob.fromJson(d.data());
-        if (info.employmentType != "正社員") {
-          info.uid = d.id;
-          DateTime startDate = MyDateTimeUtils.fromApiToLocal(info.startDate!);
-          startDate =
-              DateTime(startDate.year, startDate.month, startDate.day, 0, 0);
-          DateTime endDate = MyDateTimeUtils.fromApiToLocal(info.endDate!);
-          endDate = DateTime(endDate.year, endDate.month, endDate.day, 0, 0);
-          if (isDateInRange(_selectedDate, startDate, endDate)) {
-            jobSearchList.add(info);
+    try {
+      var data = await FirebaseFirestore.instance
+          .collection("search_job")
+          .where("end_date",
+              isGreaterThanOrEqualTo:
+                  MyDateTimeUtils.convertDateToString(_selectedDate))
+          .get();
+      if (data.size > 0) {
+        for (var d in data.docs) {
+          var info = SearchJob.fromJson(d.data());
+          if (info.employmentType != "正社員") {
+            info.uid = d.id;
+            DateTime startDate =
+                MyDateTimeUtils.fromApiToLocal(info.startDate!);
+            startDate =
+                DateTime(startDate.year, startDate.month, startDate.day, 0, 0);
+            DateTime endDate = MyDateTimeUtils.fromApiToLocal(info.endDate!);
+            endDate = DateTime(endDate.year, endDate.month, endDate.day, 0, 0);
+            if (isDateInRange(_selectedDate, startDate, endDate)) {
+              jobSearchList.add(info);
+            }
           }
         }
+        loading.value = false;
+        setState(() {});
+      } else {
+        loading.value = false;
+        setState(() {});
       }
-      loading.value = false;
-      setState(() {});
-    } else {
+    } catch (e) {
+      print("Error $e");
       loading.value = false;
       setState(() {});
     }
@@ -269,27 +275,27 @@ class _PartTimeJobState extends State<PartTimeJob> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      LikeButton(
-                        size: 30,
-                        circleColor: const CircleColor(
-                            start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                        bubblesColor: const BubblesColor(
-                          dotPrimaryColor: Color.fromARGB(255, 229, 51, 51),
-                          dotSecondaryColor: Color(0xff0099cc),
-                        ),
-                        isLiked: info.favorite,
-                        likeBuilder: (isLiked) {
-                          fa.isfav = isLiked;
-                          fa.ontap(docId, info);
-                          return Icon(
-                            Icons.favorite,
-                            color: isLiked
-                                ? Color.fromARGB(255, 255, 170, 0)
-                                : Colors.grey,
-                            size: 30,
-                          );
-                        },
-                      ),
+                      // LikeButton(
+                      //   size: 30,
+                      //   circleColor: const CircleColor(
+                      //       start: Color(0xff00ddff), end: Color(0xff0099cc)),
+                      //   bubblesColor: const BubblesColor(
+                      //     dotPrimaryColor: Color.fromARGB(255, 229, 51, 51),
+                      //     dotSecondaryColor: Color(0xff0099cc),
+                      //   ),
+                      //   isLiked: info.favorite,
+                      //   likeBuilder: (isLiked) {
+                      //     fa.isfav = isLiked;
+                      //     fa.ontap(docId, info);
+                      //     return Icon(
+                      //       Icons.favorite,
+                      //       color: isLiked
+                      //           ? Color.fromARGB(255, 255, 170, 0)
+                      //           : Colors.grey,
+                      //       size: 30,
+                      //     );
+                      //   },
+                      // ),
                     ],
                   )
                 ],

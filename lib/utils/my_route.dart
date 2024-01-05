@@ -1,5 +1,6 @@
 class MyRoute {
-  static var jobOption = "/register_options";
+  static var workerPage = "/worker";
+  static var jobOption = "/worker/job-options";
   static var dashboard = "/dashboard";
   static var login = "/login";
   static var users = "/users";

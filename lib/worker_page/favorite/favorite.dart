@@ -1,16 +1,17 @@
 import 'package:air_job_management/models/worker_model/search_job.dart';
 import 'package:air_job_management/providers/favorite_provider.dart';
 import 'package:air_job_management/utils/style.dart';
+import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:air_job_management/worker_page/search/search_screen_dedial.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:like_button/like_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/app_color.dart';
 
 class FavoriteSreen extends StatefulWidget {
-  FavoriteSreen({super.key});
+  final String uid;
+  FavoriteSreen({super.key, required this.uid});
 
   @override
   State<FavoriteSreen> createState() => _FavoriteSreenState();
@@ -25,19 +26,40 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
 
   onGetData() async {
     jobSearchList = [];
-    var data = await FirebaseFirestore.instance.collection("search_job").where("favorite", isEqualTo: true).get();
-    if (data.size > 0) {
-      for (var d in data.docs) {
-        var info = SearchJob.fromJson(d.data());
-        info.uid = d.id;
-        jobSearchList.add(info);
+    try {
+      var favData = await FirebaseFirestore.instance
+          .collection("favourite")
+          .doc(widget.uid)
+          .get();
+      if (favData.exists) {
+        List<String> jobIdListFromFav = List<String>.from(
+            favData.data()!["search_job_id"].map((e) => e.toString()));
+        var data =
+            await FirebaseFirestore.instance.collection("search_job").get();
+        if (data.size > 0) {
+          for (var d in data.docs) {
+            if (jobIdListFromFav.contains(d.id)) {
+              var info = SearchJob.fromJson(d.data());
+              info.uid = d.id;
+              jobSearchList.add(info);
+            }
+          }
+          refreshLoadingFalse();
+        } else {
+          refreshLoadingFalse();
+        }
+      } else {
+        refreshLoadingFalse();
       }
-      loading.value = false;
-      setState(() {});
-    } else {
-      loading.value = false;
-      setState(() {});
+    } catch (e) {
+      print("Fav screen Error is $e");
+      refreshLoadingFalse();
     }
+  }
+
+  refreshLoadingFalse() {
+    loading.value = false;
+    setState(() {});
   }
 
   @override
@@ -48,8 +70,8 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
 
   @override
   Widget build(BuildContext context) {
-    FavoriteProvider favorite = Provider.of<FavoriteProvider>(context, listen: true);
-    print(favorite);
+    FavoriteProvider favorite =
+        Provider.of<FavoriteProvider>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -70,35 +92,43 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : SafeArea(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: CustomScrollView(
-                          slivers: [
-                            SliverGrid(
-                              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                  maxCrossAxisExtent: 350, mainAxisSpacing: 5, crossAxisSpacing: 2, childAspectRatio: 10 / 15, mainAxisExtent: 300),
-                              delegate: SliverChildBuilderDelegate(
-                                (BuildContext context, int index) {
-                                  var info = jobSearchList[index];
-                                  return product(context, info, info.uid, favorite, index);
-                                },
-                                childCount: jobSearchList.length,
-                              ),
+          : jobSearchList.isEmpty
+              ? Center(child: EmptyDataWidget())
+              : SafeArea(
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: CustomScrollView(
+                              slivers: [
+                                SliverGrid(
+                                  gridDelegate:
+                                      const SliverGridDelegateWithMaxCrossAxisExtent(
+                                          maxCrossAxisExtent: 350,
+                                          mainAxisSpacing: 5,
+                                          crossAxisSpacing: 2,
+                                          childAspectRatio: 10 / 15,
+                                          mainAxisExtent: 300),
+                                  delegate: SliverChildBuilderDelegate(
+                                    (BuildContext context, int index) {
+                                      var info = jobSearchList[index];
+                                      return product(context, info, info.uid,
+                                          favorite, index);
+                                    },
+                                    childCount: jobSearchList.length,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
     );
   }
 
@@ -119,7 +149,9 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
       child: Card(
         child: Container(
           alignment: Alignment.center,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: AppColor.whiteColor),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: AppColor.whiteColor),
           child: Column(
             children: [
               Stack(
@@ -133,67 +165,14 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
                         topRight: Radius.circular(15),
                       ),
                       // color: Colors.black,
-                      image: DecorationImage(image: NetworkImage(info.image.toString()), fit: BoxFit.cover),
+                      image: DecorationImage(
+                          image: NetworkImage(info.image.toString()),
+                          fit: BoxFit.cover),
                     ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      LikeButton(
-                        size: 30,
-                        circleColor: const CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                        bubblesColor: const BubblesColor(
-                          dotPrimaryColor: Color.fromARGB(255, 229, 51, 51),
-                          dotSecondaryColor: Color(0xff0099cc),
-                        ),
-                        isLiked: info.favorite,
-                        likeBuilder: (isLiked) {
-                          fa.isfav = isLiked;
-                          fa.ontap(docId, info);
-                          return Icon(
-                            Icons.favorite,
-                            color: isLiked ? Color.fromARGB(255, 255, 170, 0) : Colors.grey,
-                            size: 30,
-                          );
-                        },
-                        countBuilder: (likeCount, bool isLiked, text) {
-                          Widget result;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: result = Text(isLiked ? 'Added to favorites.' : 'Removed from favorites.'),
-                              duration: const Duration(seconds: 1),
-                            ),
-                          );
-                          return result;
-                        },
-                      ),
-                      // IconButton(
-                      //   onPressed: () {
-                      //     !fa.items.contains(info)
-                      //         ? fa.add(info, docId)
-                      //         : fa.remove(info, docId);
-                      //     ScaffoldMessenger.of(context).showSnackBar(
-                      //       SnackBar(
-                      //         content: Text(fa.items.contains(info)
-                      //             ? 'Added to favorites.'
-                      //             : 'Removed from favorites.'),
-                      //         duration: const Duration(seconds: 1),
-                      //       ),
-                      //     );
-                      //   },
-                      //   icon: fa.items.contains(info)
-                      //       ? const Icon(
-                      //           Icons.favorite,
-                      //           color: Colors.yellow,
-                      //           size: 30,
-                      //         )
-                      //       : const Icon(
-                      //           Icons.favorite,
-                      //           color: Colors.white,
-                      //           size: 30,
-                      //         ),
-                      // ),
-                    ],
+                    children: [],
                   )
                 ],
               ),
@@ -214,7 +193,8 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      info.startDate.toString() + " ~ \n${info.endDate.toString()}",
+                      info.startDate.toString() +
+                          " ~ \n${info.endDate.toString()}",
                       style: kNormalText,
                     ),
                     // Text(info.totime.toString()),
@@ -227,7 +207,9 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
                 ),
                 child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text('${info.fee ?? info.salaryRange}', style: kNormalText.copyWith(fontSize: 13), overflow: TextOverflow.fade)),
+                    child: Text('${info.fee ?? info.salaryRange}',
+                        style: kNormalText.copyWith(fontSize: 13),
+                        overflow: TextOverflow.fade)),
               )
             ],
           ),

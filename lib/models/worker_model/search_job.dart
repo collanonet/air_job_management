@@ -202,7 +202,7 @@ class SearchJob {
   bool? favorite;
 
   SearchJob(
-      {this.favorite,
+      {this.favorite = false,
       this.status,
       this.fee,
       this.company,
