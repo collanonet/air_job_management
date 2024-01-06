@@ -344,13 +344,11 @@ class _ViewProfileState extends State<ViewProfile> {
                                         color: colorxd =
                                             const Color(0xFFF38301),
                                       ),
-                                      child: const Padding(
-                                        padding:
-                                            EdgeInsets.only(top: 10, left: 110),
+                                      child: Center(
                                         child: Text(
                                           "引き出す",
                                           style: TextStyle(
-                                              fontSize: 17,
+                                              fontSize: 15,
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold),
                                         ),

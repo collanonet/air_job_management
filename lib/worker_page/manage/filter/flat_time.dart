@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/worker/filter.dart';
+import '../../../utils/app_size.dart';
+import '../../../widgets/custom_back_button.dart';
 
 class FlatTime extends StatefulWidget {
   const FlatTime({super.key});
@@ -28,7 +30,10 @@ class _FlatTimeState extends State<FlatTime> {
     provider = Provider.of<WorkerFilter>(context);
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: AppColor.primaryColor, title: const Text('時間帯')),
+          leadingWidth: 100,
+          leading: const CustomBackButtonWidget(),
+          backgroundColor: AppColor.primaryColor,
+          title: const Text('時間帯')),
       body: Column(
         children: [
           Column(
@@ -45,13 +50,16 @@ class _FlatTimeState extends State<FlatTime> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-            child: ButtonWidget(
-              color: AppColor.primaryColor,
-              title: 'OK',
-              onPress: () {
-                provider.onChangeRangeTime(selected);
-                Navigator.pop(context);
-              },
+            child: SizedBox(
+              width: AppSize.getDeviceWidth(context),
+              child: ButtonWidget(
+                color: AppColor.primaryColor,
+                title: 'OK',
+                onPress: () {
+                  provider.onChangeRangeTime(selected);
+                  Navigator.pop(context);
+                },
+              ),
             ),
           ),
         ],

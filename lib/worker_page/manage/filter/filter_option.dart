@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/app_color.dart';
+import '../../../widgets/custom_back_button.dart';
 import '../../../widgets/custom_button.dart';
 import 'flat_time.dart';
 import 'occupation.dart';
@@ -29,10 +30,9 @@ class _FilterOptionState extends State<FilterOption> {
       appBar: AppBar(
         backgroundColor: AppColor.primaryColor,
         centerTitle: true,
+        leadingWidth: 100,
         title: const Text('絞り込み'),
-        leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: Icon(Icons.arrow_back)),
+        leading: const CustomBackButtonWidget(),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -63,10 +63,13 @@ class _FilterOptionState extends State<FilterOption> {
                     : workerFilter.selectedTreatment.map((e) => e).toString()),
             const Spacer(),
             Center(
-              child: ButtonWidget(
-                color: AppColor.primaryColor,
-                title: '検索する',
-                onPress: () {},
+              child: SizedBox(
+                width: AppSize.getDeviceWidth(context),
+                child: ButtonWidget(
+                  color: AppColor.primaryColor,
+                  title: '検索する',
+                  onPress: () => Navigator.pop(context),
+                ),
               ),
             ),
             AppSize.spaceHeight30

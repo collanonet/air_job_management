@@ -9,7 +9,8 @@ import '../../models/worker_model/search_job.dart';
 import '../../utils/respnsive.dart';
 
 class FullTimeJob extends StatefulWidget {
-  const FullTimeJob({super.key});
+  final bool isFullTime;
+  const FullTimeJob({super.key, required this.isFullTime});
 
   @override
   State<FullTimeJob> createState() => _FullTimeJobState();

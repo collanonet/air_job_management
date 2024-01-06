@@ -25,7 +25,9 @@ class _RootPageState extends State<RootPage> {
   @override
   void initState() {
     pages = [
-      PartTimeJob(),
+      PartTimeJob(
+        isFullTime: widget.isFullTime,
+      ),
       Center(
         child: JobScreen(
           uid: widget.uid,
@@ -44,7 +46,9 @@ class _RootPageState extends State<RootPage> {
       ),
     ];
     if (widget.isFullTime) {
-      pages[0] = FullTimeJob();
+      pages[0] = FullTimeJob(
+        isFullTime: widget.isFullTime,
+      );
     }
     Provider.of<RootProvider>(context, listen: false).onInit();
     super.initState();

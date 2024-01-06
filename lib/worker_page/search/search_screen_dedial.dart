@@ -18,11 +18,20 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:like_button/like_button.dart';
 import 'package:provider/provider.dart';
 
+import '../../pages/login.dart';
+
 class SearchScreenDetial extends StatefulWidget {
-  SearchScreenDetial({key, required this.info, this.docId, this.index}) : super(key: key);
+  SearchScreenDetial(
+      {key,
+      required this.info,
+      this.docId,
+      this.index,
+      required this.isFullTime})
+      : super(key: key);
   SearchJob info;
   var docId;
   int? index;
+  final bool isFullTime;
 
   //Review review;
 
@@ -57,10 +66,12 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
     // getCurrentLocation();
 
     /// origin marker
-    _addMarker(LatLng(_originLatitude, _originLongitude), "origin", BitmapDescriptor.defaultMarker);
+    _addMarker(LatLng(_originLatitude, _originLongitude), "origin",
+        BitmapDescriptor.defaultMarker);
 
     /// destination marker
-    _addMarker(LatLng(_destLatitude, _destLongitude), "destination", BitmapDescriptor.defaultMarkerWithHue(90));
+    _addMarker(LatLng(_destLatitude, _destLongitude), "destination",
+        BitmapDescriptor.defaultMarkerWithHue(90));
     // _getPolyline();
   }
 
@@ -77,7 +88,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
     return Scaffold(
       body: SingleChildScrollView(
         child: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection("search_job").snapshots(),
+          stream:
+              FirebaseFirestore.instance.collection("search_job").snapshots(),
           builder: (context, snapshot) {
             return SafeArea(
               child: Column(
@@ -89,8 +101,10 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                         height: AppSize.getDeviceHeight(context) * 0.3,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                              image:
-                                  NetworkImage(widget.info.image != null && widget.info.image != "" ? widget.info.image! : ConstValue.defaultBgImage),
+                              image: NetworkImage(widget.info.image != null &&
+                                      widget.info.image != ""
+                                  ? widget.info.image!
+                                  : ConstValue.defaultBgImage),
                               fit: BoxFit.cover),
                         ),
                       ),
@@ -100,8 +114,13 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                         child: Container(
                             width: 40,
                             height: 40,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
-                            child: Center(child: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back_rounded)))),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white),
+                            child: Center(
+                                child: IconButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    icon: Icon(Icons.arrow_back_rounded)))),
                       ),
                       Positioned(
                         top: 10,
@@ -112,16 +131,21 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                             Container(
                               width: 40,
                               height: 40,
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.white),
                               child: Center(
                                 child: LikeButton(
                                   onTap: (isLiked) async {
                                     fa.ontap(widget.docId, widget.info);
                                   },
                                   size: 30,
-                                  circleColor: const CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
+                                  circleColor: const CircleColor(
+                                      start: Color(0xff00ddff),
+                                      end: Color(0xff0099cc)),
                                   bubblesColor: const BubblesColor(
-                                    dotPrimaryColor: Color.fromARGB(255, 229, 51, 51),
+                                    dotPrimaryColor:
+                                        Color.fromARGB(255, 229, 51, 51),
                                     dotSecondaryColor: Color(0xff0099cc),
                                   ),
                                   isLiked: fa.isfav,
@@ -129,7 +153,9 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                                     fa.isfav = isLiked;
                                     return Icon(
                                       Icons.favorite,
-                                      color: isLiked ? Color.fromARGB(255, 255, 170, 0) : Colors.grey,
+                                      color: isLiked
+                                          ? Color.fromARGB(255, 255, 170, 0)
+                                          : Colors.grey,
                                       size: 30,
                                     );
                                   },
@@ -142,14 +168,17 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                             Container(
                               width: 40,
                               height: 40,
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.white),
                               child: Center(
                                 child: IconButton(
                                   onPressed: () {
                                     MyPageRoute.goTo(
                                       context,
                                       MessagePage(
-                                        companyID: widget.info.companyId ?? "ABC",
+                                        companyID:
+                                            widget.info.companyId ?? "ABC",
                                         companyName: widget.info.company,
                                         companyImageUrl: widget.info.image,
                                       ),
@@ -209,7 +238,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                               "${JapaneseText.employmentStatus}: ",
                               style: kNormalText.copyWith(color: Colors.grey),
                             ),
-                            Text(widget.info.employmentType ?? "", style: kNormalText),
+                            Text(widget.info.employmentType ?? "",
+                                style: kNormalText),
                           ],
                         ),
                         Row(
@@ -219,7 +249,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                               "${JapaneseText.occupationMajor}: ",
                               style: kNormalText.copyWith(color: Colors.grey),
                             ),
-                            Text(widget.info.occupationType ?? "", style: kNormalText),
+                            Text(widget.info.occupationType ?? "",
+                                style: kNormalText),
                           ],
                         ),
                         Row(
@@ -229,7 +260,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                               "${JapaneseText.occupation}: ",
                               style: kNormalText.copyWith(color: Colors.grey),
                             ),
-                            Text(widget.info.occupationType ?? "", style: kNormalText),
+                            Text(widget.info.occupationType ?? "",
+                                style: kNormalText),
                           ],
                         ),
                         Row(
@@ -239,7 +271,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                               "${JapaneseText.salaryFrom}: ",
                               style: kNormalText.copyWith(color: Colors.grey),
                             ),
-                            Text(widget.info.salaryType ?? "", style: kNormalText),
+                            Text(widget.info.salaryType ?? "",
+                                style: kNormalText),
                           ],
                         ),
                         Row(
@@ -249,7 +282,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                               "${JapaneseText.salaryFrom}: ",
                               style: kNormalText.copyWith(color: Colors.grey),
                             ),
-                            Text(widget.info.salaryRange ?? "", style: kNormalText),
+                            Text(widget.info.salaryRange ?? "",
+                                style: kNormalText),
                           ],
                         ),
                         Row(
@@ -259,7 +293,9 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                               "${JapaneseText.salaryFrom}: ",
                               style: kNormalText.copyWith(color: Colors.grey),
                             ),
-                            Text("${widget.info.amountOfPayrollFrom ?? ""} ~ ${widget.info.amountOfPayrollTo ?? ""}", style: kNormalText),
+                            Text(
+                                "${widget.info.amountOfPayrollFrom ?? ""} ~ ${widget.info.amountOfPayrollTo ?? ""}",
+                                style: kNormalText),
                           ],
                         ),
                         Row(
@@ -269,7 +305,10 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                               "${JapaneseText.supplementaryExplanationOfSalary}: ",
                               style: kNormalText.copyWith(color: Colors.grey),
                             ),
-                            Text(widget.info.supplementaryExplanationOfSalary ?? "", style: kNormalText),
+                            Text(
+                                widget.info.supplementaryExplanationOfSalary ??
+                                    "",
+                                style: kNormalText),
                           ],
                         ),
                         Row(
@@ -294,7 +333,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                               "${JapaneseText.offHours}: ",
                               style: kNormalText.copyWith(color: Colors.grey),
                             ),
-                            Text(widget.info.offHours ?? "", style: kNormalText),
+                            Text(widget.info.offHours ?? "",
+                                style: kNormalText),
                           ],
                         ),
                         divider(),
@@ -389,7 +429,9 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                             ),
                             Expanded(
                               child: Text(
-                                widget.info.transportExpense == true ? JapaneseText.yes : JapaneseText.no,
+                                widget.info.transportExpense == true
+                                    ? JapaneseText.yes
+                                    : JapaneseText.no,
                                 style: kNormalText,
                                 overflow: TextOverflow.fade,
                               ),
@@ -519,7 +561,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                             ),
                             Expanded(
                               child: Text(
-                                widget.info.supplementaryExplanationOfSalary ?? "",
+                                widget.info.supplementaryExplanationOfSalary ??
+                                    "",
                                 style: kNormalText,
                                 overflow: TextOverflow.fade,
                               ),
@@ -835,18 +878,29 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: InkWell(
           onTap: () async {
-            CustomDialog.confirmDialog(
-                context: context,
-                onApprove: () async {
-                  Navigator.pop(context);
-                  bool isSuccess = await SearchJobApi()
-                      .createJobRequest(widget.docId, auth.myUser?.uid ?? "", "${auth.myUser?.firstName} ${auth.myUser?.lastName}");
-                  if (isSuccess) {
-                    toastMessageSuccess(JapaneseText.successCreate, context);
-                  } else {
-                    toastMessageError(errorMessage, context);
-                  }
-                });
+            if (auth.myUser != null) {
+              CustomDialog.confirmDialog(
+                  context: context,
+                  onApprove: () async {
+                    Navigator.pop(context);
+                    bool isSuccess = await SearchJobApi().createJobRequest(
+                        widget.docId,
+                        auth.myUser?.uid ?? "",
+                        "${auth.myUser?.firstName} ${auth.myUser?.lastName}");
+                    if (isSuccess) {
+                      toastMessageSuccess(JapaneseText.successCreate, context);
+                    } else {
+                      toastMessageError(errorMessage, context);
+                    }
+                  });
+            } else {
+              MyPageRoute.goTo(
+                  context,
+                  LoginPage(
+                    isFromWorker: true,
+                    isFullTime: widget.isFullTime,
+                  ));
+            }
           },
           child: Container(
             width: AppSize.getDeviceWidth(context),
@@ -932,7 +986,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
       height: AppSize.getDeviceHeight(context) * 0.4,
       // color: Colors.amber,
       child: GoogleMap(
-        initialCameraPosition: CameraPosition(target: LatLng(_originLatitude, _originLongitude), zoom: 15),
+        initialCameraPosition: CameraPosition(
+            target: LatLng(_originLatitude, _originLongitude), zoom: 15),
         myLocationEnabled: true,
         tiltGesturesEnabled: true,
         compassEnabled: true,
@@ -965,18 +1020,21 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                     child: Container(
                       width: 80,
                       // height: 100,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppColor.whiteColor, boxShadow: [
-                        BoxShadow(
-                          offset: const Offset(-1, -1),
-                          color: Colors.grey.withOpacity(0.2),
-                          blurRadius: 10,
-                        ),
-                        BoxShadow(
-                          offset: const Offset(1, 1),
-                          color: Colors.grey.withOpacity(0.2),
-                          blurRadius: 10,
-                        )
-                      ]),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: AppColor.whiteColor,
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(-1, -1),
+                              color: Colors.grey.withOpacity(0.2),
+                              blurRadius: 10,
+                            ),
+                            BoxShadow(
+                              offset: const Offset(1, 1),
+                              color: Colors.grey.withOpacity(0.2),
+                              blurRadius: 10,
+                            )
+                          ]),
                     ),
                   ),
                 ),
@@ -1009,7 +1067,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
 
   _addMarker(LatLng position, String id, BitmapDescriptor descriptor) {
     MarkerId markerId = MarkerId(id);
-    Marker marker = Marker(markerId: markerId, icon: descriptor, position: position);
+    Marker marker =
+        Marker(markerId: markerId, icon: descriptor, position: position);
     markers[markerId] = marker;
   }
 }

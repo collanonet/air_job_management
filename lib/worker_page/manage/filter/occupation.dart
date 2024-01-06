@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/app_color.dart';
+import '../../../utils/app_size.dart';
+import '../../../widgets/custom_back_button.dart';
 import '../../../widgets/custom_button.dart';
 
 class Occupation extends StatefulWidget {
@@ -31,6 +33,8 @@ class _OccupationState extends State<Occupation> {
       appBar: AppBar(
         backgroundColor: AppColor.primaryColor,
         centerTitle: true,
+        leadingWidth: 100,
+        leading: const CustomBackButtonWidget(),
         title: const Text('職種'),
       ),
       body: Column(
@@ -51,13 +55,16 @@ class _OccupationState extends State<Occupation> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-            child: ButtonWidget(
-              color: AppColor.primaryColor,
-              title: 'OK',
-              onPress: () {
-                provider.onChangeOccupation(selected);
-                Navigator.pop(context);
-              },
+            child: SizedBox(
+              width: AppSize.getDeviceWidth(context),
+              child: ButtonWidget(
+                color: AppColor.primaryColor,
+                title: 'OK',
+                onPress: () {
+                  provider.onChangeOccupation(selected);
+                  Navigator.pop(context);
+                },
+              ),
             ),
           ),
         ],

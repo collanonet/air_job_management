@@ -32,14 +32,17 @@ class _SearchScreenState extends State<SearchScreen> {
     jobSearchList = [];
     var data = await FirebaseFirestore.instance
         .collection("search_job")
-        .where("end_date", isGreaterThanOrEqualTo: MyDateTimeUtils.convertDateToString(_selectedDate))
+        .where("end_date",
+            isGreaterThanOrEqualTo:
+                MyDateTimeUtils.convertDateToString(_selectedDate))
         .get();
     if (data.size > 0) {
       for (var d in data.docs) {
         var info = SearchJob.fromJson(d.data());
         info.uid = d.id;
         DateTime startDate = MyDateTimeUtils.fromApiToLocal(info.startDate!);
-        startDate = DateTime(startDate.year, startDate.month, startDate.day, 0, 0);
+        startDate =
+            DateTime(startDate.year, startDate.month, startDate.day, 0, 0);
         DateTime endDate = MyDateTimeUtils.fromApiToLocal(info.endDate!);
         endDate = DateTime(endDate.year, endDate.month, endDate.day, 0, 0);
         if (isDateInRange(_selectedDate, startDate, endDate)) {
@@ -54,8 +57,10 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-  bool isDateInRange(DateTime chosenDate, DateTime startDate, DateTime endDate) {
-    return (chosenDate.isAfter(startDate) || chosenDate == startDate) && (chosenDate.isBefore(endDate) || chosenDate == endDate);
+  bool isDateInRange(
+      DateTime chosenDate, DateTime startDate, DateTime endDate) {
+    return (chosenDate.isAfter(startDate) || chosenDate == startDate) &&
+        (chosenDate.isBefore(endDate) || chosenDate == endDate);
   }
 
   @override
@@ -87,12 +92,18 @@ class _SearchScreenState extends State<SearchScreen> {
                         child: CustomScrollView(
                           slivers: [
                             SliverGrid(
-                              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                  maxCrossAxisExtent: 350, mainAxisSpacing: 5, crossAxisSpacing: 2, childAspectRatio: 10 / 15, mainAxisExtent: 300),
+                              gridDelegate:
+                                  const SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent: 350,
+                                      mainAxisSpacing: 5,
+                                      crossAxisSpacing: 2,
+                                      childAspectRatio: 10 / 15,
+                                      mainAxisExtent: 300),
                               delegate: SliverChildBuilderDelegate(
                                 (BuildContext context, int index) {
                                   var info = jobSearchList[index];
-                                  return product(context, info, info.uid, favorite, index);
+                                  return product(
+                                      context, info, info.uid, favorite, index);
                                 },
                                 childCount: jobSearchList.length,
                               ),
@@ -108,13 +119,15 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget product(BuildContext context, var info, var docId, FavoriteProvider fa, int index) {
+  Widget product(BuildContext context, var info, var docId, FavoriteProvider fa,
+      int index) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => SearchScreenDetial(
+              isFullTime: true,
               info: info,
               docId: docId,
               index: index,
@@ -125,7 +138,9 @@ class _SearchScreenState extends State<SearchScreen> {
       child: Card(
         child: Container(
           alignment: Alignment.center,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: AppColor.whiteColor),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: AppColor.whiteColor),
           child: Column(
             children: [
               Stack(
@@ -140,7 +155,11 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                       // color: Colors.black,
                       image: DecorationImage(
-                          image: NetworkImage(info.image != null && info.image != "" ? info.image : ConstValue.defaultBgImage), fit: BoxFit.cover),
+                          image: NetworkImage(
+                              info.image != null && info.image != ""
+                                  ? info.image
+                                  : ConstValue.defaultBgImage),
+                          fit: BoxFit.cover),
                     ),
                   ),
                   Row(
@@ -148,7 +167,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     children: [
                       LikeButton(
                         size: 30,
-                        circleColor: const CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
+                        circleColor: const CircleColor(
+                            start: Color(0xff00ddff), end: Color(0xff0099cc)),
                         bubblesColor: const BubblesColor(
                           dotPrimaryColor: Color.fromARGB(255, 229, 51, 51),
                           dotSecondaryColor: Color(0xff0099cc),
@@ -159,7 +179,9 @@ class _SearchScreenState extends State<SearchScreen> {
                           fa.ontap(docId, info);
                           return Icon(
                             Icons.favorite,
-                            color: isLiked ? Color.fromARGB(255, 255, 170, 0) : Colors.grey,
+                            color: isLiked
+                                ? Color.fromARGB(255, 255, 170, 0)
+                                : Colors.grey,
                             size: 30,
                           );
                         },
@@ -216,7 +238,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      info.startDate.toString() + " ~ \n${info.endDate.toString()}",
+                      info.startDate.toString() +
+                          " ~ \n${info.endDate.toString()}",
                       style: kNormalText,
                     ),
                     // Text(info.totime.toString()),
@@ -229,7 +252,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text('${info.fee ?? info.salaryRange}', style: kNormalText.copyWith(fontSize: 13), overflow: TextOverflow.fade)),
+                    child: Text('${info.fee ?? info.salaryRange}',
+                        style: kNormalText.copyWith(fontSize: 13),
+                        overflow: TextOverflow.fade)),
               )
             ],
           ),

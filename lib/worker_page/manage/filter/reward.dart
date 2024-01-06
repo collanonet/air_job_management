@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/worker/filter.dart';
 import '../../../utils/app_color.dart';
+import '../../../utils/app_size.dart';
+import '../../../widgets/custom_back_button.dart';
 import '../../../widgets/custom_button.dart';
 
 enum SingingCharacter { a, b, c, d }
@@ -31,6 +33,8 @@ class _RadioExampleState extends State<RadioExample> {
       appBar: AppBar(
         backgroundColor: AppColor.primaryColor,
         centerTitle: true,
+        leadingWidth: 100,
+        leading: const CustomBackButtonWidget(),
         title: const Text('報酬'),
       ),
       body: SafeArea(
@@ -46,13 +50,16 @@ class _RadioExampleState extends State<RadioExample> {
                 }),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-              child: ButtonWidget(
-                color: AppColor.primaryColor,
-                title: 'OK',
-                onPress: () {
-                  provider.onChangeReward(selected);
-                  Navigator.pop(context);
-                },
+              child: SizedBox(
+                width: AppSize.getDeviceWidth(context),
+                child: ButtonWidget(
+                  color: AppColor.primaryColor,
+                  title: 'OK',
+                  onPress: () {
+                    provider.onChangeReward(selected);
+                    Navigator.pop(context);
+                  },
+                ),
               ),
             ),
           ],

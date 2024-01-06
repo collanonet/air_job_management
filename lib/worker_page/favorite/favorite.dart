@@ -139,6 +139,7 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
           context,
           MaterialPageRoute(
             builder: (context) => SearchScreenDetial(
+              isFullTime: true,
               info: info,
               docId: docId,
               index: index,

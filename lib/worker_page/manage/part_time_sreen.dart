@@ -16,7 +16,8 @@ import '../search/search_screen_dedial.dart';
 import 'filter/filter_option.dart';
 
 class PartTimeJob extends StatefulWidget {
-  const PartTimeJob({super.key});
+  final bool isFullTime;
+  const PartTimeJob({super.key, required this.isFullTime});
 
   @override
   State<PartTimeJob> createState() => _PartTimeJobState();
@@ -241,6 +242,7 @@ class _PartTimeJobState extends State<PartTimeJob> {
               info: info,
               docId: docId,
               index: index,
+              isFullTime: widget.isFullTime,
             ),
           ),
         );
