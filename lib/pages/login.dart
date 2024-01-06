@@ -1,5 +1,8 @@
 import 'package:air_job_management/helper/role_helper.dart';
+import 'package:air_job_management/pages/register/new_form_register.dart';
+import 'package:air_job_management/pages/register/new_register_form_for_part_time.dart';
 import 'package:air_job_management/providers/auth.dart';
+import 'package:air_job_management/services/social_login.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/respnsive.dart';
@@ -104,7 +107,30 @@ class _LoginPageState extends State<LoginPage> {
               assets: "assets/google.png",
               title: "Googleでログイン",
               colors: Color(0xffCDD6DD),
-              onTap: () {}),
+              onTap: () async {
+                MyUser? user = await SocialLogin()
+                    .googleSign(widget.isFullTime, authProvider);
+                print("User email is ${user?.email}");
+                if (user != null) {
+                  if (user.nameKanJi != "" || user.nameFu != "") {
+                    if (user.isFullTimeStaff == true) {
+                      context.go(MyRoute.workerJobSearchFullTime);
+                    } else {
+                      context.go(MyRoute.workerJobSearchPartTime);
+                    }
+                  } else {
+                    if (widget.isFullTime) {
+                      MyPageRoute.goTo(
+                          context, NewFormRegistrationPage(myUser: user));
+                    } else {
+                      MyPageRoute.goTo(context,
+                          NewFormRegistrationForPartTimePage(myUser: user));
+                    }
+                  }
+                } else {
+                  MessageWidget.show("Googleでログイン中にエラーが発生しました");
+                }
+              }),
           AppSize.spaceHeight16,
           socialLoginButton(
               assets: "assets/x.png",
@@ -192,7 +218,7 @@ class _LoginPageState extends State<LoginPage> {
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
-          const Text("Version 1.0.3"),
+          const Text("Version 1.0.0+2"),
         ],
       ),
     );
@@ -264,7 +290,11 @@ class _LoginPageState extends State<LoginPage> {
                 ));
           }
         } else {
-          context.go(MyRoute.workerJobSearch);
+          if (user.isFullTimeStaff == true) {
+            context.go(MyRoute.workerJobSearchFullTime);
+          } else {
+            context.go(MyRoute.workerJobSearchPartTime);
+          }
         }
       } else {
         MessageWidget.show("${authProvider.errorMessage}");

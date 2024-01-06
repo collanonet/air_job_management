@@ -207,11 +207,20 @@ final GoRouter _router = GoRouter(
           },
         ),
         GoRoute(
-          path: MyRoute.workerJobSearch.removeSlash(),
+          path: MyRoute.workerJobSearchPartTime.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {
             return RootPage(
               "uid",
               isFullTime: false,
+            );
+          },
+        ),
+        GoRoute(
+          path: MyRoute.workerJobSearchFullTime.removeSlash(),
+          builder: (BuildContext context, GoRouterState state) {
+            return RootPage(
+              "uid",
+              isFullTime: true,
             );
           },
         ),

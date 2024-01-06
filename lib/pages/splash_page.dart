@@ -25,10 +25,8 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
   late var user;
 
   startTime() async {
-    print("Splash called From Worker is ${widget.isFromWorker}");
     FirebaseAuth.instance.authStateChanges().listen((user) async {
       if (user != null) {
-        print("First con");
         await FirebaseAuth.instance.currentUser?.reload();
         bool isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
         MyUser? users = await UserApiServices().getProfileUser(user.uid);
@@ -60,7 +58,6 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
               ));
         }
       } else {
-        print("Sec con");
         if (widget.isFromWorker) {
           context.go(MyRoute.jobOption);
         } else {
