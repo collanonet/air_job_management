@@ -13,6 +13,10 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
+import '../utils/app_size.dart';
+import '../utils/respnsive.dart';
+import '../widgets/custom_button.dart';
+
 class SplashScreen extends StatefulWidget {
   final bool isFromWorker;
   const SplashScreen({Key? key, required this.isFromWorker}) : super(key: key);
@@ -23,6 +27,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
   late var user;
+  bool isSplash = true;
 
   startTime() async {
     FirebaseAuth.instance.authStateChanges().listen((user) async {
@@ -58,11 +63,14 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
               ));
         }
       } else {
-        if (widget.isFromWorker) {
-          context.go(MyRoute.jobOption);
-        } else {
-          context.go(MyRoute.login);
-        }
+        // if (widget.isFromWorker) {
+        //   context.go(MyRoute.jobOption);
+        // } else {
+        //   context.go(MyRoute.login);
+        // }
+        setState(() {
+          isSplash = false;
+        });
       }
     });
   }
@@ -75,11 +83,55 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
 
   @override
   Widget build(BuildContext context) {
-    print("Location ${GoRouter.of(context).location.toString()}");
     user = Provider.of<User?>(context);
     return Scaffold(
       backgroundColor: AppColor.primaryColor,
-      body: const LoadingWidget(Colors.white),
+      body: isSplash ? const LoadingWidget(Colors.white) : landingPage(),
+    );
+  }
+
+  landingPage() {
+    return Container(
+      color: Colors.white,
+      width: AppSize.getDeviceWidth(context),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            "assets/svgs/img.png",
+            width: AppSize.getDeviceWidth(context) *
+                (Responsive.isMobile(context) ? 0.6 : 0.3),
+          ),
+          AppSize.spaceHeight30,
+          SizedBox(
+            width: AppSize.getDeviceWidth(context) *
+                (Responsive.isMobile(context) ? 0.6 : 0.3),
+            child: ButtonWidget(
+                title: "Gig worker page",
+                color: AppColor.primaryColor,
+                onPress: () => context.go(MyRoute.jobOption)),
+          ),
+          AppSize.spaceHeight16,
+          SizedBox(
+            width: AppSize.getDeviceWidth(context) *
+                (Responsive.isMobile(context) ? 0.6 : 0.3),
+            child: ButtonWidget(
+                title: "Company page",
+                color: AppColor.primaryColor,
+                onPress: () => context.go(MyRoute.login)),
+          ),
+          AppSize.spaceHeight16,
+          SizedBox(
+            width: AppSize.getDeviceWidth(context) *
+                (Responsive.isMobile(context) ? 0.6 : 0.3),
+            child: ButtonWidget(
+                title: "Admin page",
+                color: AppColor.primaryColor,
+                onPress: () => context.go(MyRoute.login)),
+          ),
+        ],
+      ),
     );
   }
 

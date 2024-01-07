@@ -7,14 +7,16 @@ class ButtonWidget extends StatelessWidget {
   final Color color;
   final Function onPress;
   const ButtonWidget(
-      {required this.title, required this.color, required this.onPress});
+      {required this.title,
+      this.color = const Color(0xfff38301),
+      required this.onPress});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 50,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4), color: Color(0xfff38301)),
+      decoration:
+          BoxDecoration(borderRadius: BorderRadius.circular(4), color: color),
       child: CupertinoButton(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
         child: Text(
