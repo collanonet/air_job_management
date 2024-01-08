@@ -38,6 +38,29 @@ class _FilterOptionState extends State<FilterOption> {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Column(
           children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: InkWell(
+                onTap: () => workerFilter.onClearFilter(),
+                borderRadius: BorderRadius.circular(15),
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                      height: 30,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                              width: 1, color: AppColor.primaryColor)),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "リセット",
+                        style:
+                            kNormalText.copyWith(color: AppColor.primaryColor),
+                      )),
+                ),
+              ),
+            ),
             menu('職種', () {
               MyPageRoute.goTo(context, const Occupation());
             },

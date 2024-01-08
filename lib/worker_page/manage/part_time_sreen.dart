@@ -207,8 +207,8 @@ class _PartTimeJobState extends State<PartTimeJob> {
                 width: 160,
                 height: 50,
                 decoration: BoxDecoration(
-                    color: AppColor.primaryColor,
-                    borderRadius: BorderRadius.circular(20)),
+                    color: AppColor.secondaryColor,
+                    borderRadius: BorderRadius.circular(25)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -220,8 +220,9 @@ class _PartTimeJobState extends State<PartTimeJob> {
                     AppSize.spaceWidth5,
                     Text(
                       '絞り込み',
-                      style:
-                          normalTextStyle.copyWith(color: AppColor.whiteColor),
+                      style: normalTextStyle.copyWith(
+                        color: AppColor.whiteColor,
+                      ),
                     ),
                   ],
                 ),
@@ -376,67 +377,105 @@ class _PartTimeJobState extends State<PartTimeJob> {
     );
   }
 
+  final GlobalKey dropdownKey = GlobalKey();
+
   // Dropdown
   Widget dropdown() {
     return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 20,
-      ),
-      child: Stack(
-        children: [
-          SizedBox(
-            width: AppSize.getDeviceWidth(context),
-            child: Container(
-              color: AppColor.whiteColor,
-              child: DropdownButtonHideUnderline(
-                child: DropdownMenu<String>(
-                  width: MediaQuery.of(context).size.width - 32,
-                  textStyle: kTitleText,
-                  leadingIcon: Icon(
-                    Icons.location_pin,
-                    color: AppColor.primaryColor,
-                    size: 30,
-                  ),
-                  trailingIcon: SizedBox(),
-                  initialSelection: list.first,
-                  onSelected: (String? value) {
-                    list.first = value!;
-                    // This is called when the user selects an item.
-                  },
-                  dropdownMenuEntries:
-                      list.map<DropdownMenuEntry<String>>((String value) {
-                    return DropdownMenuEntry<String>(
-                      value: value,
-                      label: value,
-                    );
-                  }).toList(),
+        padding: const EdgeInsets.only(
+          bottom: 20,
+        ),
+        child: SizedBox(
+          width: AppSize.getDeviceWidth(context),
+          child: Container(
+            color: AppColor.whiteColor,
+            child: DropdownButtonHideUnderline(
+              child: DropdownMenu<String>(
+                key: dropdownKey,
+                width: MediaQuery.of(context).size.width - 32,
+                textStyle: kTitleText,
+                leadingIcon: Icon(
+                  Icons.location_pin,
+                  color: AppColor.primaryColor,
+                  size: 30,
                 ),
+                trailingIcon: Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: AppColor.primaryColor,
+                ),
+                initialSelection: list.first,
+                onSelected: (String? value) {
+                  list.first = value!;
+                  // This is called when the user selects an item.
+                },
+                dropdownMenuEntries:
+                    list.map<DropdownMenuEntry<String>>((String value) {
+                  return DropdownMenuEntry<String>(
+                    value: value,
+                    label: value,
+                  );
+                }).toList(),
               ),
             ),
           ),
-          Positioned(
-              top: 15,
-              bottom: 15,
-              right: 20,
-              child: Container(
-                width: 70,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    width: 2,
-                    color: AppColor.primaryColor,
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    '選択',
-                    style:
-                        normalTextStyle.copyWith(color: AppColor.primaryColor),
-                  ),
-                ),
-              ))
-        ],
-      ),
-    );
+        )
+        // Stack(
+        //   children: [
+        //     SizedBox(
+        //       width: AppSize.getDeviceWidth(context),
+        //       child: Container(
+        //         color: AppColor.whiteColor,
+        //         child: DropdownButtonHideUnderline(
+        //           child: DropdownMenu<String>(
+        //             key: dropdownKey,
+        //             width: MediaQuery.of(context).size.width - 32,
+        //             textStyle: kTitleText,
+        //             leadingIcon: Icon(
+        //               Icons.location_pin,
+        //               color: AppColor.primaryColor,
+        //               size: 30,
+        //             ),
+        //             trailingIcon: Icon(Icons.keyboard_arrow_down_rounded, color: AppColor.primaryColor,),
+        //             initialSelection: list.first,
+        //             onSelected: (String? value) {
+        //               list.first = value!;
+        //               // This is called when the user selects an item.
+        //             },
+        //             dropdownMenuEntries:
+        //                 list.map<DropdownMenuEntry<String>>((String value) {
+        //               return DropdownMenuEntry<String>(
+        //                 value: value,
+        //                 label: value,
+        //               );
+        //             }).toList(),
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //     Positioned(
+        //         top: 15,
+        //         bottom: 15,
+        //         right: 20,
+        //         child: Container(
+        //           width: 70,
+        //           decoration: BoxDecoration(
+        //             color: Colors.transparent,
+        //             borderRadius: BorderRadius.circular(20),
+        //             border: Border.all(
+        //               width: 2,
+        //               color: AppColor.primaryColor,
+        //             ),
+        //           ),
+        //           child: Center(
+        //             child: Text(
+        //               '選択',
+        //               style:
+        //                   normalTextStyle.copyWith(color: AppColor.primaryColor),
+        //             ),
+        //           ),
+        //         ))
+        //   ],
+        // ),
+        );
   }
 }

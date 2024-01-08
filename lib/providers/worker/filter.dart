@@ -62,4 +62,12 @@ class WorkerFilter with ChangeNotifier {
     selectedRangeTime = list;
     notifyListeners();
   }
+
+  onClearFilter() {
+    selectedTreatment = [];
+    selectedRangeTime = [];
+    selectedReward = null;
+    selectedOccupation = [];
+    notifyListeners();
+  }
 }

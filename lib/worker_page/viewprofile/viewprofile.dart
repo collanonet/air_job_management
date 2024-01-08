@@ -11,6 +11,7 @@ import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_dialog.dart';
 import 'package:air_job_management/widgets/loading.dart';
+import 'package:air_job_management/worker_page/viewprofile/identification_doc/identification_menu.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,11 +19,11 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import 'edit_profile.dart';
-import 'private_policy.dart';
-import 'tab_review_penalty.dart';
-import 'term_of_use.dart';
-import 'withdraw_procedures.dart';
+import 'edit_profile/edit_profile.dart';
+import 'other_setting/private_policy.dart';
+import 'other_setting/tab_review_penalty.dart';
+import 'other_setting/term_of_use.dart';
+import 'other_setting/withdraw_procedures.dart';
 
 class ViewProfile extends StatefulWidget {
   final bool isFullTime;
@@ -455,8 +456,22 @@ class _ViewProfileState extends State<ViewProfile> {
               fontWeight: FontWeight.w600, color: AppColor.primaryColor),
         ),
         AppSize.spaceHeight16,
-        customListTile(JapaneseText.accountSetting, onTap: () => {}),
-        customListTile(JapaneseText.locationInfoSetting, onTap: () {}),
+        customListTile(JapaneseText.accountSetting,
+            onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditProfile(
+                              seeker: myUser!,
+                            ))).then((value) {
+                  if (value != null) {
+                    setState(() {
+                      myUser = value;
+                    });
+                  }
+                })),
+        customListTile(JapaneseText.locationInfoSetting,
+            onTap: () =>
+                MyPageRoute.goTo(context, const IdentificationMenuPage())),
         customListTile(JapaneseText.pushNotificationSetting, onTap: () => {}),
         AppSize.spaceHeight16,
         Text(

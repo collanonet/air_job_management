@@ -615,6 +615,13 @@ class JapaneseText {
   static String termsOfService = "利用規約";
   static String rangeOfOccupationsHandled = "取扱職種の範囲";
   static String unsubscribed = "退会手続き";
+
+  ///Identification page
+  static String passport = "パスポート";
+  static String driverLicenseIdentification = "パスポート";
+  static String myNumberCard = "マイナンバーカード";
+  static String basicResidentRegisterCard = "住民基本台帳カード";
+  static String residentRecord = "住民票";
 }
 
 List<String> eligibilityApplicationList = [

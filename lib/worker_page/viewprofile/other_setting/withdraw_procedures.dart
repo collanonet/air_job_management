@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../widgets/empty_data.dart';
+import '../../../widgets/empty_data.dart';
 
 class WithDrawProcedures extends StatefulWidget {
   const WithDrawProcedures({Key? key}) : super(key: key);
@@ -28,7 +28,10 @@ class _WithDrawProceduresState extends State<WithDrawProcedures> {
 
   onGetDataPrivatePolicy() async {
     privacyModel = [];
-    var dataPrivatePolicy = await FirebaseFirestore.instance.collection("privacy_setting").limit(1).get();
+    var dataPrivatePolicy = await FirebaseFirestore.instance
+        .collection("privacy_setting")
+        .limit(1)
+        .get();
 
     if (dataPrivatePolicy.size > 0) {
       for (var d in dataPrivatePolicy.docs) {
@@ -77,7 +80,8 @@ class _WithDrawProceduresState extends State<WithDrawProcedures> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Withdraw Procedures", style: TextStyle(color: Color(0xFFEDAD34))),
+        title: const Text("Withdraw Procedures",
+            style: TextStyle(color: Color(0xFFEDAD34))),
         centerTitle: true,
       ),
       body: hasURL
