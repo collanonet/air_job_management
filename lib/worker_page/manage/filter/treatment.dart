@@ -2,6 +2,7 @@ import 'package:air_job_management/utils/app_size.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../pages/register/widget/select_box_tile.dart';
 import '../../../providers/worker/filter.dart';
 import '../../../utils/app_color.dart';
 import '../../../widgets/custom_back_button.dart';
@@ -35,16 +36,30 @@ class _TreatmentState extends State<Treatment> {
           backgroundColor: AppColor.primaryColor,
           title: const Text('時間帯')),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Column(
+          Row(
             children: [
-              item('未経験歓迎'),
-              item('まかないあり'),
-              item('服装自由'),
-              item('髪型/ヘアカラー自由'),
-              item('交通費支給'),
-              item('バイク/車通勤可'),
-              item('自転車通勤可'),
+              buildItem('未経験歓迎'),
+              buildItem('まかないあり'),
+            ],
+          ),
+          Row(
+            children: [
+              buildItem('服装自由'),
+              buildItem('髪型/ヘアカラー自由'),
+            ],
+          ),
+          Row(
+            children: [
+              buildItem('交通費支給'),
+              buildItem('バイク/車通勤可'),
+            ],
+          ),
+          Row(
+            children: [
+              buildItem('自転車通勤可'),
             ],
           ),
           Padding(
@@ -52,7 +67,7 @@ class _TreatmentState extends State<Treatment> {
             child: SizedBox(
               width: AppSize.getDeviceWidth(context),
               child: ButtonWidget(
-                color: AppColor.primaryColor,
+                color: AppColor.secondaryColor,
                 title: 'OK',
                 onPress: () {
                   provider.onChangeTreatment(selected);
@@ -66,24 +81,24 @@ class _TreatmentState extends State<Treatment> {
     );
   }
 
-  Widget item(String title) {
-    return Card(
-      child: CheckboxListTile(
-        controlAffinity: ListTileControlAffinity.leading,
-        activeColor: Colors.red,
-        checkColor: Colors.white,
-        title: Text(title),
-        value: selected.contains(title),
-        onChanged: (bool? value) {
-          if (selected.contains(title)) {
-            selected.remove(title);
-          } else {
-            selected.add(title);
-          }
-
-          setState(() {});
-        },
-      ),
+  Widget buildItem(String item) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+      child: SelectBoxListTileWidget(
+          size: AppSize.getDeviceWidth(context) * 0.25,
+          title: item,
+          val: selected.contains(item),
+          onChange: (v) {
+            if (selected.contains(item)) {
+              setState(() {
+                selected.remove(item);
+              });
+            } else {
+              setState(() {
+                selected.add(item);
+              });
+            }
+          }),
     );
   }
 }

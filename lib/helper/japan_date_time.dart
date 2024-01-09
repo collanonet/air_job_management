@@ -20,6 +20,10 @@ toJapanMonthAndYear(DateTime dateTime) {
   return "${dateTime.year}年${dateTime.month}月";
 }
 
+toJapanMonthAndDay(DateTime dateTime) {
+  return "${dateTime.month}月${dateTime.day}日";
+}
+
 toJapanMonthAndYearDay(DateTime dateTime) {
   return "${dateTime.year}年${dateTime.month}月${dateTime.day}日";
 }

@@ -96,7 +96,7 @@ class PrimaryTextField extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hint,
           prefixIcon: prefix,
-          hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
+          hintStyle: TextStyle(fontSize: 15, color: Colors.grey),
           suffixIcon: readOnly
               ? SizedBox()
               : suffix == null

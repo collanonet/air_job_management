@@ -53,7 +53,7 @@ class _RadioExampleState extends State<RadioExample> {
               child: SizedBox(
                 width: AppSize.getDeviceWidth(context),
                 child: ButtonWidget(
-                  color: AppColor.primaryColor,
+                  color: AppColor.secondaryColor,
                   title: 'OK',
                   onPress: () {
                     provider.onChangeReward(selected);

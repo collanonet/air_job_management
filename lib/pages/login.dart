@@ -86,15 +86,15 @@ class _LoginPageState extends State<LoginPage> {
               Image.asset(
                 "assets/svgs/img.png",
                 width: AppSize.getDeviceWidth(context) *
-                    (Responsive.isMobile(context) ? 0.6 : 0.3),
+                    (Responsive.isMobile(context) ? 0.6 : 0.25),
               ),
               Positioned(
                   right: 0,
                   left: 0,
-                  bottom: Responsive.isMobile(context) ? -20 : -10,
+                  bottom: -20,
                   child: Center(
                     child: Text(
-                      "",
+                      "ログイン",
                       style: TextStyle(
                           color: AppColor.primaryColor,
                           fontWeight: FontWeight.w600,
@@ -103,6 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                   ))
             ],
           ),
+          AppSize.spaceHeight30,
           AppSize.spaceHeight16,
           socialLoginButton(
               assets: "assets/google.png",
@@ -153,9 +154,8 @@ class _LoginPageState extends State<LoginPage> {
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: AppSize.getDeviceWidth(context) * 0.1),
-            child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(JapaneseText.email)),
+            child:
+                Align(alignment: Alignment.centerLeft, child: Text("メールアドレス")),
           ),
           AppSize.spaceHeight5,
           Padding(
@@ -179,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
             padding: EdgeInsets.symmetric(
                 horizontal: AppSize.getDeviceWidth(context) * 0.1),
             child: PrimaryTextField(
-              hint: "************",
+              hint: "⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺",
               controller: password,
               isRequired: true,
               isObsecure: isShow,
@@ -232,7 +232,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           AppSize.spaceHeight16,
-          const Text("Version 1.0.0+2"),
+          const Text("Version 1.0.0+3"),
         ],
       ),
     );

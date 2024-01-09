@@ -89,7 +89,7 @@ class _FilterOptionState extends State<FilterOption> {
               child: SizedBox(
                 width: AppSize.getDeviceWidth(context),
                 child: ButtonWidget(
-                  color: AppColor.primaryColor,
+                  color: AppColor.secondaryColor,
                   title: '検索する',
                   onPress: () => Navigator.pop(context),
                 ),
@@ -113,7 +113,7 @@ class _FilterOptionState extends State<FilterOption> {
             style: normalTextStyle,
           ),
           trailing: SizedBox(
-            width: AppSize.getDeviceWidth(context) * 0.8,
+            width: AppSize.getDeviceWidth(context) * 0.7,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [

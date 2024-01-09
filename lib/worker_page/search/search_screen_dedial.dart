@@ -1,5 +1,6 @@
 import 'package:air_job_management/api/worker_api/search_api.dart';
 import 'package:air_job_management/const/const.dart';
+import 'package:air_job_management/helper/currency_format.dart';
 import 'package:air_job_management/models/worker_model/search_job.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/favorite_provider.dart';
@@ -13,6 +14,7 @@ import 'package:air_job_management/widgets/custom_dialog.dart';
 import 'package:air_job_management/worker_page/chat/message_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:like_button/like_button.dart';
@@ -45,6 +47,14 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
   late double lng;
   late String des;
   late int indexx;
+
+  List<dynamic> conditionList = [
+    {"title": "交通機関", "icon": Icon(Icons.car_crash_rounded)},
+    {"title": "服", "icon": Icon(FontAwesome5Brands.shirtsinbulk)},
+    {"title": "自転車", "icon": Icon(FontAwesome.bicycle)},
+    {"title": "自転車", "icon": Icon(Icons.directions_bike)},
+    {"title": "保険", "icon": Icon(Icons.shield_outlined)}
+  ];
 
   //map
   late GoogleMapController mapController;
@@ -120,7 +130,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                             child: Center(
                                 child: IconButton(
                                     onPressed: () => Navigator.pop(context),
-                                    icon: Icon(Icons.arrow_back_rounded)))),
+                                    icon:
+                                        const Icon(Icons.arrow_back_rounded)))),
                       ),
                       Positioned(
                         top: 10,
@@ -194,6 +205,28 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                             )
                           ],
                         ),
+                      ),
+                      Positioned(
+                        bottom: 16,
+                        right: 16,
+                        child: Container(
+                          height: 45,
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: AppColor.greyColor, width: 1),
+                              borderRadius: BorderRadius.circular(16),
+                              color: Colors.white),
+                          child: Center(
+                            child: Text(
+                              CurrencyFormatHelper.displayData(
+                                  widget.info.amountOfPayrollFrom),
+                              style: kTitleText.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColor.greyColor),
+                            ),
+                          ),
+                        ),
                       )
                     ],
                   ),
@@ -205,19 +238,16 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.info.title.toString(),
-                          style: kNormalText,
+                        Center(
+                          child: Text(
+                            widget.info.title.toString(),
+                            style: kNormalText.copyWith(
+                                color: AppColor.primaryColor, fontSize: 15),
+                          ),
                         ),
                         Text(widget.info.dailyWorkFlow.toString()),
-                        Row(
-                          children: [
-                            Text(
-                              '状態',
-                              style: kNormalText,
-                            ),
-                          ],
-                        ),
+                        AppSize.spaceHeight16,
+                        title("状態"),
                         condition(),
                         divider(),
                         title(JapaneseText.aboutApplication),
@@ -294,7 +324,7 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                               style: kNormalText.copyWith(color: Colors.grey),
                             ),
                             Text(
-                                "${widget.info.amountOfPayrollFrom ?? ""} ~ ${widget.info.amountOfPayrollTo ?? ""}",
+                                "${CurrencyFormatHelper.displayData(widget.info.amountOfPayrollFrom)} ~ ${CurrencyFormatHelper.displayData(widget.info.amountOfPayrollTo)}",
                                 style: kNormalText),
                           ],
                         ),
@@ -926,10 +956,9 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
-          Text(
-            title,
-            style: kNormalText,
-          ),
+          Text(title,
+              style: kNormalText.copyWith(
+                  color: AppColor.primaryColor, fontSize: 15)),
         ],
       ),
     );
@@ -1010,7 +1039,7 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
         width: AppSize.getDeviceWidth(context),
         height: AppSize.getDeviceHeight(context) * 0.1,
         child: ListView.builder(
-          itemCount: 6,
+          itemCount: conditionList.length,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
             return Row(
@@ -1038,6 +1067,14 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                               blurRadius: 10,
                             )
                           ]),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          conditionList[index]["icon"],
+                          Text(conditionList[index]["title"])
+                        ],
+                      ),
                     ),
                   ),
                 ),
