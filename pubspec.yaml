@@ -122,6 +122,19 @@ flutter:
   assets:
     - assets/svgs/
     - assets/
+  fonts:
+    - family: Bold
+      fonts:
+        - asset: assets/fonts/SourceHanSans-Bold.otf
+    - family: Medium
+      fonts:
+        - asset: assets/fonts/SourceHanSans-Medium.otf
+    - family: Regular
+      fonts:
+        - asset: assets/fonts/SourceHanSans-Regular.otf
+    - family: Light
+      fonts:
+        - asset: assets/fonts/SourceHanSans-ExtraLight.otf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

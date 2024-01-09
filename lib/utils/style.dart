@@ -5,10 +5,22 @@ BoxDecoration boxDecoration = BoxDecoration(
   borderRadius: BorderRadius.circular(20),
 );
 
-TextStyle titleStyle = TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600);
-TextStyle subTitle = TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w600);
-TextStyle normalTextStyle = TextStyle(fontSize: 14, color: Colors.black);
+TextStyle titleStyle = const TextStyle(
+    fontSize: 16,
+    color: Colors.black,
+    fontWeight: FontWeight.w600,
+    fontFamily: "Bold");
+TextStyle subTitle = const TextStyle(
+    fontSize: 14,
+    color: Colors.black,
+    fontWeight: FontWeight.w600,
+    fontFamily: "Regular");
+TextStyle normalTextStyle =
+    const TextStyle(fontSize: 14, color: Colors.black, fontFamily: "Regular");
 
-TextStyle kTitleText = TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
-TextStyle kNormalText = TextStyle(fontSize: 15, fontWeight: FontWeight.normal);
-TextStyle kSubtitleText = TextStyle(fontSize: 15, fontWeight: FontWeight.normal);
+TextStyle kTitleText = const TextStyle(
+    fontSize: 18, fontWeight: FontWeight.w600, fontFamily: "Bold");
+TextStyle kNormalText = const TextStyle(
+    fontSize: 15, fontWeight: FontWeight.normal, fontFamily: "Regular");
+TextStyle kSubtitleText = const TextStyle(
+    fontSize: 15, fontWeight: FontWeight.normal, fontFamily: "Regular");
