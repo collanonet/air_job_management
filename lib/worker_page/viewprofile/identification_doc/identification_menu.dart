@@ -31,22 +31,42 @@ class _IdentificationMenuPageState extends State<IdentificationMenuPage> {
           AppSize.spaceHeight16,
           IdentificationMenuCard(
               title: JapaneseText.passport,
-              onTap: () =>
-                  MyPageRoute.goTo(context, const UploadPassportPage()),
+              onTap: () => MyPageRoute.goTo(
+                  context,
+                  UploadFilePage(
+                      title: JapaneseText.passport, type: "passport_url")),
               subTitle: "所持人記入欄があるもの"),
           IdentificationMenuCard(
               title: JapaneseText.driverLicenseIdentification,
-              onTap: () {},
+              onTap: () => MyPageRoute.goTo(
+                  context,
+                  UploadFilePage(
+                      title: JapaneseText.driverLicenseIdentification,
+                      type: "driver_license_url")),
               subTitle: ""),
           IdentificationMenuCard(
-              title: JapaneseText.myNumberCard, onTap: () {}, subTitle: ""),
+              title: JapaneseText.myNumberCard,
+              onTap: () => MyPageRoute.goTo(
+                  context,
+                  UploadFilePage(
+                      title: JapaneseText.myNumberCard,
+                      type: "number_card_url")),
+              subTitle: ""),
           IdentificationMenuCard(
               title: JapaneseText.basicResidentRegisterCard,
-              onTap: () {},
+              onTap: () => MyPageRoute.goTo(
+                  context,
+                  UploadFilePage(
+                      title: JapaneseText.basicResidentRegisterCard,
+                      type: "basic_resident_register_url")),
               subTitle: "顔写真付きのもの"),
           IdentificationMenuCard(
               title: JapaneseText.residentRecord,
-              onTap: () {},
+              onTap: () => MyPageRoute.goTo(
+                  context,
+                  UploadFilePage(
+                      title: JapaneseText.residentRecord,
+                      type: "resident_record_url")),
               subTitle: "発行から6ヶ月以内"),
         ],
       ),

@@ -1,6 +1,6 @@
+import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/loading.dart';
-import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,12 +25,9 @@ class PartTimeJob extends StatefulWidget {
 
 class _PartTimeJobState extends State<PartTimeJob> {
   DateTime _selectedDate = DateTime.now();
+  List<DateTime> _dateList = [];
   List<SearchJob> jobSearchList = [];
   ValueNotifier<bool> loading = ValueNotifier<bool>(true);
-
-  void _resetSelectedDate() {
-    _selectedDate = DateTime.now();
-  }
 
   onGetData() async {
     jobSearchList = [];
@@ -79,7 +76,11 @@ class _PartTimeJobState extends State<PartTimeJob> {
   @override
   void initState() {
     super.initState();
-    _resetSelectedDate();
+    _dateList.add(_selectedDate);
+    for (var i = 1; i <= 6; ++i) {
+      _dateList.add(DateTime(
+          _selectedDate.year, _selectedDate.month, _selectedDate.day + i));
+    }
     onGetData();
   }
 
@@ -165,7 +166,8 @@ class _PartTimeJobState extends State<PartTimeJob> {
                       ),
                       AppSize.spaceHeight5,
                       dropdown(),
-                      headay(),
+                      headDay(),
+                      AppSize.spaceHeight16,
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -345,35 +347,57 @@ class _PartTimeJobState extends State<PartTimeJob> {
     );
   }
 
-  Widget headay() {
+  Widget headDay() {
     return SizedBox(
       width: AppSize.getDeviceWidth(context),
-      height: AppSize.getDeviceHeight(context) * 0.16 + 5,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          CalendarTimeline(
-            showYears: false,
-            initialDate: _selectedDate,
-            firstDate: DateTime.now().subtract(const Duration(days: 60)),
-            lastDate: DateTime.now().add(const Duration(days: 365 * 4)),
-            onDateSelected: (date) => setState(() {
-              _selectedDate = date;
-              onGetData();
-            }),
-            leftMargin: 20,
-            monthColor: Colors.black,
-            dayColor: Colors.teal[200],
-            dayNameColor: const Color(0xFF333A47),
-            activeDayColor: Colors.white,
-            activeBackgroundDayColor: AppColor.primaryColor,
-            dotsColor: const Color(0xFF333A47),
-            // selectableDayPredicate: (date) => date.day != 23,
-            locale: 'ja',
-          ),
-          const SizedBox(height: 20),
-        ],
-      ),
+      height: 80,
+      child: ListView.builder(
+          itemCount: _dateList.length,
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (context, index) {
+            var date = _dateList[index];
+            return Container(
+              width: 70,
+              height: 70,
+              margin: const EdgeInsets.only(right: 16),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: _selectedDate == date
+                      ? AppColor.primaryColor
+                      : Colors.white),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      _selectedDate = date;
+                    });
+                  },
+                  borderRadius: BorderRadius.circular(16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        index == 0 ? "きょう" : date.day.toString(),
+                        style: kTitleText.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: _selectedDate == date
+                                ? Colors.white
+                                : AppColor.primaryColor),
+                      ),
+                      Text(toJapanWeekDayWithInt(date.weekday),
+                          style: kSubtitleText.copyWith(
+                              fontWeight: FontWeight.normal,
+                              color: _selectedDate == date
+                                  ? Colors.white
+                                  : AppColor.primaryColor))
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }),
     );
   }
 

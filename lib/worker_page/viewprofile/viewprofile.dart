@@ -408,7 +408,9 @@ class _ViewProfileState extends State<ViewProfile> {
               fontWeight: FontWeight.w600, color: AppColor.primaryColor),
         ),
         AppSize.spaceHeight16,
-        customListTile(JapaneseText.identification, onTap: () => {}),
+        customListTile(JapaneseText.identification,
+            onTap: () =>
+                MyPageRoute.goTo(context, const IdentificationMenuPage())),
         customListTile(JapaneseText.editProfile, onTap: () {
           Navigator.push(
               context,

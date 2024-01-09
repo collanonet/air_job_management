@@ -24,7 +24,6 @@ import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/worker_page/manage/manage_screen.dart';
 import 'package:air_job_management/worker_page/root/root_page.dart';
-import 'package:air_job_management/worker_page/viewprofile/identification_doc/identification_menu.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -58,10 +57,10 @@ final GoRouter _router = GoRouter(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
         print("Initial called ${state.location}");
-        return IdentificationMenuPage();
-        // return const SplashScreen(
-        //   isFromWorker: false,
-        // );
+        // return IdentificationMenuPage();
+        return const SplashScreen(
+          isFromWorker: false,
+        );
       },
       routes: <RouteBase>[
         GoRoute(

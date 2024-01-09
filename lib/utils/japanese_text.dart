@@ -622,6 +622,11 @@ class JapaneseText {
   static String myNumberCard = "マイナンバーカード";
   static String basicResidentRegisterCard = "住民基本台帳カード";
   static String residentRecord = "住民票";
+
+  static String beforeSelectFileMessage =
+      "パスポートの名前、生年月日、性別が記載されているページの写真をアップロードしてください。 \n必ずパスポート原本全体の写真を撮影してください。";
+  static String afterSelectedFileMessage =
+      "身分証全体が、鮮明に写っていますか？ パスポートの顔写真入りのページ全体が鮮明に写っている、手ブレ、はみ出し、反射のない写真でなければなりません。 \nまた、身分証明書がエアジョブ上で第三者に開示されることはありません。";
 }
 
 List<String> eligibilityApplicationList = [

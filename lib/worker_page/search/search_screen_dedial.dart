@@ -906,11 +906,14 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
             width: AppSize.getDeviceWidth(context),
             height: AppSize.getDeviceHeight(context) * 0.075,
             decoration: BoxDecoration(
-              color: AppColor.primaryColor,
+              color: AppColor.secondaryColor,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Center(
-              child: Text('エアジョブに登録する'),
+            child: Center(
+              child: Text(
+                'エアジョブに登録する',
+                style: kNormalText.copyWith(color: Colors.white),
+              ),
             ),
           ),
         ),
