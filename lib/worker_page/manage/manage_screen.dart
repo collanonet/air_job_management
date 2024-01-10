@@ -23,7 +23,9 @@ class _ManageScreenState extends State<ManageScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             AppSize.spaceHeight30,
-            Image.asset('assets/svgs/img.png'),
+            ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset('assets/svgs/img.png')),
             AppSize.spaceHeight50,
             GestureDetector(
               onTap: () {
@@ -34,7 +36,7 @@ class _ManageScreenState extends State<ManageScreen> {
               },
               child: Container(
                 width: 300,
-                height: 80,
+                height: 114,
                 decoration: BoxDecoration(
                   color: AppColor.primaryColor,
                   borderRadius: BorderRadius.circular(10),
@@ -42,7 +44,10 @@ class _ManageScreenState extends State<ManageScreen> {
                 child: Center(
                   child: Text(
                     'すぐ働ける仕事を探す',
-                    style: normalTextStyle.copyWith(color: Colors.white),
+                    style: normalTextStyle.copyWith(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -55,7 +60,7 @@ class _ManageScreenState extends State<ManageScreen> {
               },
               child: Container(
                 width: 300,
-                height: 80,
+                height: 114,
                 decoration: BoxDecoration(
                   color: AppColor.primaryColor,
                   borderRadius: BorderRadius.circular(10),
@@ -63,7 +68,10 @@ class _ManageScreenState extends State<ManageScreen> {
                 child: Center(
                   child: Text(
                     'じっくり仕事を探す',
-                    style: normalTextStyle.copyWith(color: Colors.white),
+                    style: normalTextStyle.copyWith(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600),
                   ),
                 ),
               ),

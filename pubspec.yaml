@@ -134,6 +134,12 @@ flutter:
         - asset: assets/fonts/SourceHanSans-Regular.otf
     - family: Light
       fonts:
+        - asset: assets/fonts/SourceHanSans-Light.otf
+    - family: Normal
+      fonts:
+        - asset: assets/fonts/SourceHanSans-Normal.otf
+    - family: ExtraLight
+      fonts:
         - asset: assets/fonts/SourceHanSans-ExtraLight.otf
 
   # An image asset can refer to one or more resolution-specific "variants", see

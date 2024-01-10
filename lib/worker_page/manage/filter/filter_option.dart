@@ -87,7 +87,7 @@ class _FilterOptionState extends State<FilterOption> {
             const Spacer(),
             Center(
               child: SizedBox(
-                width: AppSize.getDeviceWidth(context),
+                width: AppSize.getDeviceWidth(context) - 32,
                 child: ButtonWidget(
                   color: AppColor.secondaryColor,
                   title: '検索する',

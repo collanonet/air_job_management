@@ -118,7 +118,7 @@ class _NewFormRegistrationForPartTimePageState
     return SizedBox(
       width: AppSize.getDeviceWidth(context) - 32,
       child: ButtonWidget(
-          color: AppColor.primaryColor,
+          color: AppColor.secondaryColor,
           onPress: () async {
             if (provider.step == 4) {
               onSaveUserData();

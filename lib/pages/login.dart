@@ -52,10 +52,7 @@ class _LoginPageState extends State<LoginPage> {
     return CustomLoadingOverlay(
       isLoading: authProvider.isLoading,
       child: Scaffold(
-        backgroundColor: AppColor.primaryColor,
-        // appBar: AppBar(
-        //   backgroundColor: AppColor.primaryColor,
-        // ),
+        backgroundColor: AppColor.bgPageColor,
         body: Center(
           child: buildBody(),
         ),
@@ -68,12 +65,11 @@ class _LoginPageState extends State<LoginPage> {
   buildBody() {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(32), bottomRight: Radius.circular(32)),
+        borderRadius: BorderRadius.circular(10),
         color: AppColor.whiteColor,
       ),
-      padding: EdgeInsets.symmetric(
-          vertical: AppSize.getDeviceHeight(context) * 0.08),
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 16),
       width: AppSize.getDeviceWidth(context) *
           (Responsive.isDesktop(context) ? 0.5 : 0.8),
       child: Column(
@@ -84,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
             clipBehavior: Clip.none,
             children: [
               Image.asset(
-                "assets/svgs/img.png",
+                "assets/logo.png",
                 width: AppSize.getDeviceWidth(context) *
                     (Responsive.isMobile(context) ? 0.6 : 0.25),
               ),
@@ -108,10 +104,10 @@ class _LoginPageState extends State<LoginPage> {
           socialLoginButton(
               assets: "assets/google.png",
               title: "Googleでログイン",
-              colors: Color(0xffCDD6DD),
+              colors: const Color(0xffCDD6DD).withOpacity(0.3),
               onTap: () async {
                 MyUser? user = await SocialLogin()
-                    .googleSign(widget.isFullTime, authProvider);
+                    .googleSignIn(widget.isFullTime, authProvider);
                 if (user != null) {
                   if (user.nameKanJi != "" || user.nameFu != "") {
                     if (user.isFullTimeStaff == true) {
@@ -136,19 +132,41 @@ class _LoginPageState extends State<LoginPage> {
           socialLoginButton(
               assets: "assets/x.png",
               title: "Xでログイン",
-              colors: Color(0xff495960),
-              onTap: () {}),
-          AppSize.spaceHeight16,
-          AppSize.spaceHeight16,
-          Center(
-            child: Text(
-              "またはメールアドレスで登録",
-              style: TextStyle(
-                  color: AppColor.primaryColor,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18),
-            ),
-          ),
+              colors: const Color(0xff495960),
+              onTap: () async {
+                MyUser? user = await SocialLogin()
+                    .twitterSignIn(widget.isFullTime, authProvider);
+                if (user != null) {
+                  if (user.nameKanJi != "" || user.nameFu != "") {
+                    if (user.isFullTimeStaff == true) {
+                      context.go(MyRoute.workerJobSearchFullTime);
+                    } else {
+                      context.go(MyRoute.workerJobSearchPartTime);
+                    }
+                  } else {
+                    if (widget.isFullTime) {
+                      MyPageRoute.goTo(
+                          context, NewFormRegistrationPage(myUser: user));
+                    } else {
+                      MyPageRoute.goTo(context,
+                          NewFormRegistrationForPartTimePage(myUser: user));
+                    }
+                  }
+                } else {
+                  MessageWidget.show("X でログイン中にエラーが発生しました");
+                }
+              }),
+          // AppSize.spaceHeight16,
+          // AppSize.spaceHeight16,
+          // Center(
+          //   child: Text(
+          //     "またはメールアドレスで登録",
+          //     style: TextStyle(
+          //         color: AppColor.primaryColor,
+          //         fontWeight: FontWeight.w600,
+          //         fontSize: 18),
+          //   ),
+          // ),
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
           Padding(
@@ -190,8 +208,8 @@ class _LoginPageState extends State<LoginPage> {
                           isShow = !isShow;
                         });
                       },
-                      icon: Icon(FlutterIcons.eye_ent,
-                          color: AppColor.primaryColor),
+                      icon:
+                          Icon(FlutterIcons.eye_ent, color: AppColor.greyColor),
                     )
                   : IconButton(
                       onPressed: () {
@@ -200,7 +218,7 @@ class _LoginPageState extends State<LoginPage> {
                         });
                       },
                       icon: Icon(FlutterIcons.eye_with_line_ent,
-                          color: AppColor.primaryColor),
+                          color: AppColor.greyColor),
                     ),
             ),
           ),
@@ -217,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                       authProvider.isLogin ? onLogin() : onRegister()),
             ),
           ),
-          AppSize.spaceHeight16,
+          Spacer(),
           //Register Account as a gig-worker
           Padding(
             padding: EdgeInsets.symmetric(
@@ -253,28 +271,42 @@ class _LoginPageState extends State<LoginPage> {
       width: AppSize.getDeviceWidth(context) - 32,
       margin: EdgeInsets.symmetric(
           horizontal: AppSize.getDeviceWidth(context) * 0.1),
-      decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(4), color: colors),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: colors,
+          border: Border.all(width: 1, color: AppColor.thirdColor)),
       child: CupertinoButton(
         padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
         child: Stack(
           fit: StackFit.loose,
           children: [
-            Center(
-              child: Text(
-                title,
-                style: normalTextStyle.copyWith(
-                    color: title.contains("X") ? Colors.white : Colors.black,
-                    fontSize: 18),
+            Positioned(
+              left: 0,
+              right: title.contains("X") ? 40 : 0,
+              top: 9,
+              child: Center(
+                child: Text(
+                  title,
+                  style: normalTextStyle.copyWith(
+                      color: title.contains("X")
+                          ? Colors.white
+                          : const Color(0xff495960),
+                      fontSize: 18,
+                      fontFamily: "Light"),
+                ),
               ),
             ),
             Positioned(
-              top: 8,
-              left: Responsive.isMobile(context) ? 10 : 20,
+              top: title.contains("X") ? 4 : 8,
+              left: Responsive.isMobile(context)
+                  ? 10
+                  : title.contains("X")
+                      ? 25
+                      : 30,
               child: Image.asset(
                 assets,
-                width: 35,
-                height: 35,
+                width: title.contains("X") ? 40 : 30,
+                height: title.contains("X") ? 40 : 30,
               ),
             )
           ],

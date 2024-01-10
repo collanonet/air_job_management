@@ -1,9 +1,7 @@
 import 'package:air_job_management/pages/register/verify_user.dart';
-import 'package:air_job_management/utils/my_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +12,7 @@ import '../../utils/app_size.dart';
 import '../../utils/japanese_text.dart';
 import '../../utils/page_route.dart';
 import '../../utils/respnsive.dart';
+import '../../utils/style.dart';
 import '../../utils/toast_message_util.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textfield.dart';
@@ -77,18 +76,34 @@ class _RegisterPageState extends State<RegisterPage> {
                       children: [
                         Align(
                             alignment: Alignment.centerLeft,
-                            child: IconButton(
-                                onPressed: () => context.go(MyRoute.login),
-                                icon: Icon(
-                                  Icons.arrow_back,
-                                  color: AppColor.primaryColor,
-                                ))),
+                            child: InkWell(
+                                onTap: () => Navigator.pop(context),
+                                child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(children: [
+                                      Icon(Icons.arrow_back_ios_new_rounded,
+                                          color: AppColor.primaryColor),
+                                      AppSize.spaceWidth8,
+                                      Text("戻る",
+                                          style: kNormalText.copyWith(
+                                            color: AppColor.primaryColor,
+                                          ))
+                                    ])))),
                         Center(
                             child: Image.asset(
                           "assets/svgs/img.png",
                           width: AppSize.getDeviceWidth(context) *
                               (Responsive.isMobile(context) ? 0.6 : 0.3),
                         )),
+                        Center(
+                          child: Text(
+                            "新規登録",
+                            style: TextStyle(
+                                color: AppColor.primaryColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18),
+                          ),
+                        ),
                         //Email & Pass
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,7 +138,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               children: [
                                 PrimaryTextField(
                                   controller: password,
-                                  hint: "パスワード",
+                                  hint: "⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺",
                                   maxLine: 1,
                                   isObsecure: isSecure,
                                 ),
@@ -153,7 +168,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               children: [
                                 PrimaryTextField(
                                   controller: confirmPassword,
-                                  hint: "パスワード（確認）",
+                                  hint: "⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺",
                                   maxLine: 1,
                                   isObsecure: isSecure1,
                                 ),
@@ -178,10 +193,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         Center(
                           child: SizedBox(
                             width: AppSize.getDeviceWidth(context) *
-                                (Responsive.isMobile(context) ? 0.6 : 0.20),
+                                (Responsive.isMobile(context) ? 0.6 : 0.4),
                             child: ButtonWidget(
                                 title: "新規登録する",
-                                color: AppColor.primaryColor,
+                                color: AppColor.secondaryColor,
                                 onPress: () => createAccount()),
                           ),
                         ),

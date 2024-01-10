@@ -51,7 +51,7 @@ class _RadioExampleState extends State<RadioExample> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
               child: SizedBox(
-                width: AppSize.getDeviceWidth(context),
+                width: AppSize.getDeviceWidth(context) - 32,
                 child: ButtonWidget(
                   color: AppColor.secondaryColor,
                   title: 'OK',

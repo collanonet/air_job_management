@@ -7,7 +7,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../api/user_api.dart';
 
 class SocialLogin {
-  Future<MyUser?> googleSign(bool isFullTime, AuthProvider authProvider) async {
+  Future<MyUser?> googleSignIn(
+      bool isFullTime, AuthProvider authProvider) async {
     try {
       const List<String> scopes = <String>[
         'email',
@@ -81,6 +82,53 @@ class SocialLogin {
       return null;
     } catch (e) {
       print("Error google sign in $e");
+      return null;
+    }
+  }
+
+  Future<MyUser?> twitterSignIn(
+      bool isFullTime, AuthProvider authProvider) async {
+    try {
+      final cre =
+          await FirebaseAuth.instance.signInWithPopup(TwitterAuthProvider());
+
+      if (cre.user != null) {
+        MyUser? users = await UserApiServices().getProfileUser(cre.user!.uid);
+        if (users != null) {
+          return users;
+        } else {
+          MyUser myUser = MyUser(
+              nameKanJi: "",
+              nameFu: "",
+              lastName: "",
+              firstName: "",
+              role: "worker",
+              uid: "",
+              dob: "",
+              email: cre.user?.email,
+              gender: "");
+          myUser.nameKanJi = "";
+          myUser.isFullTimeStaff = isFullTime;
+          myUser.nameFu = "";
+          myUser.note = "";
+          myUser.email = cre.user?.email;
+          myUser.dob = "";
+          myUser.phone = "";
+          myUser.interviewDate = "";
+          myUser.finalEdu = "";
+          myUser.graduationSchool = "";
+          myUser.academicBgList = [];
+          myUser.workHistoryList = [];
+          myUser.ordinaryAutomaticLicence = "";
+          myUser.otherQualificationList = [];
+          myUser.employmentHistoryList = [];
+          return await authProvider.registerAccount(
+              cre.user!.email!, cre.user!.email!.split("@")[0], myUser);
+        }
+      }
+      return null;
+    } catch (e) {
+      print("Error twitter SignIn $e");
       return null;
     }
   }

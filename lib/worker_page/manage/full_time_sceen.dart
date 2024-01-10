@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../../const/const.dart';
 import '../../models/worker_model/search_job.dart';
 import '../../utils/respnsive.dart';
+import '../search/search_screen_dedial.dart';
 
 class FullTimeJob extends StatefulWidget {
   final bool isFullTime;
@@ -18,6 +19,7 @@ class FullTimeJob extends StatefulWidget {
 
 class _FullTimeJobState extends State<FullTimeJob> {
   // lists dropdown
+  bool isSortByRelevance = true;
   List<String> list = <String>[
     '海外 ',
     '北海道',
@@ -111,7 +113,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       height: 230,
-                      padding: EdgeInsets.only(left: 16, right: 16),
+                      padding: const EdgeInsets.only(left: 16, right: 16),
                       decoration: BoxDecoration(
                         color: AppColor.primaryColor,
                       ),
@@ -127,11 +129,10 @@ class _FullTimeJobState extends State<FullTimeJob> {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(16),
                                   child: Image.asset(
-                                    'assets/svgs/img.png',
+                                    'assets/logo22.png',
                                     width: Responsive.isMobile(context)
                                         ? 100
-                                        : MediaQuery.of(context).size.width *
-                                            0.1,
+                                        : 120,
                                   ),
                                 ),
                                 Container(
@@ -143,8 +144,12 @@ class _FullTimeJobState extends State<FullTimeJob> {
                                         color: AppColor.whiteColor,
                                         width: 2,
                                       )),
-                                  child: const Center(
-                                    child: Text('条件を保存'),
+                                  child: Center(
+                                    child: Text(
+                                      '条件を保存',
+                                      style: kNormalText.copyWith(
+                                          color: Colors.white),
+                                    ),
                                   ),
                                 )
                               ],
@@ -162,23 +167,69 @@ class _FullTimeJobState extends State<FullTimeJob> {
                             ),
                           ),
                           Padding(
-                            padding:
-                                const EdgeInsets.only(left: 20, bottom: 10),
-                            child: Row(
-                              children: const [
-                                Text('検索履歴・保存条件'),
-                              ],
+                            padding: const EdgeInsets.only(left: 0, bottom: 10),
+                            child: InkWell(
+                              onTap: () {},
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.keyboard_arrow_down_rounded,
+                                    color: Colors.white,
+                                  ),
+                                  Text(
+                                    ' 検索履歴・保存条件',
+                                    style: normalTextStyle.copyWith(
+                                        fontFamily: "Normal",
+                                        fontSize: 12,
+                                        color: Colors.white),
+                                  ),
+                                ],
+                              ),
                             ),
                           )
                         ],
                       ),
                     ),
-                    Column(
-                      children: List.generate(jobSearchList.length, (index) {
-                        var info = jobSearchList[index];
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 10, top: 16, right: 16),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              isSortByRelevance = !isSortByRelevance;
+                            });
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                isSortByRelevance
+                                    ? Icons.keyboard_arrow_up_rounded
+                                    : Icons.keyboard_arrow_down_rounded,
+                                color: AppColor.primaryColor,
+                              ),
+                              Text(
+                                ' 関連性順',
+                                style: normalTextStyle.copyWith(
+                                    fontFamily: "Normal",
+                                    fontSize: 12,
+                                    color: AppColor.primaryColor),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SingleChildScrollView(
+                      child: Column(
+                        children: List.generate(jobSearchList.length, (index) {
+                          var info = jobSearchList[index];
 
-                        return item(info);
-                      }),
+                          return item(info, index);
+                        }),
+                      ),
                     )
                   ],
                 ),
@@ -200,17 +251,17 @@ class _FullTimeJobState extends State<FullTimeJob> {
                 color: Colors.white,
                 //border: Border.all(width: 1, color: AppColor.colorPrimary)
               ),
-              child: Center(
-                child: TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      size: 30,
-                    ),
-                    prefixIconColor: Colors.black,
-                    hintText: 'Search',
-                    border: InputBorder.none,
+              padding: const EdgeInsets.only(top: 4),
+              child: TextField(
+                decoration: InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.search,
+                    size: 30,
+                    color: AppColor.primaryColor,
                   ),
+                  prefixIconColor: Colors.black,
+                  hintText: 'Search',
+                  border: InputBorder.none,
                 ),
               ),
             ),
@@ -228,7 +279,8 @@ class _FullTimeJobState extends State<FullTimeJob> {
               child: Center(
                 child: Text(
                   '検索',
-                  style: normalTextStyle,
+                  style: normalTextStyle.copyWith(
+                      fontSize: 18, fontFamily: "Bold", color: Colors.white),
                 ),
               ),
             ),
@@ -238,36 +290,51 @@ class _FullTimeJobState extends State<FullTimeJob> {
     );
   }
 
-  Widget item(var info) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      child: Column(
-        children: [
-          Card(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  color: AppColor.whiteColor,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [
-                    BoxShadow(
-                        offset: Offset(1, 1),
-                        color: Colors.grey,
-                        blurRadius: 10),
-                    BoxShadow(
-                        offset: Offset(-1, -1),
-                        color: Colors.grey,
-                        blurRadius: 10)
-                  ]),
-              child: Column(
-                children: [
-                  under(info),
-                  data(info),
-                ],
-              ),
+  Widget item(SearchJob info, int index) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SearchScreenDetial(
+              info: info,
+              docId: info.uid,
+              index: index,
+              isFullTime: widget.isFullTime,
             ),
-          )
-        ],
+          ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        child: Column(
+          children: [
+            Card(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    color: AppColor.whiteColor,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: const [
+                      BoxShadow(
+                          offset: Offset(1, 1),
+                          color: Colors.grey,
+                          blurRadius: 10),
+                      BoxShadow(
+                          offset: Offset(-1, -1),
+                          color: Colors.grey,
+                          blurRadius: 10)
+                    ]),
+                child: Column(
+                  children: [
+                    under(info),
+                    data(info),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -279,13 +346,15 @@ class _FullTimeJobState extends State<FullTimeJob> {
         children: [
           Text(
             info.title.toString(),
-            style: titleStyle.copyWith(color: Colors.black),
+            style:
+                titleStyle.copyWith(color: AppColor.primaryColor, fontSize: 16),
           ),
           AppSize.spaceHeight5,
           Row(
             children: [
               Text(
                 info.company.toString(),
+                style: kNormalText,
               ),
             ],
           ),
@@ -359,7 +428,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
                     child: Center(
                       child: Icon(
                         Icons.bookmark_border,
-                        color: AppColor.primaryColor,
+                        color: AppColor.secondaryColor,
                       ),
                     ),
                   ),
@@ -373,12 +442,17 @@ class _FullTimeJobState extends State<FullTimeJob> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Container(
+                  margin: const EdgeInsets.all(10),
                   height: 30,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  child: const Center(child: Text('アルバイト・パート')),
+                  child: Center(
+                      child: Text(
+                    'アルバイト・パート',
+                    style: kNormalText,
+                  )),
                 ),
               ],
             ),
@@ -388,52 +462,51 @@ class _FullTimeJobState extends State<FullTimeJob> {
     );
   }
 
+  String? selectedLocation;
   // dropdown
   Widget dropdown() {
-    return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 10,
-      ),
-      child: Card(
-        color: AppColor.whiteColor,
-        child: DropdownMenu<String>(
-          width: MediaQuery.of(context).size.width - 40,
-          textStyle: kTitleText,
-          leadingIcon: Icon(
+    return Stack(
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width - 32,
+          decoration: BoxDecoration(
+              color: AppColor.whiteColor,
+              borderRadius: BorderRadius.circular(5)),
+          child: DropdownButtonHideUnderline(
+              child: DropdownButton(
+                  icon: Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: AppColor.primaryColor,
+                    ),
+                  ),
+                  value: selectedLocation,
+                  items: list.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 40),
+                        child: Text(value),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (v) {
+                    setState(() {
+                      selectedLocation = v;
+                    });
+                  })),
+        ),
+        Positioned(
+          left: 8,
+          top: 10,
+          child: Icon(
             Icons.location_pin,
             color: AppColor.primaryColor,
             size: 30,
           ),
-          trailingIcon: Container(
-            width: 70,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                width: 3,
-                color: AppColor.primaryColor,
-              ),
-            ),
-            child: Center(
-              child: Text(
-                '選択',
-                style: normalTextStyle,
-              ),
-            ),
-          ),
-          initialSelection: list.first,
-          onSelected: (String? value) {
-            list.first = value!;
-            // This is called when the user selects an item.
-          },
-          dropdownMenuEntries:
-              list.map<DropdownMenuEntry<String>>((String value) {
-            return DropdownMenuEntry<String>(
-              value: value,
-              label: value,
-            );
-          }).toList(),
-        ),
-      ),
+        )
+      ],
     );
   }
 }

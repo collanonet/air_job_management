@@ -160,7 +160,7 @@ class _PartTimeJobState extends State<PartTimeJob> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16),
                           child: Image.asset(
-                            'assets/svgs/img.png',
+                            'assets/logo22.png',
                             width: MediaQuery.of(context).size.width * 0.1,
                           ),
                         ),
@@ -187,8 +187,8 @@ class _PartTimeJobState extends State<PartTimeJob> {
                                 gridDelegate:
                                     const SliverGridDelegateWithMaxCrossAxisExtent(
                                         maxCrossAxisExtent: 350,
-                                        mainAxisSpacing: 5,
-                                        crossAxisSpacing: 2,
+                                        mainAxisSpacing: 16,
+                                        crossAxisSpacing: 16,
                                         childAspectRatio: 10 / 15,
                                         mainAxisExtent: 240),
                                 delegate: SliverChildBuilderDelegate(
@@ -429,105 +429,51 @@ class _PartTimeJobState extends State<PartTimeJob> {
     );
   }
 
-  final GlobalKey dropdownKey = GlobalKey();
-
-  // Dropdown
+  String? selectedLocation;
+  // dropdown
   Widget dropdown() {
-    return Padding(
-        padding: const EdgeInsets.only(
-          bottom: 20,
+    return Stack(
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width - 32,
+          decoration: BoxDecoration(
+              color: AppColor.whiteColor,
+              borderRadius: BorderRadius.circular(5)),
+          child: DropdownButtonHideUnderline(
+              child: DropdownButton(
+                  icon: Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: AppColor.primaryColor,
+                    ),
+                  ),
+                  value: selectedLocation,
+                  items: list.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 40),
+                        child: Text(value),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (v) {
+                    setState(() {
+                      selectedLocation = v;
+                    });
+                  })),
         ),
-        child: SizedBox(
-          width: AppSize.getDeviceWidth(context),
-          child: Container(
-            color: AppColor.whiteColor,
-            child: DropdownButtonHideUnderline(
-              child: DropdownMenu<String>(
-                key: dropdownKey,
-                width: MediaQuery.of(context).size.width - 32,
-                textStyle: kTitleText,
-                leadingIcon: Icon(
-                  Icons.location_pin,
-                  color: AppColor.primaryColor,
-                  size: 30,
-                ),
-                trailingIcon: Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: AppColor.primaryColor,
-                ),
-                initialSelection: list.first,
-                onSelected: (String? value) {
-                  list.first = value!;
-                  // This is called when the user selects an item.
-                },
-                dropdownMenuEntries:
-                    list.map<DropdownMenuEntry<String>>((String value) {
-                  return DropdownMenuEntry<String>(
-                    value: value,
-                    label: value,
-                  );
-                }).toList(),
-              ),
-            ),
+        Positioned(
+          left: 8,
+          top: 10,
+          child: Icon(
+            Icons.location_pin,
+            color: AppColor.primaryColor,
+            size: 30,
           ),
         )
-        // Stack(
-        //   children: [
-        //     SizedBox(
-        //       width: AppSize.getDeviceWidth(context),
-        //       child: Container(
-        //         color: AppColor.whiteColor,
-        //         child: DropdownButtonHideUnderline(
-        //           child: DropdownMenu<String>(
-        //             key: dropdownKey,
-        //             width: MediaQuery.of(context).size.width - 32,
-        //             textStyle: kTitleText,
-        //             leadingIcon: Icon(
-        //               Icons.location_pin,
-        //               color: AppColor.primaryColor,
-        //               size: 30,
-        //             ),
-        //             trailingIcon: Icon(Icons.keyboard_arrow_down_rounded, color: AppColor.primaryColor,),
-        //             initialSelection: list.first,
-        //             onSelected: (String? value) {
-        //               list.first = value!;
-        //               // This is called when the user selects an item.
-        //             },
-        //             dropdownMenuEntries:
-        //                 list.map<DropdownMenuEntry<String>>((String value) {
-        //               return DropdownMenuEntry<String>(
-        //                 value: value,
-        //                 label: value,
-        //               );
-        //             }).toList(),
-        //           ),
-        //         ),
-        //       ),
-        //     ),
-        //     Positioned(
-        //         top: 15,
-        //         bottom: 15,
-        //         right: 20,
-        //         child: Container(
-        //           width: 70,
-        //           decoration: BoxDecoration(
-        //             color: Colors.transparent,
-        //             borderRadius: BorderRadius.circular(20),
-        //             border: Border.all(
-        //               width: 2,
-        //               color: AppColor.primaryColor,
-        //             ),
-        //           ),
-        //           child: Center(
-        //             child: Text(
-        //               '選択',
-        //               style:
-        //                   normalTextStyle.copyWith(color: AppColor.primaryColor),
-        //             ),
-        //           ),
-        //         ))
-        //   ],
-        // ),
-        );
+      ],
+    );
   }
 }

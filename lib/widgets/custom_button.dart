@@ -27,6 +27,8 @@ class ButtonWidget extends StatelessWidget {
         child: Text(
           title,
           style: normalTextStyle.copyWith(
+              fontFamily: "Normal",
+              fontSize: 14,
               color: color == Colors.white
                   ? AppColor.secondaryColor
                   : Colors.white),
