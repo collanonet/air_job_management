@@ -12,15 +12,25 @@ class RootProvider with ChangeNotifier {
   }
 
   List<Destination> allDestinations = <Destination>[
-    Destination(0, "さがす", const Icon(FontAwesomeIcons.search), Colors.teal),
+    Destination(0, "さがす",
+        const Icon(FontAwesomeIcons.search, color: Colors.white), Colors.white),
     Destination(
-        1, "お仕事", const Icon(FontAwesomeIcons.calendarDay), Colors.cyan),
+        1,
+        "お仕事",
+        const Icon(FontAwesomeIcons.calendarDay, color: Colors.white),
+        Colors.white),
+    Destination(2, "お気に入り",
+        const Icon(FontAwesomeIcons.heart, color: Colors.white), Colors.white),
     Destination(
-        2, "お気に入り", const Icon(FontAwesomeIcons.heart), Colors.pinkAccent),
+        3,
+        "メッセージ",
+        const Icon(FontAwesomeIcons.commentAlt, color: Colors.white),
+        Colors.white),
     Destination(
-        3, "メッセージ", const Icon(FontAwesomeIcons.commentAlt), Colors.blueAccent),
-    Destination(
-        4, "マイページ", const Icon(FontAwesomeIcons.ellipsis), Colors.orange),
+        4,
+        "マイページ",
+        const Icon(FontAwesomeIcons.ellipsis, color: Colors.white),
+        Colors.white),
   ];
 
   onChangeIndex(int val) {

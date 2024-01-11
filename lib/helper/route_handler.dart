@@ -30,4 +30,33 @@ class RouteHandler {
       return MyRoute.login;
     }
   }
+
+  static String checkForCompany(HomeProvider provider) {
+    if (provider.selectedItemForCompany == provider.menuListForCompany[0]) {
+      return MyRoute.companyDashboard;
+    } else if (provider.selectedItemForCompany ==
+        provider.menuListForCompany[1]) {
+      return MyRoute.companyJobPosting;
+    } else if (provider.selectedItemForCompany ==
+        provider.menuListForCompany[2]) {
+      return MyRoute.companyShift;
+    } else if (provider.selectedItemForCompany ==
+        provider.menuListForCompany[3]) {
+      return MyRoute.companyApplicant;
+    } else if (provider.selectedItemForCompany ==
+        provider.menuListForCompany[4]) {
+      return MyRoute.companyWorker;
+    } else if (provider.selectedItemForCompany ==
+        provider.menuListForCompany[5]) {
+      return MyRoute.companyTimeManagement;
+    } else if (provider.selectedItemForCompany ==
+        provider.menuListForCompany[6]) {
+      return MyRoute.companyUsageDetail;
+    } else if (provider.selectedItemForCompany ==
+        provider.menuListForCompany[7]) {
+      return MyRoute.companyInformationManagement;
+    } else {
+      return MyRoute.login;
+    }
+  }
 }

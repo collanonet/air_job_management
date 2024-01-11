@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../2_worker_page/root/root_page.dart';
 import '../../api/user_api.dart';
 import '../../const/const.dart';
 import '../../models/user.dart';
@@ -20,7 +21,6 @@ import '../../utils/toast_message_util.dart';
 import '../../widgets/custom_loading_overlay.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/radio_listtile.dart';
-import '../../worker_page/root/root_page.dart';
 
 class NewFormRegistrationPage extends StatefulWidget {
   final MyUser myUser;

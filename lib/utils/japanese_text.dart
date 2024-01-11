@@ -1,4 +1,13 @@
 class JapaneseText {
+  static String dashboardCompany = "ダッシュボード";
+  static String recruitmentTemplate = "求人ひな形";
+  static String shiftFrame = "シフト枠";
+  static String applicantCompany = "応募者";
+  static String workerCompany = "ワーカー";
+  static String workingTimeManagement = "就業時間管理";
+  static String usageDetail = "利用明細";
+  static String companyInformationManagement = "自社情報管理";
+
   static String notWorking = "働いていない";
   static String contractJob = "契約社員";
   static String fullTimeJob = "正社員";

@@ -1,3 +1,4 @@
+import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/utils/encrypt_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,6 +15,8 @@ class UserApiServices {
       FirebaseFirestore.instance.collection('user');
   final CollectionReference jobRef =
       FirebaseFirestore.instance.collection('job');
+  final CollectionReference companyRef =
+      FirebaseFirestore.instance.collection('company');
 
   Future<String?> saveUserData(MyUser myUser) async {
     try {
@@ -116,6 +119,23 @@ class UserApiServices {
       }
     } catch (e) {
       debugPrint("Error getProfileUser =>> ${e.toString()}");
+      return null;
+    }
+  }
+
+  Future<Company?> getProfileCompany(String uid) async {
+    try {
+      var doc = await companyRef.where("company_user_id", isEqualTo: uid).get();
+      if (doc.docs.isNotEmpty) {
+        Company company =
+            Company.fromJson(doc.docs.first.data() as Map<String, dynamic>);
+        company.uid = doc.docs.first.id;
+        return company;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint("Error getProfileCompany =>> ${e.toString()}");
       return null;
     }
   }

@@ -7,9 +7,12 @@ class ButtonWidget extends StatelessWidget {
   final String title;
   final Color color;
   final Function onPress;
+  final double radius;
   const ButtonWidget(
-      {required this.title,
+      {super.key,
+      required this.title,
       this.color = const Color(0xfff38301),
+      this.radius = 4,
       required this.onPress});
 
   @override
@@ -17,11 +20,15 @@ class ButtonWidget extends StatelessWidget {
     return Container(
       height: 50,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(radius),
           color: color,
           border: Border.all(
-              width: 1,
-              color: color == Colors.white ? AppColor.secondaryColor : color)),
+              width: radius == 4 ? 1 : 3,
+              color: color == Colors.white
+                  ? radius == 25
+                      ? AppColor.primaryColor
+                      : AppColor.secondaryColor
+                  : color)),
       child: CupertinoButton(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
         child: Text(

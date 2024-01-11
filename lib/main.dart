@@ -1,5 +1,9 @@
 import 'dart:ui';
 
+import 'package:air_job_management/1_company_page/home/home.dart';
+import 'package:air_job_management/1_company_page/login/login.dart';
+import 'package:air_job_management/2_worker_page/manage/manage_screen.dart';
+import 'package:air_job_management/2_worker_page/root/root_page.dart';
 import 'package:air_job_management/pages/company/create_or_edit_company.dart';
 import 'package:air_job_management/pages/home/home.dart';
 import 'package:air_job_management/pages/job_posting/create_or_edit_job.dart';
@@ -11,6 +15,7 @@ import 'package:air_job_management/pages/register/register.dart';
 import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company.dart';
+import 'package:air_job_management/providers/company/job_posting.dart';
 import 'package:air_job_management/providers/favorite_provider.dart';
 import 'package:air_job_management/providers/home.dart';
 import 'package:air_job_management/providers/job_posting.dart';
@@ -22,8 +27,6 @@ import 'package:air_job_management/providers/worker/filter.dart';
 import 'package:air_job_management/utils/extension.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/my_route.dart';
-import 'package:air_job_management/worker_page/manage/manage_screen.dart';
-import 'package:air_job_management/worker_page/root/root_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -176,6 +179,76 @@ final GoRouter _router = GoRouter(
             },
             routes: [
               GoRoute(
+                path: 'login',
+                builder: (BuildContext context, GoRouterState state) {
+                  return const LoginPageForCompany();
+                },
+              ),
+              GoRoute(
+                path: 'dashboard',
+                builder: (BuildContext context, GoRouterState state) {
+                  return HomePageForCompany(
+                    selectItem: JapaneseText.dashboardCompany,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'job-posting',
+                builder: (BuildContext context, GoRouterState state) {
+                  return HomePageForCompany(
+                    selectItem: JapaneseText.recruitmentTemplate,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'shift',
+                builder: (BuildContext context, GoRouterState state) {
+                  return HomePageForCompany(
+                    selectItem: JapaneseText.shiftFrame,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'applicant',
+                builder: (BuildContext context, GoRouterState state) {
+                  return HomePageForCompany(
+                    selectItem: JapaneseText.applicantCompany,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'worker',
+                builder: (BuildContext context, GoRouterState state) {
+                  return HomePageForCompany(
+                    selectItem: JapaneseText.workerCompany,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'time-management',
+                builder: (BuildContext context, GoRouterState state) {
+                  return HomePageForCompany(
+                    selectItem: JapaneseText.workingTimeManagement,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'usage-detail',
+                builder: (BuildContext context, GoRouterState state) {
+                  return HomePageForCompany(
+                    selectItem: JapaneseText.usageDetail,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'information-management',
+                builder: (BuildContext context, GoRouterState state) {
+                  return HomePageForCompany(
+                    selectItem: JapaneseText.companyInformationManagement,
+                  );
+                },
+              ),
+              GoRoute(
                 path: 'create',
                 builder: (BuildContext context, GoRouterState state) {
                   return const HomePage(
@@ -193,9 +266,54 @@ final GoRouter _router = GoRouter(
               ),
             ]),
         GoRoute(
-          path: MyRoute.createCompany.removeSlash(),
+          path: MyRoute.companyLogin.removeSlash(),
           redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.createCompany,
+              MyRoute.companyLogin,
+        ),
+        GoRoute(
+          path: MyRoute.companyDashboard.removeSlash(),
+          redirect: (BuildContext context, GoRouterState state) =>
+              MyRoute.companyDashboard,
+        ),
+        GoRoute(
+          path: MyRoute.companyJobPosting.removeSlash(),
+          redirect: (BuildContext context, GoRouterState state) =>
+              MyRoute.companyDashboard,
+        ),
+        GoRoute(
+          path: MyRoute.companyShift.removeSlash(),
+          redirect: (BuildContext context, GoRouterState state) =>
+              MyRoute.companyShift,
+        ),
+        GoRoute(
+          path: MyRoute.companyJobPosting.removeSlash(),
+          redirect: (BuildContext context, GoRouterState state) =>
+              MyRoute.companyDashboard,
+        ),
+        GoRoute(
+          path: MyRoute.companyApplicant.removeSlash(),
+          redirect: (BuildContext context, GoRouterState state) =>
+              MyRoute.companyApplicant,
+        ),
+        GoRoute(
+          path: MyRoute.companyWorker.removeSlash(),
+          redirect: (BuildContext context, GoRouterState state) =>
+              MyRoute.companyWorker,
+        ),
+        GoRoute(
+          path: MyRoute.companyTimeManagement.removeSlash(),
+          redirect: (BuildContext context, GoRouterState state) =>
+              MyRoute.companyTimeManagement,
+        ),
+        GoRoute(
+          path: MyRoute.companyUsageDetail.removeSlash(),
+          redirect: (BuildContext context, GoRouterState state) =>
+              MyRoute.companyUsageDetail,
+        ),
+        GoRoute(
+          path: MyRoute.companyInformationManagement.removeSlash(),
+          redirect: (BuildContext context, GoRouterState state) =>
+              MyRoute.companyInformationManagement,
         ),
         GoRoute(
             path: "${MyRoute.company.removeSlash()}/:uid",
@@ -266,6 +384,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => FavoriteProvider()),
           ChangeNotifierProvider(create: (_) => RootProvider()),
           ChangeNotifierProvider(create: (_) => WorkerFilter()),
+          ChangeNotifierProvider(create: (_) => JobPostingForCompanyProvider()),
         ],
         child: MaterialApp.router(
           localizationsDelegates: const [

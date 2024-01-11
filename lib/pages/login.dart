@@ -16,17 +16,18 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../2_worker_page/root/root_page.dart';
 import '../models/user.dart';
 import '../utils/japanese_text.dart';
 import '../utils/my_route.dart';
 import '../utils/page_route.dart';
 import '../utils/style.dart';
-import '../worker_page/root/root_page.dart';
 
 class LoginPage extends StatefulWidget {
   final bool isFromWorker;
   final bool isFullTime;
-  const LoginPage({required this.isFromWorker, required this.isFullTime});
+  const LoginPage(
+      {super.key, required this.isFromWorker, required this.isFullTime});
 
   @override
   _LoginPageState createState() => _LoginPageState();

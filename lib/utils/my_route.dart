@@ -1,4 +1,14 @@
 class MyRoute {
+  static var companyLogin = "/company/login";
+  static var companyDashboard = "/company/dashboard";
+  static var companyJobPosting = "/company/job-posting";
+  static var companyShift = "/company/shift";
+  static var companyApplicant = "/company/applicant";
+  static var companyWorker = "/company/worker";
+  static var companyTimeManagement = "/company/time-management";
+  static var companyUsageDetail = "/company/usage-detail";
+  static var companyInformationManagement = "/company/information-management";
+  static var companyCreateJobPosting = "/company/job-posting/create";
   static var workerPage = "/worker";
   static var jobOption = "/worker/job-options";
   static var dashboard = "/dashboard";

@@ -1,12 +1,16 @@
+import 'package:air_job_management/1_company_page/home/home.dart';
+import 'package:air_job_management/2_worker_page/root/root_page.dart';
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/helper/role_helper.dart';
+import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/pages/register/verify_user.dart';
+import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/app_color.dart';
+import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/utils/page_route.dart';
 import 'package:air_job_management/widgets/loading.dart';
-import 'package:air_job_management/worker_page/root/root_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -34,33 +38,46 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
       if (user != null) {
         await FirebaseAuth.instance.currentUser?.reload();
         bool isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
+        AuthProvider authProvider =
+            Provider.of<AuthProvider>(context, listen: false);
         MyUser? users = await UserApiServices().getProfileUser(user.uid);
-        if (users!.role == RoleHelper.admin) {
-          context.go(MyRoute.dashboard);
-        } else if (users.role == RoleHelper.worker && isEmailVerified == true) {
-          if (users.isFullTimeStaff == true) {
-            MyPageRoute.goToReplace(
-                context,
-                RootPage(
-                  users.uid!,
-                  isFullTime: true,
-                ));
-          } else {
-            MyPageRoute.goToReplace(
-                context,
-                RootPage(
-                  users.uid!,
-                  isFullTime: false,
-                ));
-          }
-        } else if (users.role == RoleHelper.worker &&
-            isEmailVerified == false) {
+        Company? company = await UserApiServices().getProfileCompany(user.uid);
+        if (company != null) {
+          authProvider.setCompany = company;
           MyPageRoute.goToReplace(
               context,
-              VerifyUserEmailPage(
-                myUser: users,
-                isFullTime: users.isFullTimeStaff!,
+              HomePageForCompany(
+                selectItem: JapaneseText.dashboardCompany,
               ));
+        } else {
+          if (users!.role == RoleHelper.admin) {
+            context.go(MyRoute.dashboard);
+          } else if (users.role == RoleHelper.worker &&
+              isEmailVerified == true) {
+            if (users.isFullTimeStaff == true) {
+              MyPageRoute.goToReplace(
+                  context,
+                  RootPage(
+                    users.uid!,
+                    isFullTime: true,
+                  ));
+            } else {
+              MyPageRoute.goToReplace(
+                  context,
+                  RootPage(
+                    users.uid!,
+                    isFullTime: false,
+                  ));
+            }
+          } else if (users.role == RoleHelper.worker &&
+              isEmailVerified == false) {
+            MyPageRoute.goToReplace(
+                context,
+                VerifyUserEmailPage(
+                  myUser: users,
+                  isFullTime: users.isFullTimeStaff!,
+                ));
+          }
         }
       } else {
         // if (widget.isFromWorker) {
@@ -119,7 +136,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
             child: ButtonWidget(
                 title: "Company page",
                 color: AppColor.primaryColor,
-                onPress: () => context.go(MyRoute.login)),
+                onPress: () => context.go(MyRoute.companyLogin)),
           ),
           AppSize.spaceHeight16,
           SizedBox(

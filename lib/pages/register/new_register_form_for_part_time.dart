@@ -1,9 +1,9 @@
+import 'package:air_job_management/2_worker_page/root/root_page.dart';
 import 'package:air_job_management/pages/register/widget/register_step.dart';
 import 'package:air_job_management/pages/register/widget/select_box_tile.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/page_route.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
-import 'package:air_job_management/worker_page/root/root_page.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';

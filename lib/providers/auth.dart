@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:air_job_management/api/user_api.dart';
+import 'package:air_job_management/models/company.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
@@ -12,6 +13,7 @@ class AuthProvider with ChangeNotifier {
   String _errorMessage = "";
   MyUser? myUser;
   bool _isLogin = true;
+  Company? myCompany;
 
   get errorMessage => _errorMessage;
   get isLoading => _isLoading;
@@ -30,6 +32,10 @@ class AuthProvider with ChangeNotifier {
 
   set setProfile(MyUser myUser) {
     this.myUser = myUser;
+  }
+
+  set setCompany(Company company) {
+    myCompany = company;
   }
 
   onChange(bool isLogin) {
@@ -54,10 +60,12 @@ class AuthProvider with ChangeNotifier {
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
-  Future<MyUser?> registerAccount(String email, String password, MyUser myUser) async {
+  Future<MyUser?> registerAccount(
+      String email, String password, MyUser myUser) async {
     try {
       setLoading(true);
-      UserCredential authResult = await firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential authResult = await firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
       User? user = authResult.user;
       String base64Encrypted = EncryptUtils.encryptPassword(password);
       myUser.hash_password = base64Encrypted;
@@ -96,7 +104,8 @@ class AuthProvider with ChangeNotifier {
   Future<MyUser?> loginAccount(String email, String password) async {
     try {
       setLoading(true);
-      UserCredential authResult = await firebaseAuth.signInWithEmailAndPassword(email: email.trim(), password: password);
+      UserCredential authResult = await firebaseAuth.signInWithEmailAndPassword(
+          email: email.trim(), password: password);
       User? user = authResult.user;
       myUser = await UserApiServices().getProfileUser(user!.uid);
       setLoading(false);
@@ -128,7 +137,44 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Stream<User?> get user => firebaseAuth.authStateChanges().map((event) => event);
+  Future<Company?> loginAsCompanyAccount(String email, String password) async {
+    try {
+      setLoading(true);
+      UserCredential authResult = await firebaseAuth.signInWithEmailAndPassword(
+          email: email.trim(), password: password);
+      User? user = authResult.user;
+      Company? company = await UserApiServices().getProfileCompany(user!.uid);
+      setLoading(false);
+      if (company != null) {
+        return company;
+      } else {
+        await logout();
+        setErrorMessage("権限がありません。");
+        return null;
+      }
+    } on SocketException {
+      setLoading(false);
+      setErrorMessage("No internet, please connect to internet");
+      return null;
+    } catch (e) {
+      print("Error $e");
+      setLoading(false);
+      if (e.toString().contains("user-not-found")) {
+        setErrorMessage("ユーザーが見つかりません");
+      } else if (e.toString().contains("wrong-password")) {
+        setErrorMessage("無効な,ID, パスワードです");
+      } else if (e.toString().contains("invalid-email")) {
+        setErrorMessage("無効なメールアドレス");
+      } else {
+        setErrorMessage("何かがうまくいかなかった");
+      }
+      notifyListeners();
+      return null;
+    }
+  }
+
+  Stream<User?> get user =>
+      firebaseAuth.authStateChanges().map((event) => event);
 
   logout() async {
     await firebaseAuth.signOut();

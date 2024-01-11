@@ -1,3 +1,5 @@
+import 'package:air_job_management/1_company_page/dashboard/dashboard.dart';
+import 'package:air_job_management/1_company_page/job_posting/job_posting.dart';
 import 'package:air_job_management/helper/route_handler.dart';
 import 'package:air_job_management/pages/company/company.dart';
 import 'package:air_job_management/pages/dashboard/dashboard.dart';
@@ -6,6 +8,7 @@ import 'package:air_job_management/pages/setting/setting.dart';
 import 'package:air_job_management/pages/shift/shift.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 import '../pages/job_posting/job_posting.dart';
 
@@ -26,11 +29,52 @@ class HomeProvider with ChangeNotifier {
     Icons.calendar_month_rounded,
     Icons.settings_rounded
   ];
-  List<Widget> menuPageList = const [DashboardPage(), JobSeekerPage(), CompanyPage(), JobPage(), ShiftPage(), SettingPage()];
+
+  List<String> menuListForCompany = [
+    JapaneseText.dashboardCompany,
+    JapaneseText.recruitmentTemplate,
+    JapaneseText.shiftFrame,
+    JapaneseText.applicantCompany,
+    JapaneseText.workerCompany,
+    JapaneseText.workingTimeManagement,
+    JapaneseText.usageDetail,
+    JapaneseText.companyInformationManagement
+  ];
+  List<IconData> menuIconListForCompany = const [
+    Icons.dashboard,
+    Icons.folder_rounded,
+    Icons.calendar_month_rounded,
+    Icons.person,
+    Icons.person_pin_rounded,
+    Icons.history_rounded,
+    FontAwesome.calculator,
+    FontAwesome.building
+  ];
+
+  List<Widget> menuPageList = const [
+    DashboardPage(),
+    JobSeekerPage(),
+    CompanyPage(),
+    JobPage(),
+    ShiftPage(),
+    SettingPage()
+  ];
+  List<Widget> menuPageListForCompany = const [
+    DashboardPageForCompany(),
+    JobPostingForCompanyPage(),
+    DashboardPageForCompany(),
+    DashboardPageForCompany(),
+    DashboardPageForCompany(),
+    DashboardPageForCompany(),
+    DashboardPageForCompany(),
+    DashboardPageForCompany()
+  ];
   String selectedItem = JapaneseText.analysis;
+  String selectedItemForCompany = JapaneseText.analysis;
 
   onInit() {
     selectedItem = JapaneseText.analysis;
+    selectedItemForCompany = JapaneseText.dashboardCompany;
   }
 
   onChangeSelectItem(String item) {
@@ -38,7 +82,16 @@ class HomeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  onChangeSelectItemForCompany(String item) {
+    selectedItemForCompany = item;
+    notifyListeners();
+  }
+
   checkRoute(HomeProvider provider) {
     return RouteHandler.check(provider);
+  }
+
+  checkRouteForCompany(HomeProvider provider) {
+    return RouteHandler.checkForCompany(provider);
   }
 }
