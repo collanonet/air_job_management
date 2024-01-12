@@ -1,6 +1,7 @@
 import 'package:air_job_management/1_company_page/job_posting/widget/create_or_delete.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/filter.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/job_posting_card_for_company.dart';
+import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/job_posting.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,7 @@ class JobPostingForCompanyPage extends StatefulWidget {
 class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage>
     with AfterBuildMixin {
   late JobPostingForCompanyProvider jobPostingProvider;
+  late AuthProvider authProvider;
 
   @override
   void initState() {
@@ -38,12 +40,13 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage>
   }
 
   getData() async {
-    await jobPostingProvider.getAllJobPost();
+    await jobPostingProvider.getAllJobPost(authProvider.myCompany?.uid ?? "");
     jobPostingProvider.onChangeLoading(false);
   }
 
   @override
   Widget build(BuildContext context) {
+    authProvider = Provider.of<AuthProvider>(context);
     jobPostingProvider = Provider.of<JobPostingForCompanyProvider>(context);
     return SizedBox(
       width: AppSize.getDeviceWidth(context),
@@ -97,10 +100,10 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage>
                           ),
                           flex: 2,
                         ),
-                        Expanded(
+                        SizedBox(
+                          width: 200,
                           child: Text("",
                               style: normalTextStyle.copyWith(fontSize: 13)),
-                          flex: 2,
                         ),
                       ],
                     ),

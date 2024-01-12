@@ -13,15 +13,13 @@ import 'package:sura_flutter/sura_flutter.dart';
 class HomePageForCompany extends StatefulWidget {
   final String? selectItem;
   final Widget? page;
-  const HomePageForCompany({Key? key, this.selectItem, this.page})
-      : super(key: key);
+  const HomePageForCompany({Key? key, this.selectItem, this.page}) : super(key: key);
 
   @override
   State<HomePageForCompany> createState() => _HomePageForCompanyState();
 }
 
-class _HomePageForCompanyState extends State<HomePageForCompany>
-    with AfterBuildMixin {
+class _HomePageForCompanyState extends State<HomePageForCompany> with AfterBuildMixin {
   late HomeProvider homeProvider;
   late AuthProvider authProvider;
 
@@ -37,11 +35,11 @@ class _HomePageForCompanyState extends State<HomePageForCompany>
     homeProvider = Provider.of<HomeProvider>(context);
     authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
-      backgroundColor: const Color(0xff8c8fa3),
+      backgroundColor: const Color(0xffF0F3F5),
       body: Container(
         width: AppSize.getDeviceWidth(context),
         height: AppSize.getDeviceHeight(context),
-        color: const Color(0xfff0f1fa),
+        color: const Color(0xffF0F3F5),
         child: Row(
           children: [leftWidget(), rightWidget()],
         ),
@@ -63,8 +61,7 @@ class _HomePageForCompanyState extends State<HomePageForCompany>
             AirJobManagementWidget(
                 company: authProvider.myCompany,
                 onPress: () {
-                  homeProvider.onChangeSelectItemForCompany(
-                      homeProvider.menuListForCompany[0]);
+                  homeProvider.onChangeSelectItemForCompany(homeProvider.menuListForCompany[0]);
                 }),
             AppSize.spaceHeight16,
             for (int i = 0; i < homeProvider.menuListForCompany.length; i++)
@@ -74,10 +71,8 @@ class _HomePageForCompanyState extends State<HomePageForCompany>
                       title: homeProvider.menuListForCompany[i],
                       icon: homeProvider.menuIconListForCompany[i],
                       onPress: () {
-                        homeProvider.onChangeSelectItemForCompany(
-                            homeProvider.menuListForCompany[i]);
-                        var route =
-                            homeProvider.checkRouteForCompany(homeProvider);
+                        homeProvider.onChangeSelectItemForCompany(homeProvider.menuListForCompany[i]);
+                        var route = homeProvider.checkRouteForCompany(homeProvider);
                         context.go(route);
                       }),
                   AppSize.spaceHeight8,
@@ -97,11 +92,7 @@ class _HomePageForCompanyState extends State<HomePageForCompany>
   }
 
   rightWidget() {
-    int selectedIndex = homeProvider.menuListForCompany
-        .indexOf(homeProvider.selectedItemForCompany);
-    return Expanded(
-        child: widget.page != null
-            ? widget.page!
-            : homeProvider.menuPageListForCompany.elementAt(selectedIndex));
+    int selectedIndex = homeProvider.menuListForCompany.indexOf(homeProvider.selectedItemForCompany);
+    return Expanded(child: widget.page != null ? widget.page! : homeProvider.menuPageListForCompany.elementAt(selectedIndex));
   }
 }

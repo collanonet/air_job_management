@@ -27,7 +27,11 @@ class JobPostingFilterFilterDataWidgetForCompany extends StatelessWidget {
             style: titleStyle,
           ),
           AppSize.spaceHeight16,
-          PrimaryTextField(controller: searchController, hint: "タイトルを入れます")
+          PrimaryTextField(
+            controller: searchController,
+            hint: "タイトルを入れます",
+            isRequired: false,
+          )
         ],
       ),
     );

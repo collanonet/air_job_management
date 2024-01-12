@@ -26,6 +26,11 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  onChangeCompany(Company? company) {
+    myCompany = company;
+    notifyListeners();
+  }
+
   set setStep(int index) {
     step = 1;
   }
@@ -60,12 +65,10 @@ class AuthProvider with ChangeNotifier {
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
-  Future<MyUser?> registerAccount(
-      String email, String password, MyUser myUser) async {
+  Future<MyUser?> registerAccount(String email, String password, MyUser myUser) async {
     try {
       setLoading(true);
-      UserCredential authResult = await firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential authResult = await firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
       User? user = authResult.user;
       String base64Encrypted = EncryptUtils.encryptPassword(password);
       myUser.hash_password = base64Encrypted;
@@ -104,8 +107,7 @@ class AuthProvider with ChangeNotifier {
   Future<MyUser?> loginAccount(String email, String password) async {
     try {
       setLoading(true);
-      UserCredential authResult = await firebaseAuth.signInWithEmailAndPassword(
-          email: email.trim(), password: password);
+      UserCredential authResult = await firebaseAuth.signInWithEmailAndPassword(email: email.trim(), password: password);
       User? user = authResult.user;
       myUser = await UserApiServices().getProfileUser(user!.uid);
       setLoading(false);
@@ -140,8 +142,7 @@ class AuthProvider with ChangeNotifier {
   Future<Company?> loginAsCompanyAccount(String email, String password) async {
     try {
       setLoading(true);
-      UserCredential authResult = await firebaseAuth.signInWithEmailAndPassword(
-          email: email.trim(), password: password);
+      UserCredential authResult = await firebaseAuth.signInWithEmailAndPassword(email: email.trim(), password: password);
       User? user = authResult.user;
       Company? company = await UserApiServices().getProfileCompany(user!.uid);
       setLoading(false);
@@ -173,8 +174,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Stream<User?> get user =>
-      firebaseAuth.authStateChanges().map((event) => event);
+  Stream<User?> get user => firebaseAuth.authStateChanges().map((event) => event);
 
   logout() async {
     await firebaseAuth.signOut();

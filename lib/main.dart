@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:air_job_management/1_company_page/home/home.dart';
+import 'package:air_job_management/1_company_page/job_posting/create_or_edit_job_posting.dart';
 import 'package:air_job_management/1_company_page/login/login.dart';
 import 'package:air_job_management/2_worker_page/manage/manage_screen.dart';
 import 'package:air_job_management/2_worker_page/root/root_page.dart';
@@ -61,7 +62,7 @@ final GoRouter _router = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         print("Initial called ${state.location}");
         // return IdentificationMenuPage();
-        return const SplashScreen(
+        return SplashScreen(
           isFromWorker: false,
         );
       },
@@ -83,8 +84,7 @@ final GoRouter _router = GoRouter(
             ]),
         GoRoute(
           path: MyRoute.jobOption.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.jobOption,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.jobOption,
         ),
         GoRoute(
           path: MyRoute.dashboard.removeSlash(),
@@ -102,11 +102,9 @@ final GoRouter _router = GoRouter(
                 path: 'create',
                 builder: (BuildContext context, GoRouterState state) {
                   if (state.extra == "japanese") {
-                    return const HomePage(
-                        page: CreateOrEditJobForJapanesePage(jobPostId: null));
+                    return const HomePage(page: CreateOrEditJobForJapanesePage(jobPostId: null));
                   } else {
-                    return const HomePage(
-                        page: CreateOrEditJobPage(jobPostId: null));
+                    return const HomePage(page: CreateOrEditJobPage(jobPostId: null));
                   }
                 },
               ),
@@ -129,12 +127,9 @@ final GoRouter _router = GoRouter(
             ]),
         GoRoute(
           path: MyRoute.createJob.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.createJob,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.createJob,
         ),
-        GoRoute(
-            path: "${MyRoute.job.removeSlash()}/:uid",
-            redirect: (c, s) => "${MyRoute.job}/${s.pathParameters['uid']}"),
+        GoRoute(path: "${MyRoute.job.removeSlash()}/:uid", redirect: (c, s) => "${MyRoute.job}/${s.pathParameters['uid']}"),
         GoRoute(
           path: MyRoute.shift.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {
@@ -165,13 +160,9 @@ final GoRouter _router = GoRouter(
             ]),
         GoRoute(
           path: MyRoute.createJobSeeker.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.createJobSeeker,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.createJobSeeker,
         ),
-        GoRoute(
-            path: "${MyRoute.jobSeeker.removeSlash()}/:uid",
-            redirect: (c, s) =>
-                "${MyRoute.jobSeeker}/${s.pathParameters['uid']}"),
+        GoRoute(path: "${MyRoute.jobSeeker.removeSlash()}/:uid", redirect: (c, s) => "${MyRoute.jobSeeker}/${s.pathParameters['uid']}"),
         GoRoute(
             path: MyRoute.company.removeSlash(),
             builder: (BuildContext context, GoRouterState state) {
@@ -197,6 +188,24 @@ final GoRouter _router = GoRouter(
                 builder: (BuildContext context, GoRouterState state) {
                   return HomePageForCompany(
                     selectItem: JapaneseText.recruitmentTemplate,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'job-posting/create',
+                builder: (BuildContext context, GoRouterState state) {
+                  return HomePageForCompany(
+                    page: CreateOrEditJobPostingPageForCompany(),
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'job-posting/:uid',
+                builder: (BuildContext context, GoRouterState state) {
+                  return HomePageForCompany(
+                    page: CreateOrEditJobPostingPageForCompany(
+                      jobPosting: state.pathParameters["uid"].toString(),
+                    ),
                   );
                 },
               ),
@@ -251,8 +260,7 @@ final GoRouter _router = GoRouter(
               GoRoute(
                 path: 'create',
                 builder: (BuildContext context, GoRouterState state) {
-                  return const HomePage(
-                      page: CreateOrEditCompanyPage(id: null));
+                  return const HomePage(page: CreateOrEditCompanyPage(id: null));
                 },
               ),
               GoRoute(
@@ -267,58 +275,45 @@ final GoRouter _router = GoRouter(
             ]),
         GoRoute(
           path: MyRoute.companyLogin.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.companyLogin,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.companyLogin,
         ),
         GoRoute(
           path: MyRoute.companyDashboard.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.companyDashboard,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.companyDashboard,
         ),
         GoRoute(
           path: MyRoute.companyJobPosting.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.companyDashboard,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.companyDashboard,
         ),
         GoRoute(
           path: MyRoute.companyShift.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.companyShift,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.companyShift,
         ),
         GoRoute(
           path: MyRoute.companyJobPosting.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.companyDashboard,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.companyDashboard,
         ),
         GoRoute(
           path: MyRoute.companyApplicant.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.companyApplicant,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.companyApplicant,
         ),
         GoRoute(
           path: MyRoute.companyWorker.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.companyWorker,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.companyWorker,
         ),
         GoRoute(
           path: MyRoute.companyTimeManagement.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.companyTimeManagement,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.companyTimeManagement,
         ),
         GoRoute(
           path: MyRoute.companyUsageDetail.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.companyUsageDetail,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.companyUsageDetail,
         ),
         GoRoute(
           path: MyRoute.companyInformationManagement.removeSlash(),
-          redirect: (BuildContext context, GoRouterState state) =>
-              MyRoute.companyInformationManagement,
+          redirect: (BuildContext context, GoRouterState state) => MyRoute.companyInformationManagement,
         ),
-        GoRoute(
-            path: "${MyRoute.company.removeSlash()}/:uid",
-            redirect: (c, s) =>
-                "${MyRoute.company}/${s.pathParameters['uid']}"),
+        GoRoute(path: "${MyRoute.company.removeSlash()}/:uid", redirect: (c, s) => "${MyRoute.company}/${s.pathParameters['uid']}"),
         GoRoute(
           path: MyRoute.setting.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {
@@ -378,8 +373,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => JobSeekerProvider()),
           ChangeNotifierProvider(create: (_) => JobSeekerDetailProvider()),
           ChangeNotifierProvider(create: (_) => JobPostingProvider()),
-          ChangeNotifierProvider(
-              create: (_) => JobPostingForJapaneseProvider()),
+          ChangeNotifierProvider(create: (_) => JobPostingForJapaneseProvider()),
           ChangeNotifierProvider(create: (_) => CompanyProvider()),
           ChangeNotifierProvider(create: (_) => FavoriteProvider()),
           ChangeNotifierProvider(create: (_) => RootProvider()),
@@ -392,6 +386,12 @@ class MyApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
+          theme: ThemeData(
+              pageTransitionsTheme: PageTransitionsTheme(builders: {
+            TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
+            TargetPlatform.iOS: OpenUpwardsPageTransitionsBuilder(),
+            TargetPlatform.fuchsia: OpenUpwardsPageTransitionsBuilder(),
+          })),
           supportedLocales: const [
             Locale('en', 'US'), // English, no country code
             Locale('ja', 'JP'), // Hebrew, no country code
