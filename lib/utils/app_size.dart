@@ -36,4 +36,7 @@ class AppSize {
   static SizedBox spaceHeight50 = const SizedBox(
     height: 50,
   );
+  static SizedBox spaceHeight20 = const SizedBox(
+    height: 20,
+  );
 }

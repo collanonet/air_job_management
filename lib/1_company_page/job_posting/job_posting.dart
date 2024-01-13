@@ -3,13 +3,18 @@ import 'package:air_job_management/1_company_page/job_posting/widget/filter.dart
 import 'package:air_job_management/1_company_page/job_posting/widget/job_posting_card_for_company.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/job_posting.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
+import '../../api/user_api.dart';
+import '../../models/company.dart';
 import '../../models/job_posting.dart';
 import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
+import '../../utils/my_route.dart';
 import '../../utils/style.dart';
 import '../../widgets/empty_data.dart';
 import '../../widgets/loading.dart';
@@ -18,19 +23,16 @@ class JobPostingForCompanyPage extends StatefulWidget {
   const JobPostingForCompanyPage({super.key});
 
   @override
-  State<JobPostingForCompanyPage> createState() =>
-      _JobPostingForCompanyPageState();
+  State<JobPostingForCompanyPage> createState() => _JobPostingForCompanyPageState();
 }
 
-class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage>
-    with AfterBuildMixin {
+class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> with AfterBuildMixin {
   late JobPostingForCompanyProvider jobPostingProvider;
   late AuthProvider authProvider;
 
   @override
   void initState() {
-    Provider.of<JobPostingForCompanyProvider>(context, listen: false)
-        .onInitForList();
+    Provider.of<JobPostingForCompanyProvider>(context, listen: false).onInitForList();
     super.initState();
   }
 
@@ -40,8 +42,20 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage>
   }
 
   getData() async {
-    await jobPostingProvider.getAllJobPost(authProvider.myCompany?.uid ?? "");
-    jobPostingProvider.onChangeLoading(false);
+    if (authProvider.myCompany == null) {
+      var user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        Company? company = await UserApiServices().getProfileCompany(user.uid);
+        authProvider.onChangeCompany(company);
+        await jobPostingProvider.getAllJobPost(authProvider.myCompany?.uid ?? "");
+        jobPostingProvider.onChangeLoading(false);
+      } else {
+        context.go(MyRoute.companyLogin);
+      }
+    } else {
+      await jobPostingProvider.getAllJobPost(authProvider.myCompany?.uid ?? "");
+      jobPostingProvider.onChangeLoading(false);
+    }
   }
 
   @override
@@ -95,15 +109,13 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage>
                         ),
                         Expanded(
                           child: Center(
-                            child: Text("職種",
-                                style: normalTextStyle.copyWith(fontSize: 13)),
+                            child: Text("職種", style: normalTextStyle.copyWith(fontSize: 13)),
                           ),
                           flex: 2,
                         ),
                         SizedBox(
                           width: 200,
-                          child: Text("",
-                              style: normalTextStyle.copyWith(fontSize: 13)),
+                          child: Text("", style: normalTextStyle.copyWith(fontSize: 13)),
                         ),
                       ],
                     ),
@@ -129,13 +141,8 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage>
         return ListView.separated(
             itemCount: jobPostingProvider.jobPostingList.length,
             shrinkWrap: true,
-            separatorBuilder: (context, index) => Padding(
-                padding: EdgeInsets.only(
-                    top: 10,
-                    bottom:
-                        index + 1 == jobPostingProvider.jobPostingList.length
-                            ? 20
-                            : 0)),
+            separatorBuilder: (context, index) =>
+                Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == jobPostingProvider.jobPostingList.length ? 20 : 0)),
             itemBuilder: (context, index) {
               JobPosting jobPosting = jobPostingProvider.jobPostingList[index];
               return JobPostingCardForCompanyWidget(jobPosting: jobPosting);

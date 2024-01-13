@@ -6,6 +6,7 @@ import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../pages/job_posting/create_or_edit_job_for_japanese.dart';
@@ -21,6 +22,7 @@ class JobPostingInformationPageForCompany extends StatefulWidget {
 
 class _JobPostingInformationPageForCompanyState extends State<JobPostingInformationPageForCompany> {
   late JobPostingForCompanyProvider provider;
+  ScrollController scrollController2 = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,20 +31,33 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
       child: Container(
         width: AppSize.getDeviceWidth(context),
         decoration: boxDecorationNoTopRadius,
-        padding: const EdgeInsets.all(32),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppSize.spaceHeight30,
-              titleWidget(),
-              AppSize.spaceHeight30,
-              Divider(
-                color: AppColor.thirdColor,
-              ),
-              AppSize.spaceHeight30,
-              buildApplicationRequirement(),
-            ],
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Scrollbar(
+          isAlwaysShown: true,
+          controller: scrollController2,
+          child: SingleChildScrollView(
+            controller: scrollController2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppSize.spaceHeight30,
+                titleWidget(),
+                AppSize.spaceHeight20,
+                Divider(
+                  color: AppColor.thirdColor.withOpacity(0.3),
+                ),
+                AppSize.spaceHeight20,
+                buildApplicationRequirement(),
+                AppSize.spaceHeight20,
+                Divider(
+                  color: AppColor.thirdColor.withOpacity(0.3),
+                ),
+                AppSize.spaceHeight20,
+                buildWorkLocation(),
+                AppSize.spaceHeight20,
+                AppSize.spaceHeight50,
+              ],
+            ),
           ),
         ),
       ),
@@ -62,12 +77,14 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
               style: kNormalText.copyWith(fontSize: 12),
             )),
         AppSize.spaceHeight5,
-        PrimaryTextField(
-          hint: "",
-          controller: provider.title,
-          isRequired: true,
+        SizedBox(
+          width: AppSize.getDeviceWidth(context) * 0.6,
+          child: PrimaryTextField(
+            hint: "",
+            controller: provider.title,
+            isRequired: true,
+          ),
         ),
-        AppSize.spaceHeight8,
         Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.profileCom, style: kNormalText.copyWith(fontSize: 12))),
         AppSize.spaceHeight5,
         buildChooseJobProfile(),
@@ -227,7 +244,7 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
                   });
                 }),
             checkBoxTile(
-                size: 200,
+                size: 250,
                 title: JapaneseText.freeHairStyleAndColor,
                 val: provider.freeHairStyleAndColor,
                 onChange: (v) {
@@ -270,6 +287,192 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
                 }),
           ],
         ),
+        Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.jobDescription, style: kNormalText.copyWith(fontSize: 12))),
+        AppSize.spaceHeight5,
+        SizedBox(
+          width: AppSize.getDeviceWidth(context) * 0.6,
+          child: PrimaryTextField(
+            hint: "",
+            controller: provider.jobDescription,
+            isRequired: true,
+            maxLine: 12,
+            textInputAction: TextInputAction.newline,
+            textInputType: TextInputType.multiline,
+          ),
+        ),
+        Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.notes, style: kNormalText.copyWith(fontSize: 12))),
+        AppSize.spaceHeight5,
+        SizedBox(
+          width: AppSize.getDeviceWidth(context) * 0.6,
+          child: PrimaryTextField(
+            hint: "",
+            controller: provider.notes,
+            isRequired: true,
+            maxLine: 8,
+            textInputAction: TextInputAction.newline,
+            textInputType: TextInputType.multiline,
+          ),
+        ),
+        Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.belongings, style: kNormalText.copyWith(fontSize: 12))),
+        AppSize.spaceHeight5,
+        SizedBox(
+          width: AppSize.getDeviceWidth(context) * 0.6,
+          child: PrimaryTextField(
+            hint: "",
+            controller: provider.belongings,
+            isRequired: true,
+            maxLine: 8,
+            textInputAction: TextInputAction.newline,
+            textInputType: TextInputType.multiline,
+          ),
+        ),
+        Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.conditionsForWork, style: kNormalText.copyWith(fontSize: 12))),
+        AppSize.spaceHeight5,
+        SizedBox(
+          width: AppSize.getDeviceWidth(context) * 0.6,
+          child: PrimaryTextField(
+            hint: "",
+            controller: provider.conditionForWork,
+            isRequired: true,
+            maxLine: 8,
+            textInputAction: TextInputAction.newline,
+            textInputType: TextInputType.multiline,
+          ),
+        ),
+      ],
+    );
+  }
+
+  buildWorkLocation() {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      TitleWidget(title: JapaneseText.workLocation),
+      AppSize.spaceHeight16,
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.postalCode, style: kNormalText.copyWith(fontSize: 12))),
+              AppSize.spaceHeight5,
+              SizedBox(
+                width: 150,
+                child: PrimaryTextField(
+                  hint: "",
+                  controller: provider.postalCode,
+                  isRequired: true,
+                ),
+              ),
+            ],
+          ),
+          AppSize.spaceWidth16,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.prefectureLocation, style: kNormalText.copyWith(fontSize: 12))),
+              AppSize.spaceHeight5,
+              CustomDropDownWidget(
+                radius: 5,
+                list: provider.locationList,
+                onChange: (e) => provider.onChangeLocation(e),
+                width: 150,
+                selectItem: provider.selectedLocation,
+              )
+            ],
+          ),
+        ],
+      ),
+      Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.streetBunch, style: kNormalText.copyWith(fontSize: 12))),
+      AppSize.spaceHeight5,
+      SizedBox(
+        width: AppSize.getDeviceWidth(context) * 0.4,
+        child: PrimaryTextField(
+          hint: "",
+          controller: provider.street,
+          isRequired: true,
+        ),
+      ),
+      Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.buildingName, style: kNormalText.copyWith(fontSize: 12))),
+      AppSize.spaceHeight5,
+      SizedBox(
+        width: AppSize.getDeviceWidth(context) * 0.4,
+        child: PrimaryTextField(
+          hint: "",
+          controller: provider.building,
+          isRequired: true,
+        ),
+      ),
+      Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.accessAddress, style: kNormalText.copyWith(fontSize: 12))),
+      AppSize.spaceHeight5,
+      SizedBox(
+        width: AppSize.getDeviceWidth(context) * 0.4,
+        child: PrimaryTextField(
+          hint: "",
+          controller: provider.accessAddress,
+          isRequired: true,
+        ),
+      ),
+      Align(
+          alignment: Alignment.centerLeft,
+          child: Text("Latitude and Longitude (Ex: 34.xxxxxxxx, 135.xxxxxxxx)", style: kNormalText.copyWith(fontSize: 12))),
+      AppSize.spaceHeight5,
+      SizedBox(
+        width: AppSize.getDeviceWidth(context) * 0.4,
+        child: PrimaryTextField(
+          hint: "",
+          controller: provider.latLong,
+          isRequired: true,
+          onChange: (v) {
+            if (v.toString().contains(", ")) {
+              LatLng latLng = LatLng(double.parse(v.split(", ")[0]), double.parse(v.split(", ")[1]));
+              mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: latLng, zoom: 16)));
+            }
+          },
+        ),
+      ),
+      AppSize.spaceHeight8,
+      buildMap()
+    ]);
+  }
+
+  late GoogleMapController mapController;
+
+  buildMap() {
+    return Stack(
+      children: [
+        SizedBox(
+          width: AppSize.getDeviceWidth(context),
+          height: AppSize.getDeviceHeight(context) * 0.4,
+          // color: Colors.amber,
+          child: GoogleMap(
+            initialCameraPosition: const CameraPosition(target: LatLng(35.6779346605152, 139.7681053353878), zoom: 15),
+            myLocationEnabled: true,
+            tiltGesturesEnabled: true,
+            compassEnabled: true,
+            scrollGesturesEnabled: true,
+            zoomGesturesEnabled: true,
+            onMapCreated: (controller) {
+              mapController = controller;
+            },
+            onCameraMove: (pos) {
+              provider.latLong.text = "${pos.target.latitude}, ${pos.target.longitude}";
+            },
+          ),
+        ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          top: 0,
+          child: Center(
+            child: Icon(
+              Icons.location_on_rounded,
+              color: AppColor.redColor,
+              size: 25,
+            ),
+          ),
+        )
       ],
     );
   }

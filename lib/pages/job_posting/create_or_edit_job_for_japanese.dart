@@ -2560,7 +2560,7 @@ checkBoxTile({required String title, required bool val, required Function onChan
       onChanged: (v) => onChange(v),
       title: Text(
         title,
-        style: normalTextStyle,
+        style: normalTextStyle.copyWith(fontSize: 16, fontFamily: "Light"),
       ),
     ),
   );

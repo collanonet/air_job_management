@@ -5,10 +5,12 @@ import '../../../utils/style.dart';
 
 class RadioListTileWidget extends StatelessWidget {
   final String title;
+  final String? subTitle;
   final String val;
   final double size;
   final Function onChange;
-  const RadioListTileWidget({Key? key, required this.title, required this.val, required this.onChange, required this.size}) : super(key: key);
+  const RadioListTileWidget({Key? key, required this.title, this.subTitle, required this.val, required this.onChange, required this.size})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +22,14 @@ class RadioListTileWidget extends StatelessWidget {
           groupValue: title,
           title: Text(
             title,
-            style: kNormalText.copyWith(fontSize: 12),
+            style: kNormalText.copyWith(fontSize: 16, fontFamily: "Medium", color: AppColor.darkGrey),
           ),
+          subtitle: subTitle == null
+              ? null
+              : Text(
+                  subTitle ?? "",
+                  style: kNormalText.copyWith(fontSize: 12, color: AppColor.darkGrey),
+                ),
           value: val,
           dense: true,
           controlAffinity: ListTileControlAffinity.leading,

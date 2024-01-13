@@ -7,6 +7,36 @@ class JapaneseText {
   static String motorCycleCarCommutingPossible = "バイク/車通勤可";
   static String bicycleCommutingPossible = "自転車通勤可";
 
+  static String jobDescription = "仕事内容";
+  static String notes = "注意事項";
+  static String belongings = "持ち物";
+  static String conditionsForWork = "働くための条件";
+
+  static String prefectureLocation = "都道府県";
+  static String streetBunch = "町名・番地";
+  static String buildingName = "ビル名";
+  static String accessAddress = "アクセス";
+
+  static String startWorkingDay = "稼働日　開始";
+  static String endWorkingDay = "稼働日　終了";
+  static String startWorkingTime = "勤務開始時間";
+  static String endWorkingTime = "勤務終了時間";
+  static String startBreakTime = "休憩開始時間";
+  static String endBreakTime = "休憩終了時間";
+  static String recruitmentDeadlineTime = "求人の締切時間";
+
+  static String publicSetting = "公開設定";
+  static String openToPublic = "一般公開";
+  static String groupLimitRelease = "グループ限定公開";
+  static String urlLimited = "URL限定公開";
+  static String subUrlLimited = "求人詳細ページの「共有URL」を知っているワーカーのみに求人を見ることができます。";
+
+  static String emergencyContact = "緊急連絡先";
+  static String measuresToPreventPassiveSmoking = "受動喫煙防止措置";
+  static String noSmokingInDoor = "屋内禁煙";
+  static String canSmokingInDoor = "屋内で喫煙できます";
+  static String workInAreasWhereSmokingIsAllowed = "喫煙可能エリアでの作業あり";
+
   static String companyJobInformation = "求人情報";
   static String companyShiftFrame = "シフト枠を作成";
   static String companyShiftList = "シフト枠一覧";

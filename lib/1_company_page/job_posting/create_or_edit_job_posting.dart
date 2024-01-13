@@ -17,6 +17,7 @@ import '../../models/job_posting.dart';
 import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
 import '../../utils/style.dart';
+import '../../widgets/custom_button.dart';
 import '../../widgets/custom_loading_overlay.dart';
 
 class CreateOrEditJobPostingPageForCompany extends StatefulWidget {
@@ -54,7 +55,25 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
           else if (provider.selectedMenu == provider.tabMenu[1])
             JobPostingShiftPageForCompany()
           else
-            JobPostingShiftFramePageForCompany()
+            JobPostingShiftFramePageForCompany(),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+              SizedBox(
+                  width: 200,
+                  child: ButtonWidget(
+                    radius: 25,
+                    color: AppColor.whiteColor,
+                    title: "キャンセル",
+                    onPress: () {},
+                  )),
+              AppSize.spaceWidth16,
+              SizedBox(
+                width: 200,
+                child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () {}),
+              ),
+            ]),
+          )
         ],
       ),
     );
@@ -71,6 +90,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
         children: [
           Row(
             children: [
+              AppSize.spaceWidth32,
               Container(
                 width: 60,
                 height: 60,
@@ -80,7 +100,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
                     color: AppColor.primaryColor),
                 alignment: Alignment.center,
               ),
-              AppSize.spaceWidth5,
+              AppSize.spaceWidth32,
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -130,7 +150,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
                   onTap: () => provider.onChangeSelectMenu(provider.tabMenu[0]),
                   child: Container(
                     width: AppSize.getDeviceWidth(context) * 0.25,
-                    height: 50,
+                    height: 39,
                     alignment: Alignment.center,
                     child: Text(
                       provider.tabMenu[0],
@@ -150,7 +170,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
                   onTap: () => provider.onChangeSelectMenu(provider.tabMenu[1]),
                   child: Container(
                     width: AppSize.getDeviceWidth(context) * 0.25,
-                    height: 50,
+                    height: 39,
                     alignment: Alignment.center,
                     child: Text(
                       provider.tabMenu[1],
@@ -170,7 +190,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
                   onTap: () => provider.onChangeSelectMenu(provider.tabMenu[2]),
                   child: Container(
                     width: AppSize.getDeviceWidth(context) * 0.25,
-                    height: 50,
+                    height: 39,
                     alignment: Alignment.center,
                     child: Text(
                       provider.tabMenu[2],

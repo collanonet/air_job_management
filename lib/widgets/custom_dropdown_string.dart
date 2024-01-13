@@ -1,3 +1,5 @@
+import 'package:air_job_management/utils/app_color.dart';
+import 'package:air_job_management/utils/style.dart';
 import 'package:flutter/material.dart';
 
 class CustomDropDownWidget extends StatelessWidget {
@@ -13,16 +15,26 @@ class CustomDropDownWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
-      height: 45,
+      height: 39,
       child: InputDecorator(
         decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(horizontal: 16),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
             border: OutlineInputBorder(
+              borderSide: BorderSide(color: AppColor.thirdColor, width: 1),
               borderRadius: BorderRadius.all(Radius.circular(radius!)),
             )),
         child: DropdownButtonHideUnderline(
           child: DropdownButton(
-              value: selectItem, items: list.map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(), onChanged: (e) => onChange(e)),
+              value: selectItem,
+              items: list
+                  .map((e) => DropdownMenuItem(
+                      value: e,
+                      child: Text(
+                        e,
+                        style: kNormalText.copyWith(fontSize: 16, color: AppColor.darkGrey),
+                      )))
+                  .toList(),
+              onChanged: (e) => onChange(e)),
         ),
       ),
     );

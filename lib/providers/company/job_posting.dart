@@ -11,7 +11,6 @@ class JobPostingForCompanyProvider with ChangeNotifier {
   //For Job Posting List
   List<JobPosting> jobPostingList = [];
   List<FilePickerResult?> jobPosterProfile = [null];
-  List<String> statusList = [JapaneseText.allData, JapaneseText.duringCorrespondence, JapaneseText.noContact, JapaneseText.contact];
 
   String selectedMenu = JapaneseText.companyJobInformation;
 
@@ -35,15 +34,89 @@ class JobPostingForCompanyProvider with ChangeNotifier {
   ];
   String? selectedSpecificOccupation;
 
+  String? selectedLocation;
+  List<String> locationList = <String>[
+    '海外 ',
+    '北海道',
+    '青森県',
+    '岩手県',
+    '宮城県',
+    '秋田県',
+    '山形県',
+    '福島県',
+    '茨城県',
+    '栃木県',
+    '群馬県',
+    '埼玉県',
+    '千葉県',
+    '東京都',
+    '神奈川県',
+    '新潟県',
+    '富山県',
+    '石川県',
+    '福井県 ',
+    '山梨県',
+    '長野県',
+    '岐阜県',
+    '静岡県',
+    '愛知県',
+    '三重県',
+    '滋賀県 ',
+    '京都府',
+    '大阪府',
+    '兵庫県',
+    '奈良県',
+    '和歌山県',
+    '鳥取県',
+    '島根県',
+    '岡山県',
+    '広島県',
+    '山口県',
+    '徳島県',
+    '香川県',
+    '愛媛県',
+    '高知県',
+    '福岡県',
+    '佐賀県',
+    '長崎県',
+    '熊本県',
+    '大分県',
+    '宮崎県',
+    '鹿児島県',
+    '沖縄県',
+  ];
+
+  String selectedDeadline = "【推奨】開始時間と同時";
+  List<String> applicationDeadlineList = <String>[
+    "【推奨】開始時間と同時",
+  ];
+
+  String selectSmokingInDoor = JapaneseText.noSmokingInDoor;
+  List<String> allowSmokingInDoor = <String>[JapaneseText.noSmokingInDoor, JapaneseText.canSmokingInDoor];
+
+  bool isAllowSmokingInArea = false;
+
+  onChangeAllowSmokingInDoor(String menu) {
+    selectSmokingInDoor = menu;
+    notifyListeners();
+  }
+
+  onChangeAllowSmokingInArea(bool val) {
+    isAllowSmokingInArea = val;
+    notifyListeners();
+  }
+
+  onChangeSelectDeadline(String menu) {
+    selectedDeadline = menu;
+    notifyListeners();
+  }
+
   onChangeSelectMenu(String menu) {
     selectedMenu = menu;
     notifyListeners();
   }
 
   String? selectedStatus;
-
-  List<String> newArrivalList = [JapaneseText.allData, JapaneseText.newArrival, JapaneseText.interview];
-  String? selectedNewArrival;
 
   //For Job Posting Detail
   JobPosting? jobPosting;
@@ -59,43 +132,19 @@ class JobPostingForCompanyProvider with ChangeNotifier {
   }
 
   late TextEditingController title;
-  late TextEditingController supplementary;
-  late TextEditingController eligibilityForApp;
-  late TextEditingController offHours;
-  late TextEditingController overview;
-  late TextEditingController content;
-  late TextEditingController startRecruitDate;
-  late TextEditingController endRecruitDate;
-  late TextEditingController companyLocation;
-  late TextEditingController companyLocationLatLng;
+  late TextEditingController jobDescription;
+  late TextEditingController notes;
+  late TextEditingController belongings;
+  late TextEditingController conditionForWork;
+  late TextEditingController postalCode;
+  late TextEditingController street;
+  late TextEditingController building;
+  late TextEditingController accessAddress;
+  late TextEditingController latLong;
   late TextEditingController numberOfRecruitPeople;
-  late TextEditingController fromSalaryAmount;
-  late TextEditingController toSalaryAmount;
-  late TextEditingController breakTimeMinute;
-  late TextEditingController startWorkTime;
-  late TextEditingController endWorkTime;
-  late TextEditingController numberOfAnnualHolidays;
-  late TextEditingController holidayDetail;
-  late TextEditingController interviewLocation;
-  late TextEditingController interviewLocationLatLng;
-  late TextEditingController otherQualification;
-  late TextEditingController remark;
-  late TextEditingController remarkHoliday;
-  late TextEditingController remarkBonus;
-  late TextEditingController remarkTransport;
-  late TextEditingController minimumWorkTerm;
-  late TextEditingController minimumNumberOfWorkingDays;
-  late TextEditingController minimumNumberOfWorkingTime;
-  late TextEditingController shiftCycle;
-  late TextEditingController shiftSubPeriod;
-  late TextEditingController shiftFixingPeriod;
-  late TextEditingController remarkAtmosphere;
-  late TextEditingController oneDayWorkFlow;
-  late TextEditingController shiftIncomeExample;
-  late TextEditingController aWordFromASeniorStaffMember;
-  late TextEditingController flowAfterApplication;
-  late TextEditingController plannedNumberOfEmployee;
-  late TextEditingController inquiryPhoneNumber;
+  late TextEditingController hourlyWag;
+  late TextEditingController transportExp;
+  late TextEditingController emergencyContact;
 
   bool expWelcome = false;
   bool mealsAvailable = false;
@@ -104,59 +153,49 @@ class JobPostingForCompanyProvider with ChangeNotifier {
   bool transportationProvided = false;
   bool motorCycleCarCommutingPossible = false;
   bool bicycleCommutingPossible = false;
+  String selectedPublicSetting = JapaneseText.openToPublic;
+
+  onChangeSelectPublicSetting(String setting) {
+    selectedPublicSetting = setting;
+    notifyListeners();
+  }
+
+  static DateTime now = DateTime.now();
+  DateTime currentDate = DateTime.now();
+
+  DateTime startWorkDate = DateTime.now();
+  DateTime endWorkDate = DateTime.now();
+  DateTime startWorkingTime = DateTime(now.year, now.month, now.day, 8, 0, 0);
+  DateTime endWorkingTime = DateTime(now.year, now.month, now.day, 17, 0, 0);
+  DateTime startBreakTime = DateTime(now.year, now.month, now.day, 12, 0, 0);
+  DateTime endBreakTime = DateTime(now.year, now.month, now.day, 13, 0, 0);
 
   getAllJobPost(String id) async {
-    debugPrint("Company ID is $id");
     jobPostingList = await JobPostingApiService().getAllJobPostByCompany(id);
     notifyListeners();
   }
 
   onInitForList() {
     selectedStatus = null;
-    selectedNewArrival = null;
     isLoading = true;
     imageUrl = "";
   }
 
   set setAllController(List<dynamic> dynamicList) {
-    offHours = TextEditingController(text: "");
     title = TextEditingController(text: "");
-    overview = TextEditingController(text: "");
-    eligibilityForApp = TextEditingController(text: "");
-    supplementary = TextEditingController(text: "");
-    content = TextEditingController(text: "");
-    startRecruitDate = TextEditingController(text: "");
-    endRecruitDate = TextEditingController(text: "");
-    companyLocation = TextEditingController(text: "");
-    fromSalaryAmount = TextEditingController(text: "");
-    toSalaryAmount = TextEditingController(text: "");
-    companyLocationLatLng = TextEditingController(text: "");
+    jobDescription = TextEditingController(text: "");
+    belongings = TextEditingController(text: "");
+    notes = TextEditingController(text: "");
+    conditionForWork = TextEditingController(text: "");
+    postalCode = TextEditingController(text: "");
+    street = TextEditingController(text: "");
+    building = TextEditingController(text: "");
+    accessAddress = TextEditingController(text: "");
+    latLong = TextEditingController(text: "");
     numberOfRecruitPeople = TextEditingController(text: "");
-    breakTimeMinute = TextEditingController(text: "");
-    startWorkTime = TextEditingController(text: "");
-    endWorkTime = TextEditingController(text: "");
-    numberOfAnnualHolidays = TextEditingController(text: "");
-    holidayDetail = TextEditingController(text: "");
-    interviewLocation = TextEditingController(text: "");
-    interviewLocationLatLng = TextEditingController(text: "");
-    otherQualification = TextEditingController(text: "");
-    remark = TextEditingController(text: "");
-    remarkHoliday = TextEditingController(text: "");
-    remarkBonus = TextEditingController(text: "");
-    remarkTransport = TextEditingController(text: "");
-    minimumWorkTerm = TextEditingController(text: "");
-    minimumNumberOfWorkingDays = TextEditingController(text: "");
-    minimumNumberOfWorkingTime = TextEditingController(text: "");
-    shiftCycle = TextEditingController(text: "");
-    shiftSubPeriod = TextEditingController(text: "");
-    shiftFixingPeriod = TextEditingController(text: "");
-    remarkAtmosphere = TextEditingController(text: "");
-    oneDayWorkFlow = TextEditingController(text: "");
-    shiftIncomeExample = TextEditingController(text: "");
-    aWordFromASeniorStaffMember = TextEditingController(text: "");
-    flowAfterApplication = TextEditingController(text: "");
-    plannedNumberOfEmployee = TextEditingController(text: "");
-    inquiryPhoneNumber = TextEditingController(text: "");
+    hourlyWag = TextEditingController(text: "");
+    transportExp = TextEditingController(text: "");
+    emergencyContact = TextEditingController(text: "");
   }
 
   final formatter = NumberFormat.simpleCurrency(locale: "ja", name: "");
@@ -177,15 +216,8 @@ class JobPostingForCompanyProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  onChangeSelectCompanyForDetail(String? val) {
-    selectedCompany = val;
-    for (var c in allCompany) {
-      if (c.companyName!.contains(selectedCompany.toString())) {
-        selectedCompanyId = c.uid;
-        companyLocation.text = c.location ?? "";
-        companyLocationLatLng.text = c.companyLatLng ?? "";
-      }
-    }
+  onChangeLocation(String? val) {
+    selectedLocation = val;
     notifyListeners();
   }
 
@@ -209,28 +241,20 @@ class JobPostingForCompanyProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  onChangeNewArrival(String? val) {
-    selectedNewArrival = val;
-    notifyListeners();
-  }
-
   disposeData() {
     title.dispose();
-    overview.dispose();
-    content.dispose();
-    startRecruitDate.dispose();
-    endRecruitDate.dispose();
-    breakTimeMinute.dispose();
+    jobDescription.dispose();
+    belongings.dispose();
+    conditionForWork.dispose();
+    notes.dispose();
+    street.dispose();
+    postalCode.dispose();
+    building.dispose();
+    accessAddress.dispose();
+    latLong.dispose();
+    hourlyWag.dispose();
+    transportExp.dispose();
+    emergencyContact.dispose();
     numberOfRecruitPeople.dispose();
-    companyLocation.dispose();
-    holidayDetail.dispose();
-    numberOfAnnualHolidays.dispose();
-    startWorkTime.dispose();
-    endWorkTime.dispose();
-    otherQualification.dispose();
-    interviewLocation.dispose();
-    fromSalaryAmount.dispose();
-    toSalaryAmount.dispose();
-    remark.dispose();
   }
 }
