@@ -20,6 +20,7 @@ class Company {
   String? area;
   String? industry;
   String? numberOfJobOpening;
+  String? hashPassword;
 
   Company(
       {this.uid,
@@ -42,9 +43,11 @@ class Company {
       this.tel,
       this.numberOfJobOpening,
       this.companyUserId,
-      this.status});
+      this.status,
+      this.hashPassword});
 
   factory Company.fromJson(Map<String, dynamic> json) => Company(
+        hashPassword: json["hash_password"],
         companyUserId: json["company_user_id"],
         area: json["area"],
         industry: json["industry"],
@@ -61,17 +64,14 @@ class Company {
         publicDate: json["public_date"],
         homePage: json["home_page"],
         affiliate: json["affiliate"],
-        rePresentative: json["re_presentative"] == null
-            ? null
-            : RePresentative.fromJson(json["re_presentative"]),
-        manager: json["manager"] == null
-            ? []
-            : List<RePresentative>.from(
-                json["manager"]!.map((x) => RePresentative.fromJson(x))),
+        rePresentative: json["re_presentative"] == null ? null : RePresentative.fromJson(json["re_presentative"]),
+        manager: json["manager"] == null ? [] : List<RePresentative>.from(json["manager"]!.map((x) => RePresentative.fromJson(x))),
         content: json["content"],
       );
 
   Map<String, dynamic> toJson() => {
+        "company_user_id": companyUserId,
+        "hash_password": hashPassword,
         "area": area,
         "industry": industry,
         "lat_lng": companyLatLng,
@@ -88,9 +88,7 @@ class Company {
         "home_page": homePage,
         "affiliate": affiliate,
         "re_presentative": rePresentative?.toJson(),
-        "manager": manager == null
-            ? []
-            : List<dynamic>.from(manager!.map((x) => x.toJson())),
+        "manager": manager == null ? [] : List<dynamic>.from(manager!.map((x) => x.toJson())),
         "content": content,
       };
 }

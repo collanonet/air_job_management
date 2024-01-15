@@ -7,7 +7,7 @@ class MessageWidget {
         msg: msg,
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
+        timeInSecForIosWeb: 5,
         webPosition: "center",
         textColor: AppColor.whiteColor,
         fontSize: 16.0);

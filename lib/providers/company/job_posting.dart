@@ -1,4 +1,5 @@
 import 'package:air_job_management/api/job_posting.dart';
+import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:file_picker/file_picker.dart';
@@ -10,7 +11,7 @@ import '../../models/company.dart';
 class JobPostingForCompanyProvider with ChangeNotifier {
   //For Job Posting List
   List<JobPosting> jobPostingList = [];
-  List<FilePickerResult?> jobPosterProfile = [null];
+  List<dynamic> jobPosterProfile = [null];
 
   String selectedMenu = JapaneseText.companyJobInformation;
 
@@ -86,7 +87,7 @@ class JobPostingForCompanyProvider with ChangeNotifier {
     '沖縄県',
   ];
 
-  String selectedDeadline = "【推奨】開始時間と同時";
+  String? selectedDeadline = "【推奨】開始時間と同時";
   List<String> applicationDeadlineList = <String>[
     "【推奨】開始時間と同時",
   ];
@@ -200,9 +201,91 @@ class JobPostingForCompanyProvider with ChangeNotifier {
 
   final formatter = NumberFormat.simpleCurrency(locale: "ja", name: "");
 
+  initialData() {
+    startWorkDate = DateTime.now();
+    endWorkDate = DateTime.now();
+    startWorkingTime = DateTime(now.year, now.month, now.day, 8, 0, 0);
+    endWorkingTime = DateTime(now.year, now.month, now.day, 17, 0, 0);
+    startBreakTime = DateTime(now.year, now.month, now.day, 12, 0, 0);
+    endBreakTime = DateTime(now.year, now.month, now.day, 13, 0, 0);
+    jobPosterProfile = [null];
+    jobPosting = JobPosting(location: Location());
+  }
+
   onInitForJobPostingDetail(String? id) async {
+    startWorkDate = DateTime.now();
+    endWorkDate = DateTime.now();
+    startWorkingTime = DateTime(now.year, now.month, now.day, 8, 0, 0);
+    endWorkingTime = DateTime(now.year, now.month, now.day, 17, 0, 0);
+    startBreakTime = DateTime(now.year, now.month, now.day, 12, 0, 0);
+    endBreakTime = DateTime(now.year, now.month, now.day, 13, 0, 0);
     jobPosterProfile = [null];
     jobPosting = await JobPostingApiService().getAJobPosting(id.toString());
+    if (jobPosting != null) {
+      jobPosterProfile.addAll(jobPosting!.coverList!);
+      title.text = jobPosting?.title ?? "";
+      jobDescription.text = jobPosting?.description ?? "";
+      belongings.text = jobPosting?.belongings ?? "";
+      notes.text = jobPosting?.notes ?? "";
+      conditionForWork.text = jobPosting?.workCatchPhrase ?? "";
+      postalCode.text = jobPosting?.location?.postalCode ?? "";
+      street.text = jobPosting?.location?.street ?? "";
+      building.text = jobPosting?.location?.building ?? "";
+      accessAddress.text = jobPosting?.location?.accessAddress ?? "";
+      latLong.text = jobPosting!.location!.lat.toString() + ", " + jobPosting!.location!.lng.toString();
+      numberOfRecruitPeople.text = jobPosting?.numberOfRecruit ?? "0";
+      hourlyWag.text = jobPosting?.hourlyWag ?? "";
+      transportExp.text = jobPosting?.transportExpenseFee ?? "";
+      emergencyContact.text = jobPosting?.emergencyContact ?? "";
+      expWelcome = jobPosting?.expAndQualifiedPeopleWelcome ?? false;
+      mealsAvailable = jobPosting?.mealsAssAvailable ?? false;
+      freeClothing = jobPosting?.clothFree ?? false;
+      freeHairStyleAndColor = jobPosting?.hairStyleColorFree ?? false;
+      transportationProvided = jobPosting?.transportExpense ?? false;
+      motorCycleCarCommutingPossible = jobPosting?.motorCycleCarCommutingPossible ?? false;
+      bicycleCommutingPossible = jobPosting?.bicycleCommutingPossible ?? false;
+      selectedPublicSetting = jobPosting?.selectedPublicSetting ?? JapaneseText.openToPublic;
+      if (occupationType.contains(jobPosting?.occupationType)) {
+        selectedOccupationType = jobPosting?.occupationType;
+      }
+      if (specificOccupationList.contains(jobPosting?.majorOccupation)) {
+        selectedSpecificOccupation = jobPosting?.majorOccupation;
+      }
+
+      if (applicationDeadlineList.contains(jobPosting?.applicationDateline)) {
+        selectedDeadline = jobPosting?.applicationDateline;
+      }
+      if (locationList.contains(jobPosting?.jobLocation)) {
+        selectedLocation = jobPosting?.jobLocation;
+      }
+
+      if (jobPosting?.startDate != null && jobPosting?.startDate != "") {
+        startWorkDate = DateToAPIHelper.fromApiToLocal(jobPosting!.startDate!);
+      }
+
+      if (jobPosting?.endDate != null && jobPosting?.endDate != "") {
+        endWorkDate = DateToAPIHelper.fromApiToLocal(jobPosting!.endDate!);
+      }
+
+      if (jobPosting!.startTimeHour != null && jobPosting!.startTimeHour != "") {
+        startWorkingTime = DateTime(now.year, now.month, now.day, int.parse(jobPosting!.startTimeHour.toString().split(":")[0]),
+            int.parse(jobPosting!.startTimeHour.toString().split(":")[1]), 0);
+      }
+      if (jobPosting?.endTimeHour != null && jobPosting?.endTimeHour != "") {
+        endWorkingTime = DateTime(now.year, now.month, now.day, int.parse(jobPosting!.endTimeHour.toString().split(":")[0]),
+            int.parse(jobPosting!.endTimeHour.toString().split(":")[1]), 0);
+      }
+      if (jobPosting?.startBreakTimeHour != null && jobPosting?.startBreakTimeHour != "") {
+        startBreakTime = DateTime(now.year, now.month, now.day, int.parse(jobPosting!.startBreakTimeHour.toString().split(":")[0]),
+            int.parse(jobPosting!.startBreakTimeHour.toString().split(":")[1]), 0);
+      }
+      if (jobPosting?.endBreakTimeHour != null && jobPosting?.endBreakTimeHour != "") {
+        endBreakTime = DateTime(now.year, now.month, now.day, int.parse(jobPosting!.endBreakTimeHour.toString().split(":")[0]),
+            int.parse(jobPosting!.endBreakTimeHour.toString().split(":")[1]), 0);
+      }
+    } else {
+      jobPosting = JobPosting(location: Location());
+    }
     onChangeLoading(false);
   }
 

@@ -1,3 +1,4 @@
+import 'package:air_job_management/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -59,190 +60,100 @@ class PrimaryTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return maxLine == 1
-        ? Container(
-            height: 39,
-            margin: EdgeInsets.only(bottom: marginBottom),
-            child: TextFormField(
-              controller: controller,
-              onChanged: onChange,
-              onTap: onTap ?? null,
-              readOnly: readOnly,
-              obscureText: isObsecure,
-              keyboardType: textInputType,
-              textInputAction: textInputAction,
-              validator: validator != null
-                  ? (value) => validator!(value)
-                  : isEmail && isRequired
-                      ? (value) => FormValidator.validateEmail(value)
-                      : isRequired
-                          ? (value) {
-                              if (validator != null) return validator!(value);
-                              return FormValidator.validateField(value, hint);
-                            }
-                          : null,
-              maxLines: maxLine,
-              autocorrect: false,
-              autovalidateMode: autoValidateMode,
-              textCapitalization: textCapitalization,
-              onFieldSubmitted: onSubmit,
-              style: style,
-              inputFormatters: inputFormat != null
-                  ? [...inputFormat!]
-                  : isPhoneNumber
-                      ? <TextInputFormatter>[
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                          FilteringTextInputFormatter.digitsOnly,
-                        ]
-                      : [],
-              decoration: InputDecoration(
-                hintText: hint,
-                prefixIcon: prefix,
-                hintStyle: TextStyle(fontSize: 15, color: Colors.grey),
-                suffixIcon: readOnly
-                    ? SizedBox()
-                    : suffix == null
-                        ? Icon(
-                            FlutterIcons.asterisk_fou,
-                            color: readOnly
-                                ? AppColor.primaryColor
-                                : isRequired
-                                    ? Colors.red
-                                    : Colors.transparent,
-                            size: 8,
-                          )
-                        : Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              suffix!,
-                              const SpaceX(),
-                              Icon(
-                                FlutterIcons.asterisk_fou,
-                                color: readOnly
-                                    ? AppColor.primaryColor
-                                    : isRequired
-                                        ? Colors.red
-                                        : Colors.transparent,
-                                size: 8,
-                              ),
-                              const SpaceX(16),
-                            ],
-                          ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  borderSide: BorderSide(
-                    color: AppColor.thirdColor,
-                    width: borderWidth,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  borderSide: BorderSide(color: AppColor.primaryColor, width: borderWidth),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  borderSide: BorderSide(color: Colors.red, width: borderWidth),
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  borderSide: BorderSide(color: Colors.red, width: borderWidth),
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              ),
+    return Container(
+      margin: EdgeInsets.only(bottom: marginBottom),
+      child: TextFormField(
+        controller: controller,
+        onChanged: onChange,
+        onTap: onTap ?? null,
+        readOnly: readOnly,
+        obscureText: isObsecure,
+        keyboardType: textInputType,
+        textInputAction: textInputAction,
+        validator: validator != null
+            ? (value) => validator!(value)
+            : isEmail && isRequired
+                ? (value) => FormValidator.validateEmail(value)
+                : isRequired
+                    ? (value) {
+                        if (validator != null) return validator!(value);
+                        return FormValidator.validateField(value, hint);
+                      }
+                    : null,
+        maxLines: maxLine,
+        autocorrect: false,
+        autovalidateMode: autoValidateMode,
+        textCapitalization: textCapitalization,
+        onFieldSubmitted: onSubmit,
+        style: kNormalText.copyWith(
+          fontFamily: "Normal",
+          fontSize: 16,
+        ),
+        inputFormatters: inputFormat != null
+            ? [...inputFormat!]
+            : isPhoneNumber
+                ? <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    FilteringTextInputFormatter.digitsOnly,
+                  ]
+                : [],
+        decoration: InputDecoration(
+          hintText: hint,
+          prefixIcon: prefix,
+          hintStyle: kNormalText.copyWith(fontFamily: "Normal", fontSize: 16, color: AppColor.greyColor),
+          suffixIcon: readOnly
+              ? SizedBox()
+              : suffix == null
+                  ? Icon(
+                      FlutterIcons.asterisk_fou,
+                      color: readOnly
+                          ? AppColor.primaryColor
+                          : isRequired
+                              ? Colors.red
+                              : Colors.transparent,
+                      size: 8,
+                    )
+                  : Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        suffix!,
+                        const SpaceX(),
+                        Icon(
+                          FlutterIcons.asterisk_fou,
+                          color: readOnly
+                              ? AppColor.primaryColor
+                              : isRequired
+                                  ? Colors.red
+                                  : Colors.transparent,
+                          size: 8,
+                        ),
+                        const SpaceX(16),
+                      ],
+                    ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4),
+            borderSide: BorderSide(
+              color: AppColor.thirdColor.withOpacity(0.3),
+              width: borderWidth,
             ),
-          )
-        : Container(
-            margin: EdgeInsets.only(bottom: marginBottom),
-            child: TextFormField(
-              controller: controller,
-              onChanged: onChange,
-              onTap: onTap ?? null,
-              readOnly: readOnly,
-              obscureText: isObsecure,
-              keyboardType: textInputType,
-              textInputAction: textInputAction,
-              validator: validator != null
-                  ? (value) => validator!(value)
-                  : isEmail && isRequired
-                      ? (value) => FormValidator.validateEmail(value)
-                      : isRequired
-                          ? (value) {
-                              if (validator != null) return validator!(value);
-                              return FormValidator.validateField(value, hint);
-                            }
-                          : null,
-              maxLines: maxLine,
-              autocorrect: false,
-              autovalidateMode: autoValidateMode,
-              textCapitalization: textCapitalization,
-              onFieldSubmitted: onSubmit,
-              style: style,
-              inputFormatters: inputFormat != null
-                  ? [...inputFormat!]
-                  : isPhoneNumber
-                      ? <TextInputFormatter>[
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                          FilteringTextInputFormatter.digitsOnly,
-                        ]
-                      : [],
-              decoration: InputDecoration(
-                hintText: hint,
-                prefixIcon: prefix,
-                hintStyle: TextStyle(fontSize: 15, color: Colors.grey),
-                suffixIcon: readOnly
-                    ? SizedBox()
-                    : suffix == null
-                        ? Icon(
-                            FlutterIcons.asterisk_fou,
-                            color: readOnly
-                                ? AppColor.primaryColor
-                                : isRequired
-                                    ? Colors.red
-                                    : Colors.transparent,
-                            size: 8,
-                          )
-                        : Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              suffix!,
-                              const SpaceX(),
-                              Icon(
-                                FlutterIcons.asterisk_fou,
-                                color: readOnly
-                                    ? AppColor.primaryColor
-                                    : isRequired
-                                        ? Colors.red
-                                        : Colors.transparent,
-                                size: 8,
-                              ),
-                              const SpaceX(16),
-                            ],
-                          ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  borderSide: BorderSide(
-                    color: AppColor.thirdColor,
-                    width: borderWidth,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  borderSide: BorderSide(color: AppColor.primaryColor, width: borderWidth),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  borderSide: BorderSide(color: Colors.red, width: borderWidth),
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  borderSide: BorderSide(color: Colors.red, width: borderWidth),
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              ),
-            ),
-          );
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4),
+            borderSide: BorderSide(color: AppColor.primaryColor, width: borderWidth),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4),
+            borderSide: BorderSide(color: Colors.red, width: borderWidth),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4),
+            borderSide: BorderSide(color: Colors.red, width: borderWidth),
+          ),
+          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+        ),
+      ),
+    );
   }
 }
 

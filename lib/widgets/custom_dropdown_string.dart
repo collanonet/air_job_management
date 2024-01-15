@@ -15,7 +15,7 @@ class CustomDropDownWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
-      height: 39,
+      height: 50,
       child: InputDecorator(
         decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(horizontal: 16),

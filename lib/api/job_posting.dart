@@ -51,11 +51,11 @@ class JobPostingApiService {
   }
 
   Future<JobPosting?> getAJobPosting(String uid) async {
-    print("Get job ${uid}");
     try {
       DocumentSnapshot doc = await jobPostingRef.doc(uid).get();
       if (doc.exists) {
         JobPosting jobPosting = JobPosting.fromJson(doc.data() as Map<String, dynamic>);
+        jobPosting.uid = uid;
         return jobPosting;
       } else {
         return null;
@@ -66,9 +66,9 @@ class JobPostingApiService {
     }
   }
 
-  Future<String?> createJob(JobPosting jobPosting) async {
+  Future<String?> createJob(JobPosting? jobPosting) async {
     try {
-      await jobPostingRef.add(jobPosting.toJson());
+      await jobPostingRef.add(jobPosting!.toJson());
       return ConstValue.success;
     } catch (e) {
       debugPrint("Error createJob =>> ${e.toString()}");
@@ -76,9 +76,10 @@ class JobPostingApiService {
     }
   }
 
-  Future<String?> updateJobPostingInfo(JobPosting jobPosting) async {
+  Future<String?> updateJobPostingInfo(JobPosting? jobPosting) async {
+    print("UID is ${jobPosting?.uid}");
     try {
-      await jobPostingRef.doc(jobPosting.uid).update(jobPosting.toJson());
+      await jobPostingRef.doc(jobPosting!.uid).update(jobPosting.toJson());
       return ConstValue.success;
     } catch (e) {
       debugPrint("Error updateJobPostingInfo =>> ${e.toString()}");

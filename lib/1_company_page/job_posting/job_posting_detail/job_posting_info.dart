@@ -5,9 +5,12 @@ import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../pages/job_posting/create_or_edit_job_for_japanese.dart';
 import '../../../widgets/custom_dropdown_string.dart';
@@ -20,7 +23,7 @@ class JobPostingInformationPageForCompany extends StatefulWidget {
   State<JobPostingInformationPageForCompany> createState() => _JobPostingInformationPageForCompanyState();
 }
 
-class _JobPostingInformationPageForCompanyState extends State<JobPostingInformationPageForCompany> {
+class _JobPostingInformationPageForCompanyState extends State<JobPostingInformationPageForCompany> with AfterBuildMixin {
   late JobPostingForCompanyProvider provider;
   ScrollController scrollController2 = ScrollController();
 
@@ -107,20 +110,30 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
             scrollDirection: Axis.horizontal,
             reverse: true,
             itemBuilder: (context, index) {
-              FilePickerResult? file = provider.jobPosterProfile[index];
+              dynamic file = provider.jobPosterProfile[index];
               if (file != null) {
                 return Container(
-                  margin: EdgeInsets.only(right: 16),
+                  margin: const EdgeInsets.only(right: 16),
                   child: Stack(
                     children: [
-                      Container(
-                        width: 320,
-                        height: 162,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(width: 1, color: AppColor.thirdColor),
-                            image: DecorationImage(image: MemoryImage(file.files.first.bytes!), fit: BoxFit.cover)),
-                      ),
+                      file.toString().contains("https")
+                          ? Container(
+                              width: 320,
+                              height: 162,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(width: 1, color: AppColor.thirdColor),
+                              ),
+                              child: Image.network(file.toString(), fit: BoxFit.cover),
+                            )
+                          : Container(
+                              width: 320,
+                              height: 162,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(width: 1, color: AppColor.thirdColor),
+                                  image: DecorationImage(image: MemoryImage(file.files.first.bytes!), fit: BoxFit.cover)),
+                            ),
                       Positioned(
                           top: 5,
                           right: 5,
@@ -130,7 +143,7 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
                                   width: 34,
                                   height: 34,
                                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(17), color: AppColor.primaryColor),
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.close_rounded,
                                     color: Colors.white,
                                     size: 20,
@@ -424,16 +437,20 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
           controller: provider.latLong,
           isRequired: true,
           onChange: (v) {
-            if (v.toString().contains(", ")) {
-              LatLng latLng = LatLng(double.parse(v.split(", ")[0]), double.parse(v.split(", ")[1]));
-              mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: latLng, zoom: 16)));
-            }
+            onChangeCamera(v);
           },
         ),
       ),
       AppSize.spaceHeight8,
       buildMap()
     ]);
+  }
+
+  onChangeCamera(String v) {
+    if (v.toString().contains(", ")) {
+      LatLng latLng = LatLng(double.parse(v.split(", ")[0]), double.parse(v.split(", ")[1]));
+      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: latLng, zoom: 16)));
+    }
   }
 
   late GoogleMapController mapController;
@@ -458,6 +475,7 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
             onCameraMove: (pos) {
               provider.latLong.text = "${pos.target.latitude}, ${pos.target.longitude}";
             },
+            gestureRecognizers: Set()..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
           ),
         ),
         Positioned(
@@ -475,5 +493,12 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
         )
       ],
     );
+  }
+
+  @override
+  void afterBuild(BuildContext context) {
+    if (provider.latLong.text.isNotEmpty) {
+      onChangeCamera(provider.latLong.text);
+    }
   }
 }

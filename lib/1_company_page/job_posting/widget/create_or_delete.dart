@@ -1,4 +1,6 @@
+import 'package:air_job_management/utils/my_route.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../utils/app_color.dart';
 import '../../../utils/app_size.dart';
@@ -17,17 +19,15 @@ class CreateOrDeleteJobPostingForCompany extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             const Spacer(),
-            ButtonWidget(
-                radius: 25,
-                title: "新規登録",
-                color: AppColor.primaryColor,
-                onPress: () {}),
+            SizedBox(
+                width: 130,
+                child: ButtonWidget(
+                    radius: 25, title: "新規登録", color: AppColor.primaryColor, onPress: () => context.go(MyRoute.companyCreateJobPosting))),
             AppSize.spaceWidth16,
-            ButtonWidget(
-                radius: 25,
-                title: "コピーして作成",
-                color: AppColor.primaryColor,
-                onPress: () {}),
+            SizedBox(
+              width: 180,
+              child: ButtonWidget(radius: 25, title: "コピーして作成", color: AppColor.primaryColor, onPress: () {}),
+            ),
           ],
         ),
       ),

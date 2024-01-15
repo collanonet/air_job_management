@@ -38,6 +38,7 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
             controller: scrollController2,
             child: SingleChildScrollView(
               controller: scrollController2,
+              primary: false,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -53,7 +54,7 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                         title: JapaneseText.startWorkingDay,
                         onTap: () async {
                           var date = await showDatePicker(
-                              context: context, initialDate: provider.startWorkDate, firstDate: provider.currentDate, lastDate: DateTime(2100));
+                              context: context, initialDate: provider.startWorkDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
                           if (date != null) {
                             setState(() {
                               provider.startWorkDate = date;

@@ -1,9 +1,13 @@
 import 'package:air_job_management/1_company_page/job_posting/job_posting_detail/job_posting_info.dart';
 import 'package:air_job_management/1_company_page/job_posting/job_posting_detail/job_posting_shift.dart';
 import 'package:air_job_management/1_company_page/job_posting/job_posting_detail/job_posting_shift_frame_list.dart';
+import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/const/const.dart';
+import 'package:air_job_management/helper/date_to_api.dart';
+import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/job_posting.dart';
+import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/my_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +15,15 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
+import '../../2_worker_page/viewprofile/widgets/pickimage.dart';
 import '../../api/user_api.dart';
 import '../../models/company.dart';
-import '../../models/job_posting.dart';
 import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
 import '../../utils/style.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_loading_overlay.dart';
+import '../../widgets/show_message.dart';
 
 class CreateOrEditJobPostingPageForCompany extends StatefulWidget {
   final String? jobPosting;
@@ -30,7 +35,6 @@ class CreateOrEditJobPostingPageForCompany extends StatefulWidget {
 
 class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPostingPageForCompany> with AfterBuildMixin {
   final _formKey = GlobalKey<FormState>();
-  JobPosting? jobPosting;
   late JobPostingForCompanyProvider provider;
   late AuthProvider authProvider;
 
@@ -38,7 +42,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
   Widget build(BuildContext context) {
     authProvider = Provider.of<AuthProvider>(context);
     provider = Provider.of<JobPostingForCompanyProvider>(context);
-    return CustomLoadingOverlay(isLoading: provider.isLoading, child: buildBody());
+    return Form(key: _formKey, child: CustomLoadingOverlay(isLoading: provider.isLoading, child: buildBody()));
   }
 
   buildBody() {
@@ -51,11 +55,11 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
           AppSize.spaceHeight8,
           tabSelection(),
           if (provider.selectedMenu == provider.tabMenu[0])
-            JobPostingInformationPageForCompany()
+            const JobPostingInformationPageForCompany()
           else if (provider.selectedMenu == provider.tabMenu[1])
-            JobPostingShiftPageForCompany()
+            const JobPostingShiftPageForCompany()
           else
-            JobPostingShiftFramePageForCompany(),
+            const JobPostingShiftFramePageForCompany(),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
@@ -65,18 +69,102 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
                     radius: 25,
                     color: AppColor.whiteColor,
                     title: "キャンセル",
-                    onPress: () {},
+                    onPress: () => context.go(MyRoute.companyJobPosting),
                   )),
               AppSize.spaceWidth16,
               SizedBox(
                 width: 200,
-                child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () {}),
+                child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () => saveJobPostingData()),
               ),
             ]),
           )
         ],
       ),
     );
+  }
+
+  saveJobPostingData() async {
+    if (_formKey.currentState!.validate()) {
+      if (provider.latLong.text.isEmpty || !provider.latLong.text.contains(", ")) {
+        MessageWidget.show("無効な緯度と経度 (形式は \"34.xxxxxxxx、135.xxxxxxxx\" である必要があります)");
+      } else if (provider.jobPosterProfile.length == 1) {
+        MessageWidget.show("求人情報の表紙画像を選択してください");
+      } else if (provider.selectedSpecificOccupation == null) {
+        MessageWidget.show("職業を選択してください");
+      } else if (provider.selectedLocation == null) {
+        MessageWidget.show("勤務地を選択してください");
+      } else {
+        try {
+          provider.onChangeLoading(true);
+          List<String> urlPosterList = [];
+          for (int i = 0; i < provider.jobPosterProfile.length; i++) {
+            var file = provider.jobPosterProfile[i];
+            if (file != null) {
+              if (file.toString().contains("https")) {
+                urlPosterList.add(file.toString());
+              } else {
+                String imageUrl = await fileToUrl(file.files.first.bytes!, "job_cover_images");
+                urlPosterList.add(imageUrl);
+              }
+            }
+          }
+          if (urlPosterList.isNotEmpty) {
+            provider.jobPosting?.image = urlPosterList[0];
+          }
+          provider.jobPosting?.company = authProvider.myCompany?.companyName;
+          provider.jobPosting?.companyId = authProvider.myCompany?.uid;
+          provider.jobPosting?.coverList = urlPosterList;
+          provider.jobPosting?.title = provider.title.text;
+          provider.jobPosting?.description = provider.jobDescription.text;
+          provider.jobPosting?.belongings = provider.belongings.text;
+          provider.jobPosting?.notes = provider.notes.text;
+          provider.jobPosting?.workCatchPhrase = provider.conditionForWork.text;
+          provider.jobPosting?.location?.postalCode = provider.conditionForWork.text;
+          provider.jobPosting?.location?.street = provider.street.text;
+          provider.jobPosting?.location?.building = provider.building.text;
+          provider.jobPosting?.location?.accessAddress = provider.accessAddress.text;
+          provider.jobPosting?.location?.accessAddress = provider.accessAddress.text;
+          provider.jobPosting?.location?.lat = provider.latLong.text.split(", ")[0].toString();
+          provider.jobPosting?.location?.lng = provider.latLong.text.split(", ")[1].toString();
+          provider.jobPosting?.numberOfRecruit = provider.numberOfRecruitPeople.text;
+          provider.jobPosting?.hourlyWag = provider.hourlyWag.text;
+          provider.jobPosting?.transportExpenseFee = provider.transportExp.text;
+          provider.jobPosting?.emergencyContact = provider.emergencyContact.text;
+          provider.jobPosting?.expAndQualifiedPeopleWelcome = provider.expWelcome;
+          provider.jobPosting?.mealsAssAvailable = provider.mealsAvailable;
+          provider.jobPosting?.clothFree = provider.freeClothing;
+          provider.jobPosting?.hairStyleColorFree = provider.freeHairStyleAndColor;
+          provider.jobPosting?.transportExpense = provider.transportationProvided;
+          provider.jobPosting?.motorCycleCarCommutingPossible = provider.motorCycleCarCommutingPossible;
+          provider.jobPosting?.bicycleCommutingPossible = provider.bicycleCommutingPossible;
+          provider.jobPosting?.selectedPublicSetting = provider.selectedPublicSetting;
+          provider.jobPosting?.occupationType = provider.selectedOccupationType;
+          provider.jobPosting?.majorOccupation = provider.selectedSpecificOccupation;
+          provider.jobPosting?.jobLocation = provider.selectedLocation;
+          provider.jobPosting?.startTimeHour = dateTimeToHourAndMinute(provider.startWorkingTime);
+          provider.jobPosting?.endTimeHour = dateTimeToHourAndMinute(provider.endWorkingTime);
+          provider.jobPosting?.startBreakTimeHour = dateTimeToHourAndMinute(provider.startBreakTime);
+          provider.jobPosting?.endBreakTimeHour = dateTimeToHourAndMinute(provider.endBreakTime);
+          provider.jobPosting?.startDate = DateToAPIHelper.convertDateToString(provider.startWorkDate);
+          provider.jobPosting?.endDate = DateToAPIHelper.convertDateToString(provider.endWorkDate);
+
+          String? success = provider.jobPosting?.uid != null
+              ? await JobPostingApiService().updateJobPostingInfo(provider.jobPosting)
+              : await JobPostingApiService().createJob(provider.jobPosting);
+          provider.onChangeLoading(false);
+          if (success == ConstValue.success) {
+            MessageWidget.show(provider.jobPosting?.uid != null ? JapaneseText.successUpdate : JapaneseText.successCreate);
+            await provider.getAllJobPost(authProvider.myCompany?.uid ?? "");
+            context.go(MyRoute.companyJobPosting);
+          } else {
+            MessageWidget.show(provider.jobPosting?.uid != null ? JapaneseText.failUpdate : JapaneseText.failCreate);
+          }
+        } catch (e) {
+          provider.onChangeLoading(false);
+          MessageWidget.show(e.toString());
+        }
+      }
+    }
   }
 
   topBarWidget() {
@@ -244,7 +332,11 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
         context.go(MyRoute.companyLogin);
       }
     } else {
-      await provider.onInitForJobPostingDetail(widget.jobPosting);
+      if (widget.jobPosting != null) {
+        await provider.onInitForJobPostingDetail(widget.jobPosting);
+      } else {
+        provider.initialData();
+      }
     }
   }
 }

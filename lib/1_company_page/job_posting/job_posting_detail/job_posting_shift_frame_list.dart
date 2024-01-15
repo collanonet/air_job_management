@@ -17,8 +17,8 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
       child: Container(
         width: AppSize.getDeviceWidth(context),
         decoration: boxDecorationNoTopRadius,
-        child: Center(
-          child: Text("JobPostingInformationPageForCompany"),
+        child: const Center(
+          child: Text("We are going to develop this page soon!!!"),
         ),
       ),
     );

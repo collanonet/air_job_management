@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:air_job_management/api/company.dart';
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/models/company.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
+import '../const/const.dart';
 import '../models/user.dart';
 import '../utils/encrypt_utils.dart';
 
@@ -162,6 +164,48 @@ class AuthProvider with ChangeNotifier {
       setLoading(false);
       if (e.toString().contains("user-not-found")) {
         setErrorMessage("ユーザーが見つかりません");
+      } else if (e.toString().contains("wrong-password")) {
+        setErrorMessage("無効な,ID, パスワードです");
+      } else if (e.toString().contains("invalid-email")) {
+        setErrorMessage("無効なメールアドレス");
+      } else {
+        setErrorMessage("何かがうまくいかなかった");
+      }
+      notifyListeners();
+      return null;
+    }
+  }
+
+  Future<Company?> createCompanyAccount(String email, String password) async {
+    try {
+      UserCredential authResult = await firebaseAuth.createUserWithEmailAndPassword(email: email.trim(), password: password);
+      User? user = authResult.user;
+      Company company = Company(
+        companyUserId: user!.uid,
+        email: email.trim(),
+        companyName: '',
+      );
+      String base64Encrypted = EncryptUtils.encryptPassword(password);
+      company.hashPassword = base64Encrypted;
+      String? message = await CompanyApiServices().createCompany(company);
+      if (message == ConstValue.success) {
+        setLoading(false);
+        return company;
+      } else {
+        setLoading(false);
+        await firebaseAuth.signOut();
+        setErrorMessage(message);
+        return null;
+      }
+    } on SocketException {
+      setLoading(false);
+      setErrorMessage("No internet, please connect to internet");
+      return null;
+    } catch (e) {
+      setLoading(false);
+      debugPrint("Error while register account $e");
+      if (e.toString().contains("email-already-in-use")) {
+        setErrorMessage("あなたのメールアドレスはすでに別のアカウントで使用されています。");
       } else if (e.toString().contains("wrong-password")) {
         setErrorMessage("無効な,ID, パスワードです");
       } else if (e.toString().contains("invalid-email")) {

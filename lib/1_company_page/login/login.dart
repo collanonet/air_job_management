@@ -1,8 +1,6 @@
-import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
-import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/utils/respnsive.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
@@ -14,7 +12,9 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/company.dart';
 import '../../utils/japanese_text.dart';
+import '../../utils/my_route.dart';
 
 class LoginPageForCompany extends StatefulWidget {
   const LoginPageForCompany({super.key});
@@ -26,8 +26,7 @@ class LoginPageForCompany extends StatefulWidget {
 class _LoginPageForCompanyState extends State<LoginPageForCompany> {
   late AuthProvider authProvider;
   bool isShowPassword = false;
-  TextEditingController email =
-      TextEditingController(text: 'sopheadavid+10@yandex.com');
+  TextEditingController email = TextEditingController(text: 'sopheadavid+10@yandex.com');
   TextEditingController password = TextEditingController(text: '123456');
 
   @override
@@ -61,8 +60,7 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
       ),
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.symmetric(vertical: 50),
-      width: AppSize.getDeviceWidth(context) *
-          (Responsive.isDesktop(context) ? 0.5 : 0.8),
+      width: AppSize.getDeviceWidth(context) * (Responsive.isDesktop(context) ? 0.5 : 0.8),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -72,8 +70,7 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
             children: [
               Image.asset(
                 "assets/logo.png",
-                width: AppSize.getDeviceWidth(context) *
-                    (Responsive.isMobile(context) ? 0.6 : 0.25),
+                width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.25),
               ),
               Positioned(
                   right: 0,
@@ -81,11 +78,8 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
                   bottom: -30,
                   child: Center(
                     child: Text(
-                      "求人企業",
-                      style: TextStyle(
-                          color: AppColor.primaryColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18),
+                      authProvider.isLogin ? "ログイン" : "新規登録",
+                      style: TextStyle(color: AppColor.primaryColor, fontWeight: FontWeight.w600, fontSize: 18),
                     ),
                   ))
             ],
@@ -93,32 +87,21 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
           AppSize.spaceHeight30,
           AppSize.spaceHeight16,
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppSize.getDeviceWidth(context) * 0.1),
-            child:
-                Align(alignment: Alignment.centerLeft, child: Text("メールアドレス")),
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            child: Align(alignment: Alignment.centerLeft, child: Text("メールアドレス")),
           ),
           AppSize.spaceHeight5,
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppSize.getDeviceWidth(context) * 0.1),
-            child: PrimaryTextField(
-                isRequired: true,
-                hint: "sample@sample.com",
-                controller: email,
-                isObsecure: false),
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            child: PrimaryTextField(isRequired: true, hint: "sample@sample.com", controller: email, isObsecure: false),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppSize.getDeviceWidth(context) * 0.1),
-            child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(JapaneseText.password)),
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            child: Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.password)),
           ),
           AppSize.spaceHeight5,
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
             child: PrimaryTextField(
               hint: "⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺",
               controller: password,
@@ -131,8 +114,7 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
                           isShow = !isShow;
                         });
                       },
-                      icon:
-                          Icon(FlutterIcons.eye_ent, color: AppColor.greyColor),
+                      icon: Icon(FlutterIcons.eye_ent, color: AppColor.greyColor),
                     )
                   : IconButton(
                       onPressed: () {
@@ -140,52 +122,50 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
                           isShow = !isShow;
                         });
                       },
-                      icon: Icon(FlutterIcons.eye_with_line_ent,
-                          color: AppColor.greyColor),
+                      icon: Icon(FlutterIcons.eye_with_line_ent, color: AppColor.greyColor),
                     ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppSize.getDeviceWidth(context) * 0.1),
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                  onPressed: () => MessageWidget.show(
-                      "We are going to develop this function soon!"),
-                  child: Text(
-                    "パスワードをお忘れの方はこちら＞",
-                    style: kNormalText.copyWith(
-                        fontSize: 12, color: AppColor.primaryColor),
-                  )),
-            ),
-          ),
+          authProvider.isLogin
+              ? Padding(
+                  padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                        onPressed: () => MessageWidget.show("We are going to develop this function soon!"),
+                        child: Text(
+                          "パスワードをお忘れの方はこちら＞",
+                          style: kNormalText.copyWith(fontSize: 12, color: AppColor.primaryColor),
+                        )),
+                  ),
+                )
+              : SizedBox(),
           AppSize.spaceHeight30,
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
             child: SizedBox(
               width: AppSize.getDeviceWidth(context),
-              child: ButtonWidget(
-                  radius: 25,
-                  title: "ログイン",
-                  color: AppColor.primaryColor,
-                  onPress: () => onLogin()),
+              child:
+                  ButtonWidget(radius: 25, title: authProvider.isLogin ? "ログインする" : "新規登録する", color: AppColor.primaryColor, onPress: () => onLogin()),
             ),
           ),
           AppSize.spaceHeight16,
           //Register Account as a gig-worker
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
             child: SizedBox(
               width: AppSize.getDeviceWidth(context),
               child: ButtonWidget(
                 radius: 25,
                 color: AppColor.whiteColor,
-                title: "新規登録をする方はこちら",
-                onPress: () => MessageWidget.show(
-                    "We are going to develop this function soon!"),
+                title: authProvider.isLogin ? "新規アカウント登録する方" : "すでにアカウントをお持ちの方",
+                onPress: () {
+                  if (authProvider.isLogin) {
+                    authProvider.onChange(false);
+                  } else {
+                    authProvider.onChange(true);
+                  }
+                },
               ),
             ),
           ),
@@ -199,8 +179,14 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
       MessageWidget.show("スタッフ番号またはパスワードが必要です");
     } else {
       authProvider.setLoading(true);
-      Company? user = await authProvider.loginAsCompanyAccount(
-          email.text.trim(), password.text.trim());
+      Company? user;
+
+      ///Login or Register conditions
+      if (authProvider.isLogin) {
+        user = await authProvider.loginAsCompanyAccount(email.text.trim(), password.text.trim());
+      } else {
+        user = await authProvider.createCompanyAccount(email.text.trim(), password.text.trim());
+      }
       if (user != null) {
         authProvider.setCompany = user;
         context.go(MyRoute.companyDashboard);
@@ -214,9 +200,7 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
     return Container(
       width: 150,
       height: 45,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: isSelected ? AppColor.primaryColor : AppColor.secondaryColor),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: isSelected ? AppColor.primaryColor : AppColor.secondaryColor),
       child: InkWell(
         onTap: () {
           if (title == "Login") {
@@ -228,8 +212,7 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
         child: Center(
           child: Text(
             title,
-            style: TextStyle(
-                color: isSelected ? AppColor.whiteColor : AppColor.blackColor),
+            style: TextStyle(color: isSelected ? AppColor.whiteColor : AppColor.blackColor),
           ),
         ),
       ),

@@ -16,7 +16,7 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
       height: 110,
       width: AppSize.getDeviceWidth(context),
       padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+      margin: const EdgeInsets.only(bottom: 16, left: 0, right: 0),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), border: Border.all(width: 2, color: AppColor.primaryColor)),
       child: InkWell(
         onTap: () => context.go("/company/job-posting/${jobPosting.uid}"),
@@ -62,7 +62,7 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
               flex: 2,
             ),
             Container(
-                width: 180,
+                width: 190,
                 height: 36,
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
                 child: Material(

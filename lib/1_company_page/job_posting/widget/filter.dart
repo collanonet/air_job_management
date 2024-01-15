@@ -16,17 +16,21 @@ class JobPostingFilterFilterDataWidgetForCompany extends StatelessWidget {
     var provider = Provider.of<JobPostingForCompanyProvider>(context);
     return Container(
       width: AppSize.getDeviceWidth(context),
-      height: 140,
       decoration: boxDecoration,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.only(left: 32, right: 32, top: 20, bottom: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "求人タイトル",
+            "求人ひな形　検索",
             style: titleStyle,
           ),
           AppSize.spaceHeight16,
+          Text(
+            "求人タイトル",
+            style: kNormalText.copyWith(fontSize: 12, fontFamily: "Normal"),
+          ),
+          AppSize.spaceHeight5,
           SizedBox(
             width: AppSize.getDeviceWidth(context) * 0.5,
             child: PrimaryTextField(

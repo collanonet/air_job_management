@@ -75,7 +75,7 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> wit
                 child: Container(
               decoration: boxDecoration,
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.only(left: 32, right: 32, top: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -100,11 +100,15 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> wit
                     Row(
                       children: [
                         Expanded(
-                          child: Center(
-                              child: Text(
-                            "求人タイトル",
-                            style: normalTextStyle.copyWith(fontSize: 13),
-                          )),
+                          child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 80),
+                                child: Text(
+                                  "求人タイトル",
+                                  style: normalTextStyle.copyWith(fontSize: 13),
+                                ),
+                              )),
                           flex: 4,
                         ),
                         Expanded(
