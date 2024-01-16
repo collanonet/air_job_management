@@ -333,10 +333,11 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                     context: context,
                     onApprove: () async {
                       Navigator.pop(context);
-                      bool isSuccess = await SearchJobApi()
-                          .createJobRequest(widget.docId, auth.myUser?.uid ?? "", "${auth.myUser?.firstName} ${auth.myUser?.lastName}");
+                      bool isSuccess = await SearchJobApi().createJobRequest(
+                          widget.docId, auth.myUser?.uid ?? "", "${auth.myUser?.firstName} ${auth.myUser?.lastName}", selectedShiftList);
                       if (isSuccess) {
                         toastMessageSuccess(JapaneseText.successCreate, context);
+                        Navigator.pop(context);
                       } else {
                         toastMessageError(errorMessage, context);
                       }

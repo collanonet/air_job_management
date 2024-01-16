@@ -26,8 +26,7 @@ import '../utils/style.dart';
 class LoginPage extends StatefulWidget {
   final bool isFromWorker;
   final bool isFullTime;
-  const LoginPage(
-      {super.key, required this.isFromWorker, required this.isFullTime});
+  const LoginPage({super.key, required this.isFromWorker, required this.isFullTime});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -71,8 +70,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.symmetric(vertical: 16),
-      width: AppSize.getDeviceWidth(context) *
-          (Responsive.isDesktop(context) ? 0.5 : 0.8),
+      width: AppSize.getDeviceWidth(context) * (Responsive.isDesktop(context) ? 0.5 : 0.8),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -82,8 +80,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               Image.asset(
                 "assets/logo.png",
-                width: AppSize.getDeviceWidth(context) *
-                    (Responsive.isMobile(context) ? 0.6 : 0.25),
+                width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.25),
               ),
               Positioned(
                   right: 0,
@@ -92,10 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Center(
                     child: Text(
                       "ログイン",
-                      style: TextStyle(
-                          color: AppColor.primaryColor,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18),
+                      style: TextStyle(color: AppColor.primaryColor, fontWeight: FontWeight.w600, fontSize: 18),
                     ),
                   ))
             ],
@@ -107,8 +101,7 @@ class _LoginPageState extends State<LoginPage> {
               title: "Googleでログイン",
               colors: const Color(0xffCDD6DD).withOpacity(0.3),
               onTap: () async {
-                MyUser? user = await SocialLogin()
-                    .googleSignIn(widget.isFullTime, authProvider);
+                MyUser? user = await SocialLogin().googleSignIn(widget.isFullTime, authProvider);
                 if (user != null) {
                   if (user.nameKanJi != "" || user.nameFu != "") {
                     if (user.isFullTimeStaff == true) {
@@ -118,11 +111,9 @@ class _LoginPageState extends State<LoginPage> {
                     }
                   } else {
                     if (widget.isFullTime) {
-                      MyPageRoute.goTo(
-                          context, NewFormRegistrationPage(myUser: user));
+                      MyPageRoute.goTo(context, NewFormRegistrationPage(myUser: user));
                     } else {
-                      MyPageRoute.goTo(context,
-                          NewFormRegistrationForPartTimePage(myUser: user));
+                      MyPageRoute.goTo(context, NewFormRegistrationForPartTimePage(myUser: user));
                     }
                   }
                 } else {
@@ -135,8 +126,7 @@ class _LoginPageState extends State<LoginPage> {
               title: "Xでログイン",
               colors: const Color(0xff495960),
               onTap: () async {
-                MyUser? user = await SocialLogin()
-                    .twitterSignIn(widget.isFullTime, authProvider);
+                MyUser? user = await SocialLogin().twitterSignIn(widget.isFullTime, authProvider);
                 if (user != null) {
                   if (user.nameKanJi != "" || user.nameFu != "") {
                     if (user.isFullTimeStaff == true) {
@@ -146,11 +136,9 @@ class _LoginPageState extends State<LoginPage> {
                     }
                   } else {
                     if (widget.isFullTime) {
-                      MyPageRoute.goTo(
-                          context, NewFormRegistrationPage(myUser: user));
+                      MyPageRoute.goTo(context, NewFormRegistrationPage(myUser: user));
                     } else {
-                      MyPageRoute.goTo(context,
-                          NewFormRegistrationForPartTimePage(myUser: user));
+                      MyPageRoute.goTo(context, NewFormRegistrationForPartTimePage(myUser: user));
                     }
                   }
                 } else {
@@ -171,32 +159,21 @@ class _LoginPageState extends State<LoginPage> {
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppSize.getDeviceWidth(context) * 0.1),
-            child:
-                Align(alignment: Alignment.centerLeft, child: Text("メールアドレス")),
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            child: Align(alignment: Alignment.centerLeft, child: Text("メールアドレス")),
           ),
           AppSize.spaceHeight5,
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppSize.getDeviceWidth(context) * 0.1),
-            child: PrimaryTextField(
-                isRequired: true,
-                hint: "sample@sample.com",
-                controller: email,
-                isObsecure: false),
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            child: PrimaryTextField(isRequired: true, hint: "sample@sample.com", controller: email, isObsecure: false),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppSize.getDeviceWidth(context) * 0.1),
-            child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(JapaneseText.password)),
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            child: Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.password)),
           ),
           AppSize.spaceHeight5,
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
             child: PrimaryTextField(
               hint: "⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺",
               controller: password,
@@ -209,8 +186,7 @@ class _LoginPageState extends State<LoginPage> {
                           isShow = !isShow;
                         });
                       },
-                      icon:
-                          Icon(FlutterIcons.eye_ent, color: AppColor.greyColor),
+                      icon: Icon(FlutterIcons.eye_ent, color: AppColor.greyColor),
                     )
                   : IconButton(
                       onPressed: () {
@@ -218,29 +194,25 @@ class _LoginPageState extends State<LoginPage> {
                           isShow = !isShow;
                         });
                       },
-                      icon: Icon(FlutterIcons.eye_with_line_ent,
-                          color: AppColor.greyColor),
+                      icon: Icon(FlutterIcons.eye_with_line_ent, color: AppColor.greyColor),
                     ),
             ),
           ),
           AppSize.spaceHeight16,
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
             child: SizedBox(
               width: AppSize.getDeviceWidth(context),
               child: ButtonWidget(
                   title: authProvider.isLogin ? "ログイン" : "Register",
                   color: AppColor.secondaryColor,
-                  onPress: () =>
-                      authProvider.isLogin ? onLogin() : onRegister()),
+                  onPress: () => authProvider.isLogin ? onLogin() : onRegister()),
             ),
           ),
-          Spacer(),
+          const Spacer(),
           //Register Account as a gig-worker
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
             child: SizedBox(
               width: AppSize.getDeviceWidth(context),
               child: ButtonWidget(
@@ -252,7 +224,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           AppSize.spaceHeight16,
           Text(
-            "Version 1.0.0+3",
+            "Version 1.0.0+2",
             style: normalTextStyle,
           ),
         ],
@@ -262,20 +234,12 @@ class _LoginPageState extends State<LoginPage> {
 
   onRegister() {}
 
-  socialLoginButton(
-      {required String assets,
-      required String title,
-      required Color colors,
-      required Function onTap}) {
+  socialLoginButton({required String assets, required String title, required Color colors, required Function onTap}) {
     return Container(
       height: 50,
       width: AppSize.getDeviceWidth(context) - 32,
-      margin: EdgeInsets.symmetric(
-          horizontal: AppSize.getDeviceWidth(context) * 0.1),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: colors,
-          border: Border.all(width: 1, color: AppColor.thirdColor)),
+      margin: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: colors, border: Border.all(width: 1, color: AppColor.thirdColor)),
       child: CupertinoButton(
         padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
         child: Stack(
@@ -289,11 +253,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Text(
                   title,
                   style: normalTextStyle.copyWith(
-                      color: title.contains("X")
-                          ? Colors.white
-                          : const Color(0xff495960),
-                      fontSize: 18,
-                      fontFamily: "Light"),
+                      color: title.contains("X") ? Colors.white : const Color(0xff495960), fontSize: 18, fontFamily: "Light"),
                 ),
               ),
             ),
@@ -322,8 +282,7 @@ class _LoginPageState extends State<LoginPage> {
       MessageWidget.show("スタッフ番号またはパスワードが必要です");
     } else {
       authProvider.setLoading(true);
-      MyUser? user = await authProvider.loginAccount(
-          email.text.trim(), password.text.trim());
+      MyUser? user = await authProvider.loginAccount(email.text.trim(), password.text.trim());
       if (user != null) {
         if (user.role == RoleHelper.admin) {
           if (user.isFullTimeStaff == true) {
@@ -358,9 +317,7 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       width: 150,
       height: 45,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: isSelected ? AppColor.primaryColor : AppColor.secondaryColor),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: isSelected ? AppColor.primaryColor : AppColor.secondaryColor),
       child: InkWell(
         onTap: () {
           if (title == "Login") {
@@ -372,8 +329,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Center(
           child: Text(
             title,
-            style: TextStyle(
-                color: isSelected ? AppColor.whiteColor : AppColor.blackColor),
+            style: TextStyle(color: isSelected ? AppColor.whiteColor : AppColor.blackColor),
           ),
         ),
       ),
