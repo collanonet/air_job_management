@@ -111,6 +111,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
           if (urlPosterList.isNotEmpty) {
             provider.jobPosting?.image = urlPosterList[0];
           }
+          provider.jobPosting?.employmentType ??= JapaneseText.partTimeJob;
           provider.jobPosting?.company = authProvider.myCompany?.companyName;
           provider.jobPosting?.companyId = authProvider.myCompany?.uid;
           provider.jobPosting?.coverList = urlPosterList;
@@ -183,7 +184,8 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                    image: DecorationImage(image: NetworkImage(authProvider.myCompany?.companyProfile ?? ConstValue.defaultImage), fit: BoxFit.cover),
+                    image:
+                        DecorationImage(image: NetworkImage(authProvider.myCompany?.companyProfile ?? ConstValue.defaultBgImage), fit: BoxFit.cover),
                     shape: BoxShape.circle,
                     color: AppColor.primaryColor),
                 alignment: Alignment.center,
@@ -197,7 +199,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        "${authProvider.myCompany?.companyName}",
+                        authProvider.myCompany?.companyName ?? "",
                         style: normalTextStyle.copyWith(fontSize: 20, color: AppColor.blackColor, fontFamily: "Bold"),
                       ),
                       AppSize.spaceWidth32,
@@ -209,7 +211,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
                   ),
                   AppSize.spaceHeight5,
                   Text(
-                    "${authProvider.myCompany?.manager?.first.kanji} ${authProvider.myCompany?.manager?.first.kana}",
+                    authProvider.myCompany?.companyBranch ?? "",
                     style: normalTextStyle.copyWith(fontSize: 16, color: AppColor.blackColor, fontFamily: "Normal"),
                   ),
                 ],
@@ -336,6 +338,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
         await provider.onInitForJobPostingDetail(widget.jobPosting);
       } else {
         provider.initialData();
+        await provider.onInitForJobPostingDetail(widget.jobPosting);
       }
     }
   }

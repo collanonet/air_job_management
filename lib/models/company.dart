@@ -1,6 +1,7 @@
 class Company {
   String? companyUserId;
   String? companyName;
+  String? companyBranch;
   String? companyLatLng;
   String? companyProfile;
   String? postalCode;
@@ -44,9 +45,11 @@ class Company {
       this.numberOfJobOpening,
       this.companyUserId,
       this.status,
-      this.hashPassword});
+      this.hashPassword,
+      this.companyBranch});
 
   factory Company.fromJson(Map<String, dynamic> json) => Company(
+        companyBranch: json["company_branch"],
         hashPassword: json["hash_password"],
         companyUserId: json["company_user_id"],
         area: json["area"],

@@ -180,11 +180,7 @@ class AuthProvider with ChangeNotifier {
     try {
       UserCredential authResult = await firebaseAuth.createUserWithEmailAndPassword(email: email.trim(), password: password);
       User? user = authResult.user;
-      Company company = Company(
-        companyUserId: user!.uid,
-        email: email.trim(),
-        companyName: '',
-      );
+      Company company = Company(companyUserId: user!.uid, email: email.trim(), companyName: '', companyProfile: ConstValue.defaultBgImage);
       String base64Encrypted = EncryptUtils.encryptPassword(password);
       company.hashPassword = base64Encrypted;
       String? message = await CompanyApiServices().createCompany(company);

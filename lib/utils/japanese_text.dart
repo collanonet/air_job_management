@@ -1,4 +1,8 @@
 class JapaneseText {
+  static String hired = "確定済";
+  static String working = "稼働済";
+  static String canceled = "キャンセル";
+
   static String expWelcome = "未経験歓迎";
   static String mealsAvailable = "まかないあり";
   static String freeClothing = "服装自由";
@@ -704,4 +708,10 @@ class EmploymentStatus {
   static String part = JapaneseText.gigWork;
   static String fullTime = JapaneseText.fullTimeEmployee;
   static String partTime = JapaneseText.partTimeEmployee;
+}
+
+class JobStatus {
+  static String hired = JapaneseText.hired;
+  static String working = JapaneseText.working;
+  static String cancel = JapaneseText.canceled;
 }
