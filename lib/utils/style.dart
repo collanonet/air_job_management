@@ -5,6 +5,11 @@ BoxDecoration boxDecoration = BoxDecoration(
   borderRadius: BorderRadius.circular(20),
 );
 
+BoxDecoration boxDecoration7 = BoxDecoration(
+  color: Colors.white,
+  borderRadius: BorderRadius.circular(7),
+);
+
 BoxDecoration boxDecorationNoTopRadius = const BoxDecoration(
   color: Colors.white,
   borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),

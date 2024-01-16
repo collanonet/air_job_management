@@ -16,6 +16,17 @@ class DateToAPIHelper {
     return DateTime.parse(dateTime);
   }
 
+  static DateTime timeToDateTime(String date, {DateTime? dateTime}) {
+    if (date.isEmpty || !date.contains(":")) {
+      return DateTime(5000);
+    }
+    DateTime now = DateTime.now();
+    if (dateTime != null) {
+      now = dateTime;
+    }
+    return DateTime(now.year, now.month, now.day, int.parse(date.split(":")[0]), int.parse(date.split(":")[1]));
+  }
+
   static String timeFormat(DateTime? dateTime) {
     if (dateTime == null) {
       return "00:00";

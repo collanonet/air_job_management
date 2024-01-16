@@ -1,5 +1,6 @@
 import 'package:air_job_management/helper/currency_format.dart';
 import 'package:air_job_management/helper/japan_date_time.dart';
+import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -35,19 +36,15 @@ class _PartTimeJobState extends State<PartTimeJob> {
     try {
       var data = await FirebaseFirestore.instance
           .collection("search_job")
-          .where("end_date",
-              isGreaterThanOrEqualTo:
-                  MyDateTimeUtils.convertDateToString(_selectedDate))
+          .where("end_date", isGreaterThanOrEqualTo: MyDateTimeUtils.convertDateToString(_selectedDate))
           .get();
       if (data.size > 0) {
         for (var d in data.docs) {
           var info = SearchJob.fromJson(d.data());
           if (info.employmentType != "正社員") {
             info.uid = d.id;
-            DateTime startDate =
-                MyDateTimeUtils.fromApiToLocal(info.startDate!);
-            startDate =
-                DateTime(startDate.year, startDate.month, startDate.day, 0, 0);
+            DateTime startDate = MyDateTimeUtils.fromApiToLocal(info.startDate!);
+            startDate = DateTime(startDate.year, startDate.month, startDate.day, 0, 0);
             DateTime endDate = MyDateTimeUtils.fromApiToLocal(info.endDate!);
             endDate = DateTime(endDate.year, endDate.month, endDate.day, 0, 0);
             if (isDateInRange(_selectedDate, startDate, endDate)) {
@@ -68,10 +65,8 @@ class _PartTimeJobState extends State<PartTimeJob> {
     }
   }
 
-  bool isDateInRange(
-      DateTime chosenDate, DateTime startDate, DateTime endDate) {
-    return (chosenDate.isAfter(startDate) || chosenDate == startDate) &&
-        (chosenDate.isBefore(endDate) || chosenDate == endDate);
+  bool isDateInRange(DateTime chosenDate, DateTime startDate, DateTime endDate) {
+    return (chosenDate.isAfter(startDate) || chosenDate == startDate) && (chosenDate.isBefore(endDate) || chosenDate == endDate);
   }
 
   @override
@@ -79,8 +74,7 @@ class _PartTimeJobState extends State<PartTimeJob> {
     super.initState();
     _dateList.add(_selectedDate);
     for (var i = 1; i <= 6; ++i) {
-      _dateList.add(DateTime(
-          _selectedDate.year, _selectedDate.month, _selectedDate.day + i));
+      _dateList.add(DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day + i));
     }
     onGetData();
   }
@@ -89,6 +83,7 @@ class _PartTimeJobState extends State<PartTimeJob> {
 
   // lists dropdown
   List<String> list = <String>[
+    JapaneseText.all,
     '海外',
     '北海道',
     '青森県',
@@ -143,7 +138,7 @@ class _PartTimeJobState extends State<PartTimeJob> {
   Widget build(BuildContext context) {
     FavoriteProvider favorite = Provider.of<FavoriteProvider>(context);
     return Scaffold(
-        backgroundColor: Color.fromARGB(255, 240, 240, 240),
+        backgroundColor: const Color(0xffF2F2F2),
         body: loading.value
             ? Center(
                 child: LoadingWidget(AppColor.primaryColor),
@@ -174,8 +169,7 @@ class _PartTimeJobState extends State<PartTimeJob> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "${toJapanMonthAndYearDay(_selectedDate)}",
-                          style: kNormalText.copyWith(
-                              color: AppColor.primaryColor),
+                          style: kNormalText.copyWith(color: AppColor.primaryColor),
                         ),
                       ),
                       AppSize.spaceHeight16,
@@ -185,18 +179,16 @@ class _PartTimeJobState extends State<PartTimeJob> {
                           child: CustomScrollView(
                             slivers: [
                               SliverGrid(
-                                gridDelegate:
-                                    const SliverGridDelegateWithMaxCrossAxisExtent(
-                                        maxCrossAxisExtent: 350,
-                                        mainAxisSpacing: 16,
-                                        crossAxisSpacing: 16,
-                                        childAspectRatio: 10 / 15,
-                                        mainAxisExtent: 240),
+                                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                    maxCrossAxisExtent: 350,
+                                    mainAxisSpacing: 16,
+                                    crossAxisSpacing: 16,
+                                    childAspectRatio: 10 / 15,
+                                    mainAxisExtent: 260),
                                 delegate: SliverChildBuilderDelegate(
                                   (BuildContext context, int index) {
                                     var info = jobSearchList[index];
-                                    return product(context, info, info.uid,
-                                        favorite, index);
+                                    return product(context, info, info.uid, favorite, index);
                                   },
                                   childCount: jobSearchList.length,
                                 ),
@@ -220,9 +212,7 @@ class _PartTimeJobState extends State<PartTimeJob> {
                 width: 160,
                 height: 50,
                 decoration: BoxDecoration(
-                    color: AppColor.secondaryColor,
-                    border: Border.all(width: 3, color: Colors.white),
-                    borderRadius: BorderRadius.circular(25)),
+                    color: AppColor.secondaryColor, border: Border.all(width: 3, color: Colors.white), borderRadius: BorderRadius.circular(25)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -246,15 +236,13 @@ class _PartTimeJobState extends State<PartTimeJob> {
         ));
   }
 
-  Widget product(BuildContext context, SearchJob info, var docId,
-      FavoriteProvider fa, int index) {
+  Widget product(BuildContext context, SearchJob info, var docId, FavoriteProvider fa, int index) {
     return Container(
       alignment: Alignment.center,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16), color: AppColor.whiteColor),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: AppColor.whiteColor),
       child: Material(
         color: Colors.transparent,
-        child: GestureDetector(
+        child: InkWell(
           onTap: () {
             Navigator.push(
               context,
@@ -284,14 +272,8 @@ class _PartTimeJobState extends State<PartTimeJob> {
                         ),
                       ),
                       child: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(16),
-                            topLeft: Radius.circular(16)),
-                        child: Image.network(
-                            info.image != null && info.image != ""
-                                ? info.image!
-                                : ConstValue.defaultBgImage,
-                            fit: BoxFit.cover),
+                        borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16)),
+                        child: Image.network(info.image != null && info.image != "" ? info.image! : ConstValue.defaultBgImage, fit: BoxFit.cover),
                       ),
                     ),
                   ),
@@ -324,17 +306,12 @@ class _PartTimeJobState extends State<PartTimeJob> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 5,
-                ),
+                padding: const EdgeInsets.all(8),
                 child: Text(
                   info.title.toString(),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
-                  style: normalTextStyle.copyWith(
-                      fontSize: 14,
-                      color: AppColor.primaryColor,
-                      fontWeight: FontWeight.w600),
+                  style: normalTextStyle.copyWith(fontSize: 14, color: AppColor.primaryColor, fontWeight: FontWeight.w600),
                 ),
               ),
               Padding(
@@ -344,8 +321,7 @@ class _PartTimeJobState extends State<PartTimeJob> {
                   children: [
                     Text(
                       "${toJapanMonthAndDay(info.createdAt ?? _selectedDate)} ${info.startTimeHour}~${info.endTimeHour}",
-                      style: kNormalText.copyWith(
-                          fontSize: 10, color: AppColor.greyColor),
+                      style: kNormalText.copyWith(fontSize: 10, color: AppColor.greyColor),
                     ),
                     // Text(info.totime.toString()),
                   ],
@@ -357,15 +333,10 @@ class _PartTimeJobState extends State<PartTimeJob> {
                 ),
                 child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                        CurrencyFormatHelper.displayData(
-                            info.amountOfPayrollFrom),
+                    child: Text(CurrencyFormatHelper.displayData(info.hourlyWag),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: normalTextStyle.copyWith(
-                            fontSize: 16,
-                            color: AppColor.primaryColor,
-                            fontWeight: FontWeight.w600))),
+                        style: normalTextStyle.copyWith(fontSize: 16, color: AppColor.primaryColor, fontWeight: FontWeight.w600))),
               )
             ],
           ),
@@ -388,11 +359,7 @@ class _PartTimeJobState extends State<PartTimeJob> {
               width: 60,
               height: 60,
               margin: const EdgeInsets.only(right: 16),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  color: _selectedDate == date
-                      ? AppColor.primaryColor
-                      : Colors.white),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: _selectedDate == date ? AppColor.primaryColor : Colors.white),
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
@@ -408,19 +375,11 @@ class _PartTimeJobState extends State<PartTimeJob> {
                       Text(
                         index == 0 ? "きょう" : date.day.toString(),
                         style: kTitleText.copyWith(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: _selectedDate == date
-                                ? Colors.white
-                                : AppColor.primaryColor),
+                            fontSize: 14, fontWeight: FontWeight.w600, color: _selectedDate == date ? Colors.white : AppColor.primaryColor),
                       ),
                       Text(toJapanWeekDayWithInt(date.weekday),
                           style: kSubtitleText.copyWith(
-                              fontSize: 10,
-                              fontWeight: FontWeight.normal,
-                              color: _selectedDate == date
-                                  ? Colors.white
-                                  : AppColor.primaryColor))
+                              fontSize: 10, fontWeight: FontWeight.normal, color: _selectedDate == date ? Colors.white : AppColor.primaryColor))
                     ],
                   ),
                 ),
@@ -437,9 +396,7 @@ class _PartTimeJobState extends State<PartTimeJob> {
       children: [
         Container(
           width: MediaQuery.of(context).size.width - 32,
-          decoration: BoxDecoration(
-              color: AppColor.whiteColor,
-              borderRadius: BorderRadius.circular(5)),
+          decoration: BoxDecoration(color: AppColor.whiteColor, borderRadius: BorderRadius.circular(5)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
                   icon: Padding(

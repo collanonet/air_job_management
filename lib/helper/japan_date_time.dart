@@ -32,6 +32,10 @@ dateTimeToHourAndMinute(DateTime? dateTime) {
   return dateTime != null ? DateFormat.Hm().format(dateTime).toString() : "";
 }
 
+dateTimeToMonthDay(DateTime? dateTime) {
+  return dateTime != null ? "${dateTime.month}/${dateTime.day}" : "";
+}
+
 String toJapanWeekDay(String day) {
   if (day == "Monday") {
     return "月";
