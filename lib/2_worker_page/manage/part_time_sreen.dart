@@ -157,9 +157,9 @@ class _PartTimeJobState extends State<PartTimeJob> {
     for (var jobSearch in jobSearchList) {
       double hourlyWage = jobSearch.hourlyWag != null ? double.parse(jobSearch.hourlyWag.toString()) : 0;
       if (filterProvider.selectedOccupation.isNotEmpty && filterProvider.selectedReward != null) {
-        String price = filterProvider.selectedReward!.replaceAll(",", "").split("円〜").toString();
+        String price = filterProvider.selectedReward!.replaceAll(",", "").split("円〜")[0].toString();
         double hourlyWageFilter = double.parse(price);
-        if (filterProvider.selectedOccupation.contains(jobSearch.majorOccupation) || hourlyWage >= hourlyWageFilter) {
+        if (filterProvider.selectedOccupation.contains(jobSearch.majorOccupation) && hourlyWage >= hourlyWageFilter) {
           filterJob.add(jobSearch);
         }
       } else if (filterProvider.selectedOccupation.isNotEmpty && filterProvider.selectedReward == null) {
@@ -167,7 +167,7 @@ class _PartTimeJobState extends State<PartTimeJob> {
           filterJob.add(jobSearch);
         }
       } else if (filterProvider.selectedOccupation.isEmpty && filterProvider.selectedReward != null) {
-        String price = filterProvider.selectedReward!.replaceAll(",", "").split("円〜").toString();
+        String price = filterProvider.selectedReward!.replaceAll(",", "").split("円〜")[0].toString();
         double hourlyWageFilter = double.parse(price);
         if (hourlyWage >= hourlyWageFilter) {
           filterJob.add(jobSearch);

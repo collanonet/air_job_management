@@ -224,7 +224,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           AppSize.spaceHeight16,
           Text(
-            "Version 1.0.0+2",
+            "Version 1.0.0+3",
             style: normalTextStyle,
           ),
         ],
