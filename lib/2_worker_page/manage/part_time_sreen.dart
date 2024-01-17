@@ -1,7 +1,9 @@
 import 'package:air_job_management/helper/currency_format.dart';
 import 'package:air_job_management/helper/japan_date_time.dart';
+import 'package:air_job_management/providers/worker/filter.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
+import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:air_job_management/widgets/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,6 @@ import '../../providers/favorite_provider.dart';
 import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
 import '../../utils/date_time_utils.dart';
-import '../../utils/page_route.dart';
 import '../search/search_screen_dedial.dart';
 import 'filter/filter_option.dart';
 
@@ -30,6 +31,7 @@ class _PartTimeJobState extends State<PartTimeJob> {
   List<DateTime> _dateList = [];
   List<SearchJob> jobSearchList = [];
   ValueNotifier<bool> loading = ValueNotifier<bool>(true);
+  late WorkerFilter filterProvider;
 
   onGetData() async {
     jobSearchList = [];
@@ -134,9 +136,55 @@ class _PartTimeJobState extends State<PartTimeJob> {
     '沖縄県',
   ];
 
+  filterJobLocation() async {
+    await onGetData();
+    if (selectedLocation != null && selectedLocation != JapaneseText.all) {
+      List<SearchJob> filterByLocation = [];
+      for (var jobSearch in jobSearchList) {
+        if (jobSearch.jobLocation!.contains(selectedLocation!)) {
+          filterByLocation.add(jobSearch);
+        }
+      }
+      setState(() {
+        jobSearchList = filterByLocation;
+      });
+    }
+  }
+
+  onFilterJobTypeAndPrice() async {
+    await filterJobLocation();
+    List<SearchJob> filterJob = [];
+    for (var jobSearch in jobSearchList) {
+      double hourlyWage = jobSearch.hourlyWag != null ? double.parse(jobSearch.hourlyWag.toString()) : 0;
+      if (filterProvider.selectedOccupation.isNotEmpty && filterProvider.selectedReward != null) {
+        String price = filterProvider.selectedReward!.replaceAll(",", "").split("円〜").toString();
+        double hourlyWageFilter = double.parse(price);
+        if (filterProvider.selectedOccupation.contains(jobSearch.majorOccupation) || hourlyWage >= hourlyWageFilter) {
+          filterJob.add(jobSearch);
+        }
+      } else if (filterProvider.selectedOccupation.isNotEmpty && filterProvider.selectedReward == null) {
+        if (filterProvider.selectedOccupation.contains(jobSearch.majorOccupation)) {
+          filterJob.add(jobSearch);
+        }
+      } else if (filterProvider.selectedOccupation.isEmpty && filterProvider.selectedReward != null) {
+        String price = filterProvider.selectedReward!.replaceAll(",", "").split("円〜").toString();
+        double hourlyWageFilter = double.parse(price);
+        if (hourlyWage >= hourlyWageFilter) {
+          filterJob.add(jobSearch);
+        }
+      } else {
+        filterJob = jobSearchList;
+      }
+    }
+    setState(() {
+      jobSearchList = filterJob;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     FavoriteProvider favorite = Provider.of<FavoriteProvider>(context);
+    filterProvider = Provider.of<WorkerFilter>(context);
     return Scaffold(
         backgroundColor: const Color(0xffF2F2F2),
         body: loading.value
@@ -176,25 +224,27 @@ class _PartTimeJobState extends State<PartTimeJob> {
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: CustomScrollView(
-                            slivers: [
-                              SliverGrid(
-                                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                    maxCrossAxisExtent: 350,
-                                    mainAxisSpacing: 16,
-                                    crossAxisSpacing: 16,
-                                    childAspectRatio: 10 / 15,
-                                    mainAxisExtent: 260),
-                                delegate: SliverChildBuilderDelegate(
-                                  (BuildContext context, int index) {
-                                    var info = jobSearchList[index];
-                                    return product(context, info, info.uid, favorite, index);
-                                  },
-                                  childCount: jobSearchList.length,
+                          child: jobSearchList.isEmpty
+                              ? const Center(child: EmptyDataWidget())
+                              : CustomScrollView(
+                                  slivers: [
+                                    SliverGrid(
+                                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                          maxCrossAxisExtent: 350,
+                                          mainAxisSpacing: 16,
+                                          crossAxisSpacing: 16,
+                                          childAspectRatio: 10 / 15,
+                                          mainAxisExtent: 260),
+                                      delegate: SliverChildBuilderDelegate(
+                                        (BuildContext context, int index) {
+                                          var info = jobSearchList[index];
+                                          return product(context, info, info.uid, favorite, index);
+                                        },
+                                        childCount: jobSearchList.length,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
                         ),
                       )
                     ],
@@ -206,7 +256,11 @@ class _PartTimeJobState extends State<PartTimeJob> {
           children: [
             GestureDetector(
               onTap: () {
-                MyPageRoute.goTo(context, const FilterOption());
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const FilterOption())).then((value) {
+                  if (value != null && value == true) {
+                    onFilterJobTypeAndPrice();
+                  }
+                });
               },
               child: Container(
                 width: 160,
@@ -420,6 +474,7 @@ class _PartTimeJobState extends State<PartTimeJob> {
                     setState(() {
                       selectedLocation = v;
                     });
+                    filterJobLocation();
                   })),
         ),
         Positioned(

@@ -48,15 +48,11 @@ class _FilterOptionState extends State<FilterOption> {
                   child: Container(
                       height: 30,
                       width: 100,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                              width: 1, color: AppColor.primaryColor)),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), border: Border.all(width: 1, color: AppColor.primaryColor)),
                       alignment: Alignment.center,
                       child: Text(
                         "リセット",
-                        style:
-                            kNormalText.copyWith(color: AppColor.primaryColor),
+                        style: kNormalText.copyWith(color: AppColor.primaryColor),
                       )),
                 ),
               ),
@@ -64,9 +60,7 @@ class _FilterOptionState extends State<FilterOption> {
             menu('職種', () {
               MyPageRoute.goTo(context, const Occupation());
             },
-                workerFilter.selectedOccupation.isEmpty ||
-                        workerFilter.selectedOccupation.length ==
-                            workerFilter.occupationList.length
+                workerFilter.selectedOccupation.isEmpty || workerFilter.selectedOccupation.length == workerFilter.occupationList.length
                     ? "すべて"
                     : workerFilter.selectedOccupation.map((e) => e).toString()),
             menu('報酬', () {
@@ -74,16 +68,10 @@ class _FilterOptionState extends State<FilterOption> {
             }, workerFilter.selectedReward ?? "指定なし"),
             menu('時間帯', () {
               MyPageRoute.goTo(context, const FlatTime());
-            },
-                workerFilter.selectedRangeTime.isEmpty
-                    ? "指定なし"
-                    : workerFilter.selectedRangeTime.map((e) => e).toString()),
+            }, workerFilter.selectedRangeTime.isEmpty ? "指定なし" : workerFilter.selectedRangeTime.map((e) => e).toString()),
             menu('待遇', () {
               MyPageRoute.goTo(context, const Treatment());
-            },
-                workerFilter.selectedTreatment.isEmpty
-                    ? "指定なし"
-                    : workerFilter.selectedTreatment.map((e) => e).toString()),
+            }, workerFilter.selectedTreatment.isEmpty ? "指定なし" : workerFilter.selectedTreatment.map((e) => e).toString()),
             const Spacer(),
             Center(
               child: SizedBox(
@@ -91,7 +79,7 @@ class _FilterOptionState extends State<FilterOption> {
                 child: ButtonWidget(
                   color: AppColor.secondaryColor,
                   title: '検索する',
-                  onPress: () => Navigator.pop(context),
+                  onPress: () => Navigator.pop(context, true),
                 ),
               ),
             ),

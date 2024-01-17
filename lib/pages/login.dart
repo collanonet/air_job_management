@@ -35,8 +35,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late AuthProvider authProvider;
   bool isShowPassword = false;
-  TextEditingController email = TextEditingController(text: '');
-  TextEditingController password = TextEditingController(text: '');
+  TextEditingController email = TextEditingController(text: 'sopheadavid+2@yandex.com');
+  TextEditingController password = TextEditingController(text: '123456');
   TextEditingController username = TextEditingController(text: 'Admin ABC');
 
   @override
