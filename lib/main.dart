@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:air_job_management/1_company_page/home/home.dart';
 import 'package:air_job_management/1_company_page/job_posting/create_or_edit_job_posting.dart';
 import 'package:air_job_management/1_company_page/login/login.dart';
+import 'package:air_job_management/1_company_page/woker_management/root_worker_management_detail.dart';
 import 'package:air_job_management/2_worker_page/manage/manage_screen.dart';
 import 'package:air_job_management/2_worker_page/root/root_page.dart';
 import 'package:air_job_management/pages/company/create_or_edit_company.dart';
@@ -17,6 +18,7 @@ import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company.dart';
 import 'package:air_job_management/providers/company/job_posting.dart';
+import 'package:air_job_management/providers/company/worker_management.dart';
 import 'package:air_job_management/providers/favorite_provider.dart';
 import 'package:air_job_management/providers/home.dart';
 import 'package:air_job_management/providers/job_posting.dart';
@@ -192,9 +194,27 @@ final GoRouter _router = GoRouter(
                 },
               ),
               GoRoute(
-                path: 'job-posting/create',
+                path: 'worker-management',
                 builder: (BuildContext context, GoRouterState state) {
                   return HomePageForCompany(
+                    selectItem: JapaneseText.workerCompany,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'worker-management/:uid',
+                builder: (BuildContext context, GoRouterState state) {
+                  return HomePageForCompany(
+                    page: RootWorkerManagementDetailPage(
+                      uid: state.pathParameters["uid"].toString(),
+                    ),
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'job-posting/create',
+                builder: (BuildContext context, GoRouterState state) {
+                  return const HomePageForCompany(
                     page: CreateOrEditJobPostingPageForCompany(),
                   );
                 },
@@ -379,6 +399,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => RootProvider()),
           ChangeNotifierProvider(create: (_) => WorkerFilter()),
           ChangeNotifierProvider(create: (_) => JobPostingForCompanyProvider()),
+          ChangeNotifierProvider(create: (_) => WorkerManagementProvider()),
         ],
         child: MaterialApp.router(
           localizationsDelegates: const [

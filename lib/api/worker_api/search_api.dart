@@ -1,7 +1,9 @@
 import 'package:air_job_management/helper/date_to_api.dart';
+import 'package:air_job_management/models/worker_model/search_job.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../models/user.dart';
 import '../../models/worker_model/shift.dart';
 
 String errorMessage = "";
@@ -9,16 +11,19 @@ String errorMessage = "";
 class SearchJobApi {
   var jobcollection = FirebaseFirestore.instance.collection('job');
 
-  Future<bool> createJobRequest(String jobId, String userId, String username, List<ShiftModel> shiftList) async {
+  Future<bool> createJobRequest(SearchJob job, MyUser myUser, List<ShiftModel> shiftList) async {
     try {
-      var doc = await jobcollection.where("job_id", isEqualTo: jobId).where("user_id", isEqualTo: userId).get();
+      var doc = await jobcollection.where("job_id", isEqualTo: job.uid).where("user_id", isEqualTo: myUser.uid).get();
       if (doc.size == 0) {
         await jobcollection.add({
-          "job_id": jobId,
-          "user_id": userId,
+          "job_id": job.uid,
+          "company_id": job.companyId,
+          "job_location": job.jobLocation,
+          "user_id": myUser.uid,
           "created_at": DateTime.now(),
-          "username": username,
+          "username": "${myUser.nameKanJi} ${myUser.nameFu}",
           "status": "pending",
+          "user": myUser.toJson(),
           "shift": shiftList
               .map((e) => {
                     "start_work_time": e.startWorkTime,
@@ -32,7 +37,7 @@ class SearchJobApi {
         });
         return true;
       } else {
-        errorMessage = "You already apply this job! Please waiting company for accept to interview.";
+        errorMessage = "あなたはすでにこの求人に応募しています! 企業が面接を受けるまでお待ちください。";
         return false;
       }
     } catch (e) {

@@ -51,9 +51,7 @@ class _UploadFilePageState extends State<UploadFilePage> {
                   Container(
                     width: AppSize.getDeviceWidth(context),
                     height: 400,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        color: AppColor.thirdColor.withOpacity(0.3)),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.thirdColor.withOpacity(0.3)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -83,9 +81,7 @@ class _UploadFilePageState extends State<UploadFilePage> {
                   ),
                   AppSize.spaceHeight16,
                   Text(
-                    selectedFile != null
-                        ? JapaneseText.afterSelectedFileMessage
-                        : JapaneseText.beforeSelectFileMessage,
+                    selectedFile != null ? JapaneseText.afterSelectedFileMessage : JapaneseText.beforeSelectFileMessage,
                     style: kNormalText.copyWith(height: 2),
                   ),
                   AppSize.spaceHeight50,
@@ -112,13 +108,9 @@ class _UploadFilePageState extends State<UploadFilePage> {
                                   if (selectedFile != null) {
                                     try {
                                       loadingNotifier.value = true;
-                                      String imageUrl = await fileToUrl(
-                                          selectedFile!, widget.type);
+                                      String imageUrl = await fileToUrl(selectedFile!, widget.type);
                                       await UserApiServices().updateUserAField(
-                                          uid: authProvider.myUser?.uid ??
-                                              "tdZHrwpI0pOiepOIgHrtg6cxWV52",
-                                          value: imageUrl,
-                                          field: "passport_url");
+                                          uid: authProvider.myUser?.uid ?? "tdZHrwpI0pOiepOIgHrtg6cxWV52", value: imageUrl, field: widget.type);
                                       loadingNotifier.value = false;
                                       //Success uploaded
                                       MessageWidget.show("アップロードに成功しました");
@@ -145,10 +137,8 @@ class _UploadFilePageState extends State<UploadFilePage> {
   }
 
   onSelectFile() async {
-    var file = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowMultiple: false,
-        allowedExtensions: ["pdf", "jpg", "png", "jpeg", "db"]);
+    var file =
+        await FilePicker.platform.pickFiles(type: FileType.custom, allowMultiple: false, allowedExtensions: ["pdf", "jpg", "png", "jpeg", "db"]);
     if (file != null) {
       setState(() {
         selectedFile = file;

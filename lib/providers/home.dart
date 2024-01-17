@@ -1,5 +1,6 @@
 import 'package:air_job_management/1_company_page/dashboard/dashboard.dart';
 import 'package:air_job_management/1_company_page/job_posting/job_posting.dart';
+import 'package:air_job_management/1_company_page/woker_management/worker_management.dart';
 import 'package:air_job_management/helper/route_handler.dart';
 import 'package:air_job_management/pages/company/company.dart';
 import 'package:air_job_management/pages/dashboard/dashboard.dart';
@@ -51,20 +52,13 @@ class HomeProvider with ChangeNotifier {
     FontAwesome.building
   ];
 
-  List<Widget> menuPageList = const [
-    DashboardPage(),
-    JobSeekerPage(),
-    CompanyPage(),
-    JobPage(),
-    ShiftPage(),
-    SettingPage()
-  ];
+  List<Widget> menuPageList = const [DashboardPage(), JobSeekerPage(), CompanyPage(), JobPage(), ShiftPage(), SettingPage()];
   List<Widget> menuPageListForCompany = const [
     DashboardPageForCompany(),
     JobPostingForCompanyPage(),
     DashboardPageForCompany(),
     DashboardPageForCompany(),
-    DashboardPageForCompany(),
+    WorkerManagementPage(),
     DashboardPageForCompany(),
     DashboardPageForCompany(),
     DashboardPageForCompany()
