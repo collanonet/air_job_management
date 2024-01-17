@@ -54,7 +54,7 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
             Expanded(
               child: Center(
                 child: Text(
-                  jobPosting.occupationType ?? "",
+                  jobPosting.majorOccupation ?? "",
                   style: kTitleText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),

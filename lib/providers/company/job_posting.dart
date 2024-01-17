@@ -27,13 +27,18 @@ class JobPostingForCompanyProvider with ChangeNotifier {
   String? selectedOccupationType;
 
   List<String> specificOccupationList = [
-    JapaneseText.constructionWorker,
-    JapaneseText.worker,
-    JapaneseText.teacher,
-    JapaneseText.hotelStaff,
-    JapaneseText.barista
+    "軽作業",
+    "配達・運転",
+    "販売",
+    "飲食",
+    "オフィスワーク",
+    "イベント・キャンペーン",
+    "専門職",
+    "接客",
+    "エンタメ",
+    "その他",
   ];
-  String? selectedSpecificOccupation;
+  String? selectedSpecificOccupation = "軽作業";
 
   String? selectedLocation;
   List<String> locationList = <String>[

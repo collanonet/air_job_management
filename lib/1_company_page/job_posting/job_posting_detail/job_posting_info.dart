@@ -192,25 +192,26 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            // Column(
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   children: [
+            //     Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.occupationMajor, style: kNormalText.copyWith(fontSize: 12))),
+            //     AppSize.spaceHeight5,
+            //     CustomDropDownWidget(
+            //       radius: 5,
+            //       list: provider.occupationType,
+            //       onChange: (e) => provider.onChangeOccupationType(e),
+            //       width: 320,
+            //       selectItem: provider.selectedOccupationType,
+            //     )
+            //   ],
+            // ),
+            // AppSize.spaceWidth16,
+            ///occupation
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.occupationMajor, style: kNormalText.copyWith(fontSize: 12))),
-                AppSize.spaceHeight5,
-                CustomDropDownWidget(
-                  radius: 5,
-                  list: provider.occupationType,
-                  onChange: (e) => provider.onChangeOccupationType(e),
-                  width: 320,
-                  selectItem: provider.selectedOccupationType,
-                )
-              ],
-            ),
-            AppSize.spaceWidth16,
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.occupationMajor, style: kNormalText.copyWith(fontSize: 12))),
+                Align(alignment: Alignment.centerLeft, child: Text("職種", style: kNormalText.copyWith(fontSize: 12))),
                 AppSize.spaceHeight5,
                 CustomDropDownWidget(
                   radius: 5,
@@ -396,7 +397,7 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
           ),
         ],
       ),
-      Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.streetBunch, style: kNormalText.copyWith(fontSize: 12))),
+      Align(alignment: Alignment.centerLeft, child: Text("市区町村・番地", style: kNormalText.copyWith(fontSize: 12))),
       AppSize.spaceHeight5,
       SizedBox(
         width: AppSize.getDeviceWidth(context) * 0.4,
