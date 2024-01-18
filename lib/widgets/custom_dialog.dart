@@ -49,20 +49,20 @@ class CustomDialog {
             ));
   }
 
-  static void confirmDialog({required BuildContext context, required Function onApprove, String? title}) {
+  static void confirmDialog({required BuildContext context, required Function onApprove, String? title, String? titleText}) {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              title: const Text(
-                "確認する",
+              title: Text(
+                titleText ?? "確認する",
               ),
               content: Text(title ?? "この求人に応募してもよろしいですか？"),
               actions: [
                 TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: const Text(
-                      "キャンセル",
+                      "いいえ",
                     )),
                 TextButton(
                     onPressed: () => onApprove(),

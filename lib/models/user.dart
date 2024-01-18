@@ -45,6 +45,11 @@ class MyUser {
   bool? isFullTimeStaff;
   String? affiliation;
   String? qualificationFields;
+  String? basic_resident_register_url;
+  String? driver_license_url;
+  String? passport_url;
+  String? resident_record_url;
+  String? number_card_url;
 
   MyUser(
       {this.affiliation,
@@ -89,13 +94,23 @@ class MyUser {
       this.temporary,
       this.partTimeJob,
       this.balance,
-      this.isFullTimeStaff});
+      this.isFullTimeStaff,
+      this.basic_resident_register_url,
+      this.driver_license_url,
+      this.number_card_url,
+      this.passport_url,
+      this.resident_record_url});
 
   factory MyUser.fromJson(Map<String, dynamic> json) {
     return MyUser(
       uid: json["uid"],
-      qualificationFields: json["qualification_fields"],
-      affiliation: json["affiliation"],
+      basic_resident_register_url: json["basic_resident_register_url"],
+      driver_license_url: json["driver_license_url"],
+      number_card_url: json["number_card_url"],
+      passport_url: json["passport_url"],
+      resident_record_url: json["resident_record_url"],
+      qualificationFields: json["qualification_fields"] ?? "",
+      affiliation: json["affiliation"] ?? "",
       isFullTimeStaff: json["is_full_time_staff"] ?? false,
       balance: json["balance"] ?? "",
       verifyDoc: json["verifyDoc"] ?? "",
@@ -138,6 +153,13 @@ class MyUser {
   }
 
   Map<String, dynamic> toJson() => {
+        "driver_license_url": driver_license_url,
+        "resident_record_url": resident_record_url,
+        "passport_url": passport_url,
+        "number_card_url": number_card_url,
+        "basic_resident_register_url": basic_resident_register_url,
+        "qualification_fields": qualificationFields,
+        "affiliation": affiliation,
         "status": status ?? "",
         "profile": profileImage,
         "message_list": messageList != null ? messageList!.map((e) => e) : [],

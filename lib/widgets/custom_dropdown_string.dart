@@ -25,6 +25,7 @@ class CustomDropDownWidget extends StatelessWidget {
             )),
         child: DropdownButtonHideUnderline(
           child: DropdownButton(
+              isExpanded: true,
               value: selectItem,
               items: list
                   .map((e) => DropdownMenuItem(

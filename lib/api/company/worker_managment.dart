@@ -8,6 +8,29 @@ class WorkerManagementApiService {
   final db = FirebaseFirestore.instance;
   final CollectionReference jobRef = FirebaseFirestore.instance.collection('job');
 
+  Future<List<WorkerManagement>> getAllJobApplyForAUSer(String companyId, String userId) async {
+    try {
+      var doc = await jobRef.where("company_id", isEqualTo: companyId).where("user_id", isEqualTo: userId).get();
+      if (doc.docs.isNotEmpty) {
+        List<WorkerManagement> list = [];
+        for (int i = 0; i < doc.docs.length; i++) {
+          WorkerManagement company = WorkerManagement.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          company.uid = doc.docs[i].id;
+          list.add(company);
+        }
+        for (var job in list) {
+          job.shiftList!.sort((a, b) => a.date!.compareTo(b.date!));
+        }
+        return list;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Error getAllJobApply =>> ${e.toString()}");
+      return [];
+    }
+  }
+
   Future<List<WorkerManagement>> getAllJobApply(String companyId) async {
     try {
       var doc = await jobRef.where("company_id", isEqualTo: companyId).orderBy("created_at", descending: true).get();
@@ -17,6 +40,9 @@ class WorkerManagementApiService {
           WorkerManagement company = WorkerManagement.fromJson(doc.docs[i].data() as Map<String, dynamic>);
           company.uid = doc.docs[i].id;
           list.add(company);
+        }
+        for (var job in list) {
+          job.shiftList!.sort((a, b) => a.date!.compareTo(b.date!));
         }
         return list;
       } else {
@@ -41,6 +67,16 @@ class WorkerManagementApiService {
     } catch (e) {
       debugPrint("Error getAJob =>> ${e.toString()}");
       return null;
+    }
+  }
+
+  Future<bool> updateJobStatus(String jobId, String status) async {
+    try {
+      await jobRef.doc(jobId).update({"status": status});
+      return true;
+    } catch (e) {
+      debugPrint("Error updateJobStatus =>> ${e.toString()}");
+      return false;
     }
   }
 }

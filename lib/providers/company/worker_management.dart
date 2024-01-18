@@ -10,6 +10,15 @@ class WorkerManagementProvider with ChangeNotifier {
   List<String> cooperationStatus = [JapaneseText.all, "稼働経験あり", "お気に入り", "NG"];
   WorkerManagement? selectedJob;
   List<WorkerManagement> workManagementList = [];
+  List<WorkerManagement> applicantList = [];
+  DateTime? startWorkDate;
+  DateTime? endWorkDate;
+
+  List<String> jobStatus = [JapaneseText.all, JapaneseText.canceled, JapaneseText.hired, JapaneseText.pending];
+  String? selectedJobStatus = JapaneseText.all;
+
+  String? selectedJobTitle;
+  List<String> jobTitleList = [JapaneseText.all];
 
   String selectedMenu = "基本情報";
 
@@ -20,12 +29,24 @@ class WorkerManagementProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  onChangeStartDate(DateTime? startDate) {
+    startWorkDate = startDate;
+    notifyListeners();
+  }
+
+  onChangeEndDate(DateTime? endDate) {
+    endWorkDate = endDate;
+    notifyListeners();
+  }
+
   set setJob(WorkerManagement job) {
     selectedJob = job;
   }
 
   onInitForList() {
+    selectedJobStatus = JapaneseText.all;
     selectedCooperationStatus = JapaneseText.all;
+    selectedJobTitle = JapaneseText.all;
     isLoading = true;
     selectedMenu = "基本情報";
     selectedJob = null;
@@ -36,6 +57,16 @@ class WorkerManagementProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  onChangeJobStatus(String? val) {
+    selectedJobStatus = val;
+    notifyListeners();
+  }
+
+  onChangeTitle(String? val) {
+    selectedJobTitle = val;
+    notifyListeners();
+  }
+
   onChangeSelectCooperationStatus(String? val) {
     selectedCooperationStatus = val;
     notifyListeners();
@@ -43,6 +74,21 @@ class WorkerManagementProvider with ChangeNotifier {
 
   getWorkerApply(String companyId) async {
     workManagementList = await WorkerManagementApiService().getAllJobApply(companyId);
+    // for (var item in list) {
+    //   if (item.status == JapaneseText.hired) {
+    //     workManagementList.add(item);
+    //   }
+    // }
+    notifyListeners();
+  }
+
+  getApplicantList(String companyId) async {
+    jobTitleList = [JapaneseText.all];
+    applicantList = await WorkerManagementApiService().getAllJobApply(companyId);
+    for (var job in applicantList) {
+      jobTitleList.add(job.jobTitle.toString());
+    }
+    jobTitleList = jobTitleList.toSet().toList();
     notifyListeners();
   }
 }

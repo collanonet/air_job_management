@@ -24,7 +24,7 @@ class CustomChooseDateOrTimeWidget extends StatelessWidget {
         AppSize.spaceHeight5,
         Container(
           width: width,
-          height: 39,
+          height: 50,
           decoration: BoxDecoration(
               color: AppColor.whiteColor, borderRadius: BorderRadius.circular(5), border: Border.all(width: 1, color: AppColor.thirdColor)),
           child: Material(

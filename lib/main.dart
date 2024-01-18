@@ -37,6 +37,7 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '1_company_page/applicant/applicant_root.dart';
 import 'firebase_options.dart';
 
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
@@ -198,6 +199,16 @@ final GoRouter _router = GoRouter(
                 builder: (BuildContext context, GoRouterState state) {
                   return HomePageForCompany(
                     selectItem: JapaneseText.workerCompany,
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'applicant/:uid',
+                builder: (BuildContext context, GoRouterState state) {
+                  return HomePageForCompany(
+                    page: ApplicantRootPage(
+                      uid: state.pathParameters["uid"].toString(),
+                    ),
                   );
                 },
               ),

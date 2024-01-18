@@ -16,15 +16,15 @@ import '../../utils/app_size.dart';
 import '../../utils/style.dart';
 import '../../widgets/custom_loading_overlay.dart';
 
-class RootWorkerManagementDetailPage extends StatefulWidget {
+class ApplicantRootPage extends StatefulWidget {
   final String uid;
-  const RootWorkerManagementDetailPage({super.key, required this.uid});
+  const ApplicantRootPage({super.key, required this.uid});
 
   @override
-  State<RootWorkerManagementDetailPage> createState() => _RootWorkerManagementDetailPageState();
+  State<ApplicantRootPage> createState() => _ApplicantRootPageState();
 }
 
-class _RootWorkerManagementDetailPageState extends State<RootWorkerManagementDetailPage> with AfterBuildMixin {
+class _ApplicantRootPageState extends State<ApplicantRootPage> with AfterBuildMixin {
   late AuthProvider authProvider;
   late WorkerManagementProvider provider;
 
@@ -64,9 +64,7 @@ class _RootWorkerManagementDetailPageState extends State<RootWorkerManagementDet
               companyName: authProvider.myCompany!.companyName,
             )
           else
-            ApplicationHistoryPage(
-              myUser: provider.selectedJob?.myUser,
-            ),
+            ApplicationHistoryPage(myUser: provider.selectedJob?.myUser),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:air_job_management/1_company_page/applicant/applicant.dart';
 import 'package:air_job_management/1_company_page/dashboard/dashboard.dart';
 import 'package:air_job_management/1_company_page/job_posting/job_posting.dart';
 import 'package:air_job_management/1_company_page/woker_management/worker_management.dart';
@@ -57,7 +58,7 @@ class HomeProvider with ChangeNotifier {
     DashboardPageForCompany(),
     JobPostingForCompanyPage(),
     DashboardPageForCompany(),
-    DashboardPageForCompany(),
+    ApplicantListPage(),
     WorkerManagementPage(),
     DashboardPageForCompany(),
     DashboardPageForCompany(),

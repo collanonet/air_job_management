@@ -11,12 +11,9 @@ import '../const/const.dart';
 class UserApiServices {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final db = FirebaseFirestore.instance;
-  final CollectionReference userRef =
-      FirebaseFirestore.instance.collection('user');
-  final CollectionReference jobRef =
-      FirebaseFirestore.instance.collection('job');
-  final CollectionReference companyRef =
-      FirebaseFirestore.instance.collection('company');
+  final CollectionReference userRef = FirebaseFirestore.instance.collection('user');
+  final CollectionReference jobRef = FirebaseFirestore.instance.collection('job');
+  final CollectionReference companyRef = FirebaseFirestore.instance.collection('company');
 
   Future<String?> saveUserData(MyUser myUser) async {
     try {
@@ -38,10 +35,7 @@ class UserApiServices {
     }
   }
 
-  updateUserAField(
-      {required String uid,
-      required String value,
-      required String field}) async {
+  updateUserAField({required String uid, required String value, required String field}) async {
     try {
       await userRef.doc(uid).update({field: value});
       return "success";
@@ -51,14 +45,12 @@ class UserApiServices {
     }
   }
 
-  Future<void> updateEmail(
-      String hashPass, String oldEmail, String newEmail) async {
+  Future<void> updateEmail(String hashPass, String oldEmail, String newEmail) async {
     try {
       print("$hashPass Hash, $oldEmail, $newEmail");
       String pass = EncryptUtils.decryptedPassword(hashPass);
       print("$pass pass, $oldEmail, $newEmail");
-      var credential = await f.FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: oldEmail, password: pass);
+      var credential = await f.FirebaseAuth.instance.signInWithEmailAndPassword(email: oldEmail, password: pass);
       credential.user?.updateEmail(newEmail);
       print("updateEmail success");
     } catch (e) {
@@ -66,11 +58,9 @@ class UserApiServices {
     }
   }
 
-  Future<String?> createUserAccount(
-      String email, String password, MyUser myUser) async {
+  Future<String?> createUserAccount(String email, String password, MyUser myUser) async {
     try {
-      var credential = await f.FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
+      var credential = await f.FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
       String encryptedPassword = EncryptUtils.encryptPassword(password);
       if (credential.user != null) {
         String uid = credential.user!.uid;
@@ -92,8 +82,7 @@ class UserApiServices {
       if (doc.docs.isNotEmpty) {
         List<MyUser> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
-          MyUser myUser =
-              MyUser.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          MyUser myUser = MyUser.fromJson(doc.docs[i].data() as Map<String, dynamic>);
           myUser.uid = doc.docs[i].id;
           list.add(myUser);
         }
@@ -108,6 +97,7 @@ class UserApiServices {
   }
 
   Future<MyUser?> getProfileUser(String uid) async {
+    print("Get profile $uid");
     try {
       DocumentSnapshot doc = await userRef.doc(uid).get();
       if (doc.exists) {
@@ -127,8 +117,7 @@ class UserApiServices {
     try {
       var doc = await companyRef.where("company_user_id", isEqualTo: uid).get();
       if (doc.docs.isNotEmpty) {
-        Company company =
-            Company.fromJson(doc.docs.first.data() as Map<String, dynamic>);
+        Company company = Company.fromJson(doc.docs.first.data() as Map<String, dynamic>);
         company.uid = doc.docs.first.id;
         return company;
       } else {
@@ -142,10 +131,7 @@ class UserApiServices {
 
   Future<bool> getUserEmailByID(String uid) async {
     try {
-      var doc = await userRef
-          .where("staff_number", isEqualTo: uid)
-          .orderBy("last_name", descending: true)
-          .get();
+      var doc = await userRef.where("staff_number", isEqualTo: uid).orderBy("last_name", descending: true).get();
       if (doc.size > 0) {
         return true;
       }

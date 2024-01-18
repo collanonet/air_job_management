@@ -1,5 +1,6 @@
-import 'package:air_job_management/1_company_page/woker_management/widget/filter.dart';
-import 'package:air_job_management/1_company_page/woker_management/widget/job_card.dart';
+import 'package:air_job_management/1_company_page/applicant/widget/applicant_card.dart';
+import 'package:air_job_management/1_company_page/applicant/widget/filter.dart';
+import 'package:air_job_management/1_company_page/applicant/widget/manual_and_download.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,18 +16,17 @@ import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
 import '../../utils/my_route.dart';
 import '../../utils/style.dart';
-import '../../widgets/custom_button.dart';
 import '../../widgets/empty_data.dart';
 import '../../widgets/loading.dart';
 
-class WorkerManagementPage extends StatefulWidget {
-  const WorkerManagementPage({super.key});
+class ApplicantListPage extends StatefulWidget {
+  const ApplicantListPage({super.key});
 
   @override
-  State<WorkerManagementPage> createState() => _WorkerManagementPageState();
+  State<ApplicantListPage> createState() => _ApplicantListPageState();
 }
 
-class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterBuildMixin {
+class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMixin {
   late WorkerManagementProvider workerManagementProvider;
   late AuthProvider authProvider;
 
@@ -47,13 +47,13 @@ class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterB
       if (user != null) {
         Company? company = await UserApiServices().getProfileCompany(user.uid);
         authProvider.onChangeCompany(company);
-        await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "");
+        await workerManagementProvider.getApplicantList(authProvider.myCompany?.uid ?? "");
         workerManagementProvider.onChangeLoading(false);
       } else {
         context.go(MyRoute.companyLogin);
       }
     } else {
-      await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "");
+      await workerManagementProvider.getApplicantList(authProvider.myCompany?.uid ?? "");
       workerManagementProvider.onChangeLoading(false);
     }
   }
@@ -69,12 +69,8 @@ class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterB
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            WorkerManagementFilterDataWidgetForCompany(),
-            AppSize.spaceHeight16,
-            Align(
-                alignment: Alignment.centerRight,
-                child: SizedBox(width: 130, child: ButtonWidget(radius: 25, title: "新規登録", color: AppColor.primaryColor, onPress: () {}))),
-            AppSize.spaceHeight16,
+            ApplicantFilterDataWidgetForCompany(),
+            const ManualAndDownloadApplicantWidget(),
             Expanded(
                 child: Container(
               decoration: boxDecoration,
@@ -116,16 +112,19 @@ class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterB
                           flex: 2,
                         ),
                         Expanded(
-                          child: Center(
-                            child: Text("年齢/性別", style: normalTextStyle.copyWith(fontSize: 13)),
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 32),
+                            child: Center(
+                              child: Text("状態", style: normalTextStyle.copyWith(fontSize: 13)),
+                            ),
                           ),
-                          flex: 2,
+                          flex: 1,
                         ),
                         Expanded(
                           child: Center(
-                            child: Text("電話番号", style: normalTextStyle.copyWith(fontSize: 13)),
+                            child: Text("求人タイトル", style: normalTextStyle.copyWith(fontSize: 13)),
                           ),
-                          flex: 2,
+                          flex: 3,
                         ),
                         Expanded(
                           child: Center(
@@ -135,13 +134,13 @@ class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterB
                         ),
                         Expanded(
                           child: Center(
-                            child: Text("最終稼働日", style: normalTextStyle.copyWith(fontSize: 13)),
+                            child: Text("稼働回数", style: normalTextStyle.copyWith(fontSize: 13)),
                           ),
-                          flex: 2,
+                          flex: 1,
                         ),
                         Expanded(
                           child: Center(
-                            child: Text("稼働回数", style: normalTextStyle.copyWith(fontSize: 13)),
+                            child: Text("最終稼働日", style: normalTextStyle.copyWith(fontSize: 13)),
                           ),
                           flex: 1,
                         ),
@@ -165,15 +164,15 @@ class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterB
         child: LoadingWidget(AppColor.primaryColor),
       );
     } else {
-      if (workerManagementProvider.workManagementList.isNotEmpty) {
+      if (workerManagementProvider.applicantList.isNotEmpty) {
         return ListView.separated(
-            itemCount: workerManagementProvider.workManagementList.length,
+            itemCount: workerManagementProvider.applicantList.length,
             shrinkWrap: true,
             separatorBuilder: (context, index) =>
-                Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == workerManagementProvider.workManagementList.length ? 20 : 0)),
+                Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == workerManagementProvider.applicantList.length ? 20 : 0)),
             itemBuilder: (context, index) {
-              WorkerManagement job = workerManagementProvider.workManagementList[index];
-              return JobApplyCardWidget(job: job);
+              WorkerManagement job = workerManagementProvider.applicantList[index];
+              return ApplicantCardWidget(job: job);
             });
       } else {
         return const Center(

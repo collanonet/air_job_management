@@ -127,7 +127,7 @@ class _CompanyChatPageState extends State<CompanyChatPage> {
                       ),
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: !isMe ? AppColor.thirdColor : Color(0xffFFF2D3),
+                        color: !isMe ? Color(0xffF0F3F5) : Color(0xffFFF2D3),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: [
