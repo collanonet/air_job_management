@@ -47,12 +47,14 @@ class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterB
       if (user != null) {
         Company? company = await UserApiServices().getProfileCompany(user.uid);
         authProvider.onChangeCompany(company);
+        workerManagementProvider.setCompanyId = authProvider.myCompany?.uid ?? "";
         await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "");
         workerManagementProvider.onChangeLoading(false);
       } else {
         context.go(MyRoute.companyLogin);
       }
     } else {
+      workerManagementProvider.setCompanyId = authProvider.myCompany?.uid ?? "";
       await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "");
       workerManagementProvider.onChangeLoading(false);
     }

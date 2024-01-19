@@ -1,4 +1,9 @@
 class Company {
+  String? managerNameKhanJi;
+  String? managerNameFu;
+  String? managerPhone;
+  String? managerEmail;
+  String? managerPassword;
   String? companyUserId;
   String? companyName;
   String? companyBranch;
@@ -16,6 +21,7 @@ class Company {
   RePresentative? rePresentative;
   List<RePresentative>? manager;
   String? content;
+  String? remark;
   String? uid;
   String? status;
   String? area;
@@ -46,9 +52,21 @@ class Company {
       this.companyUserId,
       this.status,
       this.hashPassword,
-      this.companyBranch});
+      this.companyBranch,
+      this.remark,
+      this.managerEmail,
+      this.managerPassword,
+      this.managerNameFu,
+      this.managerNameKhanJi,
+      this.managerPhone});
 
   factory Company.fromJson(Map<String, dynamic> json) => Company(
+        managerEmail: json["managerEmail"],
+        managerPassword: json["managerPassword"],
+        managerNameFu: json["managerNameFu"],
+        managerNameKhanJi: json["managerNameKhanJi"],
+        managerPhone: json["managerPhone"],
+        remark: json["remark"],
         companyBranch: json["company_branch"],
         hashPassword: json["hash_password"],
         companyUserId: json["company_user_id"],
@@ -73,6 +91,12 @@ class Company {
       );
 
   Map<String, dynamic> toJson() => {
+        "managerEmail": managerEmail,
+        "managerPassword": managerPassword,
+        "managerNameFu": managerNameFu,
+        "managerNameKhanJi": managerNameKhanJi,
+        "managerPhone": managerPhone,
+        "remark": remark,
         "company_user_id": companyUserId,
         "hash_password": hashPassword,
         "area": area,

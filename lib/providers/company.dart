@@ -38,8 +38,15 @@ class CompanyProvider with ChangeNotifier {
   late TextEditingController kanji;
   late TextEditingController kana;
   late TextEditingController content;
+  late TextEditingController remark;
   late TextEditingController area;
   late TextEditingController industry;
+  late TextEditingController nameKhanJi;
+  late TextEditingController nameFu;
+  late TextEditingController managerPhoneNumber;
+  late TextEditingController managerEmail;
+  late TextEditingController managerPassword;
+
   List<Map<String, TextEditingController>> managerList = [];
   File? fileImage;
   bool isShow = true;
@@ -77,6 +84,12 @@ class CompanyProvider with ChangeNotifier {
     managerList = [];
     if (id != null) {
       company = await CompanyApiServices().getACompany(id);
+      remark.text = company!.remark ?? "";
+      nameKhanJi.text = company!.managerNameKhanJi ?? "";
+      nameFu.text = company!.managerNameFu ?? "";
+      managerPhoneNumber.text = company!.managerPhone ?? "";
+      managerEmail.text = company!.managerEmail ?? "";
+      managerPassword.text = company!.managerPassword ?? "";
       area.text = company!.area ?? "";
       industry.text = company!.industry ?? "";
       companyName.text = company!.companyName ?? "";
@@ -94,6 +107,7 @@ class CompanyProvider with ChangeNotifier {
       kanji.text = company!.rePresentative?.kanji ?? "";
       kana.text = company!.rePresentative?.kana ?? "";
       content.text = company!.content ?? "";
+      remark.text = company!.remark ?? "";
       imageUrl = company!.companyProfile ?? "";
       if (company!.manager != null) {
         managerList = [];
@@ -109,6 +123,7 @@ class CompanyProvider with ChangeNotifier {
   }
 
   initialController() {
+    managerList = [];
     isLoadingForDetail = true;
     imageUrl = "";
     area = TextEditingController(text: "");
@@ -128,6 +143,12 @@ class CompanyProvider with ChangeNotifier {
     kanji = TextEditingController(text: "");
     kana = TextEditingController(text: "");
     content = TextEditingController(text: "");
+    remark = TextEditingController(text: "");
+    managerPassword = TextEditingController(text: "");
+    managerEmail = TextEditingController(text: "");
+    managerPhoneNumber = TextEditingController(text: "");
+    nameKhanJi = TextEditingController(text: "");
+    nameFu = TextEditingController(text: "");
     managerList.add({
       "kanji": TextEditingController(text: ""),
       "kana": TextEditingController(text: ""),

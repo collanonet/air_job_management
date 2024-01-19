@@ -105,7 +105,11 @@ class JobApplyCardWidget extends StatelessWidget {
             Expanded(
               child: Center(
                 child: Text(
-                  DateToAPIHelper.convertDateToString(job.shiftList!.first.date!),
+                  job.shiftList!.length > 1
+                      ? DateToAPIHelper.convertDateToString(job.shiftList!.first.date!) +
+                          " ~ " +
+                          DateToAPIHelper.convertDateToString(job.shiftList!.last.date!)
+                      : DateToAPIHelper.convertDateToString(job.shiftList!.first.date!),
                   style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),
@@ -115,7 +119,7 @@ class JobApplyCardWidget extends StatelessWidget {
             Expanded(
               child: Center(
                 child: Text(
-                  "${job.shiftList!.length}回",
+                  "${job.applyCount}回",
                   style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),

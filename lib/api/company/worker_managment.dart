@@ -41,8 +41,24 @@ class WorkerManagementApiService {
           company.uid = doc.docs[i].id;
           list.add(company);
         }
+        Map<String, int> userOrderCount = {};
         for (var job in list) {
           job.shiftList!.sort((a, b) => a.date!.compareTo(b.date!));
+          if (userOrderCount.containsKey(job.userId)) {
+            // Increment count for existing user
+            userOrderCount[job.userId!] = userOrderCount[job.userId]! + 1;
+            // Update order count in the Order instance
+          } else {
+            // Initialize count for new user
+            userOrderCount[job.userId!] = 1;
+          }
+        }
+        for (var job in list) {
+          if (userOrderCount.containsKey(job.userId)) {
+            job.applyCount = userOrderCount[job.userId];
+          } else {
+            job.applyCount = 1;
+          }
         }
         return list;
       } else {

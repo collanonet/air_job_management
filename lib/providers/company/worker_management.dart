@@ -1,6 +1,8 @@
 import 'package:air_job_management/api/company/worker_managment.dart';
+import 'package:air_job_management/helper/status_helper.dart';
+import 'package:air_job_management/utils/extension.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../../models/company/worker_management.dart';
 
@@ -13,6 +15,8 @@ class WorkerManagementProvider with ChangeNotifier {
   List<WorkerManagement> applicantList = [];
   DateTime? startWorkDate;
   DateTime? endWorkDate;
+  String companyId = "";
+  TextEditingController searchController = TextEditingController();
 
   List<String> jobStatus = [JapaneseText.all, JapaneseText.canceled, JapaneseText.hired, JapaneseText.pending];
   String? selectedJobStatus = JapaneseText.all;
@@ -31,12 +35,18 @@ class WorkerManagementProvider with ChangeNotifier {
 
   onChangeStartDate(DateTime? startDate) {
     startWorkDate = startDate;
+    filterApplicantList();
     notifyListeners();
   }
 
   onChangeEndDate(DateTime? endDate) {
     endWorkDate = endDate;
+    filterApplicantList();
     notifyListeners();
+  }
+
+  set setCompanyId(String companyId) {
+    this.companyId = companyId;
   }
 
   set setJob(WorkerManagement job) {
@@ -44,12 +54,77 @@ class WorkerManagementProvider with ChangeNotifier {
   }
 
   onInitForList() {
+    searchController = TextEditingController();
     selectedJobStatus = JapaneseText.all;
     selectedCooperationStatus = JapaneseText.all;
     selectedJobTitle = JapaneseText.all;
     isLoading = true;
     selectedMenu = "基本情報";
     selectedJob = null;
+  }
+
+  filterApplicantList() async {
+    await getApplicantList(companyId);
+
+    ///Filter application by job title
+    List<WorkerManagement> afterFilterSelectJobTitle = [];
+    if (selectedJobTitle != null && selectedJobTitle != JapaneseText.all) {
+      for (var job in applicantList) {
+        if (job.jobTitle.toString().contains(selectedJobTitle.toString())) {
+          afterFilterSelectJobTitle.add(job);
+        }
+      }
+    } else {
+      afterFilterSelectJobTitle = applicantList;
+    }
+    print("afterFilterSelectJobTitle ${afterFilterSelectJobTitle.length}");
+    List<WorkerManagement> afterFilterStatus = [];
+    if (selectedJobStatus != null && selectedJobStatus != JapaneseText.all) {
+      for (var job in afterFilterSelectJobTitle) {
+        if (job.status.toString() == StatusHelper.japanToEnglish(selectedJobStatus)) {
+          afterFilterStatus.add(job);
+        }
+      }
+    } else {
+      afterFilterStatus = afterFilterSelectJobTitle;
+    }
+    print("afterFilterStatus ${afterFilterStatus.length}");
+    List<WorkerManagement> afterFilterRangeDate = [];
+    if (startWorkDate != null && endWorkDate != null) {
+      for (var job in afterFilterStatus) {
+        bool isWithin = isDateRangeWithin(job.shiftList!.first.date!, job.shiftList!.last.date!, startWorkDate!, endWorkDate!);
+        if (isWithin) {
+          afterFilterRangeDate.add(job);
+        }
+      }
+    } else {
+      afterFilterRangeDate = afterFilterStatus;
+    }
+    print("afterFilterRangeDate ${afterFilterRangeDate.length}");
+    applicantList = afterFilterRangeDate;
+    notifyListeners();
+  }
+
+  bool isDateRangeWithin(DateTime start1, DateTime end1, DateTime start2, DateTime end2) {
+    return start1.isAfterOrEqualTo(start2) && end1.isBeforeOrEqualTo(end2);
+  }
+
+  filterWorkerManagement(String val) async {
+    print("Filter $val");
+    await getWorkerApply(companyId);
+    List<WorkerManagement> searchFilter = [];
+    if (val.isNotEmpty) {
+      for (var job in workManagementList) {
+        print("${job.userName.toString().toLowerCase()} x $val");
+        if (job.userName.toString().toLowerCase().contains(val)) {
+          searchFilter.add(job);
+        }
+      }
+    } else {
+      searchFilter = workManagementList;
+    }
+    workManagementList = searchFilter;
+    notifyListeners();
   }
 
   onChangeLoading(bool isLoading) {
@@ -59,11 +134,13 @@ class WorkerManagementProvider with ChangeNotifier {
 
   onChangeJobStatus(String? val) {
     selectedJobStatus = val;
+    filterApplicantList();
     notifyListeners();
   }
 
   onChangeTitle(String? val) {
     selectedJobTitle = val;
+    filterApplicantList();
     notifyListeners();
   }
 

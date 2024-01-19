@@ -47,12 +47,14 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
       if (user != null) {
         Company? company = await UserApiServices().getProfileCompany(user.uid);
         authProvider.onChangeCompany(company);
+        workerManagementProvider.setCompanyId = authProvider.myCompany?.uid ?? "";
         await workerManagementProvider.getApplicantList(authProvider.myCompany?.uid ?? "");
         workerManagementProvider.onChangeLoading(false);
       } else {
         context.go(MyRoute.companyLogin);
       }
     } else {
+      workerManagementProvider.setCompanyId = authProvider.myCompany?.uid ?? "";
       await workerManagementProvider.getApplicantList(authProvider.myCompany?.uid ?? "");
       workerManagementProvider.onChangeLoading(false);
     }
@@ -82,9 +84,20 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "ワーカー　一覧",
-                          style: titleStyle,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "応募者一覧",
+                              style: titleStyle,
+                            ),
+                            AppSize.spaceWidth32,
+                            Text(
+                              "合計${workerManagementProvider.applicantList.length}名",
+                              style: kNormalText.copyWith(fontSize: 12),
+                            )
+                          ],
                         ),
                         IconButton(
                             onPressed: () async {
@@ -142,7 +155,7 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
                           child: Center(
                             child: Text("最終稼働日", style: normalTextStyle.copyWith(fontSize: 13)),
                           ),
-                          flex: 1,
+                          flex: 2,
                         ),
                       ],
                     ),

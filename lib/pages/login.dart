@@ -17,6 +17,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../2_worker_page/root/root_page.dart';
+import '../const/const.dart';
 import '../models/user.dart';
 import '../utils/japanese_text.dart';
 import '../utils/my_route.dart';
@@ -224,7 +225,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           AppSize.spaceHeight16,
           Text(
-            "Version 1.0.00",
+            ConstValue.appVersion,
             style: normalTextStyle,
           ),
         ],

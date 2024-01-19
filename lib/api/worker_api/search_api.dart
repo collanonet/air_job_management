@@ -13,11 +13,13 @@ class SearchJobApi {
 
   Future<bool> createJobRequest(SearchJob job, MyUser myUser, List<ShiftModel> shiftList) async {
     try {
-      var doc = await jobcollection.where("job_id", isEqualTo: job.uid).where("user_id", isEqualTo: myUser.uid).get();
+      var doc =
+          await jobcollection.where("job_id", isEqualTo: job.uid).where("user_id", isEqualTo: myUser.uid).where("status", isEqualTo: "pending").get();
       if (doc.size == 0) {
         await jobcollection.add({
           "job_id": job.uid,
           "company_id": job.companyId,
+          "job_title": job.title,
           "job_location": job.jobLocation,
           "user_id": myUser.uid,
           "created_at": DateTime.now(),

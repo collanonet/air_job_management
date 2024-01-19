@@ -42,4 +42,16 @@ class StatusHelper {
       return JapaneseText.pending;
     }
   }
+
+  static japanToEnglish(String? status) {
+    if (status == JapaneseText.hired) {
+      return "approved";
+    } else if (status == JapaneseText.canceled) {
+      return "canceled";
+    } else if (status == JapaneseText.pending) {
+      return "pending";
+    } else {
+      return "pending";
+    }
+  }
 }

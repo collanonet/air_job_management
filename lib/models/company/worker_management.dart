@@ -13,8 +13,19 @@ class WorkerManagement {
   String? userId;
   String? userName;
   List<ShiftModel>? shiftList;
+  int? applyCount;
   WorkerManagement(
-      {this.jobTitle, this.myUser, this.companyId, this.shiftList, this.jobId, this.status, this.userId, this.userName, this.jobLocation, this.uid});
+      {this.applyCount,
+      this.jobTitle,
+      this.myUser,
+      this.companyId,
+      this.shiftList,
+      this.jobId,
+      this.status,
+      this.userId,
+      this.userName,
+      this.jobLocation,
+      this.uid});
   factory WorkerManagement.fromJson(Map<String, dynamic> json) => WorkerManagement(
       shiftList: json["shift"] == null ? [] : List<ShiftModel>.from(json["shift"]!.map((x) => ShiftModel.fromJson(x))),
       companyId: json["company_id"],

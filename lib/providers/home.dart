@@ -12,6 +12,7 @@ import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
+import '../1_company_page/company_profile/root_company_profile.dart';
 import '../pages/job_posting/job_posting.dart';
 
 class HomeProvider with ChangeNotifier {
@@ -62,7 +63,7 @@ class HomeProvider with ChangeNotifier {
     WorkerManagementPage(),
     DashboardPageForCompany(),
     DashboardPageForCompany(),
-    DashboardPageForCompany()
+    RootCompanyPage()
   ];
   String selectedItem = JapaneseText.analysis;
   String selectedItemForCompany = JapaneseText.analysis;

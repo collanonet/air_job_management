@@ -16,12 +16,19 @@ class AuthProvider with ChangeNotifier {
   MyUser? myUser;
   bool _isLogin = true;
   Company? myCompany;
+  var tabMenu = ["会社情報", "店舗情報"];
+  String selectedMenu = "会社情報";
 
   get errorMessage => _errorMessage;
   get isLoading => _isLoading;
   get isLogin => _isLogin;
 
   int step = 1;
+
+  onChangeSelectMenu(String val) {
+    selectedMenu = val;
+    notifyListeners();
+  }
 
   onChangeStep(int index) {
     step = index;

@@ -87,9 +87,21 @@ class ApplicantCardWidget extends StatelessWidget {
               flex: 4,
             ),
             Expanded(
-              child: Center(
+              child: Align(
+                alignment: Alignment.centerLeft,
                 child: Text(
-                  "${job.myUser?.rating ?? "100"}%",
+                  "  ${job.myUser?.rating ?? "95"}%",
+                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                  overflow: TextOverflow.fade,
+                ),
+              ),
+              flex: 1,
+            ),
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "      ${job.applyCount ?? 0}回",
                   style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),
@@ -99,22 +111,16 @@ class ApplicantCardWidget extends StatelessWidget {
             Expanded(
               child: Center(
                 child: Text(
-                  "${job.shiftList!.length}回",
+                  job.shiftList!.length > 1
+                      ? DateToAPIHelper.convertDateToString(job.shiftList!.first.date!) +
+                          " ~ " +
+                          DateToAPIHelper.convertDateToString(job.shiftList!.last.date!)
+                      : DateToAPIHelper.convertDateToString(job.shiftList!.first.date!),
                   style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),
               ),
-              flex: 1,
-            ),
-            Expanded(
-              child: Center(
-                child: Text(
-                  DateToAPIHelper.convertDateToString(job.shiftList!.first.date!),
-                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
-                  overflow: TextOverflow.fade,
-                ),
-              ),
-              flex: 1,
+              flex: 2,
             ),
           ],
         ),

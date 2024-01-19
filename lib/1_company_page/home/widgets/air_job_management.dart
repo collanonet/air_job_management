@@ -1,3 +1,4 @@
+import 'package:air_job_management/const/const.dart';
 import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +8,7 @@ import '../../../utils/app_size.dart';
 class AirJobManagementWidget extends StatelessWidget {
   final Function onPress;
   final Company? company;
-  const AirJobManagementWidget(
-      {Key? key, required this.onPress, required this.company})
-      : super(key: key);
+  const AirJobManagementWidget({Key? key, required this.onPress, required this.company}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,15 +37,14 @@ class AirJobManagementWidget extends StatelessWidget {
                 child: Text(
                   company?.companyName ?? "",
                   textAlign: TextAlign.center,
-                  style: kNormalText.copyWith(
-                      color: Colors.black, fontSize: 14, fontFamily: "Bold"),
+                  style: kNormalText.copyWith(color: Colors.black, fontSize: 14, fontFamily: "Bold"),
                 ),
               ),
               AppSize.spaceHeight8,
-              const Text(
-                "Version: 1.0.0",
+              Text(
+                ConstValue.appVersion,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 10),
+                style: kNormalText.copyWith(fontSize: 10),
               ),
             ],
           ),

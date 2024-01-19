@@ -9,8 +9,6 @@ import 'package:provider/provider.dart';
 class WorkerManagementFilterDataWidgetForCompany extends StatelessWidget {
   WorkerManagementFilterDataWidgetForCompany({Key? key}) : super(key: key);
 
-  final TextEditingController searchController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<WorkerManagementProvider>(context);
@@ -58,9 +56,13 @@ class WorkerManagementFilterDataWidgetForCompany extends StatelessWidget {
                   SizedBox(
                     width: AppSize.getDeviceWidth(context) * 0.35,
                     child: PrimaryTextField(
-                      controller: searchController,
+                      controller: provider.searchController,
                       hint: "タイトルを入れます",
                       isRequired: false,
+                      onChange: (val) async {
+                        await Future.delayed(const Duration(milliseconds: 500));
+                        provider.filterWorkerManagement(val);
+                      },
                     ),
                   )
                 ],
