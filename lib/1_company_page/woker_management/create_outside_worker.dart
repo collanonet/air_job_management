@@ -81,47 +81,45 @@ class _CreateOutsideStaffPageState extends State<CreateOutsideStaffPage> with Af
       key: _formKey,
       child: CustomLoadingOverlay(
         isLoading: isLoading,
-        child: Expanded(
-          child: Container(
-            width: AppSize.getDeviceWidth(context),
-            decoration: boxDecorationNoTopRadius,
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            margin: const EdgeInsets.all(32),
-            child: Scrollbar(
-              isAlwaysShown: true,
+        child: Container(
+          width: AppSize.getDeviceWidth(context),
+          decoration: boxDecorationNoTopRadius,
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          margin: const EdgeInsets.all(32),
+          child: Scrollbar(
+            isAlwaysShown: true,
+            controller: verticalScroll,
+            child: SingleChildScrollView(
               controller: verticalScroll,
-              child: SingleChildScrollView(
-                controller: verticalScroll,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppSize.spaceHeight30,
-                    // achievementsWidget(),
-                    // AppSize.spaceHeight20,
-                    // Divider(
-                    //   color: AppColor.thirdColor.withOpacity(0.3),
-                    // ),
-                    // AppSize.spaceHeight20,
-                    basicInformationWidget(),
-                    AppSize.spaceHeight20,
-                    Divider(
-                      color: AppColor.thirdColor.withOpacity(0.3),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppSize.spaceHeight30,
+                  // achievementsWidget(),
+                  // AppSize.spaceHeight20,
+                  // Divider(
+                  //   color: AppColor.thirdColor.withOpacity(0.3),
+                  // ),
+                  // AppSize.spaceHeight20,
+                  basicInformationWidget(),
+                  AppSize.spaceHeight20,
+                  Divider(
+                    color: AppColor.thirdColor.withOpacity(0.3),
+                  ),
+                  AppSize.spaceHeight20,
+                  buildUserLocation(),
+                  AppSize.spaceHeight20,
+                  buildIdentificationCard(),
+                  AppSize.spaceHeight20,
+                  Center(
+                    child: SizedBox(
+                      width: 200,
+                      child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () => saveData()),
                     ),
-                    AppSize.spaceHeight20,
-                    buildUserLocation(),
-                    AppSize.spaceHeight20,
-                    buildIdentificationCard(),
-                    AppSize.spaceHeight20,
-                    Center(
-                      child: SizedBox(
-                        width: 200,
-                        child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () => saveData()),
-                      ),
-                    ),
-                    AppSize.spaceHeight50,
-                    AppSize.spaceHeight20,
-                  ],
-                ),
+                  ),
+                  AppSize.spaceHeight50,
+                  AppSize.spaceHeight20,
+                ],
               ),
             ),
           ),
@@ -559,8 +557,6 @@ class _CreateOutsideStaffPageState extends State<CreateOutsideStaffPage> with Af
     ]);
   }
 
-  ScrollController scrollController2 = ScrollController();
-
   buildIdentificationCard() {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const TitleWidget(title: "本人確認"),
@@ -568,77 +564,81 @@ class _CreateOutsideStaffPageState extends State<CreateOutsideStaffPage> with Af
       SizedBox(
         width: AppSize.getDeviceWidth(context),
         height: 162,
-        child: ListView.builder(
-            controller: verticalScroll,
-            itemCount: fileList.length,
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) {
-              dynamic file = fileList[index];
-              if (file != null) {
-                return Container(
-                  margin: const EdgeInsets.only(right: 16),
-                  child: Stack(
-                    children: [
-                      file.toString().contains("https")
-                          ? Container(
-                              width: 320,
-                              height: 162,
-                              margin: const EdgeInsets.only(right: 16),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(width: 1, color: AppColor.thirdColor),
-                              ),
-                              child: Image.network(file.toString(), fit: BoxFit.cover),
-                            )
-                          : Container(
-                              width: 320,
-                              height: 162,
-                              margin: const EdgeInsets.only(right: 16),
-                              decoration: BoxDecoration(
+        child: Scrollbar(
+          isAlwaysShown: true,
+          controller: horizontalScroll,
+          child: ListView.builder(
+              controller: horizontalScroll,
+              itemCount: fileList.length,
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                dynamic file = fileList[index];
+                if (file != null) {
+                  return Container(
+                    margin: const EdgeInsets.only(right: 16),
+                    child: Stack(
+                      children: [
+                        file.toString().contains("https")
+                            ? Container(
+                                width: 320,
+                                height: 162,
+                                margin: const EdgeInsets.only(right: 16),
+                                decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
                                   border: Border.all(width: 1, color: AppColor.thirdColor),
-                                  image: DecorationImage(image: MemoryImage(file.files.first.bytes!), fit: BoxFit.cover)),
-                            ),
-                      Positioned(
-                          top: 5,
-                          right: 15,
-                          child: IconButton(
-                              onPressed: () => provider.onRemoveFile(index),
-                              icon: Container(
-                                  width: 34,
-                                  height: 34,
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(17), color: AppColor.primaryColor),
-                                  child: const Icon(
-                                    Icons.close_rounded,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ))))
-                    ],
-                  ),
-                );
-              } else {
-                return InkWell(
-                  onTap: () => onSelectFile(),
-                  child: Container(
-                    width: 320,
-                    height: 162,
-                    margin: const EdgeInsets.only(right: 16),
-                    decoration: BoxDecoration(
-                        color: Colors.white, borderRadius: BorderRadius.circular(5), border: Border.all(width: 1, color: AppColor.thirdColor)),
-                    child: Center(
-                      child: IconButton(
-                          onPressed: () => onSelectFile(),
-                          icon: Icon(
-                            Icons.add_circle,
-                            color: AppColor.primaryColor,
-                            size: 24,
-                          )),
+                                ),
+                                child: Image.network(file.toString(), fit: BoxFit.cover),
+                              )
+                            : Container(
+                                width: 320,
+                                height: 162,
+                                margin: const EdgeInsets.only(right: 16),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(width: 1, color: AppColor.thirdColor),
+                                    image: DecorationImage(image: MemoryImage(file.files.first.bytes!), fit: BoxFit.cover)),
+                              ),
+                        Positioned(
+                            top: 5,
+                            right: 15,
+                            child: IconButton(
+                                onPressed: () => provider.onRemoveFile(index),
+                                icon: Container(
+                                    width: 34,
+                                    height: 34,
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(17), color: AppColor.primaryColor),
+                                    child: const Icon(
+                                      Icons.close_rounded,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ))))
+                      ],
                     ),
-                  ),
-                );
-              }
-            }),
+                  );
+                } else {
+                  return InkWell(
+                    onTap: () => onSelectFile(),
+                    child: Container(
+                      width: 320,
+                      height: 162,
+                      margin: const EdgeInsets.only(right: 16),
+                      decoration: BoxDecoration(
+                          color: Colors.white, borderRadius: BorderRadius.circular(5), border: Border.all(width: 1, color: AppColor.thirdColor)),
+                      child: Center(
+                        child: IconButton(
+                            onPressed: () => onSelectFile(),
+                            icon: Icon(
+                              Icons.add_circle,
+                              color: AppColor.primaryColor,
+                              size: 24,
+                            )),
+                      ),
+                    ),
+                  );
+                }
+              }),
+        ),
       )
     ]);
   }

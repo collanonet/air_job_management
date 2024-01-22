@@ -66,7 +66,7 @@ class SearchJobApi {
             "user_id": myUser.uid,
             "created_at": DateTime.now(),
             "username": "${myUser.nameKanJi} ${myUser.nameFu}",
-            "status": "pending",
+            "status": "approved",
             "user": myUser.toJson(),
             "user_identification_url": urlFile.map((e) => e).toList(),
             "shift": shiftList
@@ -94,7 +94,7 @@ class SearchJobApi {
           "user_id": myUser.uid,
           "created_at": DateTime.now(),
           "username": "${myUser.nameKanJi} ${myUser.nameFu}",
-          "status": "pending",
+          "status": "approved",
           "user": myUser.toJson(),
           "user_identification_url": urlFile.map((e) => e).toList(),
           "shift": shiftList

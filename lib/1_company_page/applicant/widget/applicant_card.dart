@@ -53,14 +53,23 @@ class ApplicantCardWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          job.userName ?? "",
-                          style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
-                          overflow: TextOverflow.fade,
-                        ),
+                        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                          Text(
+                            job.userName ?? "",
+                            style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                            overflow: TextOverflow.fade,
+                          ),
+                          AppSize.spaceWidth5,
+                          job.userId != null
+                              ? const SizedBox()
+                              : Icon(
+                                  Icons.star,
+                                  color: AppColor.primaryColor,
+                                )
+                        ]),
                         Text(
                           calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) + "   ${job.myUser?.gender}",
-                          style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                          style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 14),
                           overflow: TextOverflow.fade,
                         ),
                       ],
