@@ -5,6 +5,7 @@ class MyRoute {
   static var companyShift = "/company/shift";
   static var companyApplicant = "/company/applicant";
   static var companyWorker = "/company/worker-management";
+  static var companyCreateWorkerMgt = '/company/worker-management/outside-worker/create';
   static var companyTimeManagement = "/company/time-management";
   static var companyUsageDetail = "/company/usage-detail";
   static var companyInformationManagement = "/company/information-management";

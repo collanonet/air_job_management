@@ -161,7 +161,7 @@ class MessageApi {
   }
 
   Stream<QuerySnapshot> get getConversationMessage {
-    return messageRef.orderBy("created_at", descending: true).snapshots();
+    return messageRef.orderBy("created_at", descending: false).snapshots();
   }
 }
 
@@ -268,9 +268,6 @@ class _MessagePageState extends State<MessagePage> {
             ),
           );
         }
-
-        print(snapshot.data?.docs.length);
-
         return ListView.separated(
           cacheExtent: 10000,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),

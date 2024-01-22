@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:air_job_management/1_company_page/home/home.dart';
 import 'package:air_job_management/1_company_page/job_posting/create_or_edit_job_posting.dart';
 import 'package:air_job_management/1_company_page/login/login.dart';
+import 'package:air_job_management/1_company_page/woker_management/create_outside_worker.dart';
 import 'package:air_job_management/1_company_page/woker_management/root_worker_management_detail.dart';
 import 'package:air_job_management/2_worker_page/manage/manage_screen.dart';
 import 'package:air_job_management/2_worker_page/root/root_page.dart';
@@ -219,6 +220,22 @@ final GoRouter _router = GoRouter(
                     page: RootWorkerManagementDetailPage(
                       uid: state.pathParameters["uid"].toString(),
                     ),
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'worker-management/outside-worker/create',
+                builder: (BuildContext context, GoRouterState state) {
+                  return const HomePageForCompany(
+                    page: CreateOutsideStaffPage(),
+                  );
+                },
+              ),
+              GoRoute(
+                path: 'worker-management/outside-worker/:uid',
+                builder: (BuildContext context, GoRouterState state) {
+                  return HomePageForCompany(
+                    page: CreateOutsideStaffPage(uid: state.pathParameters["uid"].toString()),
                   );
                 },
               ),

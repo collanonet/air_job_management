@@ -1,3 +1,4 @@
+import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/pages/job_seeker/job_seeker_detail/chat.dart';
 import 'package:air_job_management/utils/app_size.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../api/user_api.dart';
@@ -98,28 +100,37 @@ class _CompanyChatPageState extends State<CompanyChatPage> {
             ),
           );
         }
-
-        // snapshot.data?.docs.sort((a, b) {
-        //   var messageA = MessageModel.fromJson(a.data() as Map<String, dynamic>);
-        //   var messageb = MessageModel.fromJson(a.data() as Map<String, dynamic>);
-        //   return messageA.createdAt.compareTo(messageb.createdAt);
-        // });
-
         return ListView.separated(
           cacheExtent: 10000,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          reverse: true,
           itemCount: snapshot.data?.docs.length ?? 0,
           itemBuilder: (context, index) {
             var data = snapshot.data!.docs[index].data();
             var message = MessageModel.fromJson(data as Map<String, dynamic>);
             bool isMe = message.senderId == widget.companyID;
-            return Row(
+            Map<String, dynamic>? oldData;
+            if (index > 0) {
+              oldData = snapshot.data!.docs[index - 1].data()! as Map<String, dynamic>;
+            }
+            return Column(
               children: [
-                if (isMe) const Spacer(),
-                Column(
-                  crossAxisAlignment: !isMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+                buildDateAndMonth(oldData, parseTimeStampToDate(DateTime.parse(data["created_at"]))),
+                Row(
+                  mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
+                    isMe
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                              "${DateToAPIHelper.timeFormat(DateTime.parse(message.createdAt.toString()))} 既読",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary,
+                                fontSize: 9,
+                              ),
+                            ),
+                          )
+                        : const SizedBox(),
                     Container(
                       constraints: BoxConstraints(
                         minWidth: 40,
@@ -169,16 +180,18 @@ class _CompanyChatPageState extends State<CompanyChatPage> {
                         ),
                       ][message.type],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        message.createdAt.toString(),
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontSize: 9,
-                        ),
-                      ),
-                    ),
+                    !isMe
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                              "${DateToAPIHelper.timeFormat(DateTime.parse(message.createdAt.toString()))} 既読",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary,
+                                fontSize: 9,
+                              ),
+                            ),
+                          )
+                        : const SizedBox(),
                   ],
                 ),
               ],
@@ -346,4 +359,33 @@ class _CompanyChatPageState extends State<CompanyChatPage> {
       }
     });
   }
+
+  Widget buildDateAndMonth(Map<String, dynamic>? oldData, String createAt) {
+    if (oldData == null || createAt != parseTimeStampToDate(DateTime.parse(oldData["created_at"]))) {
+      return Container(
+        width: 120,
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 5),
+        decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.circular(20)),
+        child: Center(
+          child: Text(
+            createAt,
+            style: const TextStyle(fontSize: 13, color: Colors.white),
+          ),
+        ),
+      );
+    } else {
+      return const SizedBox();
+    }
+  }
+}
+
+String parseTimeStamp(int value) {
+  var date = DateTime.fromMillisecondsSinceEpoch(value);
+  var d12 = DateFormat('hh:mm a').format(date);
+  return d12;
+}
+
+String parseTimeStampToDate(DateTime date) {
+  var d12 = "${date.month}月${date.day}日";
+  return d12;
 }

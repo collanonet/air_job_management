@@ -1,9 +1,15 @@
+import 'dart:convert';
+import 'dart:html' as html;
+
 import 'package:air_job_management/1_company_page/applicant/widget/applicant_card.dart';
 import 'package:air_job_management/1_company_page/applicant/widget/filter.dart';
 import 'package:air_job_management/1_company_page/applicant/widget/manual_and_download.dart';
+import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
+import 'package:csv/csv.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +78,9 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
         child: Column(
           children: [
             ApplicantFilterDataWidgetForCompany(),
-            const ManualAndDownloadApplicantWidget(),
+            ManualAndDownloadApplicantWidget(
+              onDownload: () => generateApplicantListCSV(),
+            ),
             Expanded(
                 child: Container(
               decoration: boxDecoration,
@@ -193,5 +201,50 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
         );
       }
     }
+  }
+
+  void generateApplicantListCSV() {
+    // we will declare the list of headers that we want
+    List<String> rowHeader = ["Job Id", "Full Name", "Status", "Job Title", "Rate", "Total Apply Time", "Date"];
+    // here we will make a 2D array to handle a row
+    List<List<dynamic>> rows = [];
+    //First add entire row header into our first row
+    rows.add(rowHeader);
+    //Now lets add 5 data rows
+    for (int i = 0; i < workerManagementProvider.applicantList.length; i++) {
+      var job = workerManagementProvider.applicantList[i];
+      List<dynamic> dataRow = [];
+      dataRow.add(job.uid);
+      dataRow.add(job.userName);
+      dataRow.add(job.status);
+      dataRow.add(job.jobTitle);
+      dataRow.add("95%");
+      dataRow.add(job.applyCount);
+      dataRow.add(DateToAPIHelper.convertDateToString(job.shiftList!.first.date!));
+      rows.add(dataRow);
+    }
+    String url = "";
+    if (defaultTargetPlatform == TargetPlatform.macOS && kIsWeb) {
+      String csv = const ListToCsvConverter(fieldDelimiter: ';').convert(rows);
+      List<int> excelCsvBytes = [0xEF, 0xBB, 0xBF]..addAll(utf8.encode(csv));
+      String base64ExcelCsvBytes = base64Encode(excelCsvBytes);
+      url = "data:text/plain;charset=utf-8;base64,$base64ExcelCsvBytes";
+    } else {
+      String csv = const ListToCsvConverter().convert(rows);
+      List<int> excelCsvBytes = [0xEF, 0xBB, 0xBF]..addAll(utf8.encode(csv));
+      String base64ExcelCsvBytes = base64Encode(excelCsvBytes);
+      url = "data:text/plain;charset=utf-8;base64,$base64ExcelCsvBytes";
+    }
+//It will create anchor to download the file
+    final anchor = html.document.createElement('a') as html.AnchorElement
+      ..href = url
+      ..style.display = 'none'
+      ..download = 'applicant_list_${DateTime.now()}.csv';
+//finally add the csv anchor to body
+    html.document.body!.children.add(anchor);
+// Cause download by calling this function
+    anchor.click();
+//revoke the object
+    html.Url.revokeObjectUrl(url);
   }
 }

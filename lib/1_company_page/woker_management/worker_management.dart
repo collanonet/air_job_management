@@ -75,7 +75,10 @@ class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterB
             AppSize.spaceHeight16,
             Align(
                 alignment: Alignment.centerRight,
-                child: SizedBox(width: 130, child: ButtonWidget(radius: 25, title: "新規登録", color: AppColor.primaryColor, onPress: () {}))),
+                child: SizedBox(
+                    width: 130,
+                    child: ButtonWidget(
+                        radius: 25, title: "新規登録", color: AppColor.primaryColor, onPress: () => context.go(MyRoute.companyCreateWorkerMgt)))),
             AppSize.spaceHeight16,
             Expanded(
                 child: Container(

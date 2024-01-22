@@ -24,8 +24,12 @@ class JobApplyCardWidget extends StatelessWidget {
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), border: Border.all(width: 1, color: AppColor.primaryColor)),
       child: InkWell(
         onTap: () {
-          provider.setJob = job;
-          context.go("/company/worker-management/${job.uid}");
+          if (job.userId != null) {
+            provider.setJob = job;
+            context.go("/company/worker-management/${job.uid}");
+          } else {
+            context.go("/company/worker-management/outside-worker/${job.uid}");
+          }
         },
         child: Row(
           children: [
@@ -52,10 +56,22 @@ class JobApplyCardWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          job.userName ?? "",
-                          style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
-                          overflow: TextOverflow.fade,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              job.userName ?? "",
+                              style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
+                              overflow: TextOverflow.fade,
+                            ),
+                            AppSize.spaceWidth16,
+                            job.userId != null
+                                ? const SizedBox()
+                                : Icon(
+                                    Icons.star,
+                                    color: AppColor.primaryColor,
+                                  )
+                          ],
                         ),
                         Text(
                           job.jobLocation ?? "",
