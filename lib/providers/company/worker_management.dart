@@ -45,6 +45,11 @@ class WorkerManagementProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  onChangeIsSelect(int index, bool val) {
+    workManagementList[index].isSelect = val;
+    notifyListeners();
+  }
+
   set setCompanyId(String companyId) {
     this.companyId = companyId;
   }
@@ -149,13 +154,22 @@ class WorkerManagementProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  getWorkerApply(String companyId) async {
+  getWorkerApply(String companyId, {bool isForMatchPage = false}) async {
     workManagementList = await WorkerManagementApiService().getAllJobApply(companyId);
     // for (var item in list) {
     //   if (item.status == JapaneseText.hired) {
     //     workManagementList.add(item);
     //   }
     // }
+    if (isForMatchPage == true) {
+      List<WorkerManagement> workerWithoutJob = [];
+      for (var job in workManagementList) {
+        if (job.jobId == "") {
+          workerWithoutJob.add(job);
+        }
+      }
+      workManagementList = workerWithoutJob;
+    }
     notifyListeners();
   }
 

@@ -60,24 +60,27 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
             const JobPostingShiftPageForCompany()
           else
             const JobPostingShiftFramePageForCompany(),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
-              SizedBox(
+          if (provider.selectedMenu != provider.tabMenu[2])
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                SizedBox(
+                    width: 200,
+                    child: ButtonWidget(
+                      radius: 25,
+                      color: AppColor.whiteColor,
+                      title: "キャンセル",
+                      onPress: () => context.go(MyRoute.companyJobPosting),
+                    )),
+                AppSize.spaceWidth16,
+                SizedBox(
                   width: 200,
-                  child: ButtonWidget(
-                    radius: 25,
-                    color: AppColor.whiteColor,
-                    title: "キャンセル",
-                    onPress: () => context.go(MyRoute.companyJobPosting),
-                  )),
-              AppSize.spaceWidth16,
-              SizedBox(
-                width: 200,
-                child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () => saveJobPostingData()),
-              ),
-            ]),
-          )
+                  child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () => saveJobPostingData()),
+                )
+              ]),
+            )
+          else
+            const SizedBox(),
         ],
       ),
     );

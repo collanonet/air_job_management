@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
+import '../../helper/date_to_api.dart';
+
 class WorkerManagementApiService {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final db = FirebaseFirestore.instance;
@@ -94,6 +96,30 @@ class WorkerManagementApiService {
       return true;
     } catch (e) {
       debugPrint("Error updateJobStatus =>> ${e.toString()}");
+      return false;
+    }
+  }
+
+  Future<bool> updateJobId(WorkerManagement job) async {
+    try {
+      await jobRef.doc(job.uid).update({
+        "job_id": job.jobId,
+        "job_title": job.jobTitle,
+        "job_location": job.jobLocation,
+        "shift": job.shiftList!
+            .map((e) => {
+                  "start_work_time": e.startWorkTime,
+                  "end_work_time": e.endWorkTime,
+                  "start_break_time": e.endBreakTime,
+                  "end_break_time": e.endBreakTime,
+                  "date": DateToAPIHelper.convertDateToString(e.date!),
+                  "price": e.price.toString()
+                })
+            .toList()
+      });
+      return true;
+    } catch (e) {
+      debugPrint("Error updateJobId =>> ${e.toString()}");
       return false;
     }
   }

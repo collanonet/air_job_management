@@ -3,6 +3,7 @@ import 'package:air_job_management/models/user.dart';
 import '../worker_model/shift.dart';
 
 class WorkerManagement {
+  bool? isSelect;
   String? uid;
   String? companyId;
   String? jobLocation;
@@ -17,6 +18,7 @@ class WorkerManagement {
   List<String>? userIdenList;
   WorkerManagement(
       {this.applyCount,
+      this.isSelect = false,
       this.jobTitle,
       this.myUser,
       this.companyId,

@@ -210,9 +210,13 @@ class JobPosting {
   bool? bicycleCommutingPossible;
   String? selectedPublicSetting;
   String? jobLocation;
+  int? applyCount;
+  int? passedInterviewCount;
 
   JobPosting(
       {this.status,
+      this.applyCount = 0,
+      this.passedInterviewCount,
       this.jobLocation,
       this.applicationDateline,
       this.majorOccupation,

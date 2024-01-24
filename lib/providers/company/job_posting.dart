@@ -1,5 +1,7 @@
+import 'package:air_job_management/api/company/worker_managment.dart';
 import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
+import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:file_picker/file_picker.dart';
@@ -11,6 +13,7 @@ import '../../models/company.dart';
 class JobPostingForCompanyProvider with ChangeNotifier {
   //For Job Posting List
   List<JobPosting> jobPostingList = [];
+  List<WorkerManagement> jobApplyList = [];
   List<dynamic> jobPosterProfile = [null];
 
   String selectedMenu = JapaneseText.companyJobInformation;
@@ -178,6 +181,14 @@ class JobPostingForCompanyProvider with ChangeNotifier {
 
   getAllJobPost(String id) async {
     jobPostingList = await JobPostingApiService().getAllJobPostByCompany(id);
+    jobApplyList = await WorkerManagementApiService().getAllJobApply(id);
+    for (var job in jobPostingList) {
+      for (var jobApply in jobApplyList) {
+        if (jobApply.jobId == job.uid) {
+          job.applyCount = job.applyCount! + 1;
+        }
+      }
+    }
     notifyListeners();
   }
 

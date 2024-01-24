@@ -11,7 +11,9 @@ import '../../../utils/style.dart';
 
 class JobApplyCardWidget extends StatelessWidget {
   final WorkerManagement job;
-  const JobApplyCardWidget({super.key, required this.job});
+  final bool isFromMatching;
+  final int index;
+  const JobApplyCardWidget({super.key, required this.job, this.isFromMatching = false, this.index = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +23,21 @@ class JobApplyCardWidget extends StatelessWidget {
       width: AppSize.getDeviceWidth(context),
       padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
       margin: const EdgeInsets.only(bottom: 16, left: 0, right: 0),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), border: Border.all(width: 1, color: AppColor.primaryColor)),
+      decoration: BoxDecoration(
+          color: job.isSelect == true ? Colors.orange.withOpacity(0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(width: 1, color: AppColor.primaryColor)),
       child: InkWell(
         onTap: () {
-          if (job.userId != null) {
-            provider.setJob = job;
-            context.go("/company/worker-management/${job.uid}");
+          if (isFromMatching) {
+            provider.onChangeIsSelect(index, !job.isSelect!);
           } else {
-            context.go("/company/worker-management/outside-worker/${job.uid}");
+            if (job.userId != null) {
+              provider.setJob = job;
+              context.go("/company/worker-management/${job.uid}");
+            } else {
+              context.go("/company/worker-management/outside-worker/${job.uid}");
+            }
           }
         },
         child: Row(

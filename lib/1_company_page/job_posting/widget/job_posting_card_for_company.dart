@@ -1,7 +1,9 @@
+import 'package:air_job_management/providers/company/job_posting.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/job_posting.dart';
 import '../../../utils/style.dart';
@@ -12,6 +14,7 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<JobPostingForCompanyProvider>(context);
     return Container(
       height: 110,
       width: AppSize.getDeviceWidth(context),
@@ -19,7 +22,10 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16, left: 0, right: 0),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), border: Border.all(width: 2, color: AppColor.primaryColor)),
       child: InkWell(
-        onTap: () => context.go("/company/job-posting/${jobPosting.uid}"),
+        onTap: () {
+          provider.onChangeSelectMenu(provider.tabMenu[0]);
+          context.go("/company/job-posting/${jobPosting.uid}");
+        },
         child: Row(
           children: [
             Expanded(
