@@ -6,7 +6,8 @@ import '../../../widgets/custom_button.dart';
 
 class MatchingAndCopyButtonWidget extends StatelessWidget {
   final Function onAdd;
-  const MatchingAndCopyButtonWidget({super.key, required this.onAdd});
+  final Function onCopyPaste;
+  const MatchingAndCopyButtonWidget({super.key, required this.onAdd, required this.onCopyPaste});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class MatchingAndCopyButtonWidget extends StatelessWidget {
             AppSize.spaceWidth16,
             SizedBox(
               width: 180,
-              child: ButtonWidget(radius: 25, title: "コピーして作成", color: AppColor.primaryColor, onPress: () {}),
+              child: ButtonWidget(radius: 25, title: "コピーして作成", color: AppColor.primaryColor, onPress: () => onCopyPaste()),
             ),
           ],
         ),

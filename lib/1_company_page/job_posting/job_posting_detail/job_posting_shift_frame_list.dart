@@ -1,4 +1,5 @@
 import 'package:air_job_management/1_company_page/home/home.dart';
+import 'package:air_job_management/1_company_page/job_posting/job_posting_detail/job_posting_shift.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/matching_worker.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/widgets/show_message.dart';
@@ -7,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
+import '../../../api/job_posting.dart';
+import '../../../helper/date_to_api.dart';
+import '../../../helper/japan_date_time.dart';
 import '../../../models/job_posting.dart';
 import '../../../providers/company/job_posting.dart';
 import '../../../utils/app_color.dart';
@@ -27,9 +31,9 @@ class JobPostingShiftFramePageForCompany extends StatefulWidget {
 class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFramePageForCompany> with AfterBuildMixin {
   late JobPostingForCompanyProvider provider;
   late AuthProvider authProvider;
-  JobPosting? selectJobPosting;
+  ShiftFrame? selectShiftFrame;
 
-  List<JobPosting> jobPostingList = [];
+  List<ShiftFrame> shiftFrameList = [];
   bool isLoading = true;
 
   @override
@@ -46,9 +50,10 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
             Row(
               children: [
                 const TitleWidget(title: "シフト枠　一覧"),
-                Expanded(child: MatchingAndCopyButtonWidget(
+                Expanded(
+                    child: MatchingAndCopyButtonWidget(
                   onAdd: () {
-                    if (selectJobPosting == null) {
+                    if (selectShiftFrame == null) {
                       MessageWidget.show("Please select one job first before matching!");
                     } else {
                       Navigator.push(
@@ -56,13 +61,56 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
                           MaterialPageRoute(
                               builder: (_) => HomePageForCompany(
                                     page: MatchingWorkerPage(
-                                      jobPosting: selectJobPosting!,
+                                      jobPosting: provider.jobPosting!,
+                                      shiftFrame: selectShiftFrame!,
                                     ),
                                   ))).then((value) {
                         if (value != null && value == true) {
                           onRefreshData();
                         }
                       });
+                    }
+                  },
+                  onCopyPaste: () {
+                    if (selectShiftFrame == null) {
+                      MessageWidget.show("Please select one job first before matching!");
+                    } else {
+                      var now = DateTime.now();
+                      provider.transportExp.text = selectShiftFrame!.transportExpenseFee!;
+                      provider.hourlyWag.text = selectShiftFrame!.hourlyWag!;
+                      provider.numberOfRecruitPeople.text = selectShiftFrame!.recruitmentNumberPeople!;
+                      provider.startWorkDate = DateToAPIHelper.fromApiToLocal(selectShiftFrame!.startDate!);
+                      provider.endWorkDate = DateToAPIHelper.fromApiToLocal(selectShiftFrame!.endDate!);
+                      provider.startWorkingTime = DateTime(
+                          now.year,
+                          now.month,
+                          now.day,
+                          int.parse(selectShiftFrame!.startWorkTime.toString().split(":")[0]),
+                          int.parse(selectShiftFrame!.startWorkTime.toString().split(":")[1]),
+                          0);
+                      provider.endWorkingTime = DateTime(
+                          now.year,
+                          now.month,
+                          now.day,
+                          int.parse(selectShiftFrame!.endWorkTime.toString().split(":")[0]),
+                          int.parse(selectShiftFrame!.endWorkTime.toString().split(":")[1]),
+                          0);
+                      provider.startBreakTime = DateTime(
+                          now.year,
+                          now.month,
+                          now.day,
+                          int.parse(selectShiftFrame!.startBreakTime.toString().split(":")[0]),
+                          int.parse(selectShiftFrame!.startBreakTime.toString().split(":")[1]),
+                          0);
+                      provider.endBreakTime = DateTime(
+                          now.year,
+                          now.month,
+                          now.day,
+                          int.parse(selectShiftFrame!.endBreakTime.toString().split(":")[0]),
+                          int.parse(selectShiftFrame!.endBreakTime.toString().split(":")[1]),
+                          0);
+                      setState(() {});
+                      showCopyAndPaste();
                     }
                   },
                 ))
@@ -122,25 +170,26 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
         child: LoadingWidget(AppColor.primaryColor),
       );
     } else {
-      if (jobPostingList.isNotEmpty) {
-        return ListView.separated(
-            itemCount: jobPostingList.length,
-            shrinkWrap: true,
-            separatorBuilder: (context, index) => Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == jobPostingList.length ? 20 : 0)),
-            itemBuilder: (context, index) {
-              JobPosting jobPosting = jobPostingList[index];
-              return ShiftFrameCardWidget(
-                jobPosting: jobPosting,
-                selectJob: selectJobPosting,
-                onClick: () {
-                  if (selectJobPosting == null) {
+      if (shiftFrameList.isNotEmpty) {
+        return Expanded(
+          child: ListView.separated(
+              itemCount: shiftFrameList.length,
+              shrinkWrap: true,
+              separatorBuilder: (context, index) => Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == shiftFrameList.length ? 20 : 0)),
+              itemBuilder: (context, index) {
+                ShiftFrame shiftFrame = shiftFrameList[index];
+                return ShiftFrameCardWidget(
+                  shiftFrame: shiftFrame,
+                  selectShiftFrame: selectShiftFrame,
+                  title: provider.jobPosting?.title ?? "",
+                  onClick: () {
                     setState(() {
-                      selectJobPosting = jobPosting;
+                      selectShiftFrame = shiftFrame;
                     });
-                  }
-                },
-              );
-            });
+                  },
+                );
+              }),
+        );
       } else {
         return const Center(
           child: EmptyDataWidget(),
@@ -149,20 +198,63 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
     }
   }
 
+  showCopyAndPaste() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Padding(
+              padding: EdgeInsets.all(AppSize.getDeviceHeight(context) * 0.1),
+              child: const JobPostingShiftPageForCompany(
+                isFromCopyShift: true,
+              ),
+            ),
+          );
+        }).then((value) {
+      if (value == true) {
+        onRefreshData();
+      }
+    });
+  }
+
   onRefreshData() async {
     setState(() {
       isLoading = true;
     });
-    jobPostingList.clear();
-    await provider.getAllJobPost(authProvider.myCompany?.uid ?? "");
-    getData();
+    try {
+      shiftFrameList = [];
+      await provider.onInitForJobPostingDetail(authProvider.myCompany?.uid ?? "");
+      getData();
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
-  getData() {
-    for (var job in provider.jobPostingList) {
-      if (job.title == provider.jobPosting?.title) {
-        jobPostingList.add(job);
-      }
+  getData() async {
+    shiftFrameList.add(ShiftFrame(
+        startDate: DateToAPIHelper.convertDateToString(provider.startWorkDate),
+        recruitmentNumberPeople: provider.numberOfRecruitPeople.text,
+        expiredTime: null,
+        endDate: DateToAPIHelper.convertDateToString(provider.endWorkDate),
+        endBreakTime: dateTimeToHourAndMinute(provider.endBreakTime),
+        endWorkTime: dateTimeToHourAndMinute(provider.endWorkingTime),
+        startBreakTime: dateTimeToHourAndMinute(provider.startBreakTime),
+        startWorkTime: dateTimeToHourAndMinute(provider.startWorkingTime),
+        applicationDateline: provider.selectedDeadline,
+        bicycleCommutingPossible: provider.bicycleCommutingPossible,
+        emergencyContact: provider.emergencyContact.text,
+        hourlyWag: provider.hourlyWag.text,
+        motorCycleCarCommutingPossible: provider.motorCycleCarCommutingPossible,
+        selectedPublicSetting: provider.selectedPublicSetting,
+        transportExpenseFee: provider.transportExp.text));
+    if (provider.jobPosting == null) {
+      provider.jobPosting = await JobPostingApiService().getAJobPosting(authProvider.myCompany?.uid ?? "");
+      shiftFrameList.addAll(provider.jobPosting?.shiftFrameList ?? []);
+    } else {
+      shiftFrameList.addAll(provider.jobPosting?.shiftFrameList ?? []);
     }
     setState(() {
       isLoading = false;

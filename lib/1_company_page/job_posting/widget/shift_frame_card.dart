@@ -7,17 +7,18 @@ import '../../../models/job_posting.dart';
 import '../../../utils/style.dart';
 
 class ShiftFrameCardWidget extends StatelessWidget {
-  final JobPosting jobPosting;
-  final JobPosting? selectJob;
+  final String title;
+  final ShiftFrame shiftFrame;
+  final ShiftFrame? selectShiftFrame;
   final Function onClick;
-  const ShiftFrameCardWidget({super.key, required this.jobPosting, required this.onClick, this.selectJob});
+  const ShiftFrameCardWidget({super.key, required this.shiftFrame, required this.onClick, this.selectShiftFrame, required this.title});
 
   @override
   Widget build(BuildContext context) {
     bool isExpired = false;
     DateTime now = DateTime.now();
     DateTime today = DateTime(now.year, now.month, now.day, 0, 0, 0, 0, 0);
-    DateTime endDate = DateToAPIHelper.fromApiToLocal(jobPosting.endDate!);
+    DateTime endDate = DateToAPIHelper.fromApiToLocal(shiftFrame.endDate!);
     if (endDate.isBefore(today) && today != endDate) {
       isExpired = true;
     }
@@ -27,7 +28,7 @@ class ShiftFrameCardWidget extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 16, left: 0, right: 0),
       decoration: BoxDecoration(
-          color: selectJob?.uid == jobPosting.uid ? Colors.orange.withOpacity(0.1) : Colors.transparent,
+          color: shiftFrame == selectShiftFrame ? Colors.orange.withOpacity(0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(width: 2, color: AppColor.primaryColor)),
       child: InkWell(
@@ -54,7 +55,7 @@ class ShiftFrameCardWidget extends StatelessWidget {
                   AppSize.spaceWidth16,
                   Expanded(
                     child: Text(
-                      jobPosting.title ?? "",
+                      title,
                       style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
                       overflow: TextOverflow.fade,
                     ),
@@ -66,7 +67,7 @@ class ShiftFrameCardWidget extends StatelessWidget {
             Expanded(
               child: Center(
                 child: Text(
-                  "${jobPosting.startDate} - ${jobPosting.endDate}\n${jobPosting.startTimeHour} - ${jobPosting.endTimeHour} ",
+                  "${shiftFrame.startDate} - ${shiftFrame.endDate}\n${shiftFrame.startWorkTime} - ${shiftFrame.endWorkTime} ",
                   style: kTitleText.copyWith(color: AppColor.darkGrey, fontSize: 16, fontFamily: "Normal"),
                   overflow: TextOverflow.fade,
                 ),
@@ -76,7 +77,7 @@ class ShiftFrameCardWidget extends StatelessWidget {
             Expanded(
               child: Center(
                 child: Text(
-                  jobPosting.numberOfRecruit ?? "",
+                  shiftFrame.recruitmentNumberPeople ?? "",
                   style: kTitleText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),
@@ -86,7 +87,7 @@ class ShiftFrameCardWidget extends StatelessWidget {
             Expanded(
               child: Center(
                 child: Text(
-                  "${jobPosting.applyCount ?? ""}",
+                  shiftFrame.applyCount ?? "",
                   style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),

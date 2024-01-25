@@ -212,9 +212,11 @@ class JobPosting {
   String? jobLocation;
   int? applyCount;
   int? passedInterviewCount;
+  List<ShiftFrame>? shiftFrameList;
 
   JobPosting(
       {this.status,
+      this.shiftFrameList,
       this.applyCount = 0,
       this.passedInterviewCount,
       this.jobLocation,
@@ -398,6 +400,7 @@ class JobPosting {
       this.createdAt});
 
   factory JobPosting.fromJson(Map<String, dynamic> json) => JobPosting(
+      shiftFrameList: json["shiftFrameList"] == null ? [] : List<ShiftFrame>.from(json["shiftFrameList"]!.map((x) => ShiftFrame.fromJson(x))),
       coverList: json["cover_list"] != null ? List<String>.from(json["cover_list"].map((e) => e)) : [],
       applicationDateline: json["applicationDateline"],
       majorOccupation: json["majorOccupation"],
@@ -580,6 +583,7 @@ class JobPosting {
       endBreakTimeHour: json["end_break_time_hour"]);
 
   Map<String, dynamic> toJson() => {
+        "shiftFrameList": shiftFrameList != null ? shiftFrameList!.map((e) => e.toJson()).toList() : [],
         "jobLocation": jobLocation,
         "applicationDateline": applicationDateline,
         "majorOccupation": majorOccupation,
@@ -762,6 +766,77 @@ class JobPosting {
         "infoToBeObtains": infoToBeObtains,
         "date": createdAt != null ? MyDateTimeUtils.convertDateToString(createdAt!) : null,
         "updated_at": DateTime.now()
+      };
+}
+
+class ShiftFrame {
+  String? startDate;
+  String? endDate;
+  String? startWorkTime;
+  String? endWorkTime;
+  String? startBreakTime;
+  String? endBreakTime;
+  String? recruitmentNumberPeople;
+  String? expiredTime;
+  String? hourlyWag;
+  String? transportExpenseFee;
+  String? emergencyContact;
+  String? applicationDateline;
+  bool? motorCycleCarCommutingPossible;
+  bool? bicycleCommutingPossible;
+  String? selectedPublicSetting;
+  String? applyCount;
+
+  ShiftFrame(
+      {this.endDate,
+      this.startDate,
+      this.endBreakTime,
+      this.endWorkTime,
+      this.startWorkTime,
+      this.hourlyWag,
+      this.startBreakTime,
+      this.emergencyContact,
+      this.transportExpenseFee,
+      this.applicationDateline,
+      this.selectedPublicSetting,
+      this.bicycleCommutingPossible,
+      this.motorCycleCarCommutingPossible,
+      this.expiredTime,
+      this.recruitmentNumberPeople});
+
+  factory ShiftFrame.fromJson(Map<String, dynamic> json) => ShiftFrame(
+      applicationDateline: json["applicationDateline"],
+      motorCycleCarCommutingPossible: json["motorCycleCarCommutingPossible"],
+      bicycleCommutingPossible: json["bicycleCommutingPossible"],
+      selectedPublicSetting: json["selectedPublicSetting"],
+      hourlyWag: json["hourlyWag"],
+      transportExpenseFee: json["transportExpenseFee"],
+      emergencyContact: json["emergencyContact"],
+      startWorkTime: json["startWorkTime"],
+      startBreakTime: json["startBreakTime"],
+      endWorkTime: json["endWorkTime"],
+      endBreakTime: json["endBreakTime"],
+      endDate: json["endDate"],
+      expiredTime: json["expiredTime"],
+      recruitmentNumberPeople: json["recruitmentNumberPeople"],
+      startDate: json["startDate"]);
+
+  Map<String, dynamic> toJson() => {
+        "applicationDateline": applicationDateline,
+        "motorCycleCarCommutingPossible": motorCycleCarCommutingPossible,
+        "bicycleCommutingPossible": bicycleCommutingPossible,
+        "selectedPublicSetting": selectedPublicSetting,
+        "hourlyWag": hourlyWag,
+        "transportExpenseFee": transportExpenseFee,
+        "emergencyContact": emergencyContact,
+        "startWorkTime": startWorkTime,
+        "startBreakTime": startBreakTime,
+        "endWorkTime": endWorkTime,
+        "endBreakTime": endBreakTime,
+        "endDate": endDate,
+        "expiredTime": expiredTime,
+        "recruitmentNumberPeople": recruitmentNumberPeople,
+        'startDate': startDate
       };
 }
 

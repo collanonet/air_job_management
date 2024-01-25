@@ -21,7 +21,8 @@ import '../../woker_management/widget/job_card.dart';
 
 class MatchingWorkerPage extends StatefulWidget {
   final JobPosting jobPosting;
-  const MatchingWorkerPage({super.key, required this.jobPosting});
+  final ShiftFrame shiftFrame;
+  const MatchingWorkerPage({super.key, required this.jobPosting, required this.shiftFrame});
 
   @override
   State<MatchingWorkerPage> createState() => _MatchingWorkerPageState();
@@ -165,9 +166,9 @@ class _MatchingWorkerPageState extends State<MatchingWorkerPage> with AfterBuild
         job.jobTitle = widget.jobPosting.title;
         job.jobId = widget.jobPosting.uid;
         job.jobLocation = widget.jobPosting.jobLocation;
-        DateTime startDate = DateToAPIHelper.fromApiToLocal(widget.jobPosting.startDate!);
-        DateTime endDate = DateToAPIHelper.fromApiToLocal(widget.jobPosting.endDate!);
-        List<DateTime> dateList = [DateToAPIHelper.timeToDateTime(widget.jobPosting.startTimeHour!, dateTime: startDate)];
+        DateTime startDate = DateToAPIHelper.fromApiToLocal(widget.shiftFrame.startDate!);
+        DateTime endDate = DateToAPIHelper.fromApiToLocal(widget.shiftFrame.endDate!);
+        List<DateTime> dateList = [DateToAPIHelper.timeToDateTime(widget.shiftFrame.startWorkTime!, dateTime: startDate)];
         for (var i = 1; i <= (startDate.difference(endDate).inDays * -1); ++i) {
           dateList.add(DateTime(startDate.year, startDate.month, startDate.day + i));
         }
@@ -175,12 +176,12 @@ class _MatchingWorkerPageState extends State<MatchingWorkerPage> with AfterBuild
         for (var date in dateList) {
           if (date.isAfter(DateTime.now())) {
             shiftList.add(ShiftModel(
-                startBreakTime: widget.jobPosting.startBreakTimeHour!,
+                startBreakTime: widget.shiftFrame.startBreakTime!,
                 date: date,
-                endBreakTime: widget.jobPosting.endBreakTimeHour!,
-                endWorkTime: widget.jobPosting.endTimeHour!,
-                price: widget.jobPosting.hourlyWag!,
-                startWorkTime: widget.jobPosting.startTimeHour!));
+                endBreakTime: widget.shiftFrame.endBreakTime!,
+                endWorkTime: widget.shiftFrame.endWorkTime!,
+                price: widget.shiftFrame.hourlyWag!,
+                startWorkTime: widget.shiftFrame.startWorkTime!));
           }
         }
         job.shiftList = shiftList.map((e) => e).toList();
