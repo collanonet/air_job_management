@@ -1,8 +1,10 @@
+import 'package:air_job_management/1_company_page/job_posting/create_or_edit_job_posting.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/create_or_delete.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/filter.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/job_posting_card_for_company.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/job_posting.dart';
+import 'package:air_job_management/widgets/show_message.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -29,6 +31,7 @@ class JobPostingForCompanyPage extends StatefulWidget {
 class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> with AfterBuildMixin {
   late JobPostingForCompanyProvider jobPostingProvider;
   late AuthProvider authProvider;
+  JobPosting? selectedJobPosting;
 
   @override
   void initState() {
@@ -70,7 +73,15 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> wit
         child: Column(
           children: [
             JobPostingFilterFilterDataWidgetForCompany(),
-            const CreateOrDeleteJobPostingForCompany(),
+            CreateOrDeleteJobPostingForCompany(
+              onCopyPaste: () {
+                if (selectedJobPosting == null) {
+                  MessageWidget.show("Please select job first");
+                } else {
+                  showCopyAndPaste();
+                }
+              },
+            ),
             Expanded(
                 child: Container(
               decoration: boxDecoration,
@@ -88,6 +99,7 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> wit
                         ),
                         IconButton(
                             onPressed: () async {
+                              selectedJobPosting = null;
                               jobPostingProvider.onChangeLoading(true);
                               jobPostingProvider.onInitForList();
                               getData();
@@ -135,6 +147,24 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> wit
     );
   }
 
+  showCopyAndPaste() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceHeight(context) * 0.1, vertical: 32),
+            child: CreateOrEditJobPostingPageForCompany(
+              jobPosting: selectedJobPosting!.uid,
+              isCopyPaste: true,
+            ),
+          );
+        }).then((value) {
+      if (value == true) {
+        getData();
+      }
+    });
+  }
+
   buildList() {
     if (jobPostingProvider.isLoading) {
       return Center(
@@ -149,7 +179,16 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> wit
                 Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == jobPostingProvider.jobPostingList.length ? 20 : 0)),
             itemBuilder: (context, index) {
               JobPosting jobPosting = jobPostingProvider.jobPostingList[index];
-              return JobPostingCardForCompanyWidget(jobPosting: jobPosting);
+              return JobPostingCardForCompanyWidget(
+                jobPosting: jobPosting,
+                selectedJobPosting: selectedJobPosting,
+                onClick: () {
+                  jobPostingProvider.onChangeSelectMenu(jobPostingProvider.tabMenu[0]);
+                  setState(() {
+                    selectedJobPosting = jobPosting;
+                  });
+                },
+              );
             });
       } else {
         return const Center(

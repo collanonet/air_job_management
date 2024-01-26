@@ -10,7 +10,9 @@ import '../../../utils/style.dart';
 
 class JobPostingCardForCompanyWidget extends StatelessWidget {
   final JobPosting jobPosting;
-  const JobPostingCardForCompanyWidget({super.key, required this.jobPosting});
+  final JobPosting? selectedJobPosting;
+  final Function onClick;
+  const JobPostingCardForCompanyWidget({super.key, required this.jobPosting, required this.selectedJobPosting, required this.onClick});
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +22,12 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
       width: AppSize.getDeviceWidth(context),
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 16, left: 0, right: 0),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), border: Border.all(width: 2, color: AppColor.primaryColor)),
+      decoration: BoxDecoration(
+          color: selectedJobPosting == jobPosting ? Colors.orange.withOpacity(0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(width: 2, color: AppColor.primaryColor)),
       child: InkWell(
-        onTap: () {
-          provider.onChangeSelectMenu(provider.tabMenu[0]);
-          context.go("/company/job-posting/${jobPosting.uid}");
-        },
+        onTap: () => onClick(),
         child: Row(
           children: [
             Expanded(
@@ -74,7 +76,10 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    onTap: () => context.go("/company/job-posting/${jobPosting.uid}"),
+                    onTap: () {
+                      provider.onChangeSelectMenu(provider.tabMenu[0]);
+                      context.go("/company/job-posting/${jobPosting.uid}");
+                    },
                     borderRadius: BorderRadius.circular(25),
                     child: Center(
                       child: Text(

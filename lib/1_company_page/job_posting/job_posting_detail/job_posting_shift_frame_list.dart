@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
-import '../../../api/job_posting.dart';
 import '../../../helper/date_to_api.dart';
 import '../../../helper/japan_date_time.dart';
 import '../../../models/job_posting.dart';
@@ -212,8 +211,10 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
             ),
           );
         }).then((value) {
-      if (value == true) {
-        onRefreshData();
+      if (value != null) {
+        setState(() {
+          shiftFrameList = value;
+        });
       }
     });
   }
@@ -222,15 +223,9 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
     setState(() {
       isLoading = true;
     });
-    try {
-      shiftFrameList = [];
-      await provider.onInitForJobPostingDetail(authProvider.myCompany?.uid ?? "");
-      getData();
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-    }
+    shiftFrameList = [];
+    await provider.onInitForJobPostingDetail(authProvider.myCompany?.uid ?? "");
+    getData();
   }
 
   getData() async {
@@ -250,12 +245,7 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
         motorCycleCarCommutingPossible: provider.motorCycleCarCommutingPossible,
         selectedPublicSetting: provider.selectedPublicSetting,
         transportExpenseFee: provider.transportExp.text));
-    if (provider.jobPosting == null) {
-      provider.jobPosting = await JobPostingApiService().getAJobPosting(authProvider.myCompany?.uid ?? "");
-      shiftFrameList.addAll(provider.jobPosting?.shiftFrameList ?? []);
-    } else {
-      shiftFrameList.addAll(provider.jobPosting?.shiftFrameList ?? []);
-    }
+    shiftFrameList.addAll(provider.jobPosting?.shiftFrameList ?? []);
     setState(() {
       isLoading = false;
     });

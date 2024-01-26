@@ -9,6 +9,7 @@ import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/job_posting.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/my_route.dart';
+import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +28,8 @@ import '../../widgets/show_message.dart';
 
 class CreateOrEditJobPostingPageForCompany extends StatefulWidget {
   final String? jobPosting;
-  const CreateOrEditJobPostingPageForCompany({super.key, this.jobPosting});
+  final bool? isCopyPaste;
+  const CreateOrEditJobPostingPageForCompany({super.key, this.jobPosting, this.isCopyPaste});
 
   @override
   State<CreateOrEditJobPostingPageForCompany> createState() => _CreateOrEditJobPostingPageForCompanyState();
@@ -42,7 +44,16 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
   Widget build(BuildContext context) {
     authProvider = Provider.of<AuthProvider>(context);
     provider = Provider.of<JobPostingForCompanyProvider>(context);
-    return Form(key: _formKey, child: CustomLoadingOverlay(isLoading: provider.isLoading, child: buildBody()));
+    if (widget.isCopyPaste == true) {
+      return Form(
+          key: _formKey,
+          child: Scaffold(
+            body: buildBody(),
+            backgroundColor: AppColor.bgPageColor,
+          ));
+    } else {
+      return Form(key: _formKey, child: CustomLoadingOverlay(isLoading: provider.isLoading, child: buildBody()));
+    }
   }
 
   buildBody() {
@@ -58,6 +69,13 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
             const JobPostingInformationPageForCompany()
           else if (provider.selectedMenu == provider.tabMenu[1])
             const JobPostingShiftPageForCompany()
+          else if (widget.isCopyPaste == true && widget.jobPosting == null)
+            const Padding(
+              padding: EdgeInsets.only(top: 100),
+              child: Center(
+                child: EmptyDataWidget(),
+              ),
+            )
           else
             const JobPostingShiftFramePageForCompany(),
           if (provider.selectedMenu != provider.tabMenu[2])
@@ -70,7 +88,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
                       radius: 25,
                       color: AppColor.whiteColor,
                       title: "キャンセル",
-                      onPress: () => context.go(MyRoute.companyJobPosting),
+                      onPress: () => widget.isCopyPaste == true ? Navigator.pop(context) : context.go(MyRoute.companyJobPosting),
                     )),
                 AppSize.spaceWidth16,
                 SizedBox(
@@ -152,16 +170,25 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
           provider.jobPosting?.startDate = DateToAPIHelper.convertDateToString(provider.startWorkDate);
           provider.jobPosting?.endDate = DateToAPIHelper.convertDateToString(provider.endWorkDate);
 
-          String? success = provider.jobPosting?.uid != null
+          if (widget.isCopyPaste == true) {
+            provider.jobPosting!.shiftFrameList = [];
+          }
+
+          String? success = provider.jobPosting?.uid != null && widget.isCopyPaste == null
               ? await JobPostingApiService().updateJobPostingInfo(provider.jobPosting)
               : await JobPostingApiService().createJob(provider.jobPosting);
           provider.onChangeLoading(false);
           if (success == ConstValue.success) {
-            MessageWidget.show(provider.jobPosting?.uid != null ? JapaneseText.successUpdate : JapaneseText.successCreate);
+            MessageWidget.show(
+                provider.jobPosting?.uid != null && widget.isCopyPaste == null ? JapaneseText.successUpdate : JapaneseText.successCreate);
             await provider.getAllJobPost(authProvider.myCompany?.uid ?? "");
-            context.go(MyRoute.companyJobPosting);
+            if (widget.isCopyPaste == true) {
+              Navigator.pop(context);
+            } else {
+              context.go(MyRoute.companyJobPosting);
+            }
           } else {
-            MessageWidget.show(provider.jobPosting?.uid != null ? JapaneseText.failUpdate : JapaneseText.failCreate);
+            MessageWidget.show(provider.jobPosting?.uid != null && widget.isCopyPaste == null ? JapaneseText.failUpdate : JapaneseText.failCreate);
           }
         } catch (e) {
           provider.onChangeLoading(false);

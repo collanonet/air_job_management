@@ -782,11 +782,10 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
         motorCycleCarCommutingPossible: provider.motorCycleCarCommutingPossible,
         selectedPublicSetting: provider.selectedPublicSetting,
         transportExpenseFee: provider.transportExp.text));
-    print("Shift frame after add ${provider.jobPosting!.shiftFrameList!.length}");
     String? isSuccess = await JobPostingApiService().updateJobPostingInfo(provider.jobPosting!);
     if (isSuccess == ConstValue.success) {
       MessageWidget.show(JapaneseText.successCreate);
-      Navigator.pop(context, true);
+      Navigator.pop(context, provider.jobPosting!.shiftFrameList);
     } else {
       MessageWidget.show(JapaneseText.failCreate);
     }
