@@ -115,12 +115,10 @@ class WorkerManagementProvider with ChangeNotifier {
   }
 
   filterWorkerManagement(String val) async {
-    print("Filter $val");
     await getWorkerApply(companyId);
     List<WorkerManagement> searchFilter = [];
     if (val.isNotEmpty) {
       for (var job in workManagementList) {
-        print("${job.userName.toString().toLowerCase()} x $val");
         if (job.userName.toString().toLowerCase().contains(val)) {
           searchFilter.add(job);
         }

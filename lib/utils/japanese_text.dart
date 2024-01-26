@@ -155,7 +155,7 @@ class JapaneseText {
   static String releaseProcess = "締め解除";
   static String incomplete = "未完了";
   static String complete = "完了";
-  static String all = "全て";
+  static String all = "すべて";
 
   static String staffId = "社員番号";
   static String groupId = "勤務地ID";
