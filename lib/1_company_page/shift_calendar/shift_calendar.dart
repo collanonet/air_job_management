@@ -24,14 +24,23 @@ class ShiftCalendarPage extends StatefulWidget {
   State<ShiftCalendarPage> createState() => _ShiftCalendarPageState();
 }
 
-class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMixin {
+class _ShiftCalendarPageState extends State<ShiftCalendarPage>
+    with AfterBuildMixin {
   late AuthProvider authProvider;
   late ShiftCalendarProvider provider;
+
+  @override
+  void initState() {
+    Provider.of<ShiftCalendarProvider>(context, listen: false)
+        .initializeRangeDate();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     authProvider = Provider.of<AuthProvider>(context);
     provider = Provider.of<ShiftCalendarProvider>(context);
+    print("Weekday is ${provider.firstDate}  ${provider.firstDate.weekday}");
     return CustomLoadingOverlay(
         isLoading: provider.isLoading,
         child: SizedBox(
@@ -40,7 +49,11 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              children: [const ShiftCalendarFilterDataWidgetForCompany(), CopyPasteShiftCalendarWidget(onClick: () {}), buildCalendarWidget()],
+              children: [
+                const ShiftCalendarFilterDataWidgetForCompany(),
+                CopyPasteShiftCalendarWidget(onClick: () {}),
+                buildCalendarWidget()
+              ],
             ),
           ),
         ));
@@ -60,7 +73,98 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
             "カレンダー表示",
             style: titleStyle,
           ),
-          buildMonthDisplay()
+          buildMonthDisplay(),
+          AppSize.spaceHeight8,
+          Center(
+            child: SizedBox(
+              width: AppSize.getDeviceWidth(context) * 0.6,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    "月",
+                    style: kNormalText,
+                  ),
+                  Text(
+                    "火",
+                    style: kNormalText,
+                  ),
+                  Text(
+                    "水",
+                    style: kNormalText,
+                  ),
+                  Text(
+                    "木",
+                    style: kNormalText,
+                  ),
+                  Text(
+                    "金",
+                    style: kNormalText,
+                  ),
+                  Text(
+                    "土",
+                    style: kNormalText,
+                  ),
+                  Text(
+                    "日",
+                    style: kNormalText,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          AppSize.spaceHeight8,
+          Expanded(
+            child: Center(
+              child: provider.rangeDateList.isEmpty
+                  ? const SizedBox()
+                  : SizedBox(
+                      width: AppSize.getDeviceWidth(context) * 0.6,
+                      child: GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 7,
+                          ),
+                          itemCount: 35,
+                          itemBuilder: (BuildContext context, int i) {
+                            if ((i + 1 == provider.firstDate.weekday ||
+                                    i + 1 >= provider.firstDate.weekday) &&
+                                i < provider.rangeDateList.length) {
+                              var date = provider.rangeDateList[
+                                  (i + 1) - provider.firstDate.weekday];
+                              var weekDay = date.weekday;
+                              return Container(
+                                decoration: BoxDecoration(
+                                    color: weekDay == 6
+                                        ? const Color(0xffEFFCFF)
+                                        : weekDay == 7
+                                            ? const Color(0xffFFF2F2)
+                                            : Colors.white,
+                                    border: Border.all(
+                                        width: 1, color: AppColor.darkGrey)),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text('${date.day}')),
+                                    ),
+                                    Expanded(child: Text("GG"))
+                                  ],
+                                ),
+                              );
+                            } else {
+                              return Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        width: 1, color: AppColor.darkGrey)),
+                              );
+                            }
+                          }),
+                    ),
+            ),
+          )
         ],
       ),
     ));
@@ -80,7 +184,10 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-                onPressed: () => provider.onChangeMonth(DateTime(provider.month.year, provider.month.month - 1, provider.month.day)),
+                onPressed: () => provider.onChangeMonth(DateTime(
+                    provider.month.year,
+                    provider.month.month - 1,
+                    provider.month.day)),
                 icon: Icon(
                   Icons.arrow_back_ios_new_rounded,
                   size: 25,
@@ -91,7 +198,10 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
               style: titleStyle,
             ),
             IconButton(
-                onPressed: () => provider.onChangeMonth(DateTime(provider.month.year, provider.month.month + 1, provider.month.day)),
+                onPressed: () => provider.onChangeMonth(DateTime(
+                    provider.month.year,
+                    provider.month.month + 1,
+                    provider.month.day)),
                 icon: Icon(
                   color: AppColor.primaryColor,
                   Icons.arrow_forward_ios_rounded,

@@ -12,14 +12,27 @@ class ShiftCalendarProvider with ChangeNotifier {
   DateTime? startWorkDate;
   DateTime? endWorkDate;
   DateTime month = DateTime.now();
+  static DateTime now = DateTime.now();
   String companyId = "";
+  List<DateTime> rangeDateList = [];
+  DateTime firstDate = DateTime(now.year, now.month, 1);
 
   set setCompanyId(String companyId) {
     this.companyId = companyId;
   }
 
+  initializeRangeDate() {
+    rangeDateList.clear();
+    DateTime lastDate = DateTime(month.year, month.month + 1, 0);
+    for (var i = 1; i <= lastDate.day; ++i) {
+      rangeDateList.add(DateTime(month.year, month.month, i));
+    }
+  }
+
   onChangeMonth(DateTime month) {
     this.month = month;
+    firstDate = DateTime(month.year, month.month, 1);
+    initializeRangeDate();
     notifyListeners();
   }
 
@@ -64,7 +77,8 @@ class ShiftCalendarProvider with ChangeNotifier {
     List<WorkerManagement> afterFilterRangeDate = [];
     if (startWorkDate != null && endWorkDate != null) {
       for (var job in afterFilterSelectJobTitle) {
-        bool isWithin = isDateRangeWithin(job.shiftList!.first.date!, job.shiftList!.last.date!, startWorkDate!, endWorkDate!);
+        bool isWithin = isDateRangeWithin(job.shiftList!.first.date!,
+            job.shiftList!.last.date!, startWorkDate!, endWorkDate!);
         if (isWithin) {
           afterFilterRangeDate.add(job);
         }
@@ -77,7 +91,8 @@ class ShiftCalendarProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool isDateRangeWithin(DateTime start1, DateTime end1, DateTime start2, DateTime end2) {
+  bool isDateRangeWithin(
+      DateTime start1, DateTime end1, DateTime start2, DateTime end2) {
     return start1.isAfterOrEqualTo(start2) && end1.isBeforeOrEqualTo(end2);
   }
 
