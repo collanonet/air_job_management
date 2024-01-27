@@ -24,15 +24,13 @@ class ShiftCalendarPage extends StatefulWidget {
   State<ShiftCalendarPage> createState() => _ShiftCalendarPageState();
 }
 
-class _ShiftCalendarPageState extends State<ShiftCalendarPage>
-    with AfterBuildMixin {
+class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMixin {
   late AuthProvider authProvider;
   late ShiftCalendarProvider provider;
 
   @override
   void initState() {
-    Provider.of<ShiftCalendarProvider>(context, listen: false)
-        .initializeRangeDate();
+    Provider.of<ShiftCalendarProvider>(context, listen: false).initializeRangeDate();
     super.initState();
   }
 
@@ -40,7 +38,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage>
   Widget build(BuildContext context) {
     authProvider = Provider.of<AuthProvider>(context);
     provider = Provider.of<ShiftCalendarProvider>(context);
-    print("Weekday is ${provider.firstDate}  ${provider.firstDate.weekday}");
+
     return CustomLoadingOverlay(
         isLoading: provider.isLoading,
         child: SizedBox(
@@ -49,11 +47,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage>
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              children: [
-                const ShiftCalendarFilterDataWidgetForCompany(),
-                CopyPasteShiftCalendarWidget(onClick: () {}),
-                buildCalendarWidget()
-              ],
+              children: [const ShiftCalendarFilterDataWidgetForCompany(), CopyPasteShiftCalendarWidget(onClick: () {}), buildCalendarWidget()],
             ),
           ),
         ));
@@ -118,21 +112,21 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage>
             child: Center(
               child: provider.rangeDateList.isEmpty
                   ? const SizedBox()
-                  : SizedBox(
+                  : Container(
                       width: AppSize.getDeviceWidth(context) * 0.6,
+                      decoration: BoxDecoration(
+                          border: Border(
+                        top: BorderSide(width: 0.4, color: AppColor.darkGrey),
+                        left: BorderSide(width: 0.4, color: AppColor.darkGrey),
+                        right: BorderSide(width: 0.4, color: AppColor.darkGrey),
+                      )),
                       child: GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 7,
-                          ),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 16 / 8),
                           itemCount: 35,
                           itemBuilder: (BuildContext context, int i) {
-                            if ((i + 1 == provider.firstDate.weekday ||
-                                    i + 1 >= provider.firstDate.weekday) &&
-                                i < provider.rangeDateList.length) {
-                              var date = provider.rangeDateList[
-                                  (i + 1) - provider.firstDate.weekday];
-                              var weekDay = date.weekday;
+                            if ((i + 1 == provider.firstDate.weekday || i + 1 >= provider.firstDate.weekday) && i < provider.rangeDateList.length) {
+                              var date = provider.rangeDateList[(i + 1) - provider.firstDate.weekday];
+                              var weekDay = date.date.weekday;
                               return Container(
                                 decoration: BoxDecoration(
                                     color: weekDay == 6
@@ -140,25 +134,56 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage>
                                         : weekDay == 7
                                             ? const Color(0xffFFF2F2)
                                             : Colors.white,
-                                    border: Border.all(
-                                        width: 1, color: AppColor.darkGrey)),
+                                    border: Border.all(width: 0.2, color: AppColor.darkGrey)),
                                 child: Column(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.only(left: 5),
                                       child: Align(
                                           alignment: Alignment.topLeft,
-                                          child: Text('${date.day}')),
+                                          child: Text(
+                                            '${date.date.day}',
+                                            style: kTitleText.copyWith(color: AppColor.midGrey, fontSize: 16),
+                                          )),
                                     ),
-                                    Expanded(child: Text("GG"))
+                                    Expanded(
+                                        child: ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: date.shiftModelList!.length,
+                                            itemBuilder: (context, ind) {
+                                              var shift = date.shiftModelList![ind];
+                                              return Container(
+                                                margin: const EdgeInsets.only(left: 5, right: 5, bottom: 4),
+                                                width: 400,
+                                                color: AppColor.primaryColor,
+                                                height: 20,
+                                                child: Material(
+                                                  color: Colors.transparent,
+                                                  child: InkWell(
+                                                    onTap: () {},
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(left: 5),
+                                                      child: Text(
+                                                        "${shift.startWorkTime} - ${shift.endWorkTime}",
+                                                        style: kNormalText.copyWith(color: Colors.white, fontSize: 12),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }))
                                   ],
                                 ),
                               );
                             } else {
                               return Container(
                                 decoration: BoxDecoration(
-                                    border: Border.all(
-                                        width: 1, color: AppColor.darkGrey)),
+                                    color: i == 33 || i == 5
+                                        ? const Color(0xffEFFCFF)
+                                        : i == 34
+                                            ? const Color(0xffFFF2F2)
+                                            : Colors.white,
+                                    border: Border.all(width: 0.2, color: AppColor.darkGrey)),
                               );
                             }
                           }),
@@ -184,10 +209,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-                onPressed: () => provider.onChangeMonth(DateTime(
-                    provider.month.year,
-                    provider.month.month - 1,
-                    provider.month.day)),
+                onPressed: () => provider.onChangeMonth(DateTime(provider.month.year, provider.month.month - 1, provider.month.day)),
                 icon: Icon(
                   Icons.arrow_back_ios_new_rounded,
                   size: 25,
@@ -198,10 +220,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage>
               style: titleStyle,
             ),
             IconButton(
-                onPressed: () => provider.onChangeMonth(DateTime(
-                    provider.month.year,
-                    provider.month.month + 1,
-                    provider.month.day)),
+                onPressed: () => provider.onChangeMonth(DateTime(provider.month.year, provider.month.month + 1, provider.month.day)),
                 icon: Icon(
                   color: AppColor.primaryColor,
                   Icons.arrow_forward_ios_rounded,

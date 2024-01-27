@@ -16,4 +16,16 @@ class ShiftModel {
       endWorkTime: json["end_work_time"],
       endBreakTime: json["end_break_time"],
       price: json["price"]);
+
+  @override
+  int get hashCode => date.hashCode ^ startBreakTime.hashCode ^ endWorkTime.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ShiftModel &&
+          runtimeType == other.runtimeType &&
+          date == other.date &&
+          startWorkTime == other.startWorkTime &&
+          endWorkTime == other.endWorkTime;
 }

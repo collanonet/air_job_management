@@ -3,12 +3,14 @@ import 'package:air_job_management/utils/style.dart';
 import 'package:flutter/material.dart';
 
 class CustomDropDownWidget extends StatelessWidget {
-  final List<String> list;
-  final String? selectItem;
+  final List<dynamic> list;
+  final bool? isItemSelectModel;
+  final dynamic selectItem;
   final Function onChange;
   final double? width;
   final double? radius;
-  const CustomDropDownWidget({Key? key, required this.list, required this.onChange, this.selectItem, this.width = 200, this.radius = 16})
+  const CustomDropDownWidget(
+      {Key? key, this.isItemSelectModel = false, required this.list, required this.onChange, this.selectItem, this.width = 200, this.radius = 16})
       : super(key: key);
 
   @override
@@ -31,7 +33,7 @@ class CustomDropDownWidget extends StatelessWidget {
                   .map((e) => DropdownMenuItem(
                       value: e,
                       child: Text(
-                        e,
+                        isItemSelectModel == true ? e.title : e,
                         style: kNormalText.copyWith(fontSize: 16, color: AppColor.darkGrey),
                       )))
                   .toList(),

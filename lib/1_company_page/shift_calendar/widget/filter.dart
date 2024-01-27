@@ -42,6 +42,7 @@ class ShiftCalendarFilterDataWidgetForCompany extends StatelessWidget {
                   AppSize.spaceHeight5,
                   CustomDropDownWidget(
                       radius: 5,
+                      isItemSelectModel: true,
                       width: AppSize.getDeviceWidth(context) * 0.3,
                       selectItem: provider.selectedJobTitle,
                       list: provider.jobTitleList,
@@ -94,8 +95,10 @@ class ShiftCalendarFilterDataWidgetForCompany extends StatelessWidget {
                   ),
                 ],
               ),
+              const Spacer(),
+              Padding(padding: EdgeInsets.only(top: 25), child: IconButton(onPressed: () => provider.refreshData(), icon: const Icon(Icons.refresh)))
             ],
-          )
+          ),
         ],
       ),
     );

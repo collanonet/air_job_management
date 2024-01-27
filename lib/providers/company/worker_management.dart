@@ -172,8 +172,8 @@ class WorkerManagementProvider with ChangeNotifier {
   }
 
   getApplicantList(String companyId) async {
-    jobTitleList = [JapaneseText.all];
     applicantList = await WorkerManagementApiService().getAllJobApply(companyId);
+    jobTitleList = [JapaneseText.all];
     for (var job in applicantList) {
       jobTitleList.add(job.jobTitle.toString());
     }

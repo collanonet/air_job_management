@@ -9,6 +9,7 @@ class AppColor {
   static Color greyColor = Color(0xff707F89);
   static Color bgPageColor = Color(0xffF2F2F2);
   static Color darkGrey = Color(0xff3B4043);
+  static Color midGrey = Color(0xff98A6B5);
   static Color blackColor = Colors.black;
   static Color whiteColor = Colors.white;
   static Color redColor = Colors.red;

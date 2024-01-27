@@ -1,3 +1,5 @@
+import 'package:air_job_management/models/calendar.dart';
+import 'package:air_job_management/models/item_select.dart';
 import 'package:air_job_management/utils/extension.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -6,26 +8,39 @@ import '../../models/company/worker_management.dart';
 import '../../utils/japanese_text.dart';
 
 class ShiftCalendarProvider with ChangeNotifier {
-  List<String> jobTitleList = [JapaneseText.all];
-  String? selectedJobTitle = JapaneseText.all;
+  List<ItemSelectModel> jobTitleList = [ItemSelectModel(title: JapaneseText.all, id: "")];
+  ItemSelectModel? selectedJobTitle = ItemSelectModel(title: JapaneseText.all, id: "");
   bool isLoading = false;
   DateTime? startWorkDate;
   DateTime? endWorkDate;
   DateTime month = DateTime.now();
   static DateTime now = DateTime.now();
   String companyId = "";
-  List<DateTime> rangeDateList = [];
+  List<CalendarModel> rangeDateList = [];
   DateTime firstDate = DateTime(now.year, now.month, 1);
 
   set setCompanyId(String companyId) {
     this.companyId = companyId;
   }
 
+  initData() {
+    jobTitleList = [ItemSelectModel(title: JapaneseText.all, id: "")];
+    selectedJobTitle = ItemSelectModel(title: JapaneseText.all, id: "");
+    startWorkDate = null;
+    endWorkDate = null;
+  }
+
+  refreshData() {
+    initData();
+    filterApplicantList();
+  }
+
   initializeRangeDate() {
+    initData();
     rangeDateList.clear();
     DateTime lastDate = DateTime(month.year, month.month + 1, 0);
     for (var i = 1; i <= lastDate.day; ++i) {
-      rangeDateList.add(DateTime(month.year, month.month, i));
+      rangeDateList.add(CalendarModel(date: DateTime(month.year, month.month, i), shiftModelList: []));
     }
   }
 
@@ -41,7 +56,7 @@ class ShiftCalendarProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  onChangeTitle(String? val) {
+  onChangeTitle(ItemSelectModel? val) {
     selectedJobTitle = val;
     filterApplicantList();
     notifyListeners();
@@ -64,9 +79,9 @@ class ShiftCalendarProvider with ChangeNotifier {
 
     ///Filter application by job title
     List<WorkerManagement> afterFilterSelectJobTitle = [];
-    if (selectedJobTitle != null && selectedJobTitle != JapaneseText.all) {
+    if (selectedJobTitle != null && selectedJobTitle?.title != JapaneseText.all) {
       for (var job in jobApplyList) {
-        if (job.jobTitle.toString().contains(selectedJobTitle.toString())) {
+        if (job.jobId == selectedJobTitle?.id) {
           afterFilterSelectJobTitle.add(job);
         }
       }
@@ -77,8 +92,7 @@ class ShiftCalendarProvider with ChangeNotifier {
     List<WorkerManagement> afterFilterRangeDate = [];
     if (startWorkDate != null && endWorkDate != null) {
       for (var job in afterFilterSelectJobTitle) {
-        bool isWithin = isDateRangeWithin(job.shiftList!.first.date!,
-            job.shiftList!.last.date!, startWorkDate!, endWorkDate!);
+        bool isWithin = isDateRangeWithin(job.shiftList!.first.date!, job.shiftList!.last.date!, startWorkDate!, endWorkDate!);
         if (isWithin) {
           afterFilterRangeDate.add(job);
         }
@@ -88,23 +102,46 @@ class ShiftCalendarProvider with ChangeNotifier {
     }
     print("afterFilterRangeDate ${afterFilterRangeDate.length}");
     jobApplyList = afterFilterRangeDate;
+    calculateCalendarData();
     notifyListeners();
   }
 
-  bool isDateRangeWithin(
-      DateTime start1, DateTime end1, DateTime start2, DateTime end2) {
+  bool isDateRangeWithin(DateTime start1, DateTime end1, DateTime start2, DateTime end2) {
     return start1.isAfterOrEqualTo(start2) && end1.isBeforeOrEqualTo(end2);
   }
 
   List<WorkerManagement> jobApplyList = [];
 
   getApplicantList(String companyId) async {
-    jobTitleList = [JapaneseText.all];
     jobApplyList = await WorkerManagementApiService().getAllJobApply(companyId);
+    jobTitleList = [ItemSelectModel(title: JapaneseText.all, id: "")];
     for (var job in jobApplyList) {
-      jobTitleList.add(job.jobTitle.toString());
+      jobTitleList.add(ItemSelectModel(title: job.jobTitle, id: job.jobId));
     }
     jobTitleList = jobTitleList.toSet().toList();
+
+    ///Calendar
+    calculateCalendarData();
     notifyListeners();
+  }
+
+  calculateCalendarData() {
+    for (var date in rangeDateList) {
+      date.shiftModelList!.clear();
+    }
+    for (var job in jobApplyList) {
+      for (var shift in job.shiftList!) {
+        for (var data in rangeDateList) {
+          if (data.date == shift.date) {
+            data.shiftModelList!.add(shift);
+            data.jobId = job.uid;
+            break;
+          }
+        }
+      }
+    }
+    for (var data in rangeDateList) {
+      data.shiftModelList = data.shiftModelList!.toSet().toList();
+    }
   }
 }
