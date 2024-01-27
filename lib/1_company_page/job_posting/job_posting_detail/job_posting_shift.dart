@@ -193,7 +193,6 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                           hint: "20",
                           controller: provider.numberOfRecruitPeople,
                           isRequired: true,
-                          isPhoneNumber: true,
                         ),
                       ),
                       AppSize.spaceWidth5,
@@ -765,7 +764,6 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
     provider.jobPosting?.endBreakTimeHour = dateTimeToHourAndMinute(provider.endBreakTime);
     provider.jobPosting?.startDate = DateToAPIHelper.convertDateToString(provider.startWorkDate);
     provider.jobPosting?.endDate = DateToAPIHelper.convertDateToString(provider.endWorkDate);
-    print("Shift frame before add ${provider.jobPosting!.shiftFrameList!.length}");
     provider.jobPosting!.shiftFrameList!.add(ShiftFrame(
         startDate: DateToAPIHelper.convertDateToString(provider.startWorkDate),
         recruitmentNumberPeople: provider.numberOfRecruitPeople.text,
