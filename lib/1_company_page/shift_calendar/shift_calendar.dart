@@ -1,5 +1,6 @@
 import 'package:air_job_management/1_company_page/shift_calendar/widget/copy_paste.dart';
 import 'package:air_job_management/1_company_page/shift_calendar/widget/filter.dart';
+import 'package:air_job_management/1_company_page/shift_calendar/widget/shift_detail_dialog.dart';
 import 'package:air_job_management/providers/company/shift_calendar.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/style.dart';
@@ -160,7 +161,12 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                                                 child: Material(
                                                   color: Colors.transparent,
                                                   child: InkWell(
-                                                    onTap: () {},
+                                                    onTap: () => showDialog(
+                                                        context: context,
+                                                        builder: (context) => ShiftDetailDialogWidget(
+                                                              jobId: date.jobId!,
+                                                              date: date.date,
+                                                            )),
                                                     child: Padding(
                                                       padding: const EdgeInsets.only(left: 5),
                                                       child: Text(

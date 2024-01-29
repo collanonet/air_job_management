@@ -1,4 +1,5 @@
 class JapaneseText {
+  static String close = "閉じる";
   static String hired = "確定済";
   static String working = "稼働済";
   static String canceled = "キャンセル";

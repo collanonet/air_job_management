@@ -51,6 +51,7 @@ class JobPostingApiService {
   }
 
   Future<JobPosting?> getAJobPosting(String uid) async {
+    print("Get a job posting $uid");
     try {
       DocumentSnapshot doc = await jobPostingRef.doc(uid).get();
       if (doc.exists) {

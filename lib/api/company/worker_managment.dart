@@ -123,4 +123,24 @@ class WorkerManagementApiService {
       return false;
     }
   }
+
+  Future<List<WorkerManagement>> getAllApplicantByJobId(String jobId) async {
+    try {
+      var doc = await jobRef.where("job_id", isEqualTo: jobId).get();
+      if (doc.docs.isNotEmpty) {
+        List<WorkerManagement> list = [];
+        for (int i = 0; i < doc.docs.length; i++) {
+          WorkerManagement company = WorkerManagement.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          company.uid = doc.docs[i].id;
+          list.add(company);
+        }
+        return list;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      debugPrint("Error getAllApplicantByJobId =>> ${e.toString()}");
+      return [];
+    }
+  }
 }
