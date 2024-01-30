@@ -36,8 +36,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late AuthProvider authProvider;
   bool isShowPassword = false;
-  TextEditingController email = TextEditingController(text: 'sopheadavid+2@yandex.com');
-  TextEditingController password = TextEditingController(text: '123456');
+  TextEditingController email = TextEditingController(text: '');
+  TextEditingController password = TextEditingController(text: '');
   TextEditingController username = TextEditingController(text: 'Admin ABC');
 
   @override
@@ -45,6 +45,13 @@ class _LoginPageState extends State<LoginPage> {
     email.dispose();
     password.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    email = TextEditingController(text: 'sopheadavid+2@yandex.com');
+    password = TextEditingController(text: '123456');
+    super.initState();
   }
 
   @override
@@ -176,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
             child: PrimaryTextField(
-              hint: "⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺",
+              hint: "*****************",
               controller: password,
               isRequired: true,
               isObsecure: isShow,

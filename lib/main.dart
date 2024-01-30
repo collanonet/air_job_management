@@ -18,6 +18,7 @@ import 'package:air_job_management/pages/register/register.dart';
 import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company.dart';
+import 'package:air_job_management/providers/company/dashboard.dart';
 import 'package:air_job_management/providers/company/job_posting.dart';
 import 'package:air_job_management/providers/company/shift_calendar.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
@@ -430,6 +431,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => JobPostingForCompanyProvider()),
           ChangeNotifierProvider(create: (_) => WorkerManagementProvider()),
           ChangeNotifierProvider(create: (_) => ShiftCalendarProvider()),
+          ChangeNotifierProvider(create: (_) => DashboardForCompanyProvider()),
         ],
         child: MaterialApp.router(
           localizationsDelegates: const [

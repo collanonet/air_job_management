@@ -4,11 +4,33 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../const/const.dart';
+import '../models/notification.dart';
 
 class JobPostingApiService {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final db = FirebaseFirestore.instance;
   final CollectionReference jobPostingRef = FirebaseFirestore.instance.collection('search_job');
+  final CollectionReference notificationRef = FirebaseFirestore.instance.collection('notification');
+
+  Future<List<NotificationModel>> getAllNotification(String companyId) async {
+    try {
+      var doc = await notificationRef.get();
+      if (doc.docs.isNotEmpty) {
+        List<NotificationModel> list = [];
+        for (int i = 0; i < doc.docs.length; i++) {
+          NotificationModel jobPosting = NotificationModel.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          jobPosting.uid = doc.docs[i].id;
+          list.add(jobPosting);
+        }
+        return list;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      debugPrint("Error getAllNotification =>> ${e.toString()}");
+      return [];
+    }
+  }
 
   Future<List<JobPosting>> getAllJobPostByCompany(String companyId) async {
     try {

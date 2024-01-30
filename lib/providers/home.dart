@@ -14,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
 import '../1_company_page/company_profile/root_company_profile.dart';
+import '../1_company_page/history/history.dart';
+import '../1_company_page/usage_detail/usage_detail.dart';
 import '../pages/job_posting/job_posting.dart';
 
 class HomeProvider with ChangeNotifier {
@@ -62,8 +64,8 @@ class HomeProvider with ChangeNotifier {
     ShiftCalendarPage(),
     ApplicantListPage(),
     WorkerManagementPage(),
-    DashboardPageForCompany(),
-    DashboardPageForCompany(),
+    HistoryPage(),
+    UsageDetailPage(),
     RootCompanyPage()
   ];
   String selectedItem = JapaneseText.analysis;
