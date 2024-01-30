@@ -31,7 +31,6 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
   late JobPostingForCompanyProvider provider;
   late AuthProvider authProvider;
   ShiftFrame? selectShiftFrame;
-
   List<ShiftFrame> shiftFrameList = [];
   bool isLoading = true;
 

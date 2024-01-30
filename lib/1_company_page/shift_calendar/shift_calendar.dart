@@ -1,9 +1,11 @@
 import 'package:air_job_management/1_company_page/shift_calendar/widget/copy_paste.dart';
 import 'package:air_job_management/1_company_page/shift_calendar/widget/filter.dart';
+import 'package:air_job_management/1_company_page/shift_calendar/widget/job_card_display.dart';
 import 'package:air_job_management/1_company_page/shift_calendar/widget/shift_detail_dialog.dart';
 import 'package:air_job_management/providers/company/shift_calendar.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/style.dart';
+import 'package:air_job_management/widgets/title.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -39,7 +41,6 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
   Widget build(BuildContext context) {
     authProvider = Provider.of<AuthProvider>(context);
     provider = Provider.of<ShiftCalendarProvider>(context);
-
     return CustomLoadingOverlay(
         isLoading: provider.isLoading,
         child: SizedBox(
@@ -48,10 +49,52 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              children: [const ShiftCalendarFilterDataWidgetForCompany(), CopyPasteShiftCalendarWidget(onClick: () {}), buildCalendarWidget()],
+              children: [
+                const ShiftCalendarFilterDataWidgetForCompany(),
+                Row(
+                  children: [
+                    buildTab(provider.displayList[0]),
+                    buildTab(provider.displayList[1]),
+                    Expanded(child: CopyPasteShiftCalendarWidget(onClick: () {}))
+                  ],
+                ),
+                if (provider.selectDisplay == provider.displayList[0]) buildCalendarWidget() else buildList()
+              ],
             ),
           ),
         ));
+  }
+
+  buildTab(String title) {
+    return Container(
+      width: 200,
+      height: 50,
+      decoration: BoxDecoration(
+          color: title == provider.selectDisplay ? AppColor.primaryColor : const Color(0xffFFF7E5),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(provider.selectDisplay == provider.displayList[0] ? 6 : 0),
+              bottomLeft: Radius.circular(provider.selectDisplay == provider.displayList[0] ? 6 : 0),
+              bottomRight: Radius.circular(provider.selectDisplay == provider.displayList[1] ? 6 : 0),
+              topRight: Radius.circular(provider.selectDisplay == provider.displayList[1] ? 6 : 0))),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(provider.selectDisplay == provider.displayList[0] ? 6 : 0),
+              bottomLeft: Radius.circular(provider.selectDisplay == provider.displayList[0] ? 6 : 0),
+              bottomRight: Radius.circular(provider.selectDisplay == provider.displayList[1] ? 6 : 0),
+              topRight: Radius.circular(provider.selectDisplay == provider.displayList[1] ? 6 : 0)),
+          onTap: () => provider.onChangeDisplay(title),
+          child: Center(
+            child: Text(
+              title,
+              style: kNormalText.copyWith(
+                  fontSize: 15, fontFamily: "Bold", color: title == provider.selectDisplay ? Colors.white : AppColor.primaryColor),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   buildCalendarWidget() {
@@ -232,6 +275,80 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                   Icons.arrow_forward_ios_rounded,
                   size: 25,
                 )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  buildList() {
+    return Expanded(
+      child: Container(
+        width: AppSize.getDeviceWidth(context),
+        decoration: boxDecoration,
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          children: [
+            TitleWidget(title: provider.displayList[0]),
+            AppSize.spaceHeight16,
+            Row(
+              children: [
+                Expanded(
+                  child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 80),
+                        child: Text(
+                          "求人タイトル",
+                          style: normalTextStyle.copyWith(fontSize: 13),
+                        ),
+                      )),
+                  flex: 3,
+                ),
+                Expanded(
+                  child: Center(
+                    child: Text("稼働期間", style: normalTextStyle.copyWith(fontSize: 13)),
+                  ),
+                  flex: 2,
+                ),
+                Expanded(
+                  child: Center(
+                    child: Text("募集人数", style: normalTextStyle.copyWith(fontSize: 13)),
+                  ),
+                  flex: 1,
+                ),
+                Expanded(
+                  child: Center(
+                    child: Text("応募人数", style: normalTextStyle.copyWith(fontSize: 13)),
+                  ),
+                  flex: 1,
+                ),
+                SizedBox(
+                    width: 100,
+                    child: Center(
+                      child: Text("掲載状況", style: normalTextStyle.copyWith(fontSize: 13)),
+                    ))
+              ],
+            ),
+            AppSize.spaceHeight16,
+            Expanded(
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: provider.jobPostingList.length,
+                  itemBuilder: (context, index) {
+                    var job = provider.jobPostingList[index];
+                    return JobCardDisplay(
+                      title: job.title!,
+                      shiftFrame: job,
+                      onClick: () {
+                        // setState(() {
+                        //   provider.jobPosting = job;
+                        // });
+                      },
+                      selectShiftFrame: provider.jobPosting,
+                    );
+                  }),
+            )
           ],
         ),
       ),

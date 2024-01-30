@@ -1,4 +1,6 @@
 class JapaneseText {
+  static String calendarDisplay = "カレンダー表示";
+  static String listDisplay = "リスト表示";
   static String close = "閉じる";
   static String hired = "確定済";
   static String working = "稼働済";

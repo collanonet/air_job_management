@@ -4,10 +4,14 @@ import 'package:air_job_management/utils/extension.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../api/company/worker_managment.dart';
+import '../../api/job_posting.dart';
 import '../../models/company/worker_management.dart';
+import '../../models/job_posting.dart';
 import '../../utils/japanese_text.dart';
 
 class ShiftCalendarProvider with ChangeNotifier {
+  List<String> displayList = [JapaneseText.calendarDisplay, JapaneseText.listDisplay];
+  String selectDisplay = JapaneseText.calendarDisplay;
   List<ItemSelectModel> jobTitleList = [ItemSelectModel(title: JapaneseText.all, id: "")];
   ItemSelectModel? selectedJobTitle = ItemSelectModel(title: JapaneseText.all, id: "");
   bool isLoading = false;
@@ -19,11 +23,15 @@ class ShiftCalendarProvider with ChangeNotifier {
   List<CalendarModel> rangeDateList = [];
   DateTime firstDate = DateTime(now.year, now.month, 1);
 
+  JobPosting? jobPosting;
+  List<JobPosting> jobPostingList = [];
+
   set setCompanyId(String companyId) {
     this.companyId = companyId;
   }
 
   initData() {
+    selectDisplay = JapaneseText.calendarDisplay;
     jobTitleList = [ItemSelectModel(title: JapaneseText.all, id: "")];
     selectedJobTitle = ItemSelectModel(title: JapaneseText.all, id: "");
     startWorkDate = null;
@@ -48,6 +56,14 @@ class ShiftCalendarProvider with ChangeNotifier {
     this.month = month;
     firstDate = DateTime(month.year, month.month, 1);
     initializeRangeDate();
+    notifyListeners();
+  }
+
+  onChangeDisplay(String val) {
+    selectDisplay = val;
+    if (val == displayList[1]) {
+      initializeJobPosting();
+    }
     notifyListeners();
   }
 
@@ -123,6 +139,18 @@ class ShiftCalendarProvider with ChangeNotifier {
     ///Calendar
     calculateCalendarData();
     notifyListeners();
+  }
+
+  initializeJobPosting() async {
+    onChangeLoading(true);
+    jobPostingList.clear();
+    for (var job in jobApplyList) {
+      var j = await JobPostingApiService().getAJobPosting(job.jobId!);
+      if (j != null) {
+        jobPostingList.add(j);
+      }
+    }
+    onChangeLoading(false);
   }
 
   calculateCalendarData() {

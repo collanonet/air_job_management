@@ -399,6 +399,13 @@ class JobPosting {
       this.coverList,
       this.createdAt});
 
+  @override
+  int get hashCode => uid.hashCode ^ title.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is JobPosting && runtimeType == other.runtimeType && uid == other.uid && title == other.title;
+
   factory JobPosting.fromJson(Map<String, dynamic> json) => JobPosting(
       shiftFrameList: json["shiftFrameList"] == null ? [] : List<ShiftFrame>.from(json["shiftFrameList"]!.map((x) => ShiftFrame.fromJson(x))),
       coverList: json["cover_list"] != null ? List<String>.from(json["cover_list"].map((e) => e)) : [],
