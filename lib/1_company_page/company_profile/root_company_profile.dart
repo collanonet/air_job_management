@@ -78,27 +78,29 @@ class _RootCompanyPageState extends State<RootCompanyPage> with AfterBuildMixin 
           ),
           AppSize.spaceHeight16,
           if (authProvider.selectedMenu == authProvider.tabMenu[0]) const CompanyProfilePage() else const CompanyBranchPage(),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
-              SizedBox(
-                  width: 200,
-                  child: ButtonWidget(
-                    radius: 25,
-                    color: AppColor.whiteColor,
-                    title: "キャンセル",
-                    onPress: () {
-                      ///Implement cancel change
-                      companyProvider.onInitDataForDetail(authProvider.myCompany?.uid ?? "");
-                    },
-                  )),
-              AppSize.spaceWidth16,
-              SizedBox(
-                width: 200,
-                child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () => onSaveCompanyData()),
-              ),
-            ]),
-          )
+          authProvider.selectedMenu == authProvider.tabMenu[1]
+              ? const SizedBox()
+              : Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                    SizedBox(
+                        width: 200,
+                        child: ButtonWidget(
+                          radius: 25,
+                          color: AppColor.whiteColor,
+                          title: "キャンセル",
+                          onPress: () {
+                            ///Implement cancel change
+                            companyProvider.onInitDataForDetail(authProvider.myCompany?.uid ?? "");
+                          },
+                        )),
+                    AppSize.spaceWidth16,
+                    SizedBox(
+                      width: 200,
+                      child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () => onSaveCompanyData()),
+                    ),
+                  ]),
+                )
         ],
       ),
     );
@@ -257,7 +259,7 @@ class _RootCompanyPageState extends State<RootCompanyPage> with AfterBuildMixin 
             left: 0,
             bottom: 0,
             child: Container(
-              width: AppSize.getDeviceWidth(context) * 0.75,
+              width: AppSize.getDeviceWidth(context) * 0.5,
               height: 1,
               color: AppColor.primaryColor,
             ))

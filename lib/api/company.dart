@@ -11,8 +11,7 @@ import '../const/const.dart';
 class CompanyApiServices {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final db = FirebaseFirestore.instance;
-  final CollectionReference companyRef =
-      FirebaseFirestore.instance.collection('company');
+  final CollectionReference companyRef = FirebaseFirestore.instance.collection('company');
 
   Future<void> uploadImageToFirebase(var provider) async {
     try {
@@ -57,6 +56,16 @@ class CompanyApiServices {
     }
   }
 
+  Future<String?> updateCompanyBranchInfo(String companyId, List<Branch> branhList) async {
+    try {
+      await companyRef.doc(companyId).update({"branch": branhList.map((e) => e.toJson()).toList()});
+      return ConstValue.success;
+    } catch (e) {
+      print("Error updateCompanyBranchInfo =>> ${e.toString()}");
+      return "$e";
+    }
+  }
+
   Future<bool> updateStatusCompany(Company company) async {
     try {
       await companyRef.doc(company.uid).update({"status": StatusUtils.delete});
@@ -69,13 +78,11 @@ class CompanyApiServices {
 
   Future<List<Company>> getAllCompany() async {
     try {
-      var doc =
-          await companyRef.where("status", isEqualTo: StatusUtils.active).get();
+      var doc = await companyRef.where("status", isEqualTo: StatusUtils.active).get();
       if (doc.docs.isNotEmpty) {
         List<Company> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
-          Company company =
-              Company.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          Company company = Company.fromJson(doc.docs[i].data() as Map<String, dynamic>);
           company.uid = doc.docs[i].id;
           list.add(company);
         }

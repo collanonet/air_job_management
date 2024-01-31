@@ -28,6 +28,7 @@ class Company {
   String? industry;
   String? numberOfJobOpening;
   String? hashPassword;
+  List<Branch>? branchList;
 
   Company(
       {this.uid,
@@ -58,7 +59,8 @@ class Company {
       this.managerPassword,
       this.managerNameFu,
       this.managerNameKhanJi,
-      this.managerPhone});
+      this.managerPhone,
+      this.branchList});
 
   factory Company.fromJson(Map<String, dynamic> json) => Company(
         managerEmail: json["managerEmail"],
@@ -88,6 +90,7 @@ class Company {
         rePresentative: json["re_presentative"] == null ? null : RePresentative.fromJson(json["re_presentative"]),
         manager: json["manager"] == null ? [] : List<RePresentative>.from(json["manager"]!.map((x) => RePresentative.fromJson(x))),
         content: json["content"],
+        branchList: json["branch"] == null ? [] : List<Branch>.from(json["branch"]!.map((x) => Branch.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -116,7 +119,33 @@ class Company {
         "affiliate": affiliate,
         "re_presentative": rePresentative?.toJson(),
         "manager": manager == null ? [] : List<dynamic>.from(manager!.map((x) => x.toJson())),
+        "branch": branchList == null ? [] : List<dynamic>.from(branchList!.map((x) => x.toJson())),
         "content": content,
+      };
+}
+
+class Branch {
+  String? name;
+  String? postalCode;
+  String? location;
+  String? contactNumber;
+  DateTime? createdAt;
+
+  Branch({this.name, this.postalCode, this.location, this.createdAt, this.contactNumber});
+
+  factory Branch.fromJson(Map<String, dynamic> json) => Branch(
+      name: json["name"],
+      postalCode: json["postalCode"],
+      location: json["location"],
+      contactNumber: json["contactNumber"],
+      createdAt: json["createdAt"].toDate());
+
+  Map<String, dynamic> toJson() => {
+        "name": name,
+        "postalCode": postalCode,
+        "location": location,
+        "contactNumber": contactNumber,
+        "createdAt": createdAt,
       };
 }
 

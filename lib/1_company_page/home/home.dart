@@ -1,9 +1,11 @@
 import 'package:air_job_management/1_company_page/home/widgets/air_job_management.dart';
+import 'package:air_job_management/1_company_page/home/widgets/choose_branch.dart';
 import 'package:air_job_management/1_company_page/home/widgets/tab_section.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/home.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/my_route.dart';
+import 'package:air_job_management/widgets/custom_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -59,10 +61,13 @@ class _HomePageForCompanyState extends State<HomePageForCompany> with AfterBuild
           children: [
             AppSize.spaceHeight16,
             AirJobManagementWidget(
-                company: authProvider.myCompany,
-                onPress: () {
-                  homeProvider.onChangeSelectItemForCompany(homeProvider.menuListForCompany[0]);
-                }),
+              branch: authProvider.branch,
+              company: authProvider.myCompany,
+              onPress: () {
+                homeProvider.onChangeSelectItemForCompany(homeProvider.menuListForCompany[0]);
+              },
+              onChooseBranch: () => showChooseBranchDialog(),
+            ),
             AppSize.spaceHeight16,
             for (int i = 0; i < homeProvider.menuListForCompany.length; i++)
               Column(
@@ -79,16 +84,27 @@ class _HomePageForCompanyState extends State<HomePageForCompany> with AfterBuild
                 ],
               ),
             TabSectionWidget(
-                title: "Logout",
+                title: "ログアウト",
                 icon: Icons.logout,
                 onPress: () async {
-                  await FirebaseAuth.instance.signOut();
-                  context.go(MyRoute.companyLogin);
+                  CustomDialog.confirmDialog(
+                      title: "アカウントをログアウトしてもよろしいですか?",
+                      titleText: "ログアウトの確認",
+                      context: context,
+                      onApprove: () async {
+                        Navigator.pop(context);
+                        await FirebaseAuth.instance.signOut();
+                        context.go(MyRoute.companyLogin);
+                      });
                 }),
           ],
         ),
       ),
     );
+  }
+
+  showChooseBranchDialog() {
+    showDialog(context: context, builder: (context) => const ChooseBranchWidget());
   }
 
   rightWidget() {

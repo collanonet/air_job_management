@@ -18,6 +18,7 @@ class AuthProvider with ChangeNotifier {
   Company? myCompany;
   var tabMenu = ["会社情報", "店舗情報"];
   String selectedMenu = "会社情報";
+  Branch? branch;
 
   get errorMessage => _errorMessage;
   get isLoading => _isLoading;
@@ -35,8 +36,19 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  onChangeCompany(Company? company) {
+  onChangeBranch(Branch? branch) {
+    this.branch = branch;
+    notifyListeners();
+  }
+
+  onChangeCompany(Company? company, {Branch? branch}) {
     myCompany = company;
+    if (myCompany!.branchList!.isNotEmpty && this.branch == null) {
+      this.branch = myCompany!.branchList!.first;
+    }
+    if (branch != null) {
+      this.branch = branch;
+    }
     notifyListeners();
   }
 
