@@ -5,8 +5,10 @@ import 'package:air_job_management/2_worker_page/myjob/job_screen.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/viewprofile.dart';
 import 'package:air_job_management/providers/root_provider.dart';
 import 'package:air_job_management/utils/app_color.dart';
+import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../favorite/favorite.dart';
@@ -14,7 +16,8 @@ import '../favorite/favorite.dart';
 class RootPage extends StatefulWidget {
   final String uid;
   final bool isFullTime;
-  const RootPage(this.uid, {required this.isFullTime});
+  final int? index;
+  const RootPage(this.uid, {required this.isFullTime, this.index = 0});
   //const RootPage({Key? key}) : super(key: key);
 
   @override
@@ -52,7 +55,7 @@ class _RootPageState extends State<RootPage> {
         isFullTime: widget.isFullTime,
       );
     }
-    Provider.of<RootProvider>(context, listen: false).onInit();
+    Provider.of<RootProvider>(context, listen: false).onInit(widget.index ?? 0);
     super.initState();
   }
 
@@ -67,15 +70,13 @@ class _RootPageState extends State<RootPage> {
             data: ThemeData(
                 navigationBarTheme: NavigationBarThemeData(
                     labelTextStyle: MaterialStateTextStyle.resolveWith(
-              (states) =>
-                  kNormalText.copyWith(color: Colors.white, fontSize: 12),
+              (states) => kNormalText.copyWith(color: Colors.white, fontSize: 12),
             ))),
             child: NavigationBar(
               surfaceTintColor: Colors.white,
               backgroundColor: AppColor.primaryColor,
               indicatorColor: AppColor.secondaryColor,
-              destinations: rootProvider.allDestinations
-                  .map<Widget>((Destination destination) {
+              destinations: rootProvider.allDestinations.map<Widget>((Destination destination) {
                 return NavigationDestination(
                   icon: destination.icon,
                   label: destination.title,
@@ -83,7 +84,17 @@ class _RootPageState extends State<RootPage> {
                 );
               }).toList(),
               onDestinationSelected: (v) {
-                rootProvider.onChangeIndex(v);
+                if (v == 0) {
+                  context.go(MyRoute.workerSearchJobPage);
+                } else if (v == 1) {
+                  context.go(MyRoute.workerJobPage);
+                } else if (v == 2) {
+                  context.go(MyRoute.workerFavoritePage);
+                } else if (v == 3) {
+                  context.go(MyRoute.workerChatPage);
+                } else {
+                  context.go(MyRoute.workerSettingPage);
+                }
               },
               selectedIndex: rootProvider.selectIndex,
             ),

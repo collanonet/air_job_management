@@ -1,10 +1,9 @@
-import 'package:air_job_management/models/worker_model/privacy_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../../widgets/empty_data.dart';
+import '../../../utils/app_color.dart';
+import '../../../utils/app_size.dart';
+import '../../../utils/style.dart';
+import '../../../widgets/custom_back_button.dart';
 
 class WithDrawProcedures extends StatefulWidget {
   const WithDrawProcedures({Key? key}) : super(key: key);
@@ -14,81 +13,32 @@ class WithDrawProcedures extends StatefulWidget {
 }
 
 class _WithDrawProceduresState extends State<WithDrawProcedures> {
-  late final WebViewController controller;
-  String withdrawProceduresUrl = '';
-  List<PrivacyModel> privacyModel = [];
-  var loadingPercentage = 0;
-  bool hasURL = true;
-
-  @override
-  void initState() {
-    onGetDataPrivatePolicy();
-    super.initState();
-  }
-
-  onGetDataPrivatePolicy() async {
-    privacyModel = [];
-    var dataPrivatePolicy = await FirebaseFirestore.instance
-        .collection("privacy_setting")
-        .limit(1)
-        .get();
-
-    if (dataPrivatePolicy.size > 0) {
-      for (var d in dataPrivatePolicy.docs) {
-        var infoPrivatePolicy = PrivacyModel.fromJson(d.data());
-        privacyModel.add(infoPrivatePolicy);
-        withdrawProceduresUrl = infoPrivatePolicy.withdraw_procedures;
-        //print("'$withdrawProceduresUrl'");
-
-        controller = WebViewController()
-          ..setJavaScriptMode(JavaScriptMode.unrestricted)
-          ..setNavigationDelegate(NavigationDelegate(
-            onPageStarted: (String url) {
-              setState(() {
-                loadingPercentage = 0;
-              });
-            },
-            onProgress: (int progress) {
-              // print the loading progress to the console
-              // you can use this value to show a progress bar if you want
-              //debugPrint("Loading: $progress%");
-              setState(() {
-                loadingPercentage = progress;
-              });
-            },
-            onPageFinished: (String url) {
-              setState(() {
-                loadingPercentage = 100;
-              });
-            },
-            onWebResourceError: (WebResourceError error) {},
-            onNavigationRequest: (NavigationRequest request) {
-              return NavigationDecision.navigate;
-            },
-          ))
-          //..loadRequest(Uri.parse('https://registrar.uni.edu/students/current-students/withdraw/withdrawal-procedure'));
-          ..loadRequest(Uri.parse(withdrawProceduresUrl.trim()));
-      }
-    } else {
-      setState(() {
-        hasURL = false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.bgPageColor,
       appBar: AppBar(
-        title: const Text("Withdraw Procedures",
-            style: TextStyle(color: Color(0xFFEDAD34))),
+        backgroundColor: AppColor.primaryColor,
         centerTitle: true,
+        leadingWidth: 100,
+        title: const Text('取扱職種の範囲'),
+        leading: const CustomBackButtonWidget(),
       ),
-      body: hasURL
-          ? loadingPercentage < 100
-              ? const Center(child: CupertinoActivityIndicator())
-              : WebViewWidget(controller: controller)
-          : const Center(child: EmptyDataWidget()),
+      body: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Container(
+            width: AppSize.getDeviceWidth(context),
+            decoration: boxDecoration,
+            padding: const EdgeInsets.all(32),
+            child: SingleChildScrollView(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                    "求人・求職者の皆さまへ \n\nケアサービスネット株式会社 \n\n取扱職種の範囲等 \n\n■取り扱うべき職種の範囲その他の業務の範囲 当社の取扱業務範囲は、全職種（港湾運送業務、建設業務を除く） です。 当社の取扱地域は、国内 です。 \n\n■手数料に関する事項 ＜求職者から徴収する手数料＞ ・手数料は一切申し受けません。 ＜求人者から徴収する手数料＞ ・求職受付の際、ご負担いただく手数料は一切ございません。 ・職業紹介を行った場合は、成功報酬として当該求職者の１年間の賃金の３５ ％（または５０万円）の うちいずれか高額な金額を限度とする紹介手数料を求人者より申し受けます。 \n\n■求人者情報の取扱いに関する事項 求人者情報の取扱者は、職業紹介責任者※です。 求人者の情報は、職業紹介事業に係るものに限ります。 \n\n■個人情報の取扱いに関する事項 個人情報の取扱者は、職業紹介責任者※です。 取扱者は、個人情報に関して当該情報の本人から情報の開示請求があった場合、本人の資格や職業経験など客観的事実に基づく情報の開示を遅滞なく行います。さらに、これに基づき訂正請求があった場合、 当該請求が客観的事実に合致するときは、遅滞なく訂正します。 \n\n■苦情処理に関する事項 苦情処理の責任者は、職業紹介責任者※です。 苦情の申出があった場合は、誠意を持って対応致します。 \n\n■返戻金制度に関する事項 当社は返戻金制度を設けております。返戻条件等の詳細については、契約書の該当条項をご確認下さい。※求人者情報の取扱者、個人情報の取扱者及び苦情処理の責任者は、厚生労働省大臣に届出を行なっている職業紹介責任者です。 その他、当事業所の業務についてご不明な点は、係員にお尋ねください。 以上",
+                    style: kNormalText.copyWith(fontSize: 16, fontFamily: "Normal", color: AppColor.darkGrey)),
+              ),
+            )),
+      ),
     );
   }
 }

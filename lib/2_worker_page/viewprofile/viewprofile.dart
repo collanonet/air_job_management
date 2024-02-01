@@ -1,27 +1,26 @@
 import 'package:air_job_management/2_worker_page/viewprofile/identification_doc/identification_menu.dart';
+import 'package:air_job_management/2_worker_page/viewprofile/other_setting/logout.dart';
+import 'package:air_job_management/2_worker_page/viewprofile/other_setting/unsubsribe.dart';
+import 'package:air_job_management/2_worker_page/viewprofile/setting/location_setting.dart';
 import 'package:air_job_management/api/user_api.dart';
-import 'package:air_job_management/api/worker_api/withdraw_api.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/pages/login.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
-import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/utils/page_route.dart';
 import 'package:air_job_management/utils/style.dart';
-import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_dialog.dart';
 import 'package:air_job_management/widgets/loading.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../api/worker_api/withdraw_api.dart';
+import '../../utils/toast_message_util.dart';
 import 'edit_profile/edit_profile.dart';
 import 'other_setting/private_policy.dart';
-import 'other_setting/tab_review_penalty.dart';
 import 'other_setting/term_of_use.dart';
 import 'other_setting/withdraw_procedures.dart';
 
@@ -101,16 +100,7 @@ class _ViewProfileState extends State<ViewProfile> {
                     color: AppColor.primaryColor,
                   ))
               : IconButton(
-                  onPressed: () {
-                    CustomDialog.confirmDialog(
-                        context: context,
-                        onApprove: () async {
-                          Navigator.pop(context);
-                          await FirebaseAuth.instance.signOut();
-                          context.go(MyRoute.login);
-                        },
-                        title: "アカウントをログアウトしてもよろしいですか?");
-                  },
+                  onPressed: () => MyPageRoute.goTo(context, const LogoutPage()),
                   icon: Icon(
                     Icons.logout,
                     color: AppColor.primaryColor,
@@ -127,8 +117,7 @@ class _ViewProfileState extends State<ViewProfile> {
                   children: [
                     myUser == null
                         ? SizedBox()
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        : Column(
                             children: [
                               ClipRRect(
                                   borderRadius: BorderRadius.circular(50),
@@ -145,77 +134,22 @@ class _ViewProfileState extends State<ViewProfile> {
                                           height: 100,
                                         )),
                                   )),
-                              Column(
-                                children: [
-                                  Text(
-                                    "${myUser?.nameKanJi} ${myUser?.nameFu}",
-                                    style: TextStyle(
-                                        color: colorxd =
-                                            const Color(0xFFEDAD34),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 25),
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  Container(
-                                    width: 50,
-                                    height: 25,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: colorxd =
-                                                const Color(0xFFF38301),
-                                            width: 3),
-                                        borderRadius: BorderRadius.circular(5)),
-                                    child: Text(
-                                      "GOLD",
-                                      style: TextStyle(
-                                        color: colorxd =
-                                            const Color(0xFFF38301),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Center(
-                                        child: RatingBar.builder(
-                                            minRating: 1,
-                                            updateOnDrag: true,
-                                            itemSize: 35,
-                                            allowHalfRating: true,
-                                            initialRating: rating,
-                                            itemPadding:
-                                                const EdgeInsets.symmetric(
-                                                    horizontal: 5),
-                                            itemBuilder: (((context, _) => Icon(
-                                                  Icons.grade,
-                                                  color: colorxd =
-                                                      const Color(0xFFEDAD34),
-                                                ))),
-                                            onRatingUpdate: (rating) =>
-                                                setState(() {
-                                                  this.rating = rating;
-                                                })),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Text(
+                                "${myUser?.nameKanJi} ${myUser?.nameFu}",
+                                style: TextStyle(color: colorxd = const Color(0xFFEDAD34), fontWeight: FontWeight.bold, fontSize: 25),
                               ),
                             ],
                           ),
                     const SizedBox(height: 40),
                     myUser == null
-                        ? SizedBox()
+                        ? const SizedBox()
                         : Container(
                             width: 360,
                             height: 195,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
-                                color: Colors.white),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.white),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Column(
@@ -224,19 +158,13 @@ class _ViewProfileState extends State<ViewProfile> {
                                     width: 60,
                                     height: 28,
                                     decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: colorxd =
-                                              const Color(0xFFF38301),
-                                          width: 2),
+                                      border: Border.all(color: colorxd = const Color(0xFFF38301), width: 2),
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                     alignment: Alignment.center,
                                     child: Text(
                                       "残高",
-                                      style: TextStyle(
-                                          color: colorxd =
-                                              const Color(0xFFF38301),
-                                          fontWeight: FontWeight.bold),
+                                      style: TextStyle(color: colorxd = const Color(0xFFF38301), fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                   const SizedBox(
@@ -246,8 +174,7 @@ class _ViewProfileState extends State<ViewProfile> {
                                     child: Text(
                                       "¥ ${myUser?.balance}",
                                       style: TextStyle(
-                                        color: colorxd =
-                                            const Color(0xFFF38301),
+                                        color: colorxd = const Color(0xFFF38301),
                                         fontSize: 40,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -256,85 +183,35 @@ class _ViewProfileState extends State<ViewProfile> {
                                   const SizedBox(
                                     height: 30,
                                   ),
-                                  GestureDetector(
+                                  InkWell(
                                     onTap: () {
-                                      showDialog(
+                                      CustomDialog.confirmDialog(
                                           context: context,
-                                          builder: (context) {
-                                            return AlertDialog(
-                                              title: Text("出金の確認",
-                                                  style: TextStyle(
-                                                      color: colorxd2)),
-                                              content: Text(
-                                                  "本当に退会しますか ¥${myUser?.balance}?"),
-                                              actions: [
-                                                ElevatedButton(
-                                                    onPressed: () {
-                                                      //MyPageRoute.goToReplace(context, const ViewProfile());
-                                                      setState(() {
-                                                        isPending = false;
-                                                        //print('setState ' + isPending.toString());
-                                                      });
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text(
-                                                        JapaneseText.cancel)),
-                                                ElevatedButton(
-                                                    onPressed: () async {
-                                                      //print("clicked Yes");
-                                                      bool checkPending =
-                                                          await WithdrawApi()
-                                                              .isPending(
-                                                                  myUser?.uid);
-                                                      if (checkPending) {
-                                                        Navigator.pop(context);
-                                                        //You already requested this amount!  Please waiting for approval from admin.
-                                                        toastMessageError(
-                                                            "この金額はすでにリクエストされています。 管理者からの承認を待ってください。",
-                                                            context);
-                                                      } else {
-                                                        try {
-                                                          await WithdrawApi().Withdraw(
-                                                              amount: myUser
-                                                                  ?.balance,
-                                                              createdAt:
-                                                                  DateTime
-                                                                      .now(),
-                                                              date: DateFormat(
-                                                                      'yyyy-MM-dd')
-                                                                  .format(DateTime
-                                                                      .now()),
-                                                              status: "pending",
-                                                              time: DateFormat(
-                                                                      'kk:mm')
-                                                                  .format(DateTime
-                                                                      .now()),
-                                                              updatedAt:
-                                                                  DateTime
-                                                                      .now(),
-                                                              workerID:
-                                                                  myUser?.uid,
-                                                              workerName:
-                                                                  "${myUser?.firstName} ${myUser?.lastName}");
-                                                          Navigator.pop(
-                                                              context);
-                                                          toastMessageSuccess(
-                                                              JapaneseText
-                                                                  .successCreate,
-                                                              context);
-                                                        } catch (e) {
-                                                          toastMessageError(
-                                                              e.toString(),
-                                                              context);
-                                                        }
-                                                      }
-                                                    },
-                                                    child: Text(
-                                                        JapaneseText.yes,
-                                                        style: TextStyle(
-                                                            color: colorxd2)))
-                                              ],
-                                            );
+                                          title: "本当に出金しますか？",
+                                          titleText: "出金の確認",
+                                          onApprove: () async {
+                                            bool checkPending = await WithdrawApi().isPending(myUser?.uid);
+                                            if (checkPending) {
+                                              Navigator.pop(context);
+                                              //You already requested this amount!  Please waiting for approval from admin.
+                                              toastMessageError("この金額はすでにリクエストされています。 管理者からの承認を待ってください。", context);
+                                            } else {
+                                              try {
+                                                await WithdrawApi().Withdraw(
+                                                    amount: myUser?.balance,
+                                                    createdAt: DateTime.now(),
+                                                    date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                                                    status: "pending",
+                                                    time: DateFormat('kk:mm').format(DateTime.now()),
+                                                    updatedAt: DateTime.now(),
+                                                    workerID: myUser?.uid,
+                                                    workerName: "${myUser?.firstName} ${myUser?.lastName}");
+                                                Navigator.pop(context);
+                                                toastMessageSuccess(JapaneseText.successCreate, context);
+                                              } catch (e) {
+                                                toastMessageError(e.toString(), context);
+                                              }
+                                            }
                                           });
                                     },
                                     child: Container(
@@ -342,16 +219,12 @@ class _ViewProfileState extends State<ViewProfile> {
                                       height: 50,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(7),
-                                        color: colorxd =
-                                            const Color(0xFFF38301),
+                                        color: colorxd = const Color(0xFFF38301),
                                       ),
-                                      child: Center(
+                                      child: const Center(
                                         child: Text(
                                           "引き出す",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
+                                          style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),
                                         ),
                                       ),
                                     ),
@@ -361,7 +234,7 @@ class _ViewProfileState extends State<ViewProfile> {
                             ),
                           ),
                     myUser == null
-                        ? SizedBox()
+                        ? const SizedBox()
                         : const SizedBox(
                             height: 20,
                           ),
@@ -372,9 +245,7 @@ class _ViewProfileState extends State<ViewProfile> {
                         width: AppSize.getDeviceWidth(context),
                         margin: const EdgeInsets.all(16),
                         padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16)),
+                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
                         child: Material(
                           color: Colors.transparent,
                           child: Column(
@@ -404,13 +275,10 @@ class _ViewProfileState extends State<ViewProfile> {
       children: [
         Text(
           JapaneseText.account,
-          style: kNormalText.copyWith(
-              fontWeight: FontWeight.w600, color: AppColor.primaryColor),
+          style: kNormalText.copyWith(fontWeight: FontWeight.w600, color: AppColor.primaryColor),
         ),
         AppSize.spaceHeight16,
-        customListTile(JapaneseText.identification,
-            onTap: () =>
-                MyPageRoute.goTo(context, const IdentificationMenuPage())),
+        customListTile(JapaneseText.identification, onTap: () => MyPageRoute.goTo(context, const IdentificationMenuPage())),
         customListTile(JapaneseText.editProfile, onTap: () {
           Navigator.push(
               context,
@@ -425,7 +293,7 @@ class _ViewProfileState extends State<ViewProfile> {
             }
           });
         }),
-        customListTile(JapaneseText.reviewHistory, onTap: () => {}),
+        // customListTile(JapaneseText.reviewHistory, onTap: () => {}),
       ],
     );
   }
@@ -436,14 +304,12 @@ class _ViewProfileState extends State<ViewProfile> {
       children: [
         Text(
           JapaneseText.jobHistory,
-          style: kNormalText.copyWith(
-              fontWeight: FontWeight.w600, color: AppColor.primaryColor),
+          style: kNormalText.copyWith(fontWeight: FontWeight.w600, color: AppColor.primaryColor),
         ),
         AppSize.spaceHeight16,
         customListTile(JapaneseText.compensationManagement, onTap: () => {}),
         customListTile(JapaneseText.completedWork, onTap: () => {}),
-        customListTile(JapaneseText.checkingAndPrintingTheWithholdingTaxSlip,
-            onTap: () => {}),
+        customListTile(JapaneseText.checkingAndPrintingTheWithholdingTaxSlip, onTap: () => {}),
       ],
     );
   }
@@ -454,32 +320,16 @@ class _ViewProfileState extends State<ViewProfile> {
       children: [
         Text(
           JapaneseText.setting,
-          style: kNormalText.copyWith(
-              fontWeight: FontWeight.w600, color: AppColor.primaryColor),
+          style: kNormalText.copyWith(fontWeight: FontWeight.w600, color: AppColor.primaryColor),
         ),
         AppSize.spaceHeight16,
-        customListTile(JapaneseText.accountSetting,
-            onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => EditProfile(
-                              seeker: myUser!,
-                            ))).then((value) {
-                  if (value != null) {
-                    setState(() {
-                      myUser = value;
-                    });
-                  }
-                })),
-        customListTile(JapaneseText.locationInfoSetting,
-            onTap: () =>
-                MyPageRoute.goTo(context, const IdentificationMenuPage())),
+        customListTile(JapaneseText.accountSetting, onTap: () => MyPageRoute.goTo(context, const LocationSettingPage())),
+        customListTile(JapaneseText.locationInfoSetting, onTap: () => MyPageRoute.goTo(context, const LocationSettingPage())),
         customListTile(JapaneseText.pushNotificationSetting, onTap: () => {}),
         AppSize.spaceHeight16,
         Text(
           JapaneseText.support,
-          style: kNormalText.copyWith(
-              fontWeight: FontWeight.w600, color: AppColor.primaryColor),
+          style: kNormalText.copyWith(fontWeight: FontWeight.w600, color: AppColor.primaryColor),
         ),
         AppSize.spaceHeight16,
         customListTile(JapaneseText.faq, onTap: () => {}),
@@ -492,14 +342,11 @@ class _ViewProfileState extends State<ViewProfile> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        customListTile(JapaneseText.privacy,
-            onTap: () => MyPageRoute.goTo(context, const PrivatePolicy())),
-        customListTile(JapaneseText.termsOfService,
-            onTap: () => MyPageRoute.goTo(context, const TermOfUse())),
-        customListTile(JapaneseText.rangeOfOccupationsHandled,
-            onTap: () => MyPageRoute.goTo(context, const WithDrawProcedures())),
-        customListTile(JapaneseText.unsubscribed,
-            onTap: () => MyPageRoute.goTo(context, const TabReviewPenalty())),
+        customListTile(JapaneseText.privacy, onTap: () => MyPageRoute.goTo(context, const PrivatePolicy())),
+        customListTile(JapaneseText.termsOfService, onTap: () => MyPageRoute.goTo(context, const TermOfUse())),
+        customListTile(JapaneseText.rangeOfOccupationsHandled, onTap: () => MyPageRoute.goTo(context, const WithDrawProcedures())),
+        customListTile(JapaneseText.unsubscribed, onTap: () => MyPageRoute.goTo(context, const UnsubscribePage())),
+        customListTile(JapaneseText.logout, onTap: () => MyPageRoute.goTo(context, const LogoutPage())),
       ],
     );
   }
@@ -516,8 +363,7 @@ class _ViewProfileState extends State<ViewProfile> {
             color: AppColor.primaryColor,
           ),
         ),
-        const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20), child: Divider())
+        const Padding(padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5), child: Divider()),
       ],
     );
   }

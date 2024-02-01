@@ -1,9 +1,9 @@
-import 'package:air_job_management/models/worker_model/privacy_model.dart';
-import 'package:air_job_management/widgets/empty_data.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+
+import '../../../utils/app_color.dart';
+import '../../../utils/app_size.dart';
+import '../../../utils/style.dart';
+import '../../../widgets/custom_back_button.dart';
 
 class PrivatePolicy extends StatefulWidget {
   const PrivatePolicy({Key? key}) : super(key: key);
@@ -13,77 +13,32 @@ class PrivatePolicy extends StatefulWidget {
 }
 
 class _PrivatePolicyState extends State<PrivatePolicy> {
-  late final WebViewController controller;
-  late String privacyUrl = '';
-  List<PrivacyModel> privacyModel = [];
-  var loadingPercentage = 0;
-  bool hasURL = true;
-
-  @override
-  void initState() {
-    onGetDataPrivatePolicy();
-    super.initState();
-  }
-
-  onGetDataPrivatePolicy() async {
-    privacyModel = [];
-    var dataPrivatePolicy = await FirebaseFirestore.instance.collection("privacy_setting").limit(1).get();
-
-    if (dataPrivatePolicy.size > 0) {
-      for (var d in dataPrivatePolicy.docs) {
-        var infoPrivatePolicy = PrivacyModel.fromJson(d.data());
-        privacyModel.add(infoPrivatePolicy);
-        privacyUrl = infoPrivatePolicy.privacy_url;
-        //print("'$privacyUrl'");
-
-        controller = WebViewController()
-          ..setJavaScriptMode(JavaScriptMode.unrestricted)
-          ..setNavigationDelegate(NavigationDelegate(
-            onPageStarted: (String url) {
-              setState(() {
-                loadingPercentage = 0;
-              });
-            },
-            onProgress: (int progress) {
-              // print the loading progress to the console
-              // you can use this value to show a progress bar if you want
-              //debugPrint("Loading: $progress%");
-              setState(() {
-                loadingPercentage = progress;
-              });
-            },
-            onPageFinished: (String url) {
-              setState(() {
-                loadingPercentage = 100;
-              });
-            },
-            onWebResourceError: (WebResourceError error) {},
-            onNavigationRequest: (NavigationRequest request) {
-              return NavigationDecision.navigate;
-            },
-          ))
-          //..loadRequest(Uri.parse('https://www.freeprivacypolicy.com/live/d01ba425-308a-472c-b1fb-8cd0170a753f'));
-          ..loadRequest(Uri.parse(privacyUrl.trim()));
-      }
-    } else {
-      setState(() {
-        hasURL = false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.bgPageColor,
       appBar: AppBar(
-        title: const Text("Private Policy", style: TextStyle(color: Color(0xFFEDAD34))),
+        backgroundColor: AppColor.primaryColor,
         centerTitle: true,
+        leadingWidth: 100,
+        title: const Text('プライバシーポリシー'),
+        leading: const CustomBackButtonWidget(),
       ),
-      body: hasURL
-          ? loadingPercentage < 100
-              ? const Center(child: CupertinoActivityIndicator())
-              : WebViewWidget(controller: controller)
-          : const Center(child: EmptyDataWidget()),
+      body: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Container(
+            width: AppSize.getDeviceWidth(context),
+            decoration: boxDecoration,
+            padding: const EdgeInsets.all(32),
+            child: SingleChildScrollView(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                    "プライバシーポリシー \n\n個人情報保護方針 \n\nケアサービスネット株式会社（以下「当社」）は、人材ビジネスを営む企業の責任として、インターネットを活用した情報サービス等をご提供する上で、個人情報の保護は、当社の重要な責務であることを認識するとともに、個人情報保護マネジメントシステムを遵守し、個人情報を正確かつ安全に取り扱うことによりお客様の情報を守り、その信頼に応え続けて参ります。 当社は、委託を受けて取り扱う個人情報及び直接書面取得した個人情報の取得、利用及び提供に際しては、特定された利用目的の達成に必要な範囲を超えた個人情報の取り扱い（以下「目的外利用」といいます）を致しません。また、目的外利用を行わないための適切な措置を講じます。 当社は個人情報の取扱いに関する法令、国が定める指針その他の規範を遵守し、個人情報を適法かつ適正に取り扱います。 当社は個人情報の漏えい、滅失、き損などのリスクに対しては、合理的な安全対策を講じて防止すべく、事業の実情に合致した経営資源を注入し、個人情報のセキュリティ体制を継続的に向上させていきます。また、万一の際には速やかに是正措置を講じます。 当社は個人情報取扱いに関する苦情及び相談に対しては、迅速かつ誠実に対応致します。 個人情報保護マネジメントシステムは、当社を取り巻く環境の変化と実情を踏まえ、適時・適切に見直して継続的に改善をはかります。 個人情報の取り扱いについて 事業所の名称 ケアサービスネット株式会社 住所　〒111-0034 東京都台東区雷門1-9-2 雷門ウェスト2階 代表者名　代表取締役　片山司 個人情報の利用目的 ・本人が求人企業や職業紹介会社に対して、求人案件への応募、登録、問い合わせ等を行った場合の当該求人企業または職業紹介会社に対する情報提供。 ・求人照合、求人情報の提供、応募先企業における書類選考、応募に基づく求人企業及び職業紹介会社等への情報提供等、適切な職業紹介サービスを行うこと。 ・転職支援サービスの利用状況確認。 ・応募・入退社等の事実に関する確認（求人企業、職業紹介会社に対する確認も含みます）。 ・転職支援サービスの向上及び新サービスの開発 ・アフターサービス、お問い合わせ対応（本人確認も含みます） ・求人企業及び職業紹介会社への、採用業務及び職業紹介業務に関するコンサルティング。 ・転職支援サービス、その他当社が提供する各種サービスに関する情報提供。 ・サイト利用者の承諾に基づく、本サイト参画企業への応募情報及び個人情報の開示。 ・サイト利用者の本人確認、認証。 ・お問い合わせ等への対応。 ・その他当社が運営するサービスのご案内。 個人情報の第三者提供 （1）当社は、本人の同意を得ずに個人情報を第三者に開示することは、原則いたしません。開示を行なうのは、提供先・提供情報内容を特定したうえで、本人の同意を得た場合に限ります （2）本人の意思で、情報サービス等を通じて企業に個人情報を送信された場合、当該送信先企業に個人情報が提供されることになります。その際には、送信先企業が自ら定める個人情報保護管理規定に従い個人情報を管理することになります。 （3）当社は、以下に該当する場合、個人情報を本人の同意なく第三者に提供する場合があります。 1. 法令に基づき、提供に応じなければならない場合 2. 人の生命、身体または財産保護のために必要がある場合であって、本人の同意を得ることが困難な場合 3. 公衆衛生の向上または児童の健全な育成の推進のために特に必要がある場合であって、本人の同意を得ることが困難な場合 4. 国の機関もしくは地方公共団体またはその委託を受けた者が法令の定める事務を遂行することに対して協力する必要がある場合であって、本人の同意を得ることにより当該事務の遂行に支障を及ぼすおそれがある場合 5. 利用目的の達成に必要な範囲で業務を外部委託する場合 6. 合併その他の事由による事業の承継に伴って提供する場合 個人情報の安全管理処置 当社は、その取り扱う個人情報の個人情報保護リスクに応じて、漏えい、滅失又はき損の防止その他の個人情報の安全管理のために必要かつ適切な措置を講じます。 安全管理措置に関する管理目的及び管理策は、当社に情報セキュリティ体制を構築し、適切に実施します。 個人情報取扱の委託 当社は事業運営上、お客様により良いサービスを提供するために、利用目的の達成に必要な範囲内において、取得した個人情報の取扱いの全部又は一部を外部に委託する場合があります。この場合、個人情報を適切に取り扱っていると認められる委託先を選定し、契約等において個人情報の適正管理・機密保持などによりお客様の個人情報の漏洩防止に必要な事項を取決め、個人情報の安全管理が図られるよう、必要かつ適切な監督を行います。 個人情報の利用目的の通知、開示、訂正・追加・削除、利用又は提供の拒否権 お客様は、当社に対し、個人情報の利用目的の通知、開示、訂正・追加・削除、利用又は提供の拒否権を求めることができます。問い合わせ窓口及び方法は、以下のとおりです。 （1）個人情報の利用目的の通知、利用又は提供の拒否権 各サービスの問合せ窓口（12.お問合せ先　に記載）にご連絡ください。 （2）開示、訂正・追加・削除 マイページにてお客様ご自身が行うことができます。 自動取得情報 当社は、以下の情報について、自動で取得する場合があります。 （1）端末情報 当社は、本サービスの実施上必要なシステムの運用、本サービスの維持及び改善、または不正行為防止のため、ユーザーが使用する端末固有の情報（端末固有のID等の個体識別情報等）を取得することがあります。 （2）ログ情報及び行動履歴情報 当社は、本サービスの維持及び改善、または不正行為防止のため、お客様のアクセスログ情報及び行動履歴情報、その他情報を分析した結果得られた情報を取得することがあります。 （3）位置情報 当社は、匿名化された統計データとして利用するため、お客様のスマートフォン端末、タブレット端末その他の情報端末等（以下「情報端末」といいます）から送信される位置情報を取得する場合があります。なお、情報端末上の設定の変更により位置情報の送信を停止することができますが、本サービスの一部を利用できなくなる場合があります。 （4）Cookie及び匿名ID 当社は、快適にWebサイトをご利用いただけるように、閲覧情報等の情報収集を行うべく、「Cookie（クッキー）」と呼ばれる技術及びこれに類する技術を使用する場合があります。Cookieとは、ウェブサーバがユーザーのコンピュータを識別する業界標準の技術です。Cookieは、ユーザーのコンピュータを識別することはできますが、ユーザー個人を識別することはできません。なお、情報端末上の設定の変更によりCookieの機能を無効にすることはできますが、本サービスの全部または一部が利用できなくなる場合があります。 任意性 個人情報の提供は、本人の任意によるものとします。但し、必要となる情報が不足している場合は、当社から各種サービスを提供することができない場合があります。 免責 以下の場合は、当社は何ら責任を負いません。 (1)ご本人が当社サービスの機能または別の手段を用いて第三者に個人情報を明らかにした場合 ご本人が当社サービス上にて開示した情報等により、個人を識別できてしまった場合 当社によりセキュリティ施策がなされたにもかかわらず、ハッカー等による不当な行為により、お客様および第三者に損害が生じた場合 個人情報に関する苦情・相談窓口 ご意見、ご質問、苦情の申出その他お客様の個人情報の取扱いに関するお問合せにつきましては、下記窓口で受け付けております。 住所：〒111-0034 東京都台東区雷門1-9-2 雷門ウェスト2階 ケアサービスネット株式会社 個人情報保護管理者宛 メールアドレス：support@careservicenet.com ケアサービス株式会社 代表取締役　片山司",
+                    style: kNormalText.copyWith(fontSize: 16, fontFamily: "Normal", color: AppColor.darkGrey)),
+              ),
+            )),
+      ),
     );
   }
 }

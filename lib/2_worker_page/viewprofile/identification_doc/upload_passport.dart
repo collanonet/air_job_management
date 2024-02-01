@@ -8,6 +8,7 @@ import 'package:air_job_management/widgets/show_message.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../pages/register/new_form_register.dart';
 import '../../../utils/app_size.dart';
@@ -17,19 +18,28 @@ import '../../../widgets/custom_button.dart';
 class UploadFilePage extends StatefulWidget {
   final String title;
   final String type;
-  const UploadFilePage({super.key, required this.title, required this.type});
+  final String url;
+  const UploadFilePage({super.key, required this.title, required this.type, required this.url});
 
   @override
   State<UploadFilePage> createState() => _UploadFilePageState();
 }
 
-class _UploadFilePageState extends State<UploadFilePage> {
+class _UploadFilePageState extends State<UploadFilePage> with AfterBuildMixin {
   FilePickerResult? selectedFile;
   var loadingNotifier = ValueNotifier<bool>(false);
+  late AuthProvider authProvider;
+  String imageUrl = "";
+
+  @override
+  void initState() {
+    imageUrl = widget.url;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    authProvider = Provider.of<AuthProvider>(context);
     return ValueListenableBuilder(
       valueListenable: loadingNotifier,
       builder: (_, loading, __) {
@@ -61,11 +71,17 @@ class _UploadFilePageState extends State<UploadFilePage> {
                                 width: (280 * 16) / 9,
                                 height: 280,
                               )
-                            : Icon(
-                                Icons.file_copy_outlined,
-                                color: AppColor.primaryColor,
-                                size: 70,
-                              ),
+                            : imageUrl.isNotEmpty
+                                ? Image.network(
+                                    imageUrl,
+                                    width: (280 * 16) / 9,
+                                    height: 280,
+                                  )
+                                : Icon(
+                                    Icons.file_copy_outlined,
+                                    color: AppColor.primaryColor,
+                                    size: 70,
+                                  ),
                         selectedFile != null
                             ? const SizedBox()
                             : SizedBox(
@@ -145,4 +161,7 @@ class _UploadFilePageState extends State<UploadFilePage> {
       });
     }
   }
+
+  @override
+  void afterBuild(BuildContext context) async {}
 }

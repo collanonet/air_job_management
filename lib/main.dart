@@ -87,6 +87,56 @@ final GoRouter _router = GoRouter(
                   return const ManageScreen();
                 },
               ),
+              GoRoute(
+                path: "search-job",
+                builder: (BuildContext context, GoRouterState state) {
+                  return const RootPage(
+                    "uid",
+                    isFullTime: false,
+                    index: 0,
+                  );
+                },
+              ),
+              GoRoute(
+                path: "job",
+                builder: (BuildContext context, GoRouterState state) {
+                  return const RootPage(
+                    "uid",
+                    isFullTime: false,
+                    index: 1,
+                  );
+                },
+              ),
+              GoRoute(
+                path: "favorite",
+                builder: (BuildContext context, GoRouterState state) {
+                  return const RootPage(
+                    "uid",
+                    isFullTime: false,
+                    index: 2,
+                  );
+                },
+              ),
+              GoRoute(
+                path: "chat",
+                builder: (BuildContext context, GoRouterState state) {
+                  return const RootPage(
+                    "uid",
+                    isFullTime: false,
+                    index: 3,
+                  );
+                },
+              ),
+              GoRoute(
+                path: "setting",
+                builder: (BuildContext context, GoRouterState state) {
+                  return const RootPage(
+                    "uid",
+                    isFullTime: false,
+                    index: 4,
+                  );
+                },
+              ),
             ]),
         GoRoute(
           path: MyRoute.jobOption.removeSlash(),

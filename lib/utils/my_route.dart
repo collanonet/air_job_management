@@ -12,6 +12,11 @@ class MyRoute {
   static var companyCreateJobPosting = "/company/job-posting/create";
   static var workerPage = "/worker";
   static var jobOption = "/worker/job-options";
+  static var workerSearchJobPage = "/worker/search-job";
+  static var workerJobPage = "/worker/job";
+  static var workerFavoritePage = "/worker/favorite";
+  static var workerChatPage = "/worker/chat";
+  static var workerSettingPage = "/worker/setting";
   static var dashboard = "/dashboard";
   static var login = "/login";
   static var users = "/users";

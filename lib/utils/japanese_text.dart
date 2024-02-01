@@ -673,6 +673,7 @@ class JapaneseText {
   static String termsOfService = "利用規約";
   static String rangeOfOccupationsHandled = "取扱職種の範囲";
   static String unsubscribed = "退会手続き";
+  static String logout = "ログアウト";
 
   ///Identification page
   static String passport = "パスポート";
