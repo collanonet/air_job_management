@@ -1,11 +1,16 @@
-import 'package:air_job_management/2_worker_page/myjob/job_detial.dart';
 import 'package:air_job_management/const/const.dart';
 import 'package:air_job_management/models/worker_model/job.dart';
 import 'package:air_job_management/models/worker_model/search_job.dart';
-import 'package:air_job_management/widgets/custom_listview_job.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../../helper/currency_format.dart';
+import '../../helper/japan_date_time.dart';
+import '../../models/worker_model/shift.dart';
+import '../../utils/app_color.dart';
+import '../../utils/style.dart';
 
 class FutureJob extends StatefulWidget {
   final String uid;
@@ -16,43 +21,40 @@ class FutureJob extends StatefulWidget {
 }
 
 class _FutureJobState extends State<FutureJob> {
-  final List<bool> _selected = <bool>[true, false, false];
-  bool vertical = false;
-
   //get Day
   DateTime getDate(DateTime d) => DateTime(d.year, d.month, d.day);
   DateTime date = DateTime.now();
-  //future
-  List<SearchJob> jobSearchList = [];
+  final user = FirebaseAuth.instance.currentUser;
+
+  SearchJob? infoo;
   ValueNotifier<bool> loading = ValueNotifier<bool>(true);
 
   onGetData() async {
-    jobSearchList = [];
-    var bigdata =
-        await FirebaseFirestore.instance.collection("search_job").get();
-    var data = await FirebaseFirestore.instance
-        .collection("job")
-        .where("status", isEqualTo: "pending")
-        .where("user_id", isEqualTo: widget.uid)
-        .get();
-    if (data.size > 0) {
+    shiftList = [];
+    if (user?.uid != null) {
+      var data =
+          await FirebaseFirestore.instance.collection("job").where("status", isEqualTo: "pending").where("user_id", isEqualTo: user!.uid).get();
       for (var d in data.docs) {
         var info = Myjob.fromJson(d.data());
-        for (var d in bigdata.docs) {
-          var infoto = SearchJob.fromJson(d.data());
-          infoto.uid = d.id;
-          if (info.jobId == infoto.uid) {
-            jobSearchList.add(infoto);
-          }
+        info.uid = d.id;
+        for (var d in info.shiftList!) {
+          shiftList.add(ShiftModel(
+              image: info.image,
+              title: info.jobTitle,
+              startBreakTime: d.startBreakTime,
+              date: d.date,
+              endBreakTime: d.endBreakTime,
+              endWorkTime: d.endWorkTime,
+              price: d.price,
+              startWorkTime: d.startWorkTime));
         }
       }
-
-      loading.value = false;
-      setState(() {});
+      shiftList.sort((a, b) => a.date!.compareTo(b.date!));
     } else {
-      loading.value = false;
-      setState(() {});
+      print("User is empty");
     }
+    loading.value = false;
+    setState(() {});
   }
 
   @override
@@ -62,57 +64,110 @@ class _FutureJobState extends State<FutureJob> {
   }
 
   bool isVisible = false;
+  List<ShiftModel> shiftList = [];
 
   @override
   Widget build(BuildContext context) {
-    return loading.value
-        ? const Center(
-            child: CircularProgressIndicator(),
-          )
-        : Scaffold(
-            body: jobSearchList.isEmpty
-                ? const Center(child: EmptyDataWidget())
-                : ListView.builder(
-                    itemCount: jobSearchList.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      var info = jobSearchList[index];
-                      return item(info);
-                    },
-                  ),
-          );
+    return Scaffold(
+      body: loading.value
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : shiftList.isEmpty
+              ? const Center(
+                  child: EmptyDataWidget(),
+                )
+              : ListView.builder(
+                  itemCount: shiftList.length,
+                  itemBuilder: (context, index) {
+                    var info = shiftList[index];
+                    //var data = jobSearchList[index];
+                    return item(info);
+                  },
+                ),
+    );
   }
 
   Widget item(var info) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => JobScreenDetial(info: info),
-            ));
-      },
-      child: SizedBox(
-        width: double.infinity,
-        height: 150,
-        child: CustomListItem(
-          subtitle: "${info.startDate.toString()}~${info.endDate.toString()}",
-          salary:
-              "${info.salaryRange.toString()} ${info.amountOfPayrollFrom} ${info.amountOfPayrollTo}",
-          thumbnail: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: NetworkImage(info.image != null && info.image != ""
-                        ? info.image
-                        : ConstValue.defaultBgImage),
-                    fit: BoxFit.cover),
-                color: Colors.blue,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  bottomLeft: Radius.circular(10),
-                )),
-          ),
-          title: info.title.toString(),
+    return SizedBox(
+      height: 80,
+      // color: Colors.amber,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 20, left: 5, right: 10),
+              child: Column(
+                children: [
+                  Text(
+                    dateTimeToMonthDay(info.date),
+                    style: kNormalText.copyWith(fontFamily: "Bold", fontSize: 13, color: AppColor.primaryColor),
+                  ),
+                  Text(
+                    toJapanWeekDayWithInt(info.date!.weekday),
+                    style: kNormalText.copyWith(fontFamily: "Normal", fontSize: 9, color: AppColor.primaryColor),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              width: 330,
+              height: 67,
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.whiteColor, boxShadow: [
+                BoxShadow(offset: const Offset(1, 1), color: AppColor.greyColor.withOpacity(0.2), blurRadius: 5),
+                BoxShadow(offset: const Offset(-1, -1), color: AppColor.greyColor.withOpacity(0.2), blurRadius: 5)
+              ]),
+              child: Row(
+                children: [
+                  Container(
+                    width: 94,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(5),
+                        bottomLeft: Radius.circular(5),
+                      ),
+                      image: DecorationImage(image: NetworkImage(info.image ?? ConstValue.defaultBgImage), fit: BoxFit.cover),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Column(
+                        children: [
+                          Text(
+                            info.title ?? "",
+                            style: kNormalText,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                "${info.startWorkTime} 〜 ${info.endWorkTime}",
+                                style: kNormalText.copyWith(fontSize: 12, fontFamily: "Normal"),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                CurrencyFormatHelper.displayData(info.price),
+                                style: kNormalText.copyWith(
+                                  color: AppColor.primaryColor,
+                                  fontFamily: "Bold",
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );

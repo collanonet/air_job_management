@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../../models/user.dart';
 import '../../models/worker_model/shift.dart';
+import '../../utils/common_utils.dart';
 
 String errorMessage = "";
 
@@ -15,12 +16,26 @@ class SearchJobApi {
     try {
       var doc =
           await jobcollection.where("job_id", isEqualTo: job.uid).where("user_id", isEqualTo: myUser.uid).where("status", isEqualTo: "pending").get();
-      if (doc.size == 0) {
+      List<String> dateList = shiftList.map((e) => DateToAPIHelper.convertDateToString(e.date!)).toList();
+      bool isNotExist = true;
+      if (doc.size > 0) {
+        for (var data in doc.docs) {
+          var d = data.data()["shift"] as List;
+          List<String> dateFromDB = d.map((e) => e["date"] as String).toList();
+          bool isContain = CommonUtils().containsAny(dateList, dateFromDB);
+          if (isContain) {
+            isNotExist = false;
+            break;
+          }
+        }
+      }
+      if (doc.size == 0 || isNotExist) {
         await jobcollection.add({
           "job_id": job.uid,
           "company_id": job.companyId,
           "job_title": job.title,
           "job_location": job.jobLocation,
+          "image_job_url": job.image,
           "user_id": myUser.uid,
           "created_at": DateTime.now(),
           "username": "${myUser.nameKanJi} ${myUser.nameFu}",

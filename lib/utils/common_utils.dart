@@ -15,6 +15,15 @@ class CommonUtils {
     }
   }
 
+  bool containsAny(List<String> array1, List<String> array2) {
+    for (var item in array1) {
+      if (array2.contains(item)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   static isArrayOfDateContainDate(List<DateTime> dateList, DateTime date) {
     return dateList.contains(date);
   }

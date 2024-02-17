@@ -1,13 +1,15 @@
 import 'package:air_job_management/helper/date_to_api.dart';
 
 class ShiftModel {
+  String? title;
+  String? image;
   DateTime? date;
   String? price;
   String? startWorkTime;
   String? endWorkTime;
   String? startBreakTime;
   String? endBreakTime;
-  ShiftModel({this.date, this.price, this.endBreakTime, this.startBreakTime, this.endWorkTime, this.startWorkTime});
+  ShiftModel({this.date, this.price, this.endBreakTime, this.startBreakTime, this.endWorkTime, this.startWorkTime, this.image, this.title});
 
   factory ShiftModel.fromJson(Map<String, dynamic> json) => ShiftModel(
       date: DateToAPIHelper.fromApiToLocal(json["date"].toString()),
