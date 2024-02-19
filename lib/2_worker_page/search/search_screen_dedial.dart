@@ -22,7 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:like_button/like_button.dart';
 import 'package:provider/provider.dart';
 
 import '../../pages/login.dart';
@@ -142,38 +141,18 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                               Container(
                                 width: 40,
                                 height: 40,
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: AppColor.bgfav),
                                 child: Center(
-                                  child: LikeButton(
-                                    onTap: (isLiked) async {
-                                      if (auth.myUser != null) {
-                                        fa.ontap(widget.docId, widget.info);
-                                      } else {
-                                        MyPageRoute.goTo(
-                                            context,
-                                            LoginPage(
-                                              isFromWorker: true,
-                                              isFullTime: widget.isFullTime,
-                                            ));
-                                      }
-                                    },
-                                    size: 25,
-                                    circleColor: const CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                                    bubblesColor: const BubblesColor(
-                                      dotPrimaryColor: Color.fromARGB(255, 229, 51, 51),
-                                      dotSecondaryColor: Color(0xff0099cc),
+                                  child: GestureDetector(
+                                    onTap: () => setState(() {
+                                      fa.onfav(widget.info.uid);
+                                      fa.ontap(widget.docId, widget.info);
+                                    }),
+                                    child: Icon(
+                                      Icons.favorite,
+                                      size: 30,
+                                      color: fa.lists.contains(widget.info.uid) ? Colors.yellow : Colors.white,
                                     ),
-                                    isLiked: fa.isfav,
-                                    likeBuilder: (isLiked) {
-                                      fa.isfav = isLiked;
-                                      return Center(
-                                        child: Icon(
-                                          Icons.favorite,
-                                          color: isLiked ? Color.fromARGB(255, 255, 170, 0) : Colors.grey,
-                                          size: 30,
-                                        ),
-                                      );
-                                    },
                                   ),
                                 ),
                               ),
@@ -321,47 +300,50 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: InkWell(
-          onTap: () async {
-            if (auth.myUser != null) {
-              if (selectedShiftList.isEmpty) {
-                MessageWidget.show("少なくとも 1 つのシフトを選択してください");
-              } else {
-                CustomDialog.confirmDialog(
-                    context: context,
-                    onApprove: () async {
-                      Navigator.pop(context);
-                      bool isSuccess = await SearchJobApi().createJobRequest(widget.info, auth.myUser!, selectedShiftList);
-                      if (isSuccess) {
-                        toastMessageSuccess(JapaneseText.successCreate, context);
+      bottomNavigationBar: Visibility(
+        visible: shiftList.isEmpty ? false : true,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: InkWell(
+            onTap: () async {
+              if (auth.myUser != null) {
+                if (selectedShiftList.isEmpty) {
+                  MessageWidget.show("少なくとも 1 つのシフトを選択してください");
+                } else {
+                  CustomDialog.confirmDialog(
+                      context: context,
+                      onApprove: () async {
                         Navigator.pop(context);
-                      } else {
-                        toastMessageError(errorMessage, context);
-                      }
-                    });
+                        bool isSuccess = await SearchJobApi().createJobRequest(widget.info, auth.myUser!, selectedShiftList);
+                        if (isSuccess) {
+                          toastMessageSuccess(JapaneseText.successCreate, context);
+                          Navigator.pop(context);
+                        } else {
+                          toastMessageError(errorMessage, context);
+                        }
+                      });
+                }
+              } else {
+                MyPageRoute.goTo(
+                    context,
+                    LoginPage(
+                      isFromWorker: true,
+                      isFullTime: widget.isFullTime,
+                    ));
               }
-            } else {
-              MyPageRoute.goTo(
-                  context,
-                  LoginPage(
-                    isFromWorker: true,
-                    isFullTime: widget.isFullTime,
-                  ));
-            }
-          },
-          child: Container(
-            width: AppSize.getDeviceWidth(context),
-            height: AppSize.getDeviceHeight(context) * 0.075,
-            decoration: BoxDecoration(
-              color: AppColor.secondaryColor,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Center(
-              child: Text(
-                'エアジョブに登録する',
-                style: kNormalText.copyWith(color: Colors.white),
+            },
+            child: Container(
+              width: AppSize.getDeviceWidth(context),
+              height: AppSize.getDeviceHeight(context) * 0.075,
+              decoration: BoxDecoration(
+                color: AppColor.secondaryColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Text(
+                  'エアジョブに登録する',
+                  style: kNormalText.copyWith(color: Colors.white),
+                ),
               ),
             ),
           ),

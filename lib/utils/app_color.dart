@@ -18,4 +18,8 @@ class AppColor {
 
   static Color duringCorrespondingColor = Color(0xff6DC9E5);
   static Color endColor = Color(0xff98A6B5);
+
+  // Part time Future
+  static Color title = const Color(0xffedad34);
+  static Color bgfav = const Color(0xffcdd6dd);
 }

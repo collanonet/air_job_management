@@ -7,7 +7,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../const/const.dart';
+import '../../helper/currency_format.dart';
+import '../../providers/auth.dart';
 import '../../utils/app_color.dart';
+import '../../widgets/loading.dart';
 
 class FavoriteSreen extends StatefulWidget {
   final String uid;
@@ -18,48 +22,44 @@ class FavoriteSreen extends StatefulWidget {
 }
 
 class _FavoriteSreenState extends State<FavoriteSreen> {
-  var db = FirebaseFirestore.instance;
-
+  // var db = FirebaseFirestore.instance;
   List<SearchJob> jobSearchList = [];
-
   ValueNotifier<bool> loading = ValueNotifier<bool>(true);
-
   onGetData() async {
-    jobSearchList = [];
     try {
-      var favData = await FirebaseFirestore.instance
-          .collection("favourite")
-          .doc(widget.uid)
-          .get();
-      if (favData.exists) {
-        List<String> jobIdListFromFav = List<String>.from(
-            favData.data()!["search_job_id"].map((e) => e.toString()));
-        var data =
-            await FirebaseFirestore.instance.collection("search_job").get();
-        if (data.size > 0) {
-          for (var d in data.docs) {
-            if (jobIdListFromFav.contains(d.id)) {
-              var info = SearchJob.fromJson(d.data());
-              info.uid = d.id;
-              jobSearchList.add(info);
-            }
-          }
-          refreshLoadingFalse();
-        } else {
-          refreshLoadingFalse();
+      var data = await FirebaseFirestore.instance.collection("search_job").get();
+      if (data.size > 0) {
+        for (var d in data.docs) {
+          var info = SearchJob.fromJson(d.data());
+          info.uid = d.id;
+          var user = AuthProvider().firebaseAuth.currentUser!.uid;
+          var favdata = FirebaseFirestore.instance;
+          final docRef = favdata.collection("favourite").doc(user);
+          docRef.get().then(
+            (DocumentSnapshot doc) {
+              final data = doc.data() as Map<String, dynamic>;
+              var favjob = data["search_job_id"] ?? [];
+              for (var i = 0; i < favjob.length; i++) {
+                if (info.uid == favjob[i]) {
+                  setState(() {
+                    jobSearchList.add(info);
+                  });
+                }
+              }
+            },
+            onError: (e) => print("Error getting document: $e"),
+          );
         }
+        loading.value = false;
+        setState(() {});
       } else {
-        refreshLoadingFalse();
+        loading.value = false;
+        setState(() {});
       }
     } catch (e) {
-      print("Fav screen Error is $e");
-      refreshLoadingFalse();
+      loading.value = false;
+      setState(() {});
     }
-  }
-
-  refreshLoadingFalse() {
-    loading.value = false;
-    setState(() {});
   }
 
   @override
@@ -70,180 +70,162 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
 
   @override
   Widget build(BuildContext context) {
-    FavoriteProvider favorite =
-        Provider.of<FavoriteProvider>(context, listen: true);
+    FavoriteProvider favorite = Provider.of<FavoriteProvider>(context);
+    var auth = Provider.of<AuthProvider>(context);
     return Scaffold(
+      backgroundColor: AppColor.bgPageColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-            )),
         centerTitle: true,
+        backgroundColor: AppColor.bgPageColor,
+        leading: SizedBox(),
+        elevation: 0,
         title: Text(
           'お気に入り',
           style: TextStyle(fontSize: 30, color: AppColor.primaryColor),
         ),
       ),
       body: loading.value
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : jobSearchList.isEmpty
-              ? Center(child: EmptyDataWidget())
-              : SafeArea(
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: CustomScrollView(
-                              slivers: [
-                                SliverGrid(
-                                  gridDelegate:
-                                      const SliverGridDelegateWithMaxCrossAxisExtent(
-                                          maxCrossAxisExtent: 350,
-                                          mainAxisSpacing: 5,
-                                          crossAxisSpacing: 2,
-                                          childAspectRatio: 10 / 15,
-                                          mainAxisExtent: 300),
-                                  delegate: SliverChildBuilderDelegate(
-                                    (BuildContext context, int index) {
-                                      var info = jobSearchList[index];
-                                      return product(context, info, info.uid,
-                                          favorite, index);
-                                    },
-                                    childCount: jobSearchList.length,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-    );
-  }
-
-  Widget product(BuildContext context, var info, var docId, var fa, int index) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SearchScreenDetial(
-              isFullTime: true,
-              info: info,
-              docId: docId,
-              index: index,
-            ),
-          ),
-        );
-      },
-      child: Card(
-        child: Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: AppColor.whiteColor),
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    height: 130,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15),
-                      ),
-                      // color: Colors.black,
-                      image: DecorationImage(
-                          image: NetworkImage(info.image.toString()),
-                          fit: BoxFit.cover),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [],
-                  )
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 5,
-                ),
-                child: Text(
-                  info.title.toString(),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: kNormalText,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          ? LoadingWidget(AppColor.primaryColor)
+          : SafeArea(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Column(
                   children: [
-                    Text(
-                      info.startDate.toString() +
-                          " ~ \n${info.endDate.toString()}",
-                      style: kNormalText,
-                    ),
-                    // Text(info.totime.toString()),
+                    Expanded(
+                      child: jobSearchList.isEmpty
+                          ? const EmptyDataWidget()
+                          : Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: CustomScrollView(
+                                key: GlobalKey(),
+                                slivers: [
+                                  SliverGrid(
+                                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                        maxCrossAxisExtent: 350,
+                                        mainAxisSpacing: 16,
+                                        crossAxisSpacing: 16,
+                                        childAspectRatio: 10 / 15,
+                                        mainAxisExtent: 260),
+                                    delegate: SliverChildBuilderDelegate(
+                                      (BuildContext context, int index) {
+                                        var info = jobSearchList[index];
+                                        return product(context, info, info.uid, favorite, index, auth);
+                                      },
+                                      childCount: jobSearchList.length,
+                                    ),
+                                  ),
+                                ],
+                              )),
+                    )
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 5,
-                ),
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text('${info.fee ?? info.salaryRange}',
-                        style: kNormalText.copyWith(fontSize: 13),
-                        overflow: TextOverflow.fade)),
-              )
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
-  Widget headay(var itemdata) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5),
+  Widget product(BuildContext context, SearchJob info, var docId, FavoriteProvider fa, int index, var auth) {
+    return Card(
       child: Container(
-        width: 90,
-        decoration: BoxDecoration(
-          color: Colors.amber,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Center(
-          child: Text(
-            itemdata,
-            style: const TextStyle(
-              fontSize: 18,
-              color: Colors.white,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: AppColor.whiteColor),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchScreenDetial(
+                    info: info,
+                    docId: docId,
+                    index: index,
+                    isFullTime: false,
+                  ),
+                ),
+              );
+            },
+            child: Column(
+              children: [
+                Stack(
+                  children: [
+                    Material(
+                      color: Colors.transparent,
+                      child: Container(
+                        width: double.infinity,
+                        height: 109,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15),
+                          ),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16)),
+                          child: Image.network(info.image != null && info.image != "" ? info.image! : ConstValue.defaultBgImage, fit: BoxFit.cover),
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                fa.onfav(info.uid);
+                                fa.ontap(docId, info.uid);
+                                if (!fa.isfav) {
+                                  jobSearchList.remove(info);
+                                }
+                              });
+                            },
+                            icon: Icon(
+                              Icons.favorite,
+                              size: 30,
+                              color: fa.lists.contains(info.uid) ? Colors.yellow : Colors.white,
+                            ))
+                      ],
+                    )
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    info.title.toString(),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    style: kNormalText.copyWith(fontSize: 14, color: AppColor.primaryColor, fontWeight: FontWeight.w600),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        " ${info.startTimeHour}~${info.endTimeHour}",
+                        style: kNormalText.copyWith(fontSize: 10, color: AppColor.greyColor),
+                      ),
+                      // Text(info.totime.toString()),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                  ),
+                  child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(CurrencyFormatHelper.displayData(info.hourlyWag),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: kNormalText.copyWith(fontSize: 16, color: AppColor.primaryColor, fontWeight: FontWeight.w600))),
+                )
+              ],
             ),
           ),
         ),
       ),
     );
-  }
-
-  var favoritecollection = FirebaseFirestore.instance.collection('favourite');
-
-  favoriteData({text}) {
-    favoritecollection.add(text);
   }
 }

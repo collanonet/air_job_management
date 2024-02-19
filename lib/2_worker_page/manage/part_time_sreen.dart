@@ -1,12 +1,15 @@
 import 'package:air_job_management/helper/currency_format.dart';
 import 'package:air_job_management/helper/japan_date_time.dart';
+import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/worker/filter.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:air_job_management/widgets/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../const/const.dart';
@@ -15,6 +18,7 @@ import '../../providers/favorite_provider.dart';
 import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
 import '../../utils/date_time_utils.dart';
+import '../../utils/my_route.dart';
 import '../search/search_screen_dedial.dart';
 import 'filter/filter_option.dart';
 
@@ -32,10 +36,13 @@ class _PartTimeJobState extends State<PartTimeJob> {
   List<SearchJob> jobSearchList = [];
   ValueNotifier<bool> loading = ValueNotifier<bool>(true);
   late WorkerFilter filterProvider;
+  late FavoriteProvider favorite;
+  late AuthProvider auth;
 
   onGetData() async {
     jobSearchList = [];
     try {
+      Provider.of<FavoriteProvider>(context, listen: false).onget();
       var data = await FirebaseFirestore.instance
           .collection("search_job")
           .where("end_date", isGreaterThanOrEqualTo: MyDateTimeUtils.convertDateToString(_selectedDate))
@@ -183,8 +190,9 @@ class _PartTimeJobState extends State<PartTimeJob> {
 
   @override
   Widget build(BuildContext context) {
-    FavoriteProvider favorite = Provider.of<FavoriteProvider>(context);
+    favorite = Provider.of<FavoriteProvider>(context);
     filterProvider = Provider.of<WorkerFilter>(context);
+    auth = Provider.of<AuthProvider>(context);
     return Scaffold(
         backgroundColor: const Color(0xffF2F2F2),
         body: loading.value
@@ -334,27 +342,22 @@ class _PartTimeJobState extends State<PartTimeJob> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      // LikeButton(
-                      //   size: 30,
-                      //   circleColor: const CircleColor(
-                      //       start: Color(0xff00ddff), end: Color(0xff0099cc)),
-                      //   bubblesColor: const BubblesColor(
-                      //     dotPrimaryColor: Color.fromARGB(255, 229, 51, 51),
-                      //     dotSecondaryColor: Color(0xff0099cc),
-                      //   ),
-                      //   isLiked: info.favorite,
-                      //   likeBuilder: (isLiked) {
-                      //     fa.isfav = isLiked;
-                      //     fa.ontap(docId, info);
-                      //     return Icon(
-                      //       Icons.favorite,
-                      //       color: isLiked
-                      //           ? Color.fromARGB(255, 255, 170, 0)
-                      //           : Colors.grey,
-                      //       size: 30,
-                      //     );
-                      //   },
-                      // ),
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (FirebaseAuth.instance.currentUser != null) {
+                                fa.onfav(info.uid);
+                                fa.ontap(docId, info);
+                              } else {
+                                context.go(MyRoute.login);
+                              }
+                            });
+                          },
+                          icon: Icon(
+                            Icons.favorite,
+                            size: 30,
+                            color: fa.lists.contains(info.uid) ? Colors.yellow : Colors.white,
+                          ))
                     ],
                   )
                 ],
