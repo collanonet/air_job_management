@@ -7,13 +7,7 @@ class SelectBoxListTileWidget extends StatelessWidget {
   final bool val;
   final Function onChange;
   final double size;
-  const SelectBoxListTileWidget(
-      {Key? key,
-      required this.title,
-      required this.val,
-      required this.onChange,
-      this.size = 80})
-      : super(key: key);
+  const SelectBoxListTileWidget({Key? key, required this.title, required this.val, required this.onChange, this.size = 80}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +24,8 @@ class SelectBoxListTileWidget extends StatelessWidget {
             border: Border.all(width: 0.5, color: Colors.black)),
         child: Text(
           title,
-          style: kNormalText,
-          overflow: TextOverflow.fade,
+          style: kNormalText.copyWith(fontSize: 13.5),
+          overflow: TextOverflow.ellipsis,
           maxLines: 2,
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:air_job_management/2_worker_page/root/root_page.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/other_setting/private_policy.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/other_setting/term_of_use.dart';
 import 'package:air_job_management/api/user_api.dart';
+import 'package:air_job_management/const/const.dart';
 import 'package:air_job_management/helper/role_helper.dart';
 import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/models/user.dart';
@@ -452,8 +453,9 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                 AppSize.spaceHeight16,
                                 Center(
                                   child: Text(
-                                    "Copy Right @Air_Job 2024",
+                                    "Copy Right @Air_Job 2024\n${ConstValue.appVersion}",
                                     style: kNormalText,
+                                    textAlign: TextAlign.center,
                                   ),
                                 ),
                                 const SizedBox(
@@ -791,8 +793,9 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                 AppSize.spaceHeight16,
                                 Center(
                                   child: Text(
-                                    "Copy Right @Air_Job 2024",
+                                    "Copy Right @Air_Job 2024\n${ConstValue.appVersion}",
                                     style: kNormalText,
+                                    textAlign: TextAlign.center,
                                   ),
                                 ),
                                 const SizedBox(

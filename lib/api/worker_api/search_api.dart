@@ -11,6 +11,20 @@ String errorMessage = "";
 
 class SearchJobApi {
   var jobcollection = FirebaseFirestore.instance.collection('job');
+  var search = FirebaseFirestore.instance.collection('search_job');
+  Future<SearchJob?> getASearchJob(String id) async {
+    try {
+      var doc = await search.doc(id).get();
+      if (doc.exists) {
+        return SearchJob.fromJson(doc.data()!);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print("Error getASearchJob $e");
+      return null;
+    }
+  }
 
   Future<bool> createJobRequest(SearchJob job, MyUser myUser, List<ShiftModel> shiftList) async {
     try {

@@ -677,7 +677,7 @@ class JapaneseText {
 
   ///Identification page
   static String passport = "パスポート";
-  static String driverLicenseIdentification = "パスポート";
+  static String driverLicenseIdentification = "運転免許証";
   static String myNumberCard = "マイナンバーカード";
   static String basicResidentRegisterCard = "住民基本台帳カード";
   static String residentRecord = "住民票";

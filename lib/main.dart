@@ -67,7 +67,7 @@ final GoRouter _router = GoRouter(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
         print("Initial called ${state.location}");
-        // return IdentificationMenuPage();
+        // return NewFormRegistrationForPartTimePage(myUser: MyUser());
         return SplashScreen(
           isFromWorker: false,
         );

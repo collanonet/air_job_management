@@ -42,11 +42,19 @@ class FavoriteProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  ontap(var docId, var item) {
+  ontap(var docId, var item) async {
+    var userId = AuthProvider().firebaseAuth.currentUser!.uid.toString();
     if (isfav == true) {
-      favoritecollection.collection("favourite").doc(AuthProvider().firebaseAuth.currentUser!.uid.toString()).update({
-        "search_job_id": FieldValue.arrayUnion([docId])
-      }).onError((e, _) => print("Error writing document: $e"));
+      var docRef = await favoritecollection.collection("favourite").doc(userId).get();
+      if (docRef.exists) {
+        favoritecollection.collection("favourite").doc(AuthProvider().firebaseAuth.currentUser!.uid.toString()).update({
+          "search_job_id": FieldValue.arrayUnion([docId])
+        }).onError((e, _) => print("Error writing document: $e"));
+      } else {
+        favoritecollection.collection("favourite").doc(AuthProvider().firebaseAuth.currentUser!.uid.toString()).set({
+          "search_job_id": FieldValue.arrayUnion([docId])
+        }).onError((e, _) => print("Error writing document: $e"));
+      }
     } else {
       favoritecollection.collection("favourite").doc(AuthProvider().firebaseAuth.currentUser!.uid.toString()).update({
         "search_job_id": FieldValue.arrayRemove([docId])

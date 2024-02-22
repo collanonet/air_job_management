@@ -27,8 +27,9 @@ import 'package:provider/provider.dart';
 import '../../pages/login.dart';
 
 class SearchScreenDetial extends StatefulWidget {
-  SearchScreenDetial({key, required this.info, this.docId, this.index, required this.isFullTime}) : super(key: key);
+  SearchScreenDetial({key, required this.info, this.docId, this.index, required this.isFullTime, this.isViewDetail}) : super(key: key);
   SearchJob info;
+  bool? isViewDetail;
   var docId;
   int? index;
   final bool isFullTime;
@@ -300,55 +301,57 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
           ),
         ),
       ),
-      bottomNavigationBar: Visibility(
-        visible: shiftList.isEmpty ? false : true,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: InkWell(
-            onTap: () async {
-              if (auth.myUser != null) {
-                if (selectedShiftList.isEmpty) {
-                  MessageWidget.show("少なくとも 1 つのシフトを選択してください");
-                } else {
-                  CustomDialog.confirmDialog(
-                      context: context,
-                      onApprove: () async {
-                        Navigator.pop(context);
-                        bool isSuccess = await SearchJobApi().createJobRequest(widget.info, auth.myUser!, selectedShiftList);
-                        if (isSuccess) {
-                          toastMessageSuccess(JapaneseText.successCreate, context);
-                          Navigator.pop(context);
-                        } else {
-                          toastMessageError(errorMessage, context);
-                        }
-                      });
-                }
-              } else {
-                MyPageRoute.goTo(
-                    context,
-                    LoginPage(
-                      isFromWorker: true,
-                      isFullTime: widget.isFullTime,
-                    ));
-              }
-            },
-            child: Container(
-              width: AppSize.getDeviceWidth(context),
-              height: AppSize.getDeviceHeight(context) * 0.075,
-              decoration: BoxDecoration(
-                color: AppColor.secondaryColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Center(
-                child: Text(
-                  'エアジョブに登録する',
-                  style: kNormalText.copyWith(color: Colors.white),
+      bottomNavigationBar: widget.isViewDetail == true
+          ? const SizedBox()
+          : Visibility(
+              visible: shiftList.isEmpty ? false : true,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: InkWell(
+                  onTap: () async {
+                    if (auth.myUser != null) {
+                      if (selectedShiftList.isEmpty) {
+                        MessageWidget.show("少なくとも 1 つのシフトを選択してください");
+                      } else {
+                        CustomDialog.confirmDialog(
+                            context: context,
+                            onApprove: () async {
+                              Navigator.pop(context);
+                              bool isSuccess = await SearchJobApi().createJobRequest(widget.info, auth.myUser!, selectedShiftList);
+                              if (isSuccess) {
+                                toastMessageSuccess(JapaneseText.successCreate, context);
+                                Navigator.pop(context);
+                              } else {
+                                toastMessageError(errorMessage, context);
+                              }
+                            });
+                      }
+                    } else {
+                      MyPageRoute.goTo(
+                          context,
+                          LoginPage(
+                            isFromWorker: true,
+                            isFullTime: widget.isFullTime,
+                          ));
+                    }
+                  },
+                  child: Container(
+                    width: AppSize.getDeviceWidth(context),
+                    height: AppSize.getDeviceHeight(context) * 0.075,
+                    decoration: BoxDecoration(
+                      color: AppColor.secondaryColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'エアジョブに登録する',
+                        style: kNormalText.copyWith(color: Colors.white),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-      ),
     );
   }
 
