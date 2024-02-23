@@ -1,7 +1,10 @@
 import 'package:air_job_management/2_worker_page/viewprofile/identification_doc/identification_menu.dart';
+import 'package:air_job_management/2_worker_page/viewprofile/other_setting/contact_us.dart';
+import 'package:air_job_management/2_worker_page/viewprofile/other_setting/faq.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/other_setting/logout.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/other_setting/unsubsribe.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/setting/location_setting.dart';
+import 'package:air_job_management/2_worker_page/viewprofile/setting/notification.dart';
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/pages/login.dart';
@@ -307,9 +310,9 @@ class _ViewProfileState extends State<ViewProfile> {
           style: kNormalText.copyWith(fontWeight: FontWeight.w600, color: AppColor.primaryColor),
         ),
         AppSize.spaceHeight16,
-        customListTile(JapaneseText.compensationManagement, onTap: () => {}),
-        customListTile(JapaneseText.completedWork, onTap: () => {}),
-        customListTile(JapaneseText.checkingAndPrintingTheWithholdingTaxSlip, onTap: () => {}),
+        customListTile(JapaneseText.compensationManagement, onTap: () => toastMessageSuccess("未実施", context)),
+        customListTile(JapaneseText.completedWork, onTap: () => toastMessageSuccess("未実施", context)),
+        customListTile(JapaneseText.checkingAndPrintingTheWithholdingTaxSlip, onTap: () => toastMessageSuccess("未実施", context)),
       ],
     );
   }
@@ -325,15 +328,15 @@ class _ViewProfileState extends State<ViewProfile> {
         AppSize.spaceHeight16,
         customListTile(JapaneseText.accountSetting, onTap: () => MyPageRoute.goTo(context, const LocationSettingPage())),
         customListTile(JapaneseText.locationInfoSetting, onTap: () => MyPageRoute.goTo(context, const LocationSettingPage())),
-        customListTile(JapaneseText.pushNotificationSetting, onTap: () => {}),
+        customListTile(JapaneseText.pushNotificationSetting, onTap: () => MyPageRoute.goTo(context, const NotificationSettingPage())),
         AppSize.spaceHeight16,
         Text(
           JapaneseText.support,
           style: kNormalText.copyWith(fontWeight: FontWeight.w600, color: AppColor.primaryColor),
         ),
         AppSize.spaceHeight16,
-        customListTile(JapaneseText.faq, onTap: () => {}),
-        customListTile(JapaneseText.inquiry, onTap: () {}),
+        customListTile(JapaneseText.faq, onTap: () => MyPageRoute.goTo(context, const FAQPage())),
+        customListTile(JapaneseText.inquiry, onTap: () => MyPageRoute.goTo(context, const ContactUsPage())),
       ],
     );
   }
