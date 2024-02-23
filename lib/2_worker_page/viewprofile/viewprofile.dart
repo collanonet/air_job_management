@@ -3,6 +3,7 @@ import 'package:air_job_management/2_worker_page/viewprofile/other_setting/conta
 import 'package:air_job_management/2_worker_page/viewprofile/other_setting/faq.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/other_setting/logout.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/other_setting/unsubsribe.dart';
+import 'package:air_job_management/2_worker_page/viewprofile/setting/account_setting.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/setting/location_setting.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/setting/notification.dart';
 import 'package:air_job_management/api/user_api.dart';
@@ -326,7 +327,12 @@ class _ViewProfileState extends State<ViewProfile> {
           style: kNormalText.copyWith(fontWeight: FontWeight.w600, color: AppColor.primaryColor),
         ),
         AppSize.spaceHeight16,
-        customListTile(JapaneseText.accountSetting, onTap: () => MyPageRoute.goTo(context, const LocationSettingPage())),
+        customListTile(JapaneseText.accountSetting,
+            onTap: () => MyPageRoute.goTo(
+                context,
+                AccountSettingPage(
+                  myUser: myUser,
+                ))),
         customListTile(JapaneseText.locationInfoSetting, onTap: () => MyPageRoute.goTo(context, const LocationSettingPage())),
         customListTile(JapaneseText.pushNotificationSetting, onTap: () => MyPageRoute.goTo(context, const NotificationSettingPage())),
         AppSize.spaceHeight16,
