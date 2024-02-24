@@ -10,8 +10,8 @@ import '../../../utils/page_route.dart';
 import '../../../widgets/custom_back_button.dart';
 
 class AccountSettingPage extends StatefulWidget {
-  final MyUser? myUser;
-  const AccountSettingPage({super.key, this.myUser});
+  MyUser? myUser;
+  AccountSettingPage({super.key, this.myUser});
 
   @override
   State<AccountSettingPage> createState() => _AccountSettingPageState();
@@ -44,10 +44,14 @@ class _AccountSettingPageState extends State<AccountSettingPage> {
                   title: "メールアドレス",
                   val: widget.myUser?.email ?? "",
                   onTap: () => MyPageRoute.goTo(
-                      context,
-                      ChangeEmailPage(
-                        myUser: widget.myUser,
-                      ))),
+                          context,
+                          ChangeEmailPage(
+                            myUser: widget.myUser,
+                          ), onRefreshData: (myUser) {
+                        setState(() {
+                          widget.myUser = myUser;
+                        });
+                      })),
               const Divider(),
               menuItem(
                   title: "パスワード",

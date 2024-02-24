@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
 class MyPageRoute {
-  static void goTo(BuildContext context, Widget widget) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => widget));
+  static void goTo(BuildContext context, Widget widget, {Function? onRefreshData}) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => widget)).then((value) {
+      if (value != null && onRefreshData != null) {
+        onRefreshData(value);
+      }
+    });
   }
 
   static void goToReplace(context, child) {
