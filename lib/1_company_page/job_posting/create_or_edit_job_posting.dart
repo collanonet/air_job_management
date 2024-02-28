@@ -58,7 +58,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
 
   buildBody() {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -80,7 +80,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
             const JobPostingShiftFramePageForCompany(),
           if (provider.selectedMenu != provider.tabMenu[2])
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
                 SizedBox(
                     width: 200,
@@ -201,7 +201,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
   topBarWidget() {
     return Container(
       width: AppSize.getDeviceWidth(context),
-      height: 100,
+      height: 80,
       decoration: boxDecoration,
       padding: const EdgeInsets.all(12),
       child: Row(
@@ -211,8 +211,8 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
             children: [
               AppSize.spaceWidth32,
               Container(
-                width: 60,
-                height: 60,
+                width: 50,
+                height: 50,
                 decoration: BoxDecoration(
                     image:
                         DecorationImage(image: NetworkImage(authProvider.myCompany?.companyProfile ?? ConstValue.defaultBgImage), fit: BoxFit.cover),
@@ -230,19 +230,19 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
                     children: [
                       Text(
                         authProvider.myCompany?.companyName ?? "",
-                        style: normalTextStyle.copyWith(fontSize: 20, color: AppColor.blackColor, fontFamily: "Bold"),
+                        style: normalTextStyle.copyWith(fontSize: 16, color: AppColor.blackColor, fontFamily: "Bold"),
                       ),
                       AppSize.spaceWidth32,
                       Text(
                         provider.jobPosting?.title ?? "",
-                        style: normalTextStyle.copyWith(fontSize: 20, color: AppColor.blackColor, fontFamily: "Bold"),
+                        style: normalTextStyle.copyWith(fontSize: 16, color: AppColor.blackColor, fontFamily: "Bold"),
                       ),
                     ],
                   ),
                   AppSize.spaceHeight5,
                   Text(
                     authProvider.myCompany?.companyBranch ?? "",
-                    style: normalTextStyle.copyWith(fontSize: 16, color: AppColor.blackColor, fontFamily: "Normal"),
+                    style: normalTextStyle.copyWith(fontSize: 14, color: AppColor.blackColor, fontFamily: "Normal"),
                   ),
                 ],
               )
@@ -270,12 +270,12 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
                   onTap: () => provider.onChangeSelectMenu(provider.tabMenu[0]),
                   child: Container(
                     width: AppSize.getDeviceWidth(context) * 0.25,
-                    height: 39,
+                    height: 30,
                     alignment: Alignment.center,
                     child: Text(
                       provider.tabMenu[0],
                       style: normalTextStyle.copyWith(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontFamily: "Bold",
                           color: provider.selectedMenu == provider.tabMenu[0] ? Colors.white : AppColor.primaryColor),
                     ),
@@ -290,12 +290,12 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
                   onTap: () => provider.onChangeSelectMenu(provider.tabMenu[1]),
                   child: Container(
                     width: AppSize.getDeviceWidth(context) * 0.25,
-                    height: 39,
+                    height: 30,
                     alignment: Alignment.center,
                     child: Text(
                       provider.tabMenu[1],
                       style: normalTextStyle.copyWith(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontFamily: "Bold",
                           color: provider.selectedMenu == provider.tabMenu[1] ? Colors.white : AppColor.primaryColor),
                     ),
@@ -310,12 +310,12 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
                   onTap: () => provider.onChangeSelectMenu(provider.tabMenu[2]),
                   child: Container(
                     width: AppSize.getDeviceWidth(context) * 0.25,
-                    height: 39,
+                    height: 30,
                     alignment: Alignment.center,
                     child: Text(
                       provider.tabMenu[2],
                       style: normalTextStyle.copyWith(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontFamily: "Bold",
                           color: provider.selectedMenu == provider.tabMenu[2] ? Colors.white : AppColor.primaryColor),
                     ),

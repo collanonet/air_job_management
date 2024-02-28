@@ -49,7 +49,7 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AppSize.spaceHeight30,
+                  AppSize.spaceHeight16,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -405,13 +405,10 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppSize.spaceHeight30,
+                    AppSize.spaceHeight16,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TitleWidget(title: JapaneseText.applicationRequirement),
-                        IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close))
-                      ],
+                      children: [TitleWidget(title: JapaneseText.applicationRequirement), SizedBox()],
                     ),
                     AppSize.spaceHeight16,
                     Row(

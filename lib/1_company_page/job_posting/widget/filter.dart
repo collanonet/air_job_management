@@ -17,7 +17,7 @@ class JobPostingFilterFilterDataWidgetForCompany extends StatelessWidget {
     return Container(
       width: AppSize.getDeviceWidth(context),
       decoration: boxDecoration,
-      padding: const EdgeInsets.only(left: 32, right: 32, top: 20, bottom: 32),
+      padding: const EdgeInsets.only(left: 32, right: 32, top: 10, bottom: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -25,7 +25,7 @@ class JobPostingFilterFilterDataWidgetForCompany extends StatelessWidget {
             "求人ひな形　検索",
             style: titleStyle,
           ),
-          AppSize.spaceHeight16,
+          AppSize.spaceHeight8,
           Text(
             "求人タイトル",
             style: kNormalText.copyWith(fontSize: 12, fontFamily: "Normal"),

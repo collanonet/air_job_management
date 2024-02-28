@@ -30,12 +30,14 @@ import 'package:air_job_management/providers/job_seeker.dart';
 import 'package:air_job_management/providers/job_seeker_detail.dart';
 import 'package:air_job_management/providers/root_provider.dart';
 import 'package:air_job_management/providers/worker/filter.dart';
+import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/extension.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/my_route.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -54,6 +56,7 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await ScreenUtil.ensureScreenSize();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   usePathUrlStrategy();
   // setPathUrlStrategy();
@@ -464,45 +467,51 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-        providers: [
-          // ChangeNotifierProvider<auth.AuthProvider>.value(value: auth.AuthProvider()),
-          // StreamProvider.value(value: auth.AuthProvider().user, initialData: null),
-          ChangeNotifierProvider(create: (_) => AuthProvider()),
-          ChangeNotifierProvider(create: (_) => HomeProvider()),
-          ChangeNotifierProvider(create: (_) => JobSeekerProvider()),
-          ChangeNotifierProvider(create: (_) => JobSeekerDetailProvider()),
-          ChangeNotifierProvider(create: (_) => JobPostingProvider()),
-          ChangeNotifierProvider(create: (_) => JobPostingForJapaneseProvider()),
-          ChangeNotifierProvider(create: (_) => CompanyProvider()),
-          ChangeNotifierProvider(create: (_) => FavoriteProvider()),
-          ChangeNotifierProvider(create: (_) => RootProvider()),
-          ChangeNotifierProvider(create: (_) => WorkerFilter()),
-          ChangeNotifierProvider(create: (_) => JobPostingForCompanyProvider()),
-          ChangeNotifierProvider(create: (_) => WorkerManagementProvider()),
-          ChangeNotifierProvider(create: (_) => ShiftCalendarProvider()),
-          ChangeNotifierProvider(create: (_) => DashboardForCompanyProvider()),
-        ],
-        child: MaterialApp.router(
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
+    ScreenUtil.init(context, designSize: Size(AppSize.getDeviceWidth(context), AppSize.getDeviceHeight(context)));
+    return ScreenUtilInit(
+      minTextAdapt: true,
+      splitScreenMode: true,
+      child: MultiProvider(
+          providers: [
+            // ChangeNotifierProvider<auth.AuthProvider>.value(value: auth.AuthProvider()),
+            // StreamProvider.value(value: auth.AuthProvider().user, initialData: null),
+            ChangeNotifierProvider(create: (_) => AuthProvider()),
+            ChangeNotifierProvider(create: (_) => HomeProvider()),
+            ChangeNotifierProvider(create: (_) => JobSeekerProvider()),
+            ChangeNotifierProvider(create: (_) => JobSeekerDetailProvider()),
+            ChangeNotifierProvider(create: (_) => JobPostingProvider()),
+            ChangeNotifierProvider(create: (_) => JobPostingForJapaneseProvider()),
+            ChangeNotifierProvider(create: (_) => CompanyProvider()),
+            ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+            ChangeNotifierProvider(create: (_) => RootProvider()),
+            ChangeNotifierProvider(create: (_) => WorkerFilter()),
+            ChangeNotifierProvider(create: (_) => JobPostingForCompanyProvider()),
+            ChangeNotifierProvider(create: (_) => WorkerManagementProvider()),
+            ChangeNotifierProvider(create: (_) => ShiftCalendarProvider()),
+            ChangeNotifierProvider(create: (_) => DashboardForCompanyProvider()),
           ],
-          theme: ThemeData(
-              pageTransitionsTheme: PageTransitionsTheme(builders: {
-            TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
-            TargetPlatform.iOS: OpenUpwardsPageTransitionsBuilder(),
-            TargetPlatform.fuchsia: OpenUpwardsPageTransitionsBuilder(),
-          })),
-          supportedLocales: const [
-            Locale('en', 'US'), // English, no country code
-            Locale('ja', 'JP'), // Hebrew, no country code
-          ],
-          themeMode: ThemeMode.light,
-          debugShowCheckedModeBanner: false,
-          title: 'Air Job',
-          routerConfig: _router,
-        ));
+          child: MaterialApp.router(
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            theme: ThemeData(
+                textTheme: TextTheme().apply(fontSizeFactor: 0.6.sp),
+                pageTransitionsTheme: const PageTransitionsTheme(builders: {
+                  TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
+                  TargetPlatform.iOS: OpenUpwardsPageTransitionsBuilder(),
+                  TargetPlatform.fuchsia: OpenUpwardsPageTransitionsBuilder(),
+                })),
+            supportedLocales: const [
+              Locale('en', 'US'), // English, no country code
+              Locale('ja', 'JP'), // Hebrew, no country code
+            ],
+            themeMode: ThemeMode.light,
+            debugShowCheckedModeBanner: false,
+            title: 'Air Job',
+            routerConfig: _router,
+          )),
+    );
   }
 }

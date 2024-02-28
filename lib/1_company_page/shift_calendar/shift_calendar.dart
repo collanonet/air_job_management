@@ -30,6 +30,7 @@ class ShiftCalendarPage extends StatefulWidget {
 class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMixin {
   late AuthProvider authProvider;
   late ShiftCalendarProvider provider;
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -48,18 +49,25 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
           height: AppSize.getDeviceHeight(context),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                const ShiftCalendarFilterDataWidgetForCompany(),
-                Row(
+            child: Scrollbar(
+              controller: scrollController,
+              isAlwaysShown: true,
+              child: SingleChildScrollView(
+                controller: scrollController,
+                child: Column(
                   children: [
-                    buildTab(provider.displayList[0]),
-                    buildTab(provider.displayList[1]),
-                    Expanded(child: CopyPasteShiftCalendarWidget(onClick: () {}))
+                    const ShiftCalendarFilterDataWidgetForCompany(),
+                    Row(
+                      children: [
+                        buildTab(provider.displayList[0]),
+                        buildTab(provider.displayList[1]),
+                        Expanded(child: CopyPasteShiftCalendarWidget(onClick: () {}))
+                      ],
+                    ),
+                    if (provider.selectDisplay == provider.displayList[0]) buildCalendarWidget() else buildList()
                   ],
                 ),
-                if (provider.selectDisplay == provider.displayList[0]) buildCalendarWidget() else buildList()
-              ],
+              ),
             ),
           ),
         ));
@@ -68,7 +76,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
   buildTab(String title) {
     return Container(
       width: 200,
-      height: 50,
+      height: 40,
       decoration: BoxDecoration(
           color: title == provider.selectDisplay ? AppColor.primaryColor : const Color(0xffFFF7E5),
           borderRadius: BorderRadius.only(
@@ -89,7 +97,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
             child: Text(
               title,
               style: kNormalText.copyWith(
-                  fontSize: 15, fontFamily: "Bold", color: title == provider.selectDisplay ? Colors.white : AppColor.primaryColor),
+                  fontSize: 13, fontFamily: "Bold", color: title == provider.selectDisplay ? Colors.white : AppColor.primaryColor),
             ),
           ),
         ),
@@ -98,11 +106,10 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
   }
 
   buildCalendarWidget() {
-    return Expanded(
-        child: Container(
+    return Container(
       width: AppSize.getDeviceWidth(context),
       decoration: boxDecoration,
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,102 +159,102 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
             ),
           ),
           AppSize.spaceHeight8,
-          Expanded(
-            child: Center(
-              child: provider.rangeDateList.isEmpty
-                  ? const SizedBox()
-                  : Container(
-                      width: AppSize.getDeviceWidth(context) * 0.6,
-                      decoration: BoxDecoration(
-                          border: Border(
-                        top: BorderSide(width: 0.4, color: AppColor.darkGrey),
-                        left: BorderSide(width: 0.4, color: AppColor.darkGrey),
-                        right: BorderSide(width: 0.4, color: AppColor.darkGrey),
-                      )),
-                      child: GridView.builder(
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 16 / 8),
-                          itemCount: 35,
-                          itemBuilder: (BuildContext context, int i) {
-                            if ((i + 1 == provider.firstDate.weekday || i + 1 >= provider.firstDate.weekday) && i < provider.rangeDateList.length) {
-                              var date = provider.rangeDateList[(i + 1) - provider.firstDate.weekday];
-                              var weekDay = date.date.weekday;
-                              return Container(
-                                decoration: BoxDecoration(
-                                    color: weekDay == 6
-                                        ? const Color(0xffEFFCFF)
-                                        : weekDay == 7
-                                            ? const Color(0xffFFF2F2)
-                                            : Colors.white,
-                                    border: Border.all(width: 0.2, color: AppColor.darkGrey)),
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 5),
-                                      child: Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Text(
-                                            '${date.date.day}',
-                                            style: kTitleText.copyWith(color: AppColor.midGrey, fontSize: 16),
-                                          )),
-                                    ),
-                                    Expanded(
-                                        child: ListView.builder(
-                                            shrinkWrap: true,
-                                            itemCount: date.shiftModelList!.length,
-                                            itemBuilder: (context, ind) {
-                                              var shift = date.shiftModelList![ind];
-                                              return Container(
-                                                margin: const EdgeInsets.only(left: 5, right: 5, bottom: 4),
-                                                width: 400,
-                                                color: AppColor.primaryColor,
-                                                height: 20,
-                                                child: Material(
-                                                  color: Colors.transparent,
-                                                  child: InkWell(
-                                                    onTap: () => showDialog(
-                                                        context: context,
-                                                        builder: (context) => ShiftDetailDialogWidget(
-                                                              jobId: date.jobId!,
-                                                              date: date.date,
-                                                            )),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.only(left: 5),
-                                                      child: Text(
-                                                        "${shift.startWorkTime} - ${shift.endWorkTime}",
-                                                        style: kNormalText.copyWith(color: Colors.white, fontSize: 12),
-                                                      ),
+          Center(
+            child: provider.rangeDateList.isEmpty
+                ? const SizedBox()
+                : Container(
+                    width: AppSize.getDeviceWidth(context) * 0.6,
+                    decoration: BoxDecoration(
+                        border: Border(
+                      top: BorderSide(width: 0.4, color: AppColor.darkGrey),
+                      left: BorderSide(width: 0.4, color: AppColor.darkGrey),
+                      right: BorderSide(width: 0.4, color: AppColor.darkGrey),
+                    )),
+                    child: GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 16 / 8),
+                        itemCount: 35,
+                        itemBuilder: (BuildContext context, int i) {
+                          if ((i + 1 == provider.firstDate.weekday || i + 1 >= provider.firstDate.weekday) && i < provider.rangeDateList.length) {
+                            var date = provider.rangeDateList[(i + 1) - provider.firstDate.weekday];
+                            var weekDay = date.date.weekday;
+                            return Container(
+                              decoration: BoxDecoration(
+                                  color: weekDay == 6
+                                      ? const Color(0xffEFFCFF)
+                                      : weekDay == 7
+                                          ? const Color(0xffFFF2F2)
+                                          : Colors.white,
+                                  border: Border.all(width: 0.2, color: AppColor.darkGrey)),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 5),
+                                    child: Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text(
+                                          '${date.date.day}',
+                                          style: kTitleText.copyWith(color: AppColor.midGrey, fontSize: 16),
+                                        )),
+                                  ),
+                                  Expanded(
+                                      child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: date.shiftModelList!.length,
+                                          itemBuilder: (context, ind) {
+                                            var shift = date.shiftModelList![ind];
+                                            return Container(
+                                              margin: const EdgeInsets.only(left: 5, right: 5, bottom: 4),
+                                              width: 400,
+                                              color: AppColor.primaryColor,
+                                              height: 20,
+                                              child: Material(
+                                                color: Colors.transparent,
+                                                child: InkWell(
+                                                  onTap: () => showDialog(
+                                                      context: context,
+                                                      builder: (context) => ShiftDetailDialogWidget(
+                                                            jobId: date.jobId!,
+                                                            date: date.date,
+                                                          )),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(left: 5),
+                                                    child: Text(
+                                                      "${shift.startWorkTime} - ${shift.endWorkTime}",
+                                                      style: kNormalText.copyWith(color: Colors.white, fontSize: 12),
                                                     ),
                                                   ),
                                                 ),
-                                              );
-                                            }))
-                                  ],
-                                ),
-                              );
-                            } else {
-                              return Container(
-                                decoration: BoxDecoration(
-                                    color: i == 33 || i == 5
-                                        ? const Color(0xffEFFCFF)
-                                        : i == 34
-                                            ? const Color(0xffFFF2F2)
-                                            : Colors.white,
-                                    border: Border.all(width: 0.2, color: AppColor.darkGrey)),
-                              );
-                            }
-                          }),
-                    ),
-            ),
+                                              ),
+                                            );
+                                          }))
+                                ],
+                              ),
+                            );
+                          } else {
+                            return Container(
+                              decoration: BoxDecoration(
+                                  color: i == 33 || i == 5
+                                      ? const Color(0xffEFFCFF)
+                                      : i == 34
+                                          ? const Color(0xffFFF2F2)
+                                          : Colors.white,
+                                  border: Border.all(width: 0.2, color: AppColor.darkGrey)),
+                            );
+                          }
+                        }),
+                  ),
           )
         ],
       ),
-    ));
+    );
   }
 
   buildMonthDisplay() {
     return Center(
       child: Container(
-        height: 54,
+        height: 45,
         width: 180,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
@@ -266,7 +273,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                 )),
             Text(
               "${toJapanMonthAndYear(provider.month)}",
-              style: titleStyle,
+              style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
             ),
             IconButton(
                 onPressed: () => provider.onChangeMonth(DateTime(provider.month.year, provider.month.month + 1, provider.month.day)),
@@ -282,75 +289,72 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
   }
 
   buildList() {
-    return Expanded(
-      child: Container(
-        width: AppSize.getDeviceWidth(context),
-        decoration: boxDecoration,
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          children: [
-            TitleWidget(title: provider.displayList[0]),
-            AppSize.spaceHeight16,
-            Row(
-              children: [
-                Expanded(
-                  child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 80),
-                        child: Text(
-                          "求人タイトル",
-                          style: normalTextStyle.copyWith(fontSize: 13),
-                        ),
-                      )),
-                  flex: 3,
+    return Container(
+      width: AppSize.getDeviceWidth(context),
+      decoration: boxDecoration,
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+      child: Column(
+        children: [
+          TitleWidget(title: provider.displayList[0]),
+          AppSize.spaceHeight16,
+          Row(
+            children: [
+              Expanded(
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 80),
+                      child: Text(
+                        "求人タイトル",
+                        style: normalTextStyle.copyWith(fontSize: 13),
+                      ),
+                    )),
+                flex: 3,
+              ),
+              Expanded(
+                child: Center(
+                  child: Text("稼働期間", style: normalTextStyle.copyWith(fontSize: 13)),
                 ),
-                Expanded(
+                flex: 2,
+              ),
+              Expanded(
+                child: Center(
+                  child: Text("募集人数", style: normalTextStyle.copyWith(fontSize: 13)),
+                ),
+                flex: 1,
+              ),
+              Expanded(
+                child: Center(
+                  child: Text("応募人数", style: normalTextStyle.copyWith(fontSize: 13)),
+                ),
+                flex: 1,
+              ),
+              SizedBox(
+                  width: 100,
                   child: Center(
-                    child: Text("稼働期間", style: normalTextStyle.copyWith(fontSize: 13)),
-                  ),
-                  flex: 2,
-                ),
-                Expanded(
-                  child: Center(
-                    child: Text("募集人数", style: normalTextStyle.copyWith(fontSize: 13)),
-                  ),
-                  flex: 1,
-                ),
-                Expanded(
-                  child: Center(
-                    child: Text("応募人数", style: normalTextStyle.copyWith(fontSize: 13)),
-                  ),
-                  flex: 1,
-                ),
-                SizedBox(
-                    width: 100,
-                    child: Center(
-                      child: Text("掲載状況", style: normalTextStyle.copyWith(fontSize: 13)),
-                    ))
-              ],
-            ),
-            AppSize.spaceHeight16,
-            Expanded(
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: provider.jobPostingList.length,
-                  itemBuilder: (context, index) {
-                    var job = provider.jobPostingList[index];
-                    return JobCardDisplay(
-                      title: job.title!,
-                      shiftFrame: job,
-                      onClick: () {
-                        // setState(() {
-                        //   provider.jobPosting = job;
-                        // });
-                      },
-                      selectShiftFrame: provider.jobPosting,
-                    );
-                  }),
-            )
-          ],
-        ),
+                    child: Text("掲載状況", style: normalTextStyle.copyWith(fontSize: 13)),
+                  ))
+            ],
+          ),
+          AppSize.spaceHeight16,
+          ListView.builder(
+              shrinkWrap: true,
+              itemCount: provider.jobPostingList.length,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                var job = provider.jobPostingList[index];
+                return JobCardDisplay(
+                  title: job.title!,
+                  shiftFrame: job,
+                  onClick: () {
+                    // setState(() {
+                    //   provider.jobPosting = job;
+                    // });
+                  },
+                  selectShiftFrame: provider.jobPosting,
+                );
+              })
+        ],
       ),
     );
   }

@@ -42,9 +42,10 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
       child: Container(
         width: AppSize.getDeviceWidth(context),
         decoration: boxDecorationNoTopRadius,
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Column(
           children: [
+            AppSize.spaceHeight16,
             Row(
               children: [
                 const TitleWidget(title: "シフト枠　一覧"),

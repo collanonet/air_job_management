@@ -43,7 +43,7 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppSize.spaceHeight30,
+                AppSize.spaceHeight16,
                 titleWidget(),
                 AppSize.spaceHeight20,
                 Divider(

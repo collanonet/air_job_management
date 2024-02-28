@@ -22,7 +22,7 @@ class TitleWidget extends StatelessWidget {
         AppSize.spaceWidth8,
         Text(
           title,
-          style: titleStyle.copyWith(fontSize: 20, fontFamily: "Bold", color: const Color(0xff3B4043)),
+          style: titleStyle.copyWith(fontSize: 16, fontFamily: "Bold", color: const Color(0xff3B4043)),
         ),
       ],
     );

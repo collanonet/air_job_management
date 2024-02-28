@@ -13,7 +13,7 @@ class ButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 48,
+      height: 40,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius),
           color: color,
@@ -28,7 +28,7 @@ class ButtonWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
         child: Text(
           title,
-          style: normalTextStyle.copyWith(fontFamily: "Bold", fontSize: 15, color: color == Colors.white ? AppColor.primaryColor : Colors.white),
+          style: normalTextStyle.copyWith(fontFamily: "Bold", fontSize: 13, color: color == Colors.white ? AppColor.primaryColor : Colors.white),
         ),
         onPressed: () => onPress(),
       ),
