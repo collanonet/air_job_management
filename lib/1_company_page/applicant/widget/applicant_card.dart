@@ -21,7 +21,7 @@ class ApplicantCardWidget extends StatelessWidget {
       height: 110,
       width: AppSize.getDeviceWidth(context),
       padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
-      margin: const EdgeInsets.only(bottom: 16, left: 0, right: 0),
+      margin: const EdgeInsets.only(bottom: 4, left: 0, right: 0),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), border: Border.all(width: 1, color: AppColor.primaryColor)),
       child: InkWell(
         onTap: () {
@@ -54,10 +54,12 @@ class ApplicantCardWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                          Text(
-                            job.userName ?? "",
-                            style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
-                            overflow: TextOverflow.fade,
+                          Expanded(
+                            child: Text(
+                              job.userName ?? "",
+                              style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                              overflow: TextOverflow.fade,
+                            ),
                           ),
                           AppSize.spaceWidth5,
                           job.userId != null
@@ -80,8 +82,11 @@ class ApplicantCardWidget extends StatelessWidget {
               flex: 2,
             ),
             Expanded(
-              child: Center(
-                child: StatusHelper().displayStatus(job.status),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Center(
+                  child: StatusHelper().displayStatus(job.status),
+                ),
               ),
               flex: 1,
             ),

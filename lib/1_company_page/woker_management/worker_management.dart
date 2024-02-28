@@ -29,6 +29,7 @@ class WorkerManagementPage extends StatefulWidget {
 class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterBuildMixin {
   late WorkerManagementProvider workerManagementProvider;
   late AuthProvider authProvider;
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -69,96 +70,102 @@ class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterB
       height: AppSize.getDeviceHeight(context),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            WorkerManagementFilterDataWidgetForCompany(),
-            AppSize.spaceHeight16,
-            Align(
-                alignment: Alignment.centerRight,
-                child: SizedBox(
-                    width: 130,
-                    child: ButtonWidget(
-                        radius: 25, title: "新規登録", color: AppColor.primaryColor, onPress: () => context.go(MyRoute.companyCreateWorkerMgt)))),
-            AppSize.spaceHeight16,
-            Expanded(
-                child: Container(
-              decoration: boxDecoration,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 32, right: 32, top: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Scrollbar(
+          controller: scrollController,
+          isAlwaysShown: true,
+          child: SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              children: [
+                const WorkerManagementFilterDataWidgetForCompany(),
+                AppSize.spaceHeight8,
+                Align(
+                    alignment: Alignment.centerRight,
+                    child: SizedBox(
+                        width: 130,
+                        child: ButtonWidget(
+                            radius: 25, title: "新規登録", color: AppColor.primaryColor, onPress: () => context.go(MyRoute.companyCreateWorkerMgt)))),
+                AppSize.spaceHeight8,
+                Container(
+                  decoration: boxDecoration,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 32, right: 32, top: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "ワーカー　一覧",
-                          style: titleStyle,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "ワーカー　一覧",
+                              style: titleStyle,
+                            ),
+                            IconButton(
+                                onPressed: () async {
+                                  workerManagementProvider.onChangeLoading(true);
+                                  workerManagementProvider.onInitForList();
+                                  getData();
+                                },
+                                icon: const Icon(Icons.refresh))
+                          ],
                         ),
-                        IconButton(
-                            onPressed: () async {
-                              workerManagementProvider.onChangeLoading(true);
-                              workerManagementProvider.onInitForList();
-                              getData();
-                            },
-                            icon: const Icon(Icons.refresh))
+                        AppSize.spaceHeight16,
+                        //Title
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 80),
+                                    child: Text(
+                                      "氏名（漢字）",
+                                      style: normalTextStyle.copyWith(fontSize: 13),
+                                    ),
+                                  )),
+                              flex: 2,
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text("年齢/性別", style: normalTextStyle.copyWith(fontSize: 13)),
+                              ),
+                              flex: 2,
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text("電話番号", style: normalTextStyle.copyWith(fontSize: 13)),
+                              ),
+                              flex: 2,
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text("Good率", style: normalTextStyle.copyWith(fontSize: 13)),
+                              ),
+                              flex: 1,
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text("最終稼働日", style: normalTextStyle.copyWith(fontSize: 13)),
+                              ),
+                              flex: 2,
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text("稼働回数", style: normalTextStyle.copyWith(fontSize: 13)),
+                              ),
+                              flex: 1,
+                            ),
+                          ],
+                        ),
+                        AppSize.spaceHeight16,
+                        buildList()
                       ],
                     ),
-                    AppSize.spaceHeight30,
-                    //Title
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 80),
-                                child: Text(
-                                  "氏名（漢字）",
-                                  style: normalTextStyle.copyWith(fontSize: 13),
-                                ),
-                              )),
-                          flex: 2,
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: Text("年齢/性別", style: normalTextStyle.copyWith(fontSize: 13)),
-                          ),
-                          flex: 2,
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: Text("電話番号", style: normalTextStyle.copyWith(fontSize: 13)),
-                          ),
-                          flex: 2,
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: Text("Good率", style: normalTextStyle.copyWith(fontSize: 13)),
-                          ),
-                          flex: 1,
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: Text("最終稼働日", style: normalTextStyle.copyWith(fontSize: 13)),
-                          ),
-                          flex: 2,
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: Text("稼働回数", style: normalTextStyle.copyWith(fontSize: 13)),
-                          ),
-                          flex: 1,
-                        ),
-                      ],
-                    ),
-                    AppSize.spaceHeight16,
-                    Expanded(child: buildList())
-                  ],
-                ),
-              ),
-            ))
-          ],
+                  ),
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -174,6 +181,7 @@ class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterB
         return ListView.separated(
             itemCount: workerManagementProvider.workManagementList.length,
             shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             separatorBuilder: (context, index) =>
                 Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == workerManagementProvider.workManagementList.length ? 20 : 0)),
             itemBuilder: (context, index) {

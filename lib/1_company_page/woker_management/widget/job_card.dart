@@ -22,7 +22,7 @@ class JobApplyCardWidget extends StatelessWidget {
       height: 110,
       width: AppSize.getDeviceWidth(context),
       padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
-      margin: const EdgeInsets.only(bottom: 16, left: 0, right: 0),
+      margin: const EdgeInsets.only(bottom: 4, left: 0, right: 0),
       decoration: BoxDecoration(
           color: job.isSelect == true ? Colors.orange.withOpacity(0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
@@ -68,10 +68,12 @@ class JobApplyCardWidget extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(
-                              job.userName ?? "",
-                              style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
-                              overflow: TextOverflow.fade,
+                            Expanded(
+                              child: Text(
+                                job.userName ?? "",
+                                style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                                overflow: TextOverflow.fade,
+                              ),
                             ),
                             AppSize.spaceWidth16,
                             job.userId != null
@@ -84,7 +86,7 @@ class JobApplyCardWidget extends StatelessWidget {
                         ),
                         Text(
                           job.jobLocation ?? "",
-                          style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                          style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 15),
                           overflow: TextOverflow.fade,
                         ),
                       ],

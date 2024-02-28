@@ -5,6 +5,7 @@ import 'package:air_job_management/models/worker_model/shift.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/job_posting.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
+import 'package:air_job_management/providers/home.dart';
 import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/widgets/custom_dropdown_string.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
@@ -58,6 +59,7 @@ class _CreateOutsideStaffPageState extends State<CreateOutsideStaffPage> with Af
   late JobPostingForCompanyProvider provider;
   late AuthProvider authProvider;
   late WorkerManagementProvider workerManagementProvider;
+  late HomeProvider homeProvider;
   List<dynamic> fileList = [null];
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
@@ -77,6 +79,7 @@ class _CreateOutsideStaffPageState extends State<CreateOutsideStaffPage> with Af
     provider = Provider.of<JobPostingForCompanyProvider>(context);
     authProvider = Provider.of<AuthProvider>(context);
     workerManagementProvider = Provider.of<WorkerManagementProvider>(context);
+    homeProvider = Provider.of<HomeProvider>(context);
     return Form(
       key: _formKey,
       child: CustomLoadingOverlay(
@@ -199,7 +202,17 @@ class _CreateOutsideStaffPageState extends State<CreateOutsideStaffPage> with Af
 
   basicInformationWidget() {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      const TitleWidget(title: "基本情報"),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const TitleWidget(title: "基本情報"),
+          IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.close))
+        ],
+      ),
       AppSize.spaceHeight16,
       Row(
         mainAxisAlignment: MainAxisAlignment.start,

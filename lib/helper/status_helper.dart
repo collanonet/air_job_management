@@ -7,7 +7,7 @@ class StatusHelper {
   displayStatus(String? status) {
     return Container(
       height: 40,
-      width: 120,
+      width: 110,
       decoration: BoxDecoration(
         color: checkRequestColor(status),
         borderRadius: BorderRadius.circular(20),
@@ -15,7 +15,7 @@ class StatusHelper {
       child: Center(
         child: Text(
           englishToJapan(status),
-          style: kNormalText.copyWith(fontSize: 16, fontFamily: "Bold", color: Colors.white),
+          style: kNormalText.copyWith(fontSize: 14, fontFamily: "Bold", color: Colors.white),
         ),
       ),
     );

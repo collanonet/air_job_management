@@ -35,6 +35,7 @@ class ApplicantListPage extends StatefulWidget {
 class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMixin {
   late WorkerManagementProvider workerManagementProvider;
   late AuthProvider authProvider;
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
@@ -75,105 +76,111 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
       height: AppSize.getDeviceHeight(context),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            ApplicantFilterDataWidgetForCompany(),
-            ManualAndDownloadApplicantWidget(
-              onDownload: () => generateApplicantListCSV(),
-            ),
-            Expanded(
-                child: Container(
-              decoration: boxDecoration,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 32, right: 32, top: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Scrollbar(
+          controller: scrollController,
+          isAlwaysShown: true,
+          child: SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              children: [
+                ApplicantFilterDataWidgetForCompany(),
+                ManualAndDownloadApplicantWidget(
+                  onDownload: () => generateApplicantListCSV(),
+                ),
+                Container(
+                  decoration: boxDecoration,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 32, right: 32, top: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "応募者一覧",
-                              style: titleStyle,
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "応募者一覧",
+                                  style: titleStyle,
+                                ),
+                                AppSize.spaceWidth32,
+                                Text(
+                                  "合計${workerManagementProvider.applicantList.length}名",
+                                  style: kNormalText.copyWith(fontSize: 12),
+                                )
+                              ],
                             ),
-                            AppSize.spaceWidth32,
-                            Text(
-                              "合計${workerManagementProvider.applicantList.length}名",
-                              style: kNormalText.copyWith(fontSize: 12),
-                            )
+                            IconButton(
+                                onPressed: () async {
+                                  workerManagementProvider.onChangeLoading(true);
+                                  workerManagementProvider.onInitForList();
+                                  getData();
+                                },
+                                icon: const Icon(Icons.refresh))
                           ],
                         ),
-                        IconButton(
-                            onPressed: () async {
-                              workerManagementProvider.onChangeLoading(true);
-                              workerManagementProvider.onInitForList();
-                              getData();
-                            },
-                            icon: const Icon(Icons.refresh))
-                      ],
-                    ),
-                    AppSize.spaceHeight30,
-                    //Title
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 80),
-                                child: Text(
-                                  "氏名（漢字）",
-                                  style: normalTextStyle.copyWith(fontSize: 13),
-                                ),
-                              )),
-                          flex: 2,
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 32),
-                            child: Center(
-                              child: Text("状態", style: normalTextStyle.copyWith(fontSize: 13)),
+                        AppSize.spaceHeight16,
+                        //Title
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 80),
+                                    child: Text(
+                                      "氏名（漢字）",
+                                      style: normalTextStyle.copyWith(fontSize: 13),
+                                    ),
+                                  )),
+                              flex: 2,
                             ),
-                          ),
-                          flex: 1,
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 32),
+                                child: Center(
+                                  child: Text("状態", style: normalTextStyle.copyWith(fontSize: 13)),
+                                ),
+                              ),
+                              flex: 1,
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text("求人タイトル", style: normalTextStyle.copyWith(fontSize: 13)),
+                              ),
+                              flex: 3,
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text("Good率", style: normalTextStyle.copyWith(fontSize: 13)),
+                              ),
+                              flex: 1,
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text("稼働回数", style: normalTextStyle.copyWith(fontSize: 13)),
+                              ),
+                              flex: 1,
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text("最終稼働日", style: normalTextStyle.copyWith(fontSize: 13)),
+                              ),
+                              flex: 2,
+                            ),
+                          ],
                         ),
-                        Expanded(
-                          child: Center(
-                            child: Text("求人タイトル", style: normalTextStyle.copyWith(fontSize: 13)),
-                          ),
-                          flex: 3,
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: Text("Good率", style: normalTextStyle.copyWith(fontSize: 13)),
-                          ),
-                          flex: 1,
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: Text("稼働回数", style: normalTextStyle.copyWith(fontSize: 13)),
-                          ),
-                          flex: 1,
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: Text("最終稼働日", style: normalTextStyle.copyWith(fontSize: 13)),
-                          ),
-                          flex: 2,
-                        ),
+                        AppSize.spaceHeight16,
+                        buildList()
                       ],
                     ),
-                    AppSize.spaceHeight16,
-                    Expanded(child: buildList())
-                  ],
-                ),
-              ),
-            ))
-          ],
+                  ),
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -189,6 +196,7 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
         return ListView.separated(
             itemCount: workerManagementProvider.applicantList.length,
             shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             separatorBuilder: (context, index) =>
                 Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == workerManagementProvider.applicantList.length ? 20 : 0)),
             itemBuilder: (context, index) {

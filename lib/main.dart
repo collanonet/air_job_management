@@ -251,13 +251,30 @@ final GoRouter _router = GoRouter(
                 },
               ),
               GoRoute(
-                path: 'worker-management',
-                builder: (BuildContext context, GoRouterState state) {
-                  return HomePageForCompany(
-                    selectItem: JapaneseText.workerCompany,
-                  );
-                },
-              ),
+                  path: 'worker-management',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return HomePageForCompany(
+                      selectItem: JapaneseText.workerCompany,
+                    );
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'outside-worker/create',
+                      builder: (BuildContext context, GoRouterState state) {
+                        return const HomePageForCompany(
+                          page: CreateOutsideStaffPage(),
+                        );
+                      },
+                    ),
+                    GoRoute(
+                      path: 'outside-worker/:uid',
+                      builder: (BuildContext context, GoRouterState state) {
+                        return HomePageForCompany(
+                          page: CreateOutsideStaffPage(uid: state.pathParameters["uid"].toString()),
+                        );
+                      },
+                    ),
+                  ]),
               GoRoute(
                 path: 'applicant/:uid',
                 builder: (BuildContext context, GoRouterState state) {
@@ -275,22 +292,6 @@ final GoRouter _router = GoRouter(
                     page: RootWorkerManagementDetailPage(
                       uid: state.pathParameters["uid"].toString(),
                     ),
-                  );
-                },
-              ),
-              GoRoute(
-                path: 'worker-management/outside-worker/create',
-                builder: (BuildContext context, GoRouterState state) {
-                  return const HomePageForCompany(
-                    page: CreateOutsideStaffPage(),
-                  );
-                },
-              ),
-              GoRoute(
-                path: 'worker-management/outside-worker/:uid',
-                builder: (BuildContext context, GoRouterState state) {
-                  return HomePageForCompany(
-                    page: CreateOutsideStaffPage(uid: state.pathParameters["uid"].toString()),
                   );
                 },
               ),

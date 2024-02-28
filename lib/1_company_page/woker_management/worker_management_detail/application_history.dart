@@ -47,7 +47,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
             child: Container(
           decoration: boxDecoration,
           child: Padding(
-            padding: const EdgeInsets.only(left: 32, right: 32, top: 20),
+            padding: const EdgeInsets.only(left: 32, right: 32, top: 4),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -119,7 +119,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                 height: 110,
                 width: AppSize.getDeviceWidth(context),
                 padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
-                margin: const EdgeInsets.only(bottom: 16, left: 0, right: 0),
+                margin: const EdgeInsets.only(bottom: 4, left: 0, right: 0),
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), border: Border.all(width: 1, color: AppColor.primaryColor)),
                 child: Row(
                   children: [

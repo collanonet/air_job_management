@@ -21,7 +21,7 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
       height: 110,
       width: AppSize.getDeviceWidth(context),
       padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.only(bottom: 16, left: 0, right: 0),
+      margin: const EdgeInsets.only(bottom: 4, left: 0, right: 0),
       decoration: BoxDecoration(
           color: selectedJobPosting == jobPosting ? Colors.orange.withOpacity(0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(16),

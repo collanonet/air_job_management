@@ -44,21 +44,21 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppSize.spaceHeight30,
+                AppSize.spaceHeight16,
                 achievementsWidget(),
-                AppSize.spaceHeight20,
+                AppSize.spaceHeight8,
                 Divider(
                   color: AppColor.thirdColor.withOpacity(0.3),
                 ),
-                AppSize.spaceHeight20,
+                AppSize.spaceHeight8,
                 basicInformationWidget(),
-                AppSize.spaceHeight20,
+                AppSize.spaceHeight8,
                 Divider(
                   color: AppColor.thirdColor.withOpacity(0.3),
                 ),
-                AppSize.spaceHeight20,
+                AppSize.spaceHeight8,
                 buildUserLocation(),
-                AppSize.spaceHeight20,
+                AppSize.spaceHeight8,
                 buildIdentificationCard(),
                 AppSize.spaceHeight20,
                 AppSize.spaceHeight50,

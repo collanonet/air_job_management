@@ -50,7 +50,9 @@ class _RootWorkerManagementDetailPageState extends State<RootWorkerManagementDet
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           topBarWidget(),
-          AppSize.spaceHeight20,
+          const SizedBox(
+            height: 10,
+          ),
           tabSelection(),
           if (provider.selectedMenu == provider.tabMenu[0])
             BasicInformationPage(
@@ -75,9 +77,9 @@ class _RootWorkerManagementDetailPageState extends State<RootWorkerManagementDet
   topBarWidget() {
     return Container(
       width: AppSize.getDeviceWidth(context),
-      height: 100,
+      height: 80,
       decoration: boxDecoration,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(6),
       child: provider.selectedJob != null
           ? Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -86,8 +88,8 @@ class _RootWorkerManagementDetailPageState extends State<RootWorkerManagementDet
                   children: [
                     AppSize.spaceWidth32,
                     Container(
-                      width: 60,
-                      height: 60,
+                      width: 50,
+                      height: 50,
                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: AppColor.primaryColor),
                       child: Center(
                         child: Icon(
@@ -97,19 +99,19 @@ class _RootWorkerManagementDetailPageState extends State<RootWorkerManagementDet
                         ),
                       ),
                     ),
-                    AppSize.spaceWidth32,
+                    AppSize.spaceWidth16,
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           "${provider.selectedJob?.myUser?.nameKanJi} ${provider.selectedJob?.myUser?.nameFu}",
-                          style: normalTextStyle.copyWith(fontSize: 20, color: AppColor.blackColor, fontFamily: "Bold"),
+                          style: normalTextStyle.copyWith(fontSize: 16, color: AppColor.blackColor, fontFamily: "Bold"),
                         ),
                         AppSize.spaceHeight5,
                         Text(
                           "${provider.selectedJob?.jobLocation}               ${provider.selectedJob?.myUser?.gender}   ${calculateAge(DateToAPIHelper.fromApiToLocal(provider.selectedJob!.myUser!.dob!.replaceAll("-", "/").toString()))}",
-                          style: normalTextStyle.copyWith(fontSize: 16, color: AppColor.blackColor, fontFamily: "Normal"),
+                          style: normalTextStyle.copyWith(fontSize: 14, color: AppColor.blackColor, fontFamily: "Normal"),
                         ),
                       ],
                     )
@@ -130,12 +132,12 @@ class _RootWorkerManagementDetailPageState extends State<RootWorkerManagementDet
               onTap: () => provider.onChangeSelectMenu(provider.tabMenu[0]),
               child: Container(
                 width: AppSize.getDeviceWidth(context) * 0.25,
-                height: 39,
+                height: 30,
                 alignment: Alignment.center,
                 child: Text(
                   provider.tabMenu[0],
                   style: normalTextStyle.copyWith(
-                      fontSize: 16, fontFamily: "Bold", color: provider.selectedMenu == provider.tabMenu[0] ? Colors.white : AppColor.primaryColor),
+                      fontSize: 14, fontFamily: "Bold", color: provider.selectedMenu == provider.tabMenu[0] ? Colors.white : AppColor.primaryColor),
                 ),
                 decoration: BoxDecoration(
                     color: provider.selectedMenu == provider.tabMenu[0] ? AppColor.primaryColor : Colors.white,
@@ -148,12 +150,12 @@ class _RootWorkerManagementDetailPageState extends State<RootWorkerManagementDet
               onTap: () => provider.onChangeSelectMenu(provider.tabMenu[1]),
               child: Container(
                 width: AppSize.getDeviceWidth(context) * 0.25,
-                height: 39,
+                height: 30,
                 alignment: Alignment.center,
                 child: Text(
                   provider.tabMenu[1],
                   style: normalTextStyle.copyWith(
-                      fontSize: 16, fontFamily: "Bold", color: provider.selectedMenu == provider.tabMenu[1] ? Colors.white : AppColor.primaryColor),
+                      fontSize: 14, fontFamily: "Bold", color: provider.selectedMenu == provider.tabMenu[1] ? Colors.white : AppColor.primaryColor),
                 ),
                 decoration: BoxDecoration(
                     color: provider.selectedMenu == provider.tabMenu[1] ? AppColor.primaryColor : Colors.white,
@@ -166,12 +168,12 @@ class _RootWorkerManagementDetailPageState extends State<RootWorkerManagementDet
               onTap: () => provider.onChangeSelectMenu(provider.tabMenu[2]),
               child: Container(
                 width: AppSize.getDeviceWidth(context) * 0.25,
-                height: 39,
+                height: 30,
                 alignment: Alignment.center,
                 child: Text(
                   provider.tabMenu[2],
                   style: normalTextStyle.copyWith(
-                      fontSize: 16, fontFamily: "Bold", color: provider.selectedMenu == provider.tabMenu[2] ? Colors.white : AppColor.primaryColor),
+                      fontSize: 14, fontFamily: "Bold", color: provider.selectedMenu == provider.tabMenu[2] ? Colors.white : AppColor.primaryColor),
                 ),
                 decoration: BoxDecoration(
                     color: provider.selectedMenu == provider.tabMenu[2] ? AppColor.primaryColor : Colors.white,
