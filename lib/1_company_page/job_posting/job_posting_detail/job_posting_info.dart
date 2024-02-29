@@ -3,6 +3,7 @@ import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
+import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -20,10 +21,12 @@ class JobPostingInformationPageForCompany extends StatefulWidget {
   const JobPostingInformationPageForCompany({super.key});
 
   @override
-  State<JobPostingInformationPageForCompany> createState() => _JobPostingInformationPageForCompanyState();
+  State<JobPostingInformationPageForCompany> createState() =>
+      _JobPostingInformationPageForCompanyState();
 }
 
-class _JobPostingInformationPageForCompanyState extends State<JobPostingInformationPageForCompany> with AfterBuildMixin {
+class _JobPostingInformationPageForCompanyState
+    extends State<JobPostingInformationPageForCompany> with AfterBuildMixin {
   late JobPostingForCompanyProvider provider;
   ScrollController scrollController2 = ScrollController();
 
@@ -89,7 +92,10 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
             isRequired: true,
           ),
         ),
-        Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.profileCom, style: kNormalText.copyWith(fontSize: 12))),
+        Align(
+            alignment: Alignment.centerLeft,
+            child: Text(JapaneseText.profileCom,
+                style: kNormalText.copyWith(fontSize: 12))),
         AppSize.spaceHeight5,
         buildChooseJobProfile(),
       ],
@@ -123,17 +129,23 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
                               height: 162,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
-                                border: Border.all(width: 1, color: AppColor.thirdColor),
+                                border: Border.all(
+                                    width: 1, color: AppColor.thirdColor),
                               ),
-                              child: Image.network(file.toString(), fit: BoxFit.cover),
+                              child: Image.network(file.toString(),
+                                  fit: BoxFit.cover),
                             )
                           : Container(
                               width: 320,
                               height: 162,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(width: 1, color: AppColor.thirdColor),
-                                  image: DecorationImage(image: MemoryImage(file.files.first.bytes!), fit: BoxFit.cover)),
+                                  border: Border.all(
+                                      width: 1, color: AppColor.thirdColor),
+                                  image: DecorationImage(
+                                      image:
+                                          MemoryImage(file.files.first.bytes!),
+                                      fit: BoxFit.cover)),
                             ),
                       Positioned(
                           top: 5,
@@ -143,7 +155,9 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
                               icon: Container(
                                   width: 34,
                                   height: 34,
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(17), color: AppColor.primaryColor),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(17),
+                                      color: AppColor.primaryColor),
                                   child: const Icon(
                                     Icons.close_rounded,
                                     color: Colors.white,
@@ -159,7 +173,10 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
                     width: 320,
                     height: 162,
                     decoration: BoxDecoration(
-                        color: Colors.white, borderRadius: BorderRadius.circular(5), border: Border.all(width: 1, color: AppColor.thirdColor)),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(5),
+                        border:
+                            Border.all(width: 1, color: AppColor.thirdColor)),
                     child: Center(
                       child: IconButton(
                           onPressed: () => onSelectFile(),
@@ -178,7 +195,10 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
   }
 
   onSelectFile() async {
-    var file = await FilePicker.platform.pickFiles(type: FileType.custom, allowMultiple: false, allowedExtensions: ["jpg", "png", "jpeg"]);
+    var file = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowMultiple: false,
+        allowedExtensions: ["jpg", "png", "jpeg"]);
     if (file != null) {
       provider.onAddNewFile(file);
     }
@@ -212,7 +232,10 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Align(alignment: Alignment.centerLeft, child: Text("職種", style: kNormalText.copyWith(fontSize: 12))),
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child:
+                        Text("職種", style: kNormalText.copyWith(fontSize: 12))),
                 AppSize.spaceHeight5,
                 CustomDropDownWidget(
                   radius: 5,
@@ -226,7 +249,10 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
           ],
         ),
         AppSize.spaceHeight8,
-        Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.treatmentAndExp, style: kNormalText.copyWith(fontSize: 12))),
+        Align(
+            alignment: Alignment.centerLeft,
+            child: Text(JapaneseText.treatmentAndExp,
+                style: kNormalText.copyWith(fontSize: 12))),
         AppSize.spaceHeight5,
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -302,7 +328,10 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
                 }),
           ],
         ),
-        Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.jobDescription, style: kNormalText.copyWith(fontSize: 12))),
+        Align(
+            alignment: Alignment.centerLeft,
+            child: Text(JapaneseText.jobDescription,
+                style: kNormalText.copyWith(fontSize: 12))),
         AppSize.spaceHeight5,
         SizedBox(
           width: AppSize.getDeviceWidth(context) * 0.6,
@@ -315,7 +344,10 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
             textInputType: TextInputType.multiline,
           ),
         ),
-        Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.notes, style: kNormalText.copyWith(fontSize: 12))),
+        Align(
+            alignment: Alignment.centerLeft,
+            child: Text(JapaneseText.notes,
+                style: kNormalText.copyWith(fontSize: 12))),
         AppSize.spaceHeight5,
         SizedBox(
           width: AppSize.getDeviceWidth(context) * 0.6,
@@ -328,7 +360,10 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
             textInputType: TextInputType.multiline,
           ),
         ),
-        Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.belongings, style: kNormalText.copyWith(fontSize: 12))),
+        Align(
+            alignment: Alignment.centerLeft,
+            child: Text(JapaneseText.belongings,
+                style: kNormalText.copyWith(fontSize: 12))),
         AppSize.spaceHeight5,
         SizedBox(
           width: AppSize.getDeviceWidth(context) * 0.6,
@@ -341,7 +376,10 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
             textInputType: TextInputType.multiline,
           ),
         ),
-        Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.conditionsForWork, style: kNormalText.copyWith(fontSize: 12))),
+        Align(
+            alignment: Alignment.centerLeft,
+            child: Text(JapaneseText.conditionsForWork,
+                style: kNormalText.copyWith(fontSize: 12))),
         AppSize.spaceHeight5,
         SizedBox(
           width: AppSize.getDeviceWidth(context) * 0.6,
@@ -369,7 +407,10 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.postalCode, style: kNormalText.copyWith(fontSize: 12))),
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(JapaneseText.postalCode,
+                      style: kNormalText.copyWith(fontSize: 12))),
               AppSize.spaceHeight5,
               SizedBox(
                 width: 150,
@@ -385,7 +426,10 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.prefectureLocation, style: kNormalText.copyWith(fontSize: 12))),
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(JapaneseText.prefectureLocation,
+                      style: kNormalText.copyWith(fontSize: 12))),
               AppSize.spaceHeight5,
               CustomDropDownWidget(
                 radius: 5,
@@ -398,7 +442,9 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
           ),
         ],
       ),
-      Align(alignment: Alignment.centerLeft, child: Text("市区町村・番地", style: kNormalText.copyWith(fontSize: 12))),
+      Align(
+          alignment: Alignment.centerLeft,
+          child: Text("市区町村・番地", style: kNormalText.copyWith(fontSize: 12))),
       AppSize.spaceHeight5,
       SizedBox(
         width: AppSize.getDeviceWidth(context) * 0.4,
@@ -408,7 +454,10 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
           isRequired: true,
         ),
       ),
-      Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.buildingName, style: kNormalText.copyWith(fontSize: 12))),
+      Align(
+          alignment: Alignment.centerLeft,
+          child: Text(JapaneseText.buildingName,
+              style: kNormalText.copyWith(fontSize: 12))),
       AppSize.spaceHeight5,
       SizedBox(
         width: AppSize.getDeviceWidth(context) * 0.4,
@@ -418,7 +467,10 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
           isRequired: true,
         ),
       ),
-      Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.accessAddress, style: kNormalText.copyWith(fontSize: 12))),
+      Align(
+          alignment: Alignment.centerLeft,
+          child: Text(JapaneseText.accessAddress,
+              style: kNormalText.copyWith(fontSize: 12))),
       AppSize.spaceHeight5,
       SizedBox(
         width: AppSize.getDeviceWidth(context) * 0.4,
@@ -430,34 +482,102 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
       ),
       Align(
           alignment: Alignment.centerLeft,
-          child: Text("Latitude and Longitude (Ex: 34.xxxxxxxx, 135.xxxxxxxx)", style: kNormalText.copyWith(fontSize: 12))),
+          child: Text("Latitude and Longitude (Ex: 34.xxxxxxxx, 135.xxxxxxxx)",
+              style: kNormalText.copyWith(fontSize: 12))),
       AppSize.spaceHeight5,
-      SizedBox(
-        width: AppSize.getDeviceWidth(context) * 0.4,
-        child: PrimaryTextField(
-          hint: "",
-          controller: provider.latLong,
-          isRequired: true,
-          onChange: (v) {
-            onChangeCamera(v);
-          },
-        ),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: AppSize.getDeviceWidth(context) * 0.4,
+            child: PrimaryTextField(
+              hint: "",
+              controller: provider.latLong,
+              isRequired: true,
+              onChange: (v) {
+                onChangeCamera(v);
+              },
+            ),
+          ),
+          AppSize.spaceWidth32,
+          ButtonWidget(
+            title: "地図上で選択",
+            onPress: () {
+              showDialog(
+                  context: context,
+                  builder: (_) {
+                    return AlertDialog(
+                      content: buildMap(true),
+                      actions: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                    width: 200,
+                                    child: ButtonWidget(
+                                      radius: 25,
+                                      color: AppColor.whiteColor,
+                                      title: "キャンセル",
+                                      onPress: () => Navigator.pop(context),
+                                    )),
+                                AppSize.spaceWidth16,
+                                SizedBox(
+                                    width: 200,
+                                    child: ButtonWidget(
+                                        radius: 25,
+                                        title: "保存",
+                                        color: AppColor.primaryColor,
+                                        onPress: () {
+                                          Navigator.pop(_);
+                                          provider.latLong.text =
+                                              selectedLatLng;
+                                          onChangeCamera(provider.latLong.text);
+                                        })),
+                              ]),
+                        )
+                      ],
+                    );
+                  });
+            },
+            height: 49,
+          )
+        ],
       ),
       AppSize.spaceHeight8,
-      buildMap()
+      buildMap(false)
     ]);
   }
 
+  String selectedLatLng = "";
+
   onChangeCamera(String v) {
     if (v.toString().contains(", ")) {
-      LatLng latLng = LatLng(double.parse(v.split(", ")[0]), double.parse(v.split(", ")[1]));
-      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: latLng, zoom: 16)));
+      setState(() {
+        scanScroll = true;
+      });
+      LatLng latLng = LatLng(
+          double.parse(v.split(", ")[0]), double.parse(v.split(", ")[1]));
+      mapController.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(target: latLng, zoom: 16)));
+      setState(() {
+        scanScroll = false;
+      });
     }
   }
 
   late GoogleMapController mapController;
-
-  buildMap() {
+  late GoogleMapController mapController2;
+  bool scanScroll = false;
+  buildMap(bool isScroll) {
+    var latLng = LatLng(35.6779346605152, 139.7681053353878);
+    if (provider.latLong.text.isNotEmpty) {
+      var v = provider.latLong.text;
+      latLng = LatLng(
+          double.parse(v.split(", ")[0]), double.parse(v.split(", ")[1]));
+    }
     return Stack(
       children: [
         SizedBox(
@@ -466,14 +586,27 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
           // color: Colors.amber,
           child: GoogleMap(
             mapType: MapType.terrain,
-            initialCameraPosition: const CameraPosition(target: LatLng(35.6779346605152, 139.7681053353878), zoom: 15),
+            initialCameraPosition: CameraPosition(target: latLng, zoom: 15),
             onMapCreated: (controller) {
-              mapController = controller;
+              if (isScroll) {
+                mapController2 = controller;
+              } else {
+                mapController = controller;
+              }
             },
             onCameraMove: (pos) {
-              provider.latLong.text = "${pos.target.latitude}, ${pos.target.longitude}";
+              if (isScroll == false) {
+                provider.latLong.text =
+                    "${pos.target.latitude}, ${pos.target.longitude}";
+              } else {
+                selectedLatLng =
+                    "${pos.target.latitude}, ${pos.target.longitude}";
+              }
             },
-            gestureRecognizers: Set()..add(Factory<EagerGestureRecognizer>(() => EagerGestureRecognizer())),
+            scrollGesturesEnabled: isScroll,
+            gestureRecognizers: Set()
+              ..add(Factory<EagerGestureRecognizer>(
+                  () => EagerGestureRecognizer())),
           ),
         ),
         Positioned(
