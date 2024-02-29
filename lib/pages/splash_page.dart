@@ -171,29 +171,47 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                       }
                     },
                     itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuEnum>>[
-                      const PopupMenuItem<MenuEnum>(
+                      PopupMenuItem<MenuEnum>(
                         value: MenuEnum.home,
-                        child: Text('Home'),
+                        child: Text(
+                          JapaneseText.home,
+                          style: kNormalText,
+                        ),
                       ),
-                      const PopupMenuItem<MenuEnum>(
+                      PopupMenuItem<MenuEnum>(
                         value: MenuEnum.contactUs,
-                        child: Text('Contact Us'),
+                        child: Text(
+                          JapaneseText.contactUs,
+                          style: kNormalText,
+                        ),
                       ),
-                      const PopupMenuItem<MenuEnum>(
+                      PopupMenuItem<MenuEnum>(
                         value: MenuEnum.aboutUs,
-                        child: Text('About Us'),
+                        child: Text(
+                          JapaneseText.aboutUs,
+                          style: kNormalText,
+                        ),
                       ),
-                      const PopupMenuItem<MenuEnum>(
+                      PopupMenuItem<MenuEnum>(
                         value: MenuEnum.worker,
-                        child: Text('Gig Worker Page'),
+                        child: Text(
+                          JapaneseText.jobSeekerPage,
+                          style: kNormalText,
+                        ),
                       ),
-                      const PopupMenuItem<MenuEnum>(
+                      PopupMenuItem<MenuEnum>(
                         value: MenuEnum.company,
-                        child: Text('Company Page'),
+                        child: Text(
+                          JapaneseText.company,
+                          style: kNormalText,
+                        ),
                       ),
-                      const PopupMenuItem<MenuEnum>(
+                      PopupMenuItem<MenuEnum>(
                         value: MenuEnum.home,
-                        child: Text('Admin Page'),
+                        child: Text(
+                          JapaneseText.home,
+                          style: kNormalText,
+                        ),
                       ),
                     ],
                   ),
@@ -209,7 +227,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                         controller: scrollController,
                         child: Column(children: [
                           Text(
-                            "Home",
+                            JapaneseText.home,
                             style: kTitleText.copyWith(fontSize: 30, color: Colors.black),
                           ),
                           AppSize.spaceHeight16,
@@ -278,7 +296,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                               children: [
                                 AppSize.spaceHeight30,
                                 Text(
-                                  "About Air Job",
+                                  JapaneseText.aboutUs,
                                   style: kTitleText.copyWith(fontSize: 30, color: Colors.black),
                                 ),
                                 AppSize.spaceHeight30,
@@ -359,7 +377,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                               child: Column(children: [
                                 AppSize.spaceHeight30,
                                 Text(
-                                  "Contact Us",
+                                  JapaneseText.contactUs,
                                   style: kTitleText.copyWith(fontSize: 30, color: Colors.black),
                                 ),
                                 AppSize.spaceHeight30,
@@ -368,7 +386,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                     SizedBox(
                                       width: AppSize.getDeviceWidth(context) * 0.9,
                                       child: PrimaryTextField(
-                                        hint: "Email",
+                                        hint: JapaneseText.email,
                                         controller: emailController,
                                         isRequired: false,
                                       ),
@@ -377,7 +395,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                     SizedBox(
                                       width: AppSize.getDeviceWidth(context) * 0.9,
                                       child: PrimaryTextField(
-                                        hint: "Content",
+                                        hint: JapaneseText.message,
                                         controller: contentController,
                                         maxLine: 10,
                                         isRequired: false,
@@ -389,12 +407,12 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                       child: ButtonWidget(
                                         onPress: () {
                                           if (emailController.text.isEmpty || contentController.text.isEmpty) {
-                                            toastMessageError("Email and Content are required", context);
+                                            toastMessageError("Eメールとメッセージが必要です", context);
                                           } else {
-                                            toastMessageSuccess("Sent successfully", context);
+                                            toastMessageSuccess("送信成功", context);
                                           }
                                         },
-                                        title: "Send",
+                                        title: "送信",
                                         color: AppColor.primaryColor,
                                       ),
                                     )
@@ -422,12 +440,12 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                       ),
                                       AppSize.spaceHeight16,
                                       Text(
-                                        "TEL: 9999-9999-999",
+                                        "${JapaneseText.phoneNumber}: 9999-9999-999",
                                         style: kNormalText.copyWith(fontSize: 18),
                                       ),
                                       AppSize.spaceHeight16,
                                       Text(
-                                        "Email: support@airjob.com",
+                                        "${JapaneseText.email}: support@airjob.com",
                                         style: kNormalText.copyWith(fontSize: 18),
                                       ),
                                       AppSize.spaceHeight30,
@@ -442,18 +460,15 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       menuWidget(
-                                          title: "Privacy Policy",
-                                          onTap: () => MyPageRoute.goTo(context, const PrivatePolicy()),
-                                          color: Colors.black),
-                                      menuWidget(
-                                          title: "Term of Services", onTap: () => MyPageRoute.goTo(context, const TermOfUse()), color: Colors.black)
+                                          title: "プライバシーポリシー", onTap: () => MyPageRoute.goTo(context, const PrivatePolicy()), color: Colors.black),
+                                      menuWidget(title: "サービス期間", onTap: () => MyPageRoute.goTo(context, const TermOfUse()), color: Colors.black)
                                     ],
                                   ),
                                 ),
                                 AppSize.spaceHeight16,
                                 Center(
                                   child: Text(
-                                    "Copy Right @Air_Job 2024\n${ConstValue.appVersion}",
+                                    "コピーライト @Air_Job 2024\n${ConstValue.appVersion}",
                                     style: kNormalText,
                                     textAlign: TextAlign.center,
                                   ),
@@ -489,17 +504,22 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                   Row(
                     children: [
                       menuWidget(
-                          title: "Home",
+                          title: JapaneseText.home,
                           onTap: () => scrollController.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn)),
+                      AppSize.spaceWidth5,
                       menuWidget(
-                          title: "Contact Us",
+                          title: JapaneseText.contactUs,
                           onTap: () => scrollController.animateTo(contactUs, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn)),
+                      AppSize.spaceWidth5,
                       menuWidget(
-                          title: "About Us",
+                          title: JapaneseText.aboutUs,
                           onTap: () => scrollController.animateTo(aboutUs, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn)),
-                      menuWidget(title: "Gig Worker Page", onTap: () => context.go(MyRoute.jobOption)),
-                      menuWidget(title: "Company Page", onTap: () => context.go(MyRoute.companyLogin)),
-                      menuWidget(title: "Admin Page", onTap: () => context.go(MyRoute.login)),
+                      AppSize.spaceWidth5,
+                      menuWidget(title: JapaneseText.jobSeekerPage, onTap: () => context.go(MyRoute.jobOption)),
+                      AppSize.spaceWidth5,
+                      menuWidget(title: JapaneseText.companyPage, onTap: () => context.go(MyRoute.companyLogin)),
+                      AppSize.spaceWidth5,
+                      menuWidget(title: JapaneseText.adminPage, onTap: () => context.go(MyRoute.login)),
                     ],
                   )
                 ],
@@ -513,7 +533,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                         controller: scrollController,
                         child: Column(children: [
                           Text(
-                            "Home",
+                            JapaneseText.home,
                             style: kTitleText.copyWith(fontSize: 50, color: Colors.black),
                           ),
                           AppSize.spaceHeight30,
@@ -588,7 +608,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                               children: [
                                 AppSize.spaceHeight30,
                                 Text(
-                                  "About Air Job",
+                                  JapaneseText.aboutUs,
                                   style: kTitleText.copyWith(fontSize: 50, color: Colors.black),
                                 ),
                                 AppSize.spaceHeight30,
@@ -686,7 +706,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                               child: Column(children: [
                                 AppSize.spaceHeight30,
                                 Text(
-                                  "Contact Us",
+                                  JapaneseText.contactUs,
                                   style: kTitleText.copyWith(fontSize: 50, color: Colors.black),
                                 ),
                                 AppSize.spaceHeight30,
@@ -699,7 +719,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                           SizedBox(
                                             width: AppSize.getDeviceWidth(context) * 0.4,
                                             child: PrimaryTextField(
-                                              hint: "Email",
+                                              hint: JapaneseText.email,
                                               controller: emailController,
                                               isRequired: false,
                                             ),
@@ -708,7 +728,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                           SizedBox(
                                             width: AppSize.getDeviceWidth(context) * 0.4,
                                             child: PrimaryTextField(
-                                              hint: "Content",
+                                              hint: JapaneseText.message,
                                               controller: contentController,
                                               maxLine: 10,
                                               isRequired: false,
@@ -720,12 +740,12 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                             child: ButtonWidget(
                                               onPress: () {
                                                 if (emailController.text.isEmpty || contentController.text.isEmpty) {
-                                                  toastMessageError("Email and Content are required", context);
+                                                  toastMessageError("Eメールとメッセージが必要です", context);
                                                 } else {
-                                                  toastMessageSuccess("Sent successfully", context);
+                                                  toastMessageSuccess("送信成功", context);
                                                 }
                                               },
-                                              title: "Send",
+                                              title: "送信",
                                               color: AppColor.primaryColor,
                                             ),
                                           )
@@ -759,12 +779,12 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                             ),
                                             AppSize.spaceHeight16,
                                             Text(
-                                              "TEL: 9999-9999-999",
+                                              "${JapaneseText.phoneNumber}: 9999-9999-999",
                                               style: kNormalText.copyWith(fontSize: 18),
                                             ),
                                             AppSize.spaceHeight16,
                                             Text(
-                                              "Email: support@airjob.com",
+                                              "${JapaneseText.email}: support@airjob.com",
                                               style: kNormalText.copyWith(fontSize: 18),
                                             ),
                                             AppSize.spaceHeight30,
@@ -782,18 +802,15 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       menuWidget(
-                                          title: "Privacy Policy",
-                                          onTap: () => MyPageRoute.goTo(context, const PrivatePolicy()),
-                                          color: Colors.black),
-                                      menuWidget(
-                                          title: "Term of Services", onTap: () => MyPageRoute.goTo(context, const TermOfUse()), color: Colors.black)
+                                          title: "プライバシーポリシー", onTap: () => MyPageRoute.goTo(context, const PrivatePolicy()), color: Colors.black),
+                                      menuWidget(title: "サービス期間", onTap: () => MyPageRoute.goTo(context, const TermOfUse()), color: Colors.black)
                                     ],
                                   ),
                                 ),
                                 AppSize.spaceHeight16,
                                 Center(
                                   child: Text(
-                                    "Copy Right @Air_Job 2024\n${ConstValue.appVersion}",
+                                    "コピーライト @Air_Job 2024\n${ConstValue.appVersion}",
                                     style: kNormalText,
                                     textAlign: TextAlign.center,
                                   ),
@@ -831,7 +848,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
               ),
               AnimatedContainer(
                 duration: const Duration(milliseconds: 100),
-                width: title.length * 10,
+                width: title.length * 17,
                 height: hoverText == title ? 2 : 0,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(1),

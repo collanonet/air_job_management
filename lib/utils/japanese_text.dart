@@ -1,4 +1,13 @@
 class JapaneseText {
+  static String home = "ホーム";
+  static String contactUs = "お問い合わせ";
+  static String aboutUs = "会社概要";
+  static String jobSeekerPage = "求職者ページ";
+  static String companyPage = "企業ページ";
+  static String adminPage = "管理者ページ";
+  static String content2 = "コンテンツ";
+  static String phoneNumber = "電話番号";
+
   static String calendarDisplay = "カレンダー表示";
   static String listDisplay = "リスト表示";
   static String close = "閉じる";
