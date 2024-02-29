@@ -141,7 +141,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
           provider.jobPosting?.belongings = provider.belongings.text;
           provider.jobPosting?.notes = provider.notes.text;
           provider.jobPosting?.workCatchPhrase = provider.conditionForWork.text;
-          provider.jobPosting?.location?.postalCode = provider.conditionForWork.text;
+          provider.jobPosting?.location?.postalCode = provider.postalCode.text;
           provider.jobPosting?.location?.street = provider.street.text;
           provider.jobPosting?.location?.building = provider.building.text;
           provider.jobPosting?.location?.accessAddress = provider.accessAddress.text;

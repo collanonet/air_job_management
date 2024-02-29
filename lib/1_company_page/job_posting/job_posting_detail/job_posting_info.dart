@@ -39,6 +39,7 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
           isAlwaysShown: true,
           controller: scrollController2,
           child: SingleChildScrollView(
+            primary: false,
             controller: scrollController2,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -464,12 +465,8 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
           height: AppSize.getDeviceHeight(context) * 0.4,
           // color: Colors.amber,
           child: GoogleMap(
+            mapType: MapType.terrain,
             initialCameraPosition: const CameraPosition(target: LatLng(35.6779346605152, 139.7681053353878), zoom: 15),
-            myLocationEnabled: true,
-            tiltGesturesEnabled: true,
-            compassEnabled: true,
-            scrollGesturesEnabled: true,
-            zoomGesturesEnabled: true,
             onMapCreated: (controller) {
               mapController = controller;
             },
