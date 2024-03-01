@@ -339,26 +339,36 @@ class _PartTimeJobState extends State<PartTimeJob> {
                       ),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (FirebaseAuth.instance.currentUser != null) {
-                                fa.onfav(info.uid);
-                                fa.ontap(docId, info);
-                              } else {
-                                context.go(MyRoute.login);
-                              }
-                            });
-                          },
-                          icon: Icon(
-                            Icons.favorite,
-                            size: 30,
-                            color: fa.lists.contains(info.uid) ? Colors.yellow : Colors.white,
-                          ))
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          height: 35,
+                          width: 35,
+                          decoration: BoxDecoration(color: AppColor.bgPageColor, shape: BoxShape.circle),
+                          child: Center(
+                            child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    if (FirebaseAuth.instance.currentUser != null) {
+                                      fa.onfav(info.uid);
+                                      fa.ontap(docId, info);
+                                    } else {
+                                      context.go(MyRoute.login);
+                                    }
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.favorite,
+                                  size: 25,
+                                  color: fa.lists.contains(info.uid) ? Colors.yellow : Colors.white,
+                                )),
+                          ),
+                        )
+                      ],
+                    ),
                   )
                 ],
               ),

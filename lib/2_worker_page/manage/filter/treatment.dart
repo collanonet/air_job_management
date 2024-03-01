@@ -21,8 +21,7 @@ class _TreatmentState extends State<Treatment> {
 
   @override
   void initState() {
-    selected =
-        Provider.of<WorkerFilter>(context, listen: false).selectedTreatment;
+    selected = Provider.of<WorkerFilter>(context, listen: false).selectedTreatment;
     super.initState();
   }
 
@@ -30,11 +29,7 @@ class _TreatmentState extends State<Treatment> {
   Widget build(BuildContext context) {
     provider = Provider.of<WorkerFilter>(context);
     return Scaffold(
-      appBar: AppBar(
-          leadingWidth: 100,
-          leading: const CustomBackButtonWidget(),
-          backgroundColor: AppColor.primaryColor,
-          title: const Text('時間帯')),
+      appBar: AppBar(leadingWidth: 100, leading: const CustomBackButtonWidget(), backgroundColor: AppColor.primaryColor, title: const Text('待遇')),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,

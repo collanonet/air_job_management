@@ -1,6 +1,7 @@
 import 'package:air_job_management/helper/role_helper.dart';
 import 'package:air_job_management/pages/register/new_form_register.dart';
 import 'package:air_job_management/pages/register/new_register_form_for_part_time.dart';
+import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/services/social_login.dart';
 import 'package:air_job_management/utils/app_color.dart';
@@ -16,7 +17,6 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../2_worker_page/root/root_page.dart';
 import '../const/const.dart';
 import '../models/user.dart';
 import '../utils/japanese_text.dart';
@@ -294,19 +294,23 @@ class _LoginPageState extends State<LoginPage> {
       if (user != null) {
         if (user.role == RoleHelper.admin) {
           if (user.isFullTimeStaff == true) {
-            MyPageRoute.goToReplace(
-                context,
-                RootPage(
-                  user.uid!,
-                  isFullTime: true,
-                ));
+            // MyPageRoute.goToReplace(
+            //     context,
+            //     RootPage(
+            //       user.uid!,
+            //       isFullTime: true,
+            //     ));
+            isFullTime = true;
+            context.go(MyRoute.workerSearchJobPage);
           } else {
-            MyPageRoute.goToReplace(
-                context,
-                RootPage(
-                  user.uid!,
-                  isFullTime: false,
-                ));
+            // MyPageRoute.goToReplace(
+            //     context,
+            //     RootPage(
+            //       user.uid!,
+            //       isFullTime: false,
+            //     ));
+            isFullTime = false;
+            context.go(MyRoute.workerSearchJobPage);
           }
         } else {
           if (user.isFullTimeStaff == true) {

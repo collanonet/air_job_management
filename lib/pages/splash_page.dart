@@ -1,5 +1,3 @@
-import 'package:air_job_management/1_company_page/home/home.dart';
-import 'package:air_job_management/2_worker_page/root/root_page.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/other_setting/private_policy.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/other_setting/term_of_use.dart';
 import 'package:air_job_management/api/user_api.dart';
@@ -26,7 +24,10 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
+import '../1_company_page/home/home.dart';
 import '../utils/app_size.dart';
+
+bool isFullTime = true;
 
 class SplashScreen extends StatefulWidget {
   final bool isFromWorker;
@@ -53,6 +54,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
         Company? company = await UserApiServices().getProfileCompany(user.uid);
         if (company != null) {
           authProvider.setCompany = company;
+          // context.go(MyRoute.companyDashboard);
           MyPageRoute.goToReplace(
               context,
               HomePageForCompany(
@@ -63,19 +65,23 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
             context.go(MyRoute.dashboard);
           } else if (users.role == RoleHelper.worker && isEmailVerified == true) {
             if (users.isFullTimeStaff == true) {
-              MyPageRoute.goToReplace(
-                  context,
-                  RootPage(
-                    users.uid!,
-                    isFullTime: true,
-                  ));
+              isFullTime = true;
+              context.go(MyRoute.workerSearchJobPage);
+              // MyPageRoute.goToReplace(
+              //     context,
+              //     RootPage(
+              //       users.uid!,
+              //       isFullTime: true,
+              //     ));
             } else {
-              MyPageRoute.goToReplace(
-                  context,
-                  RootPage(
-                    users.uid!,
-                    isFullTime: false,
-                  ));
+              // MyPageRoute.goToReplace(
+              //     context,
+              //     RootPage(
+              //       users.uid!,
+              //       isFullTime: false,
+              //     ));
+              isFullTime = false;
+              context.go(MyRoute.workerSearchJobPage);
             }
           } else if (users.role == RoleHelper.worker && isEmailVerified == false) {
             MyPageRoute.goToReplace(
@@ -87,11 +93,6 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
           }
         }
       } else {
-        // if (widget.isFromWorker) {
-        //   context.go(MyRoute.jobOption);
-        // } else {
-        //   context.go(MyRoute.login);
-        // }
         setState(() {
           isSplash = false;
         });

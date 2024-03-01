@@ -14,6 +14,7 @@ import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../api/user_api.dart';
 import '../../helper/japan_date_time.dart';
+import '../../models/calendar.dart';
 import '../../models/company.dart';
 import '../../providers/auth.dart';
 import '../../utils/app_size.dart';
@@ -169,21 +170,25 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                       top: BorderSide(width: 0.4, color: AppColor.darkGrey),
                       left: BorderSide(width: 0.4, color: AppColor.darkGrey),
                       right: BorderSide(width: 0.4, color: AppColor.darkGrey),
+                      bottom: BorderSide(width: 0.4, color: AppColor.darkGrey),
                     )),
                     child: GridView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 16 / 8),
-                        itemCount: 35,
+                        itemCount: 42,
                         itemBuilder: (BuildContext context, int i) {
-                          if ((i + 1 == provider.firstDate.weekday || i + 1 >= provider.firstDate.weekday) && i < provider.rangeDateList.length) {
-                            var date = provider.rangeDateList[(i + 1) - provider.firstDate.weekday];
+                          if (i + 1 >= provider.firstDate.weekday) {
+                            int index = (i + 1) - provider.firstDate.weekday;
+                            var date = index < provider.rangeDateList.length
+                                ? provider.rangeDateList[(i + 1) - provider.firstDate.weekday]
+                                : CalendarModel(date: DateTime(2000), shiftModelList: [], jobId: "");
                             var weekDay = date.date.weekday;
                             return Container(
                               decoration: BoxDecoration(
-                                  color: weekDay == 6
+                                  color: weekDay == 6 && date.date.year != 2000
                                       ? const Color(0xffEFFCFF)
-                                      : weekDay == 7
+                                      : weekDay == 7 && date.date.year != 2000
                                           ? const Color(0xffFFF2F2)
                                           : Colors.white,
                                   border: Border.all(width: 0.2, color: AppColor.darkGrey)),
@@ -194,7 +199,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                                     child: Align(
                                         alignment: Alignment.topLeft,
                                         child: Text(
-                                          '${date.date.day}',
+                                          date.date.year == 2000 ? "" : '${date.date.day}',
                                           style: kTitleText.copyWith(color: AppColor.midGrey, fontSize: 16),
                                         )),
                                   ),
@@ -265,7 +270,10 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-                onPressed: () => provider.onChangeMonth(DateTime(provider.month.year, provider.month.month - 1, provider.month.day)),
+                onPressed: () async {
+                  provider.onChangeMonth(DateTime(provider.month.year, provider.month.month - 1, provider.month.day));
+                  await getData();
+                },
                 icon: Icon(
                   Icons.arrow_back_ios_new_rounded,
                   size: 25,
@@ -276,7 +284,10 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
               style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
             ),
             IconButton(
-                onPressed: () => provider.onChangeMonth(DateTime(provider.month.year, provider.month.month + 1, provider.month.day)),
+                onPressed: () async {
+                  provider.onChangeMonth(DateTime(provider.month.year, provider.month.month + 1, provider.month.day));
+                  await getData();
+                },
                 icon: Icon(
                   color: AppColor.primaryColor,
                   Icons.arrow_forward_ios_rounded,

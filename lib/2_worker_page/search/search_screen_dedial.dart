@@ -47,7 +47,7 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
     {"title": "交通機関", "icon": Icon(Icons.car_crash_rounded)},
     {"title": "服", "icon": Icon(FontAwesome5Brands.shirtsinbulk)},
     {"title": "自転車", "icon": Icon(FontAwesome.bicycle)},
-    {"title": "自転車", "icon": Icon(Icons.directions_bike)},
+    {"title": "バイク", "icon": Icon(Icons.directions_bike)},
     {"title": "保険", "icon": Icon(Icons.shield_outlined)}
   ];
   List<ShiftModel> shiftList = [];
@@ -225,7 +225,7 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                           Text(widget.info.notes.toString()),
                           AppSize.spaceHeight16,
                           buildShiftList(),
-                          title("状態"),
+                          title("待遇"),
                           condition(),
                           divider(),
                           title(JapaneseText.jobDescription),

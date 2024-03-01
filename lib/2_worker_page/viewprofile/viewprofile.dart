@@ -142,7 +142,7 @@ class _ViewProfileState extends State<ViewProfile> {
                                 height: 15,
                               ),
                               Text(
-                                "${myUser?.nameKanJi} ${myUser?.nameFu}",
+                                "${myUser?.nameKanJi}",
                                 style: TextStyle(color: colorxd = const Color(0xFFEDAD34), fontWeight: FontWeight.bold, fontSize: 25),
                               ),
                             ],

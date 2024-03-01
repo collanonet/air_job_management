@@ -4,13 +4,16 @@ import 'package:air_job_management/providers/favorite_provider.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../const/const.dart';
 import '../../helper/currency_format.dart';
 import '../../providers/auth.dart';
 import '../../utils/app_color.dart';
+import '../../utils/my_route.dart';
 import '../../widgets/loading.dart';
 
 class FavoriteSreen extends StatefulWidget {
@@ -166,25 +169,36 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
                         ),
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              setState(() {
-                                fa.onfav(info.uid);
-                                fa.ontap(docId, info.uid);
-                                if (!fa.isfav) {
-                                  jobSearchList.remove(info);
-                                }
-                              });
-                            },
-                            icon: Icon(
-                              Icons.favorite,
-                              size: 30,
-                              color: fa.lists.contains(info.uid) ? Colors.yellow : Colors.white,
-                            ))
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            height: 35,
+                            width: 35,
+                            decoration: BoxDecoration(color: AppColor.bgPageColor, shape: BoxShape.circle),
+                            child: Center(
+                              child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      if (FirebaseAuth.instance.currentUser != null) {
+                                        fa.onfav(info.uid);
+                                        fa.ontap(docId, info);
+                                      } else {
+                                        context.go(MyRoute.login);
+                                      }
+                                    });
+                                  },
+                                  child: Icon(
+                                    Icons.favorite,
+                                    size: 25,
+                                    color: fa.lists.contains(info.uid) ? Colors.yellow : Colors.white,
+                                  )),
+                            ),
+                          )
+                        ],
+                      ),
                     )
                   ],
                 ),
