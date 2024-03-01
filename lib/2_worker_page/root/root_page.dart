@@ -3,6 +3,7 @@ import 'package:air_job_management/2_worker_page/manage/full_time_sceen.dart';
 import 'package:air_job_management/2_worker_page/manage/part_time_sreen.dart';
 import 'package:air_job_management/2_worker_page/myjob/job_screen.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/viewprofile.dart';
+import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/root_provider.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/my_route.dart';
@@ -85,7 +86,11 @@ class _RootPageState extends State<RootPage> {
               }).toList(),
               onDestinationSelected: (v) {
                 if (v == 0) {
-                  context.go(MyRoute.workerSearchJobPage);
+                  if (isFullTime == true) {
+                    context.go(MyRoute.workerJobSearchFullTime);
+                  } else {
+                    context.go(MyRoute.workerJobSearchPartTime);
+                  }
                 } else if (v == 1) {
                   context.go(MyRoute.workerJobPage);
                 } else if (v == 2) {

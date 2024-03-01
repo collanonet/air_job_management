@@ -314,8 +314,10 @@ class _LoginPageState extends State<LoginPage> {
           }
         } else {
           if (user.isFullTimeStaff == true) {
+            isFullTime = true;
             context.go(MyRoute.workerJobSearchFullTime);
           } else {
+            isFullTime = false;
             context.go(MyRoute.workerJobSearchPartTime);
           }
         }

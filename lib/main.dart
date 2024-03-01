@@ -93,9 +93,21 @@ final GoRouter _router = GoRouter(
               GoRoute(
                 path: "search-job",
                 builder: (BuildContext context, GoRouterState state) {
+                  isFullTime = false;
                   return const RootPage(
                     "uid",
                     isFullTime: false,
+                    index: 0,
+                  );
+                },
+              ),
+              GoRoute(
+                path: "search-job-full",
+                builder: (BuildContext context, GoRouterState state) {
+                  isFullTime = true;
+                  return const RootPage(
+                    "uid",
+                    isFullTime: true,
                     index: 0,
                   );
                 },
