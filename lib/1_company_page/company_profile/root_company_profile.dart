@@ -77,7 +77,7 @@ class _RootCompanyPageState extends State<RootCompanyPage> with AfterBuildMixin 
             style: kNormalText.copyWith(fontSize: 12, color: AppColor.primaryColor),
           ),
           AppSize.spaceHeight16,
-          if (authProvider.selectedMenu == authProvider.tabMenu[0]) const CompanyProfilePage() else const CompanyBranchPage(),
+          if (authProvider.selectedMenu == authProvider.tabMenu[0]) CompanyProfilePage() else CompanyBranchPage(),
           authProvider.selectedMenu == authProvider.tabMenu[1]
               ? const SizedBox()
               : Padding(

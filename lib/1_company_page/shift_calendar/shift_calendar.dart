@@ -217,12 +217,14 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                                               child: Material(
                                                 color: Colors.transparent,
                                                 child: InkWell(
-                                                  onTap: () => showDialog(
-                                                      context: context,
-                                                      builder: (context) => ShiftDetailDialogWidget(
-                                                            jobId: date.jobId!,
-                                                            date: date.date,
-                                                          )),
+                                                  onTap: () {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) => ShiftDetailDialogWidget(
+                                                              jobId: date.jobId!,
+                                                              date: date.date,
+                                                            ));
+                                                  },
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 5),
                                                     child: Text(

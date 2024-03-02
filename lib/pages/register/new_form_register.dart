@@ -5,31 +5,30 @@ import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../2_worker_page/root/root_page.dart';
 import '../../api/user_api.dart';
 import '../../const/const.dart';
 import '../../models/user.dart';
 import '../../providers/auth.dart';
 import '../../utils/app_size.dart';
 import '../../utils/japanese_text.dart';
-import '../../utils/page_route.dart';
+import '../../utils/my_route.dart';
 import '../../utils/style.dart';
 import '../../utils/toast_message_util.dart';
 import '../../widgets/custom_loading_overlay.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/radio_listtile.dart';
+import '../splash_page.dart';
 
 class NewFormRegistrationPage extends StatefulWidget {
   final MyUser myUser;
-  const NewFormRegistrationPage({Key? key, required this.myUser})
-      : super(key: key);
+  const NewFormRegistrationPage({Key? key, required this.myUser}) : super(key: key);
 
   @override
-  State<NewFormRegistrationPage> createState() =>
-      _NewFormRegistrationPageState();
+  State<NewFormRegistrationPage> createState() => _NewFormRegistrationPageState();
 }
 
 class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
@@ -56,9 +55,7 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
   bool partTimeJob = false;
   TextEditingController finalEdu = TextEditingController(text: "");
   TextEditingController graduateSchoolFaculty = TextEditingController(text: "");
-  List<TextEditingController> academicBgList = [
-    TextEditingController(text: "")
-  ];
+  List<TextEditingController> academicBgList = [TextEditingController(text: "")];
   List<TextEditingController> workHistory = [TextEditingController(text: "")];
   String driverLicence = JapaneseText.have;
   TextEditingController otherQual = TextEditingController(text: "");
@@ -177,7 +174,10 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
       await Future.delayed(const Duration(milliseconds: 300));
       // await FirebaseAuth.instance.signOut();
       // context.go(MyRoute.jobOption);
-      MyPageRoute.goTo(context, RootPage(widget.myUser.uid!, isFullTime: true));
+      // MyPageRoute.goTo(context, RootPage(widget.myUser.uid!, isFullTime: true));
+      provider.myUser = widget.myUser;
+      isFullTime = true;
+      context.go(MyRoute.workerJobSearchFullTime);
     } else {
       toastMessageError("$val", context);
     }
@@ -475,8 +475,7 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
                             child: IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    academicBgList
-                                        .add(TextEditingController(text: ""));
+                                    academicBgList.add(TextEditingController(text: ""));
                                   });
                                 },
                                 icon: Icon(
@@ -527,8 +526,7 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
                             child: IconButton(
                                 onPressed: () {
                                   setState(() {
-                                    workHistory
-                                        .add(TextEditingController(text: ""));
+                                    workHistory.add(TextEditingController(text: ""));
                                   });
                                 },
                                 icon: Icon(
@@ -613,9 +611,7 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
       Container(
         width: AppSize.getDeviceWidth(context),
         height: 230,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25),
-            border: Border.all(width: 2, color: AppColor.primaryColor)),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), border: Border.all(width: 2, color: AppColor.primaryColor)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -632,10 +628,8 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
                 color: AppColor.primaryColor,
                 title: "撮影または画像選択する",
                 onPress: () async {
-                  var file = await FilePicker.platform.pickFiles(
-                      type: FileType.custom,
-                      allowMultiple: false,
-                      allowedExtensions: ["pdf", "jpg", "png", "jpeg", "db"]);
+                  var file = await FilePicker.platform
+                      .pickFiles(type: FileType.custom, allowMultiple: false, allowedExtensions: ["pdf", "jpg", "png", "jpeg", "db"]);
                   if (file != null) {
                     setState(() {
                       selectedFile = file;
@@ -720,13 +714,11 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
           displayDataStep4(JapaneseText.email, widget.myUser.email ?? ""),
           // displayDataStep4(JapaneseText.affiliationStep2, finalEdu.text),
           // displayDataStep4(JapaneseText.qualificationsFieldStep3, otherQual.text),
-          displayDataStep4(JapaneseText.location,
-              "${street.text}, ${building.text}, ${province.text}, ${postalCode.text} ${city.text}"),
+          displayDataStep4(JapaneseText.location, "${street.text}, ${building.text}, ${province.text}, ${postalCode.text} ${city.text}"),
           displayDataStep4(JapaneseText.remark, addressRemark.text),
           displayDataStep4(JapaneseText.employmentStatus, employeeHistory.text),
           displayDataStep4(JapaneseText.finalEducation, finalEdu.text),
-          displayDataStep4(JapaneseText.workHistory,
-              workHistory.map((e) => e.text).toString()),
+          displayDataStep4(JapaneseText.workHistory, workHistory.map((e) => e.text).toString()),
           displayDataStep4(JapaneseText.finalEducation, finalEdu.text),
           displayDataStep4(JapaneseText.driverLicense, driverLicence),
           displayDataStep4(JapaneseText.otherQualification, otherQual.text),
@@ -743,8 +735,7 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
       children: [
         Text(
           title,
-          style: kNormalText.copyWith(
-              fontWeight: FontWeight.w600, color: Colors.grey),
+          style: kNormalText.copyWith(fontWeight: FontWeight.w600, color: Colors.grey),
         ),
         AppSize.spaceHeight5,
         Text(
@@ -761,10 +752,7 @@ fileToUrl(FilePickerResult? file, String folderName) async {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   //Create a reference to the location you want to upload to in firebase
   try {
-    var snap = await _storage
-        .ref()
-        .child("/$folderName/${file!.files.first.name}")
-        .putData(file.files.first.bytes!);
+    var snap = await _storage.ref().child("/$folderName/${file!.files.first.name}").putData(file.files.first.bytes!);
     String dowUrl = await snap.ref.getDownloadURL();
 
     //returns the download url

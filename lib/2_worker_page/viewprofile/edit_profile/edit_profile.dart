@@ -33,15 +33,11 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController scheduleInterview = TextEditingController(text: "");
   TextEditingController finalEdu = TextEditingController(text: "");
   TextEditingController graduateSchoolFaculty = TextEditingController(text: "");
-  List<TextEditingController> academicBgList = [
-    TextEditingController(text: "")
-  ];
+  List<TextEditingController> academicBgList = [TextEditingController(text: "")];
   List<TextEditingController> workHistory = [TextEditingController(text: "")];
   TextEditingController ordinaryAutoLisence = TextEditingController(text: "");
   List<TextEditingController> otherQualList = [TextEditingController(text: "")];
-  List<TextEditingController> employmentHistoryList = [
-    TextEditingController(text: "")
-  ];
+  List<TextEditingController> employmentHistoryList = [TextEditingController(text: "")];
   bool isShow = true;
   bool isLoading = false;
   DateTime dateTime = DateTime.now();
@@ -83,10 +79,8 @@ class _EditProfileState extends State<EditProfile> {
       widget.seeker.academicBgList = academicBgList.map((e) => e.text).toList();
       widget.seeker.workHistoryList = workHistory.map((e) => e.text).toList();
       widget.seeker.ordinaryAutomaticLicence = ordinaryAutoLisence.text;
-      widget.seeker.otherQualificationList =
-          otherQualList.map((e) => e.text).toList();
-      widget.seeker.employmentHistoryList =
-          employmentHistoryList.map((e) => e.text).toList();
+      widget.seeker.otherQualificationList = otherQualList.map((e) => e.text).toList();
+      widget.seeker.employmentHistoryList = employmentHistoryList.map((e) => e.text).toList();
       String? val = await UserApiServices().updateUserData(widget.seeker);
       setState(() {
         isLoading = false;
@@ -112,30 +106,18 @@ class _EditProfileState extends State<EditProfile> {
     finalEdu.text = widget.seeker.finalEdu ?? "";
     graduateSchoolFaculty.text = widget.seeker.graduationSchool ?? "";
     imageUrl = widget.seeker.profileImage ?? "";
-    if (widget.seeker.academicBgList != null &&
-        widget.seeker.academicBgList!.isNotEmpty) {
-      academicBgList = widget.seeker.academicBgList!
-          .map((e) => TextEditingController(text: e.toString()))
-          .toList();
+    if (widget.seeker.academicBgList != null && widget.seeker.academicBgList!.isNotEmpty) {
+      academicBgList = widget.seeker.academicBgList!.map((e) => TextEditingController(text: e.toString())).toList();
     }
-    if (widget.seeker.workHistoryList != null &&
-        widget.seeker.workHistoryList!.isNotEmpty) {
-      workHistory = widget.seeker.workHistoryList!
-          .map((e) => TextEditingController(text: e.toString()))
-          .toList();
+    if (widget.seeker.workHistoryList != null && widget.seeker.workHistoryList!.isNotEmpty) {
+      workHistory = widget.seeker.workHistoryList!.map((e) => TextEditingController(text: e.toString())).toList();
     }
     ordinaryAutoLisence.text = widget.seeker.ordinaryAutomaticLicence ?? "";
-    if (widget.seeker.otherQualificationList != null &&
-        widget.seeker.otherQualificationList!.isNotEmpty) {
-      otherQualList = widget.seeker.otherQualificationList!
-          .map((e) => TextEditingController(text: e.toString()))
-          .toList();
+    if (widget.seeker.otherQualificationList != null && widget.seeker.otherQualificationList!.isNotEmpty) {
+      otherQualList = widget.seeker.otherQualificationList!.map((e) => TextEditingController(text: e.toString())).toList();
     }
-    if (widget.seeker.employmentHistoryList != null &&
-        widget.seeker.employmentHistoryList!.isNotEmpty) {
-      employmentHistoryList = widget.seeker.employmentHistoryList!
-          .map((e) => TextEditingController(text: e.toString()))
-          .toList();
+    if (widget.seeker.employmentHistoryList != null && widget.seeker.employmentHistoryList!.isNotEmpty) {
+      employmentHistoryList = widget.seeker.employmentHistoryList!.map((e) => TextEditingController(text: e.toString())).toList();
     }
     super.initState();
   }
@@ -160,7 +142,7 @@ class _EditProfileState extends State<EditProfile> {
         child: Scaffold(
           appBar: AppBar(
             title: Text(
-              "アカウント設定",
+              JapaneseText.editProfile,
               style: kTitleText.copyWith(color: Colors.white),
             ),
             centerTitle: true,
@@ -169,10 +151,7 @@ class _EditProfileState extends State<EditProfile> {
           body: Container(
             padding: const EdgeInsets.all(12),
             decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(16),
-                    bottomRight: Radius.circular(16))),
+                color: Colors.white, borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16))),
             child: Scrollbar(
               controller: scrollController,
               isAlwaysShown: true,
@@ -192,8 +171,7 @@ class _EditProfileState extends State<EditProfile> {
                                 child: Container(
                                   width: 160,
                                   height: 160,
-                                  decoration:
-                                      BoxDecoration(shape: BoxShape.circle),
+                                  decoration: BoxDecoration(shape: BoxShape.circle),
                                   child: Image.memory(_image!),
                                 ),
                               )
@@ -203,10 +181,8 @@ class _EditProfileState extends State<EditProfile> {
                                     backgroundImage: NetworkImage(imageUrl!),
                                   )
                                 : const CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage("assets/image1.jpg"),
-                                    backgroundColor:
-                                        Color.fromARGB(255, 206, 205, 205),
+                                    backgroundImage: AssetImage("assets/image1.jpg"),
+                                    backgroundColor: Color.fromARGB(255, 206, 205, 205),
                                     radius: 80,
                                   ),
                         const SizedBox(
@@ -292,8 +268,7 @@ class _EditProfileState extends State<EditProfile> {
                                     lastDate: DateTime.now());
                                 if (date != null) {
                                   dateTime = date;
-                                  dob.text =
-                                      DateFormat('yyyy-MM-dd').format(dateTime);
+                                  dob.text = DateFormat('yyyy-MM-dd').format(dateTime);
                                 }
                               },
                             ),
@@ -363,12 +338,10 @@ class _EditProfileState extends State<EditProfile> {
                                   context: context,
                                   initialDate: dateTime,
                                   firstDate: DateTime(1900, 1, 1),
-                                  lastDate:
-                                      DateTime.now().add(Duration(days: 1000)));
+                                  lastDate: DateTime.now().add(Duration(days: 1000)));
                               if (date != null) {
                                 dateTime = date;
-                                scheduleInterview.text =
-                                    DateFormat('yyyy-MM-dd').format(dateTime);
+                                scheduleInterview.text = DateFormat('yyyy-MM-dd').format(dateTime);
                               }
                             },
                           ),
@@ -414,8 +387,7 @@ class _EditProfileState extends State<EditProfile> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                                JapaneseText.graduationSchoolFacultyDepartment),
+                            Text(JapaneseText.graduationSchoolFacultyDepartment),
                             AppSize.spaceHeight5,
                             SizedBox(
                               width: AppSize.getDeviceWidth(context) * 0.45,
@@ -457,9 +429,7 @@ class _EditProfileState extends State<EditProfile> {
                                       child: IconButton(
                                           onPressed: () {
                                             setState(() {
-                                              academicBgList.add(
-                                                  TextEditingController(
-                                                      text: ""));
+                                              academicBgList.add(TextEditingController(text: ""));
                                             });
                                           },
                                           icon: Icon(
@@ -511,9 +481,7 @@ class _EditProfileState extends State<EditProfile> {
                                       child: IconButton(
                                           onPressed: () {
                                             setState(() {
-                                              workHistory.add(
-                                                  TextEditingController(
-                                                      text: ""));
+                                              workHistory.add(TextEditingController(text: ""));
                                             });
                                           },
                                           icon: Icon(
@@ -574,9 +542,7 @@ class _EditProfileState extends State<EditProfile> {
                                     child: IconButton(
                                         onPressed: () {
                                           setState(() {
-                                            otherQualList.add(
-                                                TextEditingController(
-                                                    text: ""));
+                                            otherQualList.add(TextEditingController(text: ""));
                                           });
                                         },
                                         icon: Icon(
@@ -624,9 +590,7 @@ class _EditProfileState extends State<EditProfile> {
                                     child: IconButton(
                                         onPressed: () {
                                           setState(() {
-                                            employmentHistoryList.add(
-                                                TextEditingController(
-                                                    text: ""));
+                                            employmentHistoryList.add(TextEditingController(text: ""));
                                           });
                                         },
                                         icon: Icon(
@@ -638,8 +602,7 @@ class _EditProfileState extends State<EditProfile> {
                                     child: IconButton(
                                         onPressed: () {
                                           setState(() {
-                                            employmentHistoryList
-                                                .removeAt(index);
+                                            employmentHistoryList.removeAt(index);
                                           });
                                         },
                                         icon: Icon(
@@ -656,10 +619,7 @@ class _EditProfileState extends State<EditProfile> {
                       child: SizedBox(
                         width: AppSize.getDeviceWidth(context) * 0.4,
                         height: 56,
-                        child: ButtonWidget(
-                            title: JapaneseText.save,
-                            color: AppColor.primaryColor,
-                            onPress: () => onSaveUserData()),
+                        child: ButtonWidget(title: JapaneseText.save, color: AppColor.primaryColor, onPress: () => onSaveUserData()),
                       ),
                     ),
                   ],

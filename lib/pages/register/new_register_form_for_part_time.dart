@@ -1,12 +1,12 @@
-import 'package:air_job_management/2_worker_page/root/root_page.dart';
 import 'package:air_job_management/pages/register/widget/register_step.dart';
 import 'package:air_job_management/pages/register/widget/select_box_tile.dart';
 import 'package:air_job_management/utils/app_color.dart';
-import 'package:air_job_management/utils/page_route.dart';
+import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +21,7 @@ import '../../utils/toast_message_util.dart';
 import '../../widgets/custom_loading_overlay.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/radio_listtile.dart';
+import '../splash_page.dart';
 
 class NewFormRegistrationForPartTimePage extends StatefulWidget {
   final MyUser myUser;
@@ -171,7 +172,7 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
     widget.myUser.academicBgList = academicBgList.map((e) => e.text).toList();
     widget.myUser.workHistoryList = workHistory.map((e) => e.text).toList();
     widget.myUser.ordinaryAutomaticLicence = "";
-    widget.myUser.otherQualificationList = [otherQual.text];
+    widget.myUser.otherQualificationList = [selectedQualificationsField ?? "", otherQual.text];
     widget.myUser.employmentHistoryList = [employeeHistory.text];
     String? val = await UserApiServices().updateUserData(widget.myUser);
     setState(() {
@@ -180,8 +181,11 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
     if (val == ConstValue.success) {
       toastMessageSuccess(JapaneseText.successUpdate, context);
       await Future.delayed(const Duration(milliseconds: 300));
+      provider.myUser = widget.myUser;
+      isFullTime = false;
+      context.go(MyRoute.workerJobSearchPartTime);
       // await FirebaseAuth.instance.signOut();
-      MyPageRoute.goTo(context, RootPage(widget.myUser.uid!, isFullTime: false));
+      // MyPageRoute.goTo(context, RootPage(widget.myUser.uid!, isFullTime: false));
     } else {
       toastMessageError("$val", context);
     }

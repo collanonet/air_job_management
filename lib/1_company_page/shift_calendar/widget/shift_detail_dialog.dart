@@ -14,12 +14,13 @@ import 'package:flutter/material.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../helper/date_to_api.dart';
+import '../../../helper/status_helper.dart';
 import '../../woker_management/widget/job_card.dart';
 
 class ShiftDetailDialogWidget extends StatefulWidget {
   final String jobId;
   final DateTime date;
-  const ShiftDetailDialogWidget({super.key, required this.jobId, required this.date});
+  ShiftDetailDialogWidget({super.key, required this.jobId, required this.date});
 
   @override
   State<ShiftDetailDialogWidget> createState() => _ShiftDetailDialogWidgetState();
@@ -31,6 +32,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
   WorkerManagement? workerManagement;
   JobPosting? jobPosting;
   DateTime now = DateTime.now();
+  int countApplyPeople = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +100,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                     horizontalDivider(),
                     displayColumn("公開設定", "${jobPosting?.selectedPublicSetting}"),
                     horizontalDivider(),
-                    displayColumn("募集人数", "${jobPosting?.numberOfRecruit}"),
+                    displayColumn("募集人数", "$countApplyPeople/${jobPosting?.numberOfRecruit}"),
                   ],
                 ),
                 AppSize.spaceHeight16,
@@ -153,15 +155,18 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                   job.myUser?.dob != null
                                       ? Text(
                                           calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) +
-                                              "   ${job.myUser?.gender}",
+                                              "   ${job.myUser?.gender ?? "データなし"}",
                                           style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                                           overflow: TextOverflow.fade,
                                         )
                                       : Text(
-                                          "${job.myUser?.gender}",
+                                          job.myUser?.gender ?? "データなし",
                                           style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                                           overflow: TextOverflow.fade,
                                         ),
+                                  AppSize.spaceWidth16,
+                                  AppSize.spaceWidth16,
+                                  StatusHelper().displayStatus(job.status)
                                 ],
                               ),
                             );
@@ -217,6 +222,12 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
     workerManagement = await WorkerManagementApiService().getAJob(widget.jobId);
     jobPosting = await JobPostingApiService().getAJobPosting(workerManagement!.jobId!);
     applicantList = await WorkerManagementApiService().getAllApplicantByJobId(workerManagement!.jobId!);
+    for (var job in applicantList) {
+      var dateList = job.shiftList!.map((e) => e.date).toList();
+      if (job.myUser != null && dateList.contains(widget.date)) {
+        countApplyPeople++;
+      }
+    }
     setState(() {
       isLoading = false;
     });

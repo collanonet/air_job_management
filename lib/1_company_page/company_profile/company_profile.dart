@@ -39,7 +39,7 @@ class _CompanyProfilePageState extends State<CompanyProfilePage> with AfterBuild
 
   @override
   void dispose() {
-    provider.disposeData();
+    // provider.disposeData();
     super.dispose();
   }
 
@@ -154,7 +154,7 @@ class _CompanyProfilePageState extends State<CompanyProfilePage> with AfterBuild
                   Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        JapaneseText.phone,
+                        JapaneseText.phone + " (半角文字)",
                         style: kNormalText.copyWith(fontSize: 12),
                       )),
                   AppSize.spaceHeight5,
