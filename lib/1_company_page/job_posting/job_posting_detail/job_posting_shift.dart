@@ -179,7 +179,7 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                     ],
                   ),
                   Text(
-                    JapaneseText.numberOfPeopleRecruiting,
+                    JapaneseText.numberOfPeopleRecruiting + " (半角文字)",
                     style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
                   ),
                   AppSize.spaceHeight5,
@@ -532,7 +532,7 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                       ],
                     ),
                     Text(
-                      JapaneseText.numberOfPeopleRecruiting,
+                      JapaneseText.numberOfPeopleRecruiting + " (半角文字)",
                       style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
                     ),
                     AppSize.spaceHeight5,

@@ -120,14 +120,15 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
               onSaveUserData();
             } else {
               if (_formKey.currentState!.validate()) {
-                if (provider.step == 2 && selectedAffiliation == null) {
-                  toastMessageError("選んでください所属。", context);
-                }
-                if (provider.step == 3 && selectedQualificationsField == null) {
-                  toastMessageError("選んでください保有資格。", context);
-                } else {
-                  provider.onChangeStep(provider.step + 1);
-                }
+                // if (provider.step == 2 && selectedAffiliation == null) {
+                //   toastMessageError("選んでください所属。", context);
+                // }
+                // if (provider.step == 3 && selectedQualificationsField.contains(null) {
+                //   toastMessageError("選んでください保有資格。", context);
+                // } else {
+                //   provider.onChangeStep(provider.step + 1);
+                // }
+                provider.onChangeStep(provider.step + 1);
               } else {
                 //Please double check each step and enter data in the required fields.
                 toastMessageError("各ステップを再確認し、必須フィールドにデータを入力してください。", context);
@@ -147,8 +148,9 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
     //   imageUrl = await fileToUrl(selectedFile!, "verify_doc");
     //   // widget.myUser.profile = imageUrl;
     // }
+    widget.myUser.gender = gender;
     widget.myUser.affiliation = selectedAffiliation;
-    widget.myUser.qualificationFields = selectedQualificationsField;
+    // widget.myUser.qualificationFields = selectedQualificationsField;
     widget.myUser.notWorking = notWorking;
     widget.myUser.contractJob = contractJob;
     widget.myUser.fullTimeJob = fullTimeJob;
@@ -172,7 +174,7 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
     widget.myUser.academicBgList = academicBgList.map((e) => e.text).toList();
     widget.myUser.workHistoryList = workHistory.map((e) => e.text).toList();
     widget.myUser.ordinaryAutomaticLicence = "";
-    widget.myUser.otherQualificationList = [selectedQualificationsField ?? "", otherQual.text];
+    widget.myUser.otherQualificationList = selectedQualificationsField.map((e) => e.toString()).toList();
     widget.myUser.employmentHistoryList = [employeeHistory.text];
     String? val = await UserApiServices().updateUserData(widget.myUser);
     setState(() {
@@ -309,7 +311,7 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
   }
 
   String? selectedAffiliation;
-  String? selectedQualificationsField;
+  List<String> selectedQualificationsField = [];
 
   step2() {
     return SingleChildScrollView(
@@ -525,30 +527,30 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.driveLicenseNormal,
-                  val: selectedQualificationsField == JapaneseText.driveLicenseNormal,
+                  val: selectedQualificationsField.contains(JapaneseText.driveLicenseNormal),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.driveLicenseNormal;
+                        selectedQualificationsField.add(JapaneseText.driveLicenseNormal);
                       });
                     }
                   }),
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.driveLicenseMediumOrLarge,
-                  val: selectedQualificationsField == JapaneseText.driveLicenseMediumOrLarge,
+                  val: selectedQualificationsField.contains(JapaneseText.driveLicenseMediumOrLarge),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.removeAt(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.driveLicenseMediumOrLarge;
+                        selectedQualificationsField.add(JapaneseText.driveLicenseMediumOrLarge);
                       });
                     }
                   }),
@@ -561,30 +563,30 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.driveLicenseMoto,
-                  val: selectedQualificationsField == JapaneseText.driveLicenseMoto,
+                  val: selectedQualificationsField.contains(JapaneseText.driveLicenseMoto),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.driveLicenseMoto;
+                        selectedQualificationsField.add(JapaneseText.driveLicenseMoto);
                       });
                     }
                   }),
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.forkliftDrivingSkill,
-                  val: selectedQualificationsField == JapaneseText.forkliftDrivingSkill,
+                  val: selectedQualificationsField.contains(JapaneseText.forkliftDrivingSkill),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.removeAt(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.forkliftDrivingSkill;
+                        selectedQualificationsField.add(JapaneseText.forkliftDrivingSkill);
                       });
                     }
                   }),
@@ -597,30 +599,30 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.hazardousMaterialsHandlerABC,
-                  val: selectedQualificationsField == JapaneseText.hazardousMaterialsHandlerABC,
+                  val: selectedQualificationsField.contains(JapaneseText.hazardousMaterialsHandlerABC),
                   onChange: (v) {
                     if (v == selectedAffiliation) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.hazardousMaterialsHandlerABC;
+                        selectedQualificationsField.add(JapaneseText.hazardousMaterialsHandlerABC);
                       });
                     }
                   }),
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel2,
-                  val: selectedQualificationsField == JapaneseText.personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel2,
+                  val: selectedQualificationsField.contains(JapaneseText.personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel2),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel2;
+                        selectedQualificationsField.add(JapaneseText.personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel2);
                       });
                     }
                   }),
@@ -633,30 +635,30 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel1,
-                  val: selectedQualificationsField == JapaneseText.personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel1,
+                  val: selectedQualificationsField.contains(JapaneseText.personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel1),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel1;
+                        selectedQualificationsField.add(JapaneseText.personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel1);
                       });
                     }
                   }),
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.careWorker,
-                  val: selectedQualificationsField == JapaneseText.careWorker,
+                  val: selectedQualificationsField.contains(JapaneseText.careWorker),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.careWorker;
+                        selectedQualificationsField.add(JapaneseText.careWorker);
                       });
                     }
                   }),
@@ -669,30 +671,30 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.nursingCareSupportSpecialist,
-                  val: selectedQualificationsField == JapaneseText.nursingCareSupportSpecialist,
+                  val: selectedQualificationsField.contains(JapaneseText.nursingCareSupportSpecialist),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.nursingCareSupportSpecialist;
+                        selectedQualificationsField.add(JapaneseText.nursingCareSupportSpecialist);
                       });
                     }
                   }),
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.nurseTeacher,
-                  val: selectedQualificationsField == JapaneseText.nurseTeacher,
+                  val: selectedQualificationsField.contains(JapaneseText.nurseTeacher),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.nurseTeacher;
+                        selectedQualificationsField.add(JapaneseText.nurseTeacher);
                       });
                     }
                   }),
@@ -705,30 +707,30 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.doctor,
-                  val: selectedQualificationsField == JapaneseText.doctor,
+                  val: selectedQualificationsField.contains(JapaneseText.doctor),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.doctor;
+                        selectedQualificationsField.add(JapaneseText.doctor);
                       });
                     }
                   }),
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.pharmacist,
-                  val: selectedQualificationsField == JapaneseText.pharmacist,
+                  val: selectedQualificationsField.contains(JapaneseText.pharmacist),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.pharmacist;
+                        selectedQualificationsField.add(JapaneseText.pharmacist);
                       });
                     }
                   }),
@@ -741,30 +743,30 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.nurseAssociateNurse,
-                  val: selectedQualificationsField == JapaneseText.nurseAssociateNurse,
+                  val: selectedQualificationsField.contains(JapaneseText.nurseAssociateNurse),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.nurseAssociateNurse;
+                        selectedQualificationsField.add(JapaneseText.nurseAssociateNurse);
                       });
                     }
                   }),
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.physicalTherapistOccupational,
-                  val: selectedQualificationsField == JapaneseText.physicalTherapistOccupational,
+                  val: selectedQualificationsField.contains(JapaneseText.physicalTherapistOccupational),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.physicalTherapistOccupational;
+                        selectedQualificationsField.add(JapaneseText.physicalTherapistOccupational);
                       });
                     }
                   }),
@@ -777,30 +779,30 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.chef,
-                  val: selectedQualificationsField == JapaneseText.chef,
+                  val: selectedQualificationsField.contains(JapaneseText.chef),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.chef;
+                        selectedQualificationsField.add(JapaneseText.chef);
                       });
                     }
                   }),
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.registeredDietitianNutritionist,
-                  val: selectedQualificationsField == JapaneseText.registeredDietitianNutritionist,
+                  val: selectedQualificationsField.contains(JapaneseText.registeredDietitianNutritionist),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.registeredDietitianNutritionist;
+                        selectedQualificationsField.add(JapaneseText.registeredDietitianNutritionist);
                       });
                     }
                   }),
@@ -813,30 +815,30 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.itSupport,
-                  val: selectedQualificationsField == JapaneseText.itSupport,
+                  val: selectedQualificationsField.contains(JapaneseText.itSupport),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.itSupport;
+                        selectedQualificationsField.add(JapaneseText.itSupport);
                       });
                     }
                   }),
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.basicInformationEngineer,
-                  val: selectedQualificationsField == JapaneseText.basicInformationEngineer,
+                  val: selectedQualificationsField.contains(JapaneseText.basicInformationEngineer),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.basicInformationEngineer;
+                        selectedQualificationsField.add(JapaneseText.basicInformationEngineer);
                       });
                     }
                   }),
@@ -849,30 +851,30 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.appliedInformationEngineer,
-                  val: selectedQualificationsField == JapaneseText.appliedInformationEngineer,
+                  val: selectedQualificationsField.contains(JapaneseText.appliedInformationEngineer),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.appliedInformationEngineer;
+                        selectedQualificationsField.add(JapaneseText.appliedInformationEngineer);
                       });
                     }
                   }),
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.itStrategist,
-                  val: selectedQualificationsField == JapaneseText.itStrategist,
+                  val: selectedQualificationsField.contains(JapaneseText.itStrategist),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.itStrategist;
+                        selectedQualificationsField.add(JapaneseText.itStrategist);
                       });
                     }
                   }),
@@ -885,30 +887,30 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.hairdresserBarber,
-                  val: selectedQualificationsField == JapaneseText.hairdresserBarber,
+                  val: selectedQualificationsField.contains(JapaneseText.hairdresserBarber),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.hairdresserBarber;
+                        selectedQualificationsField.add(JapaneseText.hairdresserBarber);
                       });
                     }
                   }),
               SelectBoxListTileWidget(
                   size: (AppSize.getDeviceWidth(context) * 0.5) - 24,
                   title: JapaneseText.massageTherapist,
-                  val: selectedQualificationsField == JapaneseText.massageTherapist,
+                  val: selectedQualificationsField.contains(JapaneseText.massageTherapist),
                   onChange: (v) {
-                    if (v == selectedQualificationsField) {
+                    if (selectedQualificationsField.contains(v)) {
                       setState(() {
-                        selectedQualificationsField = null;
+                        selectedQualificationsField.remove(v);
                       });
                     } else {
                       setState(() {
-                        selectedQualificationsField = JapaneseText.massageTherapist;
+                        selectedQualificationsField.add(JapaneseText.massageTherapist);
                       });
                     }
                   }),
@@ -938,7 +940,8 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
         displayDataStep4(JapaneseText.phone, phone.text),
         displayDataStep4(JapaneseText.email, widget.myUser.email ?? ""),
         displayDataStep4(JapaneseText.affiliationStep2, selectedAffiliation ?? ""),
-        displayDataStep4(JapaneseText.qualificationsFieldStep3, selectedQualificationsField ?? ""),
+        displayDataStep4(
+            JapaneseText.qualificationsFieldStep3, selectedQualificationsField.map((e) => e).toString().replaceAll("(", "").replaceAll(")", "")),
         AppSize.spaceHeight50,
         nextButtonWidget(),
       ],

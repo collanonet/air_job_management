@@ -345,10 +345,11 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
                   )),
               AppSize.spaceHeight5,
               SizedBox(
-                width: AppSize.getDeviceWidth(context) * 0.2,
+                width: AppSize.getDeviceWidth(context) * 0.4,
                 child: PrimaryTextField(
                   hint: "",
-                  controller: TextEditingController(text: "${myUser?.qualificationFields}"),
+                  controller:
+                      TextEditingController(text: myUser?.otherQualificationList!.map((e) => e).toString().replaceAll("(", "").replaceAll(")", "")),
                   isRequired: false,
                   readOnly: true,
                 ),
@@ -380,7 +381,7 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
                 width: AppSize.getDeviceWidth(context) * 0.13,
                 child: PrimaryTextField(
                   hint: "",
-                  controller: TextEditingController(text: "${myUser?.postalCode}"),
+                  controller: TextEditingController(text: myUser?.postalCode ?? ""),
                   isRequired: false,
                   readOnly: true,
                 ),
@@ -426,7 +427,7 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
                 width: AppSize.getDeviceWidth(context) * 0.2,
                 child: PrimaryTextField(
                   hint: "",
-                  controller: TextEditingController(text: "${myUser?.dob}"),
+                  controller: TextEditingController(text: myUser?.dob ?? ""),
                   isRequired: false,
                   readOnly: true,
                 ),
@@ -446,7 +447,7 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
         width: (AppSize.getDeviceWidth(context) * 0.4) + 32,
         child: PrimaryTextField(
           hint: "",
-          controller: TextEditingController(text: "${myUser?.street}"),
+          controller: TextEditingController(text: myUser?.street ?? ""),
           isRequired: false,
           readOnly: true,
         ),
@@ -462,7 +463,7 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
         width: (AppSize.getDeviceWidth(context) * 0.4) + 32,
         child: PrimaryTextField(
           hint: "",
-          controller: TextEditingController(text: "${myUser?.building}"),
+          controller: TextEditingController(text: myUser?.building ?? ""),
           isRequired: false,
           readOnly: true,
         ),

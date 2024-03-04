@@ -74,34 +74,29 @@ class _RegisterPageState extends State<RegisterPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Align(
-                            alignment: Alignment.centerLeft,
-                            child: InkWell(
-                                onTap: () => Navigator.pop(context),
-                                child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(children: [
-                                      Icon(Icons.arrow_back_ios_new_rounded,
-                                          color: AppColor.primaryColor),
-                                      AppSize.spaceWidth8,
-                                      Text("戻る",
-                                          style: kNormalText.copyWith(
-                                            color: AppColor.primaryColor,
-                                          ))
-                                    ])))),
+                        // Align(
+                        //     alignment: Alignment.centerLeft,
+                        //     child: InkWell(
+                        //         onTap: () => Navigator.pop(context),
+                        //         child: Padding(
+                        //             padding: const EdgeInsets.all(8.0),
+                        //             child: Row(children: [
+                        //               Icon(Icons.arrow_back_ios_new_rounded, color: AppColor.primaryColor),
+                        //               AppSize.spaceWidth8,
+                        //               Text("戻る",
+                        //                   style: kNormalText.copyWith(
+                        //                     color: AppColor.primaryColor,
+                        //                   ))
+                        //             ])))),
                         Center(
                             child: Image.asset(
                           "assets/svgs/img.png",
-                          width: AppSize.getDeviceWidth(context) *
-                              (Responsive.isMobile(context) ? 0.6 : 0.3),
+                          width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.3),
                         )),
                         Center(
                           child: Text(
                             "新規登録",
-                            style: TextStyle(
-                                color: AppColor.primaryColor,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 18),
+                            style: TextStyle(color: AppColor.primaryColor, fontWeight: FontWeight.w600, fontSize: 18),
                           ),
                         ),
                         //Email & Pass
@@ -138,23 +133,20 @@ class _RegisterPageState extends State<RegisterPage> {
                               children: [
                                 PrimaryTextField(
                                   controller: password,
-                                  hint: "⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺",
+                                  hint: "***************",
                                   maxLine: 1,
                                   isObsecure: isSecure,
                                 ),
                                 Positioned(
                                     top: 0,
-                                    right:
-                                        AppSize.getDeviceWidth(context) * 0.1,
+                                    right: AppSize.getDeviceWidth(context) * 0.1,
                                     child: IconButton(
                                         onPressed: () {
                                           setState(() {
                                             isSecure = !isSecure;
                                           });
                                         },
-                                        icon: Icon(isSecure
-                                            ? FontAwesomeIcons.eyeSlash
-                                            : FontAwesomeIcons.eye)))
+                                        icon: Icon(isSecure ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye)))
                               ],
                             )
                           ],
@@ -168,23 +160,20 @@ class _RegisterPageState extends State<RegisterPage> {
                               children: [
                                 PrimaryTextField(
                                   controller: confirmPassword,
-                                  hint: "⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺⏺",
+                                  hint: "***************",
                                   maxLine: 1,
                                   isObsecure: isSecure1,
                                 ),
                                 Positioned(
                                     top: 0,
-                                    right:
-                                        AppSize.getDeviceWidth(context) * 0.1,
+                                    right: AppSize.getDeviceWidth(context) * 0.1,
                                     child: IconButton(
                                         onPressed: () {
                                           setState(() {
                                             isSecure1 = !isSecure1;
                                           });
                                         },
-                                        icon: Icon(isSecure1
-                                            ? FontAwesomeIcons.eyeSlash
-                                            : FontAwesomeIcons.eye)))
+                                        icon: Icon(isSecure1 ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye)))
                               ],
                             )
                           ],
@@ -192,12 +181,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         AppSize.spaceHeight16,
                         Center(
                           child: SizedBox(
-                            width: AppSize.getDeviceWidth(context) *
-                                (Responsive.isMobile(context) ? 0.6 : 0.4),
-                            child: ButtonWidget(
-                                title: "新規登録する",
-                                color: AppColor.secondaryColor,
-                                onPress: () => createAccount()),
+                            width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.4),
+                            child: ButtonWidget(title: "新規登録する", color: AppColor.secondaryColor, onPress: () => createAccount()),
                           ),
                         ),
                         // Test
@@ -228,19 +213,9 @@ class _RegisterPageState extends State<RegisterPage> {
     FocusScope.of(context).unfocus();
     if (_formKey.currentState!.validate()) {
       if (password.text == confirmPassword.text) {
-        if (RegExp(
-                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-            .hasMatch(email.text)) {
-          MyUser myUser = MyUser(
-              nameKanJi: "",
-              nameFu: "",
-              lastName: "",
-              firstName: "",
-              role: "worker",
-              uid: "",
-              dob: "",
-              email: email.text.trim(),
-              gender: "");
+        if (RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email.text)) {
+          MyUser myUser =
+              MyUser(nameKanJi: "", nameFu: "", lastName: "", firstName: "", role: "worker", uid: "", dob: "", email: email.text.trim(), gender: "");
           myUser.nameKanJi = "";
           myUser.isFullTimeStaff = widget.isFullTime;
           myUser.nameFu = "";
@@ -256,8 +231,7 @@ class _RegisterPageState extends State<RegisterPage> {
           myUser.ordinaryAutomaticLicence = "";
           myUser.otherQualificationList = [];
           myUser.employmentHistoryList = [];
-          MyUser? user = await authProvider.registerAccount(
-              email.text.trim(), password.text.trim(), myUser);
+          MyUser? user = await authProvider.registerAccount(email.text.trim(), password.text.trim(), myUser);
           if (user != null) {
             MyPageRoute.goTo(
                 context,
@@ -268,11 +242,8 @@ class _RegisterPageState extends State<RegisterPage> {
           } else {
             if (FirebaseAuth.instance.currentUser != null) {
               await FirebaseAuth.instance.currentUser?.reload();
-              bool isEmailVerified =
-                  FirebaseAuth.instance.currentUser!.emailVerified;
-              if (authProvider.errorMessage ==
-                      "あなたのメールアドレスはすでに別のアカウントで使用されています。" &&
-                  isEmailVerified == false) {
+              bool isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
+              if (authProvider.errorMessage == "あなたのメールアドレスはすでに別のアカウントで使用されています。" && isEmailVerified == false) {
                 MyPageRoute.goTo(
                     context,
                     VerifyUserEmailPage(

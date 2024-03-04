@@ -68,7 +68,7 @@ class _VerifyUserEmailPageState extends State<VerifyUserEmailPage> with AfterBui
                         width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.3),
                       )),
                       //Email & Pass
-                      const Text("登録を行います。\nまずはメールアドレスに届いたURLをクリックし認証を行ってください。\nその後こちらの「送信する」をクリックしてください。"),
+                      Text("登録を行います。\nまずはメールアドレスに届いたURLをクリックし認証を行ってください。\nその後こちらの「送信する」をクリックしてください。(${widget.myUser?.email})"),
                       AppSize.spaceHeight30,
                       Center(
                         child: SizedBox(
