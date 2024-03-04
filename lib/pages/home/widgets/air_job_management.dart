@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../utils/app_color.dart';
+import '../../../const/const.dart';
 import '../../../utils/app_size.dart';
 
 class AirJobManagementWidget extends StatelessWidget {
@@ -25,10 +25,9 @@ class AirJobManagementWidget extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.work_history_outlined,
-                color: AppColor.primaryColor,
-                size: 35,
+              Image.asset(
+                "assets/logo22.png",
+                width: 200,
               ),
               AppSize.spaceHeight8,
               const Text(
@@ -37,8 +36,8 @@ class AirJobManagementWidget extends StatelessWidget {
                 style: TextStyle(fontSize: 12),
               ),
               AppSize.spaceHeight8,
-              const Text(
-                "Version: 1.0.0+2",
+              Text(
+                ConstValue.appVersion,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 10),
               ),

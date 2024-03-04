@@ -7,8 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import '../api/user_api.dart';
 
 class SocialLogin {
-  Future<MyUser?> googleSignIn(
-      bool isFullTime, AuthProvider authProvider) async {
+  Future<MyUser?> googleSignIn(bool isFullTime, AuthProvider authProvider) async {
     try {
       const List<String> scopes = <String>[
         'email',
@@ -17,8 +16,7 @@ class SocialLogin {
 
       GoogleSignIn _googleSignIn = GoogleSignIn(
         // Optional clientId
-        clientId:
-            '466227911476-j3kt4hamafqcq8eo77blopltjit9k7ok.apps.googleusercontent.com',
+        clientId: '466227911476-j3kt4hamafqcq8eo77blopltjit9k7ok.apps.googleusercontent.com',
         scopes: scopes,
       );
 
@@ -29,15 +27,11 @@ class SocialLogin {
       }
 
       GoogleSignIn googleSignIn = GoogleSignIn();
-      GoogleSignInAccount? googleSignInAccount = kIsWeb
-          ? await (googleSignIn.signInSilently())
-          : await (googleSignIn.signIn());
+      GoogleSignInAccount? googleSignInAccount = kIsWeb ? await (googleSignIn.signInSilently()) : await (googleSignIn.signIn());
 
-      if (kIsWeb && googleSignInAccount == null)
-        googleSignInAccount = await (googleSignIn.signIn());
+      if (kIsWeb && googleSignInAccount == null) googleSignInAccount = await (googleSignIn.signIn());
 
-      final GoogleSignInAuthentication? googleAuth =
-          await googleSignInAccount?.authentication;
+      final GoogleSignInAuthentication? googleAuth = await googleSignInAccount?.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
@@ -50,16 +44,8 @@ class SocialLogin {
         if (users != null) {
           return users;
         } else {
-          MyUser myUser = MyUser(
-              nameKanJi: "",
-              nameFu: "",
-              lastName: "",
-              firstName: "",
-              role: "worker",
-              uid: "",
-              dob: "",
-              email: cre.user?.email,
-              gender: "");
+          MyUser myUser =
+              MyUser(nameKanJi: "", nameFu: "", lastName: "", firstName: "", role: "worker", uid: "", dob: "", email: cre.user?.email, gender: "");
           myUser.nameKanJi = "";
           myUser.isFullTimeStaff = isFullTime;
           myUser.nameFu = "";
@@ -75,8 +61,7 @@ class SocialLogin {
           myUser.ordinaryAutomaticLicence = "";
           myUser.otherQualificationList = [];
           myUser.employmentHistoryList = [];
-          return await authProvider.registerAccount(
-              cre.user!.email!, cre.user!.email!.split("@")[0], myUser);
+          return await authProvider.registerAccount(cre.user!.email!, cre.user!.email!.split("@")[0], myUser);
         }
       }
       return null;
@@ -86,27 +71,17 @@ class SocialLogin {
     }
   }
 
-  Future<MyUser?> twitterSignIn(
-      bool isFullTime, AuthProvider authProvider) async {
+  Future<MyUser?> twitterSignIn(bool isFullTime, AuthProvider authProvider) async {
     try {
-      final cre =
-          await FirebaseAuth.instance.signInWithPopup(TwitterAuthProvider());
+      final cre = await FirebaseAuth.instance.signInWithPopup(TwitterAuthProvider());
 
       if (cre.user != null) {
         MyUser? users = await UserApiServices().getProfileUser(cre.user!.uid);
         if (users != null) {
           return users;
         } else {
-          MyUser myUser = MyUser(
-              nameKanJi: "",
-              nameFu: "",
-              lastName: "",
-              firstName: "",
-              role: "worker",
-              uid: "",
-              dob: "",
-              email: cre.user?.email,
-              gender: "");
+          MyUser myUser =
+              MyUser(nameKanJi: "", nameFu: "", lastName: "", firstName: "", role: "worker", uid: "", dob: "", email: cre.user?.email, gender: "");
           myUser.nameKanJi = "";
           myUser.isFullTimeStaff = isFullTime;
           myUser.nameFu = "";
@@ -122,8 +97,7 @@ class SocialLogin {
           myUser.ordinaryAutomaticLicence = "";
           myUser.otherQualificationList = [];
           myUser.employmentHistoryList = [];
-          return await authProvider.registerAccount(
-              cre.user!.email!, cre.user!.email!.split("@")[0], myUser);
+          return await authProvider.registerAccount(cre.user!.email!, cre.user!.email!.split("@")[0], myUser);
         }
       }
       return null;

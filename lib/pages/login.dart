@@ -49,8 +49,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    email = TextEditingController(text: 'sopheadavid+2@yandex.com');
-    password = TextEditingController(text: '123456');
+    // email = TextEditingController(text: 'sopheadavid+2@yandex.com');
+    // password = TextEditingController(text: '123456');
     super.initState();
   }
 
@@ -293,25 +293,7 @@ class _LoginPageState extends State<LoginPage> {
       MyUser? user = await authProvider.loginAccount(email.text.trim(), password.text.trim());
       if (user != null) {
         if (user.role == RoleHelper.admin) {
-          if (user.isFullTimeStaff == true) {
-            // MyPageRoute.goToReplace(
-            //     context,
-            //     RootPage(
-            //       user.uid!,
-            //       isFullTime: true,
-            //     ));
-            isFullTime = true;
-            context.go(MyRoute.workerSearchJobPage);
-          } else {
-            // MyPageRoute.goToReplace(
-            //     context,
-            //     RootPage(
-            //       user.uid!,
-            //       isFullTime: false,
-            //     ));
-            isFullTime = false;
-            context.go(MyRoute.workerSearchJobPage);
-          }
+          context.go(MyRoute.dashboard);
         } else {
           if (user.isFullTimeStaff == true) {
             isFullTime = true;
