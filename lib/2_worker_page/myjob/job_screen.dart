@@ -25,8 +25,8 @@ class JobScreen extends StatelessWidget {
               )),
           title: TabBar(
             labelColor: AppColor.primaryColor,
-            labelStyle:
-                const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            indicatorColor: AppColor.primaryColor,
+            labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             tabs: const [
               Tab(
                 text: "今後の予定",

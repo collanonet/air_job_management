@@ -78,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
       ),
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.symmetric(vertical: 16),
-      width: AppSize.getDeviceWidth(context) * (Responsive.isDesktop(context) ? 0.5 : 0.8),
+      width: AppSize.getDeviceWidth(context) * (Responsive.isDesktop(context) ? 0.5 : 0.9),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -167,21 +167,21 @@ class _LoginPageState extends State<LoginPage> {
           AppSize.spaceHeight16,
           AppSize.spaceHeight16,
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
             child: Align(alignment: Alignment.centerLeft, child: Text("メールアドレス")),
           ),
           AppSize.spaceHeight5,
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
             child: PrimaryTextField(isRequired: true, hint: "sample@sample.com", controller: email, isObsecure: false),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
             child: Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.password)),
           ),
           AppSize.spaceHeight5,
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
             child: PrimaryTextField(
               hint: "*****************",
               controller: password,
@@ -208,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           AppSize.spaceHeight16,
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
             child: SizedBox(
               width: AppSize.getDeviceWidth(context),
               child: ButtonWidget(
@@ -220,7 +220,7 @@ class _LoginPageState extends State<LoginPage> {
           const Spacer(),
           //Register Account as a gig-worker
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+            padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
             child: SizedBox(
               width: AppSize.getDeviceWidth(context),
               child: ButtonWidget(
@@ -246,7 +246,7 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       height: 50,
       width: AppSize.getDeviceWidth(context) - 32,
-      margin: EdgeInsets.symmetric(horizontal: AppSize.getDeviceWidth(context) * 0.1),
+      margin: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: colors, border: Border.all(width: 1, color: AppColor.thirdColor)),
       child: CupertinoButton(
         padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),

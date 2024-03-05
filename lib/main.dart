@@ -15,6 +15,7 @@ import 'package:air_job_management/pages/job_seeker/create_job_seeker.dart';
 import 'package:air_job_management/pages/job_seeker/job_seeker_detail/job_seeker_detail.dart';
 import 'package:air_job_management/pages/login.dart';
 import 'package:air_job_management/pages/register/register.dart';
+import 'package:air_job_management/pages/register/register_success.dart';
 import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company.dart';
@@ -70,7 +71,7 @@ final GoRouter _router = GoRouter(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
         print("Initial called ${state.location}");
-        // return NewFormRegistrationForPartTimePage(myUser: MyUser());
+        // return NewFormRegistrationForPartTimePage(myUser: MyUser(email: "sopheadavid+010101@yandex.com", uid: "2EIYGvWGVeahijOngeNZSUAJLCG2"));
         return SplashScreen(
           isFromWorker: false,
         );
@@ -455,11 +456,18 @@ final GoRouter _router = GoRouter(
           },
         ),
         GoRoute(
-          path: MyRoute.registerAsGigWorker.removeSlash(),
-          builder: (BuildContext context, GoRouterState state) {
-            return RegisterPage(isFullTime: isFullTimeGlobal);
-          },
-        ),
+            path: MyRoute.registerAsGigWorker.removeSlash(),
+            builder: (BuildContext context, GoRouterState state) {
+              return RegisterPage(isFullTime: isFullTime);
+            },
+            routes: [
+              GoRoute(
+                path: "success",
+                builder: (BuildContext context, GoRouterState state) {
+                  return RegisterSuccessPage(isFullTime: isFullTime);
+                },
+              ),
+            ]),
         GoRoute(
           path: MyRoute.login.removeSlash(),
           builder: (BuildContext context, GoRouterState state) {

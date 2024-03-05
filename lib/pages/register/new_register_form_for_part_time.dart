@@ -1,7 +1,6 @@
 import 'package:air_job_management/pages/register/widget/register_step.dart';
 import 'package:air_job_management/pages/register/widget/select_box_tile.dart';
 import 'package:air_job_management/utils/app_color.dart';
-import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -16,6 +15,7 @@ import '../../models/user.dart';
 import '../../providers/auth.dart';
 import '../../utils/app_size.dart';
 import '../../utils/japanese_text.dart';
+import '../../utils/my_route.dart';
 import '../../utils/style.dart';
 import '../../utils/toast_message_util.dart';
 import '../../widgets/custom_loading_overlay.dart';
@@ -181,11 +181,11 @@ class _NewFormRegistrationForPartTimePageState extends State<NewFormRegistration
       isLoading = false;
     });
     if (val == ConstValue.success) {
-      toastMessageSuccess(JapaneseText.successUpdate, context);
-      await Future.delayed(const Duration(milliseconds: 300));
+      // toastMessageSuccess(JapaneseText.successUpdate, context);
+      // await Future.delayed(const Duration(milliseconds: 300));
       provider.myUser = widget.myUser;
       isFullTime = false;
-      context.go(MyRoute.workerJobSearchPartTime);
+      context.go(MyRoute.registerAsGigWorkerSuccess);
       // await FirebaseAuth.instance.signOut();
       // MyPageRoute.goTo(context, RootPage(widget.myUser.uid!, isFullTime: false));
     } else {

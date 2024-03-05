@@ -12,13 +12,11 @@ import '../../utils/app_size.dart';
 import '../../utils/japanese_text.dart';
 import '../../utils/page_route.dart';
 import '../../utils/respnsive.dart';
-import '../../utils/style.dart';
 import '../../utils/toast_message_util.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/loading.dart';
-
-bool isFullTimeGlobal = false;
+import '../splash_page.dart';
 
 class RegisterPage extends StatefulWidget {
   final bool isFullTime;
@@ -43,7 +41,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void dispose() {
-    isFullTimeGlobal = widget.isFullTime;
+    isFullTime = widget.isFullTime;
     email.dispose();
     password.dispose();
     super.dispose();

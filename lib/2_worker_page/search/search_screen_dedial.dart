@@ -15,6 +15,7 @@ import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/page_route.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
+import 'package:air_job_management/widgets/custom_back_button.dart';
 import 'package:air_job_management/widgets/custom_dialog.dart';
 import 'package:air_job_management/widgets/show_message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -101,6 +102,29 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
     FavoriteProvider fa = Provider.of<FavoriteProvider>(context);
     var auth = Provider.of<AuthProvider>(context);
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        title: Text("仕事の詳細"),
+        leading: CustomBackButtonWidget(textColor: AppColor.whiteColor),
+        backgroundColor: AppColor.primaryColor,
+        leadingWidth: 120,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: InkWell(
+              onTap: () => setState(() {
+                fa.onfav(widget.info.uid);
+                fa.ontap(widget.docId, widget.info);
+              }),
+              child: Icon(
+                Icons.favorite,
+                size: 30,
+                color: fa.lists.contains(widget.info.uid) ? Colors.yellow : Colors.white,
+              ),
+            ),
+          )
+        ],
+      ),
       body: Scrollbar(
         controller: scrollController,
         isAlwaysShown: true,
@@ -124,69 +148,69 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                                 fit: BoxFit.cover),
                           ),
                         ),
-                        Positioned(
-                          top: 10,
-                          left: 10,
-                          child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
-                              child: Center(child: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_rounded)))),
-                        ),
-                        Positioned(
-                          top: 10,
-                          right: 10,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: AppColor.bgfav),
-                                child: Center(
-                                  child: GestureDetector(
-                                    onTap: () => setState(() {
-                                      fa.onfav(widget.info.uid);
-                                      fa.ontap(widget.docId, widget.info);
-                                    }),
-                                    child: Icon(
-                                      Icons.favorite,
-                                      size: 30,
-                                      color: fa.lists.contains(widget.info.uid) ? Colors.yellow : Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              // Container(
-                              //   width: 40,
-                              //   height: 40,
-                              //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
-                              //   child: Center(
-                              //     child: IconButton(
-                              //       onPressed: () {
-                              //         MyPageRoute.goTo(
-                              //           context,
-                              //           MessagePage(
-                              //             companyID: widget.info.companyId ?? "ABC",
-                              //             companyName: widget.info.company,
-                              //             companyImageUrl: widget.info.image,
-                              //           ),
-                              //         );
-                              //       },
-                              //       icon: const Icon(
-                              //         Icons.chat_bubble,
-                              //         color: Colors.black,
-                              //         size: 25,
-                              //       ),
-                              //     ),
-                              //   ),
-                              // )
-                            ],
-                          ),
-                        ),
+                        // Positioned(
+                        //   top: 10,
+                        //   left: 10,
+                        //   child: Container(
+                        //       width: 40,
+                        //       height: 40,
+                        //       decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
+                        //       child: Center(child: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_rounded)))),
+                        // ),
+                        // Positioned(
+                        //   top: 10,
+                        //   right: 10,
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.end,
+                        //     children: [
+                        //       Container(
+                        //         width: 40,
+                        //         height: 40,
+                        //         decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: AppColor.bgfav),
+                        //         child: Center(
+                        //           child: GestureDetector(
+                        //             onTap: () => setState(() {
+                        //               fa.onfav(widget.info.uid);
+                        //               fa.ontap(widget.docId, widget.info);
+                        //             }),
+                        //             child: Icon(
+                        //               Icons.favorite,
+                        //               size: 30,
+                        //               color: fa.lists.contains(widget.info.uid) ? Colors.yellow : Colors.white,
+                        //             ),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       const SizedBox(
+                        //         width: 8,
+                        //       ),
+                        //       // Container(
+                        //       //   width: 40,
+                        //       //   height: 40,
+                        //       //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
+                        //       //   child: Center(
+                        //       //     child: IconButton(
+                        //       //       onPressed: () {
+                        //       //         MyPageRoute.goTo(
+                        //       //           context,
+                        //       //           MessagePage(
+                        //       //             companyID: widget.info.companyId ?? "ABC",
+                        //       //             companyName: widget.info.company,
+                        //       //             companyImageUrl: widget.info.image,
+                        //       //           ),
+                        //       //         );
+                        //       //       },
+                        //       //       icon: const Icon(
+                        //       //         Icons.chat_bubble,
+                        //       //         color: Colors.black,
+                        //       //         size: 25,
+                        //       //       ),
+                        //       //     ),
+                        //       //   ),
+                        //       // )
+                        //     ],
+                        //   ),
+                        // ),
                         Positioned(
                           bottom: 16,
                           right: 16,
@@ -364,53 +388,69 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
             itemCount: shiftList.length,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              return InkWell(
-                onTap: () {
-                  setState(() {
-                    if (selectedShiftList.contains(shiftList[index])) {
-                      selectedShiftList.remove(shiftList[index]);
-                    } else {
-                      selectedShiftList.add(shiftList[index]);
-                    }
-                  });
-                },
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 51,
-                        height: 51,
-                        decoration: boxDecoration7,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              dateTimeToMonthDay(shiftList[index].date),
-                              style: kNormalText.copyWith(fontFamily: "Bold", fontSize: 13, color: AppColor.primaryColor),
-                            ),
-                            Text(
-                              toJapanWeekDayWithInt(shiftList[index].date!.weekday),
-                              style: kNormalText.copyWith(fontFamily: "Normal", fontSize: 9, color: AppColor.primaryColor),
-                            )
-                          ],
+              return Container(
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      if (selectedShiftList.contains(shiftList[index])) {
+                        selectedShiftList.remove(shiftList[index]);
+                      } else {
+                        selectedShiftList.add(shiftList[index]);
+                      }
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 51,
+                                height: 51,
+                                decoration: boxDecoration7,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      dateTimeToMonthDay(shiftList[index].date),
+                                      style: kNormalText.copyWith(fontFamily: "Bold", fontSize: 13, color: AppColor.primaryColor),
+                                    ),
+                                    Text(
+                                      toJapanWeekDayWithInt(shiftList[index].date!.weekday),
+                                      style: kNormalText.copyWith(fontFamily: "Normal", fontSize: 9, color: AppColor.primaryColor),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              AppSize.spaceWidth16,
+                              Text(
+                                "${shiftList[index].startWorkTime} 〜 ${shiftList[index].endWorkTime}",
+                                style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                              ),
+                              AppSize.spaceWidth16,
+                              Text(
+                                "${CurrencyFormatHelper.displayDataRightYen(shiftList[index].price)}",
+                                style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      AppSize.spaceWidth16,
-                      Text(
-                        "${shiftList[index].startWorkTime} 〜 ${shiftList[index].endWorkTime}\n${CurrencyFormatHelper.displayDataRightYen(shiftList[index].price)}",
-                        style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
-                      ),
-                      AppSize.spaceWidth16,
-                      if (selectedShiftList.contains(shiftList[index]))
-                        Icon(
-                          Icons.check,
-                          color: AppColor.primaryColor,
-                        )
-                      else
-                        const SizedBox()
-                    ],
+                        AppSize.spaceWidth16,
+                        if (selectedShiftList.contains(shiftList[index]))
+                          Icon(
+                            Icons.check_box,
+                            color: AppColor.primaryColor,
+                          )
+                        else
+                          Icon(
+                            Icons.check_box_outline_blank_outlined,
+                            color: AppColor.primaryColor,
+                          )
+                      ],
+                    ),
                   ),
                 ),
               );

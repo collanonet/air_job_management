@@ -170,14 +170,14 @@ class _NewFormRegistrationPageState extends State<NewFormRegistrationPage> {
       isLoading = false;
     });
     if (val == ConstValue.success) {
-      toastMessageSuccess(JapaneseText.successUpdate, context);
-      await Future.delayed(const Duration(milliseconds: 300));
+      // toastMessageSuccess(JapaneseText.successUpdate, context);
+      // await Future.delayed(const Duration(milliseconds: 300));
       // await FirebaseAuth.instance.signOut();
       // context.go(MyRoute.jobOption);
       // MyPageRoute.goTo(context, RootPage(widget.myUser.uid!, isFullTime: true));
       provider.myUser = widget.myUser;
       isFullTime = true;
-      context.go(MyRoute.workerJobSearchFullTime);
+      context.go(MyRoute.registerAsGigWorkerSuccess);
     } else {
       toastMessageError("$val", context);
     }

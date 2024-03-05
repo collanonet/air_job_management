@@ -208,7 +208,7 @@ class JobPostingForCompanyProvider with ChangeNotifier {
     street = TextEditingController(text: "");
     building = TextEditingController(text: "");
     accessAddress = TextEditingController(text: "");
-    latLong = TextEditingController(text: "");
+    latLong = TextEditingController(text: "35.6779346605152, 139.7681053353878");
     numberOfRecruitPeople = TextEditingController(text: "");
     hourlyWag = TextEditingController(text: "");
     transportExp = TextEditingController(text: "");

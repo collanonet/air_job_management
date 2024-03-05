@@ -15,7 +15,6 @@ class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var provider = context.watch<AuthProvider>();
     var list = provider.myUser?.messageList ?? [];
-    print("List of message ${list.length}");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -27,7 +26,7 @@ class ChatPage extends StatelessWidget {
               color: Colors.white,
             )),
         centerTitle: true,
-        title: Text("メッセージ", style: TextStyle(fontSize: 30, color: AppColor.primaryColor)),
+        title: Text("メッセージ", style: TextStyle(color: AppColor.primaryColor)),
       ),
       body: list.isEmpty
           ? const Center(child: EmptyDataWidget())

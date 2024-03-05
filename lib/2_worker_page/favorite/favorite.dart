@@ -79,12 +79,12 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
       backgroundColor: AppColor.bgPageColor,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: AppColor.bgPageColor,
+        backgroundColor: AppColor.whiteColor,
         leading: SizedBox(),
         elevation: 0,
         title: Text(
           'お気に入り',
-          style: TextStyle(fontSize: 30, color: AppColor.primaryColor),
+          style: TextStyle(color: AppColor.primaryColor),
         ),
       ),
       body: loading.value
