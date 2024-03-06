@@ -47,10 +47,9 @@ class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
   void initState() {
     if (widget.branch != null) {
       name.text = widget.branch?.name ?? "";
-      postalCode.text = widget.branch?.name ?? "";
-      location.text = widget.branch?.name ?? "";
-      contactNumber.text = widget.branch?.name ?? "";
-      date = widget.branch!.createdAt!;
+      postalCode.text = widget.branch?.postalCode ?? "";
+      location.text = widget.branch?.location ?? "";
+      contactNumber.text = widget.branch?.contactNumber ?? "";
     }
     super.initState();
   }
