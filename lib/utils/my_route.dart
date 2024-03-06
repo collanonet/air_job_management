@@ -24,6 +24,7 @@ class MyRoute {
   static var setting = "/setting";
   static var company = "/company";
   static var createCompany = "/company/create";
+  static var resetPasswordCompany = "/company/reset_password";
   static var jobSeeker = "/job_seeker";
   static var createJobSeeker = "/job_seeker/create";
   static var shift = "/shift";
@@ -38,4 +39,5 @@ class MyRoute {
   static var workerChat = "/worker/chat";
   static var workerSetting = "/worker/setting";
   static var workerRoot = "/worker/root";
+  static var resetPassword = "/reset_password";
 }

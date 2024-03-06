@@ -139,7 +139,7 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                        onPressed: () => MessageWidget.show("We are going to develop this function soon!"),
+                        onPressed: () => context.go(MyRoute.resetPasswordCompany),
                         child: Text(
                           "パスワードをお忘れの方はこちら＞",
                           style: kNormalText.copyWith(fontSize: 12, color: AppColor.primaryColor),

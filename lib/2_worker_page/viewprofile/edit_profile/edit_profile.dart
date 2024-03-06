@@ -30,6 +30,10 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController dob = TextEditingController(text: "");
   TextEditingController email = TextEditingController(text: "");
   TextEditingController note = TextEditingController(text: "");
+  TextEditingController postalCode = TextEditingController(text: "");
+  TextEditingController street = TextEditingController(text: "");
+  TextEditingController address = TextEditingController(text: "");
+  TextEditingController buildingName = TextEditingController(text: "");
   TextEditingController scheduleInterview = TextEditingController(text: "");
   TextEditingController finalEdu = TextEditingController(text: "");
   TextEditingController graduateSchoolFaculty = TextEditingController(text: "");
@@ -66,6 +70,10 @@ class _EditProfileState extends State<EditProfile> {
         imageUrl = await fileToUrl(_image!, "images");
         widget.seeker.profileImage = imageUrl;
       }
+      widget.seeker.address = address.text;
+      widget.seeker.building = phone.text;
+      widget.seeker.street = street.text;
+      widget.seeker.postalCode = postalCode.text;
       widget.seeker.profileImage = imageUrl;
       widget.seeker.nameKanJi = nameKanJi.text;
       widget.seeker.nameFu = nameFurigana.text;
@@ -202,6 +210,7 @@ class _EditProfileState extends State<EditProfile> {
                         )
                       ]),
                     ),
+                    AppSize.spaceHeight16,
                     //Name
                     Row(
                       children: [
@@ -209,7 +218,10 @@ class _EditProfileState extends State<EditProfile> {
                             child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(JapaneseText.nameKanJi),
+                            Text(
+                              JapaneseText.nameKanJi,
+                              style: kNormalText,
+                            ),
                             AppSize.spaceHeight5,
                             PrimaryTextField(
                               controller: nameKanJi,
@@ -222,7 +234,10 @@ class _EditProfileState extends State<EditProfile> {
                             child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(JapaneseText.nameFugigana),
+                            Text(
+                              JapaneseText.nameFugigana,
+                              style: kNormalText,
+                            ),
                             AppSize.spaceHeight5,
                             PrimaryTextField(
                               controller: nameFurigana,
@@ -238,7 +253,10 @@ class _EditProfileState extends State<EditProfile> {
                             child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(JapaneseText.phone),
+                            Text(
+                              JapaneseText.phone,
+                              style: kNormalText,
+                            ),
                             AppSize.spaceHeight5,
                             PrimaryTextField(
                               controller: phone,
@@ -252,7 +270,10 @@ class _EditProfileState extends State<EditProfile> {
                             child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(JapaneseText.dob),
+                            Text(
+                              JapaneseText.dob,
+                              style: kNormalText,
+                            ),
                             AppSize.spaceHeight5,
                             PrimaryTextField(
                               isRequired: false,
@@ -279,7 +300,10 @@ class _EditProfileState extends State<EditProfile> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(JapaneseText.email),
+                        Text(
+                          JapaneseText.email,
+                          style: kNormalText,
+                        ),
                         AppSize.spaceHeight5,
                         PrimaryTextField(
                           controller: email,
@@ -288,10 +312,14 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ],
                     ),
+                    buildUserLocation(),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(JapaneseText.note),
+                        Text(
+                          JapaneseText.note,
+                          style: kNormalText,
+                        ),
                         AppSize.spaceHeight5,
                         PrimaryTextField(
                           controller: note,
@@ -322,7 +350,7 @@ class _EditProfileState extends State<EditProfile> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(JapaneseText.scheduleInterviewDateAndTime),
+                        Text(JapaneseText.scheduleInterviewDateAndTime, style: kNormalText),
                         AppSize.spaceHeight5,
                         SizedBox(
                           width: AppSize.getDeviceWidth(context),
@@ -370,7 +398,10 @@ class _EditProfileState extends State<EditProfile> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(JapaneseText.finalEducation),
+                            Text(
+                              JapaneseText.finalEducation,
+                              style: kNormalText,
+                            ),
                             AppSize.spaceHeight5,
                             SizedBox(
                               width: AppSize.getDeviceWidth(context) * 0.45,
@@ -402,7 +433,10 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ],
                     ),
-                    Text(JapaneseText.academicBackground),
+                    Text(
+                      JapaneseText.academicBackground,
+                      style: kNormalText,
+                    ),
                     AppSize.spaceHeight5,
                     ListView.builder(
                       shrinkWrap: true,
@@ -454,7 +488,10 @@ class _EditProfileState extends State<EditProfile> {
                         );
                       },
                     ),
-                    Text(JapaneseText.workHistory),
+                    Text(
+                      JapaneseText.workHistory,
+                      style: kNormalText,
+                    ),
                     AppSize.spaceHeight5,
                     ListView.builder(
                       shrinkWrap: true,
@@ -506,7 +543,7 @@ class _EditProfileState extends State<EditProfile> {
                         );
                       },
                     ),
-                    Text(JapaneseText.ordinaryAutomaticLicense),
+                    Text(JapaneseText.ordinaryAutomaticLicense, style: kNormalText),
                     AppSize.spaceHeight5,
                     SizedBox(
                       width: AppSize.getDeviceWidth(context) - 32,
@@ -517,7 +554,10 @@ class _EditProfileState extends State<EditProfile> {
                         isRequired: false,
                       ),
                     ),
-                    Text(JapaneseText.otherQualification),
+                    Text(
+                      JapaneseText.otherQualification,
+                      style: kNormalText,
+                    ),
                     AppSize.spaceHeight5,
                     ListView.builder(
                       shrinkWrap: true,
@@ -566,7 +606,10 @@ class _EditProfileState extends State<EditProfile> {
                         );
                       },
                     ),
-                    Text(JapaneseText.employmentHistory),
+                    Text(
+                      JapaneseText.employmentHistory,
+                      style: kNormalText,
+                    ),
                     AppSize.spaceHeight5,
                     ListView.builder(
                       shrinkWrap: true,
@@ -630,6 +673,81 @@ class _EditProfileState extends State<EditProfile> {
         ),
       ),
     );
+  }
+
+  buildUserLocation() {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      JapaneseText.postalCode,
+                      style: kNormalText,
+                    )),
+                AppSize.spaceHeight5,
+                PrimaryTextField(
+                  hint: "",
+                  controller: postalCode,
+                  isRequired: false,
+                ),
+              ],
+            ),
+          ),
+          AppSize.spaceWidth16,
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      JapaneseText.location,
+                      style: kNormalText,
+                    )),
+                AppSize.spaceHeight5,
+                PrimaryTextField(
+                  hint: "",
+                  controller: address,
+                  isRequired: false,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            JapaneseText.street,
+            style: kNormalText.copyWith(fontSize: 12),
+          )),
+      AppSize.spaceHeight5,
+      PrimaryTextField(
+        hint: "",
+        controller: street,
+        isRequired: false,
+      ),
+      Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            JapaneseText.buildingName,
+            style: kNormalText,
+          )),
+      AppSize.spaceHeight5,
+      PrimaryTextField(
+        hint: "",
+        controller: buildingName,
+        isRequired: false,
+      ),
+    ]);
   }
 
   clearAllText() {

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:air_job_management/1_company_page/home/home.dart';
 import 'package:air_job_management/1_company_page/job_posting/create_or_edit_job_posting.dart';
 import 'package:air_job_management/1_company_page/login/login.dart';
+import 'package:air_job_management/1_company_page/login/reset_password.dart';
 import 'package:air_job_management/1_company_page/woker_management/create_outside_worker.dart';
 import 'package:air_job_management/1_company_page/woker_management/root_worker_management_detail.dart';
 import 'package:air_job_management/2_worker_page/manage/manage_screen.dart';
@@ -16,6 +17,7 @@ import 'package:air_job_management/pages/job_seeker/job_seeker_detail/job_seeker
 import 'package:air_job_management/pages/login.dart';
 import 'package:air_job_management/pages/register/register.dart';
 import 'package:air_job_management/pages/register/register_success.dart';
+import 'package:air_job_management/pages/reset_password.dart';
 import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company.dart';
@@ -165,6 +167,12 @@ final GoRouter _router = GoRouter(
           },
         ),
         GoRoute(
+          path: MyRoute.resetPassword.removeSlash(),
+          builder: (BuildContext context, GoRouterState state) {
+            return const ResetPasswordPage();
+          },
+        ),
+        GoRoute(
             path: MyRoute.job.removeSlash(),
             builder: (BuildContext context, GoRouterState state) {
               return HomePage(selectItem: JapaneseText.job);
@@ -241,6 +249,12 @@ final GoRouter _router = GoRouter(
               return HomePage(selectItem: JapaneseText.recruitingCompany);
             },
             routes: [
+              GoRoute(
+                path: 'reset_password',
+                builder: (BuildContext context, GoRouterState state) {
+                  return const ResetPasswordCompanyPage();
+                },
+              ),
               GoRoute(
                 path: 'login',
                 builder: (BuildContext context, GoRouterState state) {

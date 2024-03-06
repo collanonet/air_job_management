@@ -4,17 +4,21 @@ import 'package:flutter/material.dart';
 
 class CustomBackButtonWidget extends StatelessWidget {
   final Color textColor;
-  const CustomBackButtonWidget({super.key, this.textColor = Colors.white});
+  final Function? onPress;
+  const CustomBackButtonWidget({super.key, this.textColor = Colors.white, this.onPress});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.pop(context),
+      onTap: () => onPress != null ? onPress!() : Navigator.pop(context),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            const Icon(Icons.arrow_back_ios_new_rounded),
+            Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: textColor,
+            ),
             AppSize.spaceWidth8,
             Text(
               "戻る",

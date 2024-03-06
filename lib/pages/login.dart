@@ -79,163 +79,180 @@ class _LoginPageState extends State<LoginPage> {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.symmetric(vertical: 16),
       width: AppSize.getDeviceWidth(context) * (Responsive.isDesktop(context) ? 0.5 : 0.9),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Image.asset(
-                "assets/logo.png",
-                width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.25),
+      height: AppSize.getDeviceHeight(context),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Image.asset(
+                  "assets/logo.png",
+                  width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.25),
+                ),
+                Positioned(
+                    right: 0,
+                    left: 0,
+                    bottom: -20,
+                    child: Center(
+                      child: Text(
+                        "ログイン",
+                        style: TextStyle(color: AppColor.primaryColor, fontWeight: FontWeight.w600, fontSize: 18),
+                      ),
+                    ))
+              ],
+            ),
+            AppSize.spaceHeight30,
+            AppSize.spaceHeight16,
+            socialLoginButton(
+                assets: "assets/google.png",
+                title: "Googleでログイン",
+                colors: const Color(0xffCDD6DD).withOpacity(0.3),
+                onTap: () async {
+                  MyUser? user = await SocialLogin().googleSignIn(widget.isFullTime, authProvider);
+                  if (user != null) {
+                    if (user.nameKanJi != "" || user.nameFu != "") {
+                      if (user.isFullTimeStaff == true) {
+                        context.go(MyRoute.workerJobSearchFullTime);
+                      } else {
+                        context.go(MyRoute.workerJobSearchPartTime);
+                      }
+                    } else {
+                      if (widget.isFullTime) {
+                        MyPageRoute.goTo(context, NewFormRegistrationPage(myUser: user));
+                      } else {
+                        MyPageRoute.goTo(context, NewFormRegistrationForPartTimePage(myUser: user));
+                      }
+                    }
+                  } else {
+                    MessageWidget.show("Googleでログイン中にエラーが発生しました");
+                  }
+                }),
+            AppSize.spaceHeight16,
+            socialLoginButton(
+                assets: "assets/x.png",
+                title: "Xでログイン",
+                colors: const Color(0xff495960),
+                onTap: () async {
+                  MyUser? user = await SocialLogin().twitterSignIn(widget.isFullTime, authProvider);
+                  if (user != null) {
+                    if (user.nameKanJi != "" || user.nameFu != "") {
+                      if (user.isFullTimeStaff == true) {
+                        context.go(MyRoute.workerJobSearchFullTime);
+                      } else {
+                        context.go(MyRoute.workerJobSearchPartTime);
+                      }
+                    } else {
+                      if (widget.isFullTime) {
+                        MyPageRoute.goTo(context, NewFormRegistrationPage(myUser: user));
+                      } else {
+                        MyPageRoute.goTo(context, NewFormRegistrationForPartTimePage(myUser: user));
+                      }
+                    }
+                  } else {
+                    MessageWidget.show("X でログイン中にエラーが発生しました");
+                  }
+                }),
+            // AppSize.spaceHeight16,
+            // AppSize.spaceHeight16,
+            // Center(
+            //   child: Text(
+            //     "またはメールアドレスで登録",
+            //     style: TextStyle(
+            //         color: AppColor.primaryColor,
+            //         fontWeight: FontWeight.w600,
+            //         fontSize: 18),
+            //   ),
+            // ),
+            AppSize.spaceHeight16,
+            AppSize.spaceHeight16,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
+              child: Align(alignment: Alignment.centerLeft, child: Text("メールアドレス")),
+            ),
+            AppSize.spaceHeight5,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
+              child: PrimaryTextField(isRequired: true, hint: "sample@sample.com", controller: email, isObsecure: false),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
+              child: Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.password)),
+            ),
+            AppSize.spaceHeight5,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
+              child: PrimaryTextField(
+                hint: "*****************",
+                controller: password,
+                isRequired: true,
+                isObsecure: isShow,
+                suffix: !isShow
+                    ? IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isShow = !isShow;
+                          });
+                        },
+                        icon: Icon(FlutterIcons.eye_ent, color: AppColor.greyColor),
+                      )
+                    : IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isShow = !isShow;
+                          });
+                        },
+                        icon: Icon(FlutterIcons.eye_with_line_ent, color: AppColor.greyColor),
+                      ),
               ),
-              Positioned(
-                  right: 0,
-                  left: 0,
-                  bottom: -20,
-                  child: Center(
+            ),
+            AppSize.spaceHeight16,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
+              child: SizedBox(
+                width: AppSize.getDeviceWidth(context),
+                child: ButtonWidget(
+                    title: authProvider.isLogin ? "ログイン" : "Register",
+                    color: AppColor.secondaryColor,
+                    onPress: () => authProvider.isLogin ? onLogin() : onRegister()),
+              ),
+            ),
+            AppSize.spaceHeight8,
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
+                child: TextButton(
+                    onPressed: () => context.go(MyRoute.resetPassword),
                     child: Text(
-                      "ログイン",
-                      style: TextStyle(color: AppColor.primaryColor, fontWeight: FontWeight.w600, fontSize: 18),
-                    ),
-                  ))
-            ],
-          ),
-          AppSize.spaceHeight30,
-          AppSize.spaceHeight16,
-          socialLoginButton(
-              assets: "assets/google.png",
-              title: "Googleでログイン",
-              colors: const Color(0xffCDD6DD).withOpacity(0.3),
-              onTap: () async {
-                MyUser? user = await SocialLogin().googleSignIn(widget.isFullTime, authProvider);
-                if (user != null) {
-                  if (user.nameKanJi != "" || user.nameFu != "") {
-                    if (user.isFullTimeStaff == true) {
-                      context.go(MyRoute.workerJobSearchFullTime);
-                    } else {
-                      context.go(MyRoute.workerJobSearchPartTime);
-                    }
-                  } else {
-                    if (widget.isFullTime) {
-                      MyPageRoute.goTo(context, NewFormRegistrationPage(myUser: user));
-                    } else {
-                      MyPageRoute.goTo(context, NewFormRegistrationForPartTimePage(myUser: user));
-                    }
-                  }
-                } else {
-                  MessageWidget.show("Googleでログイン中にエラーが発生しました");
-                }
-              }),
-          AppSize.spaceHeight16,
-          socialLoginButton(
-              assets: "assets/x.png",
-              title: "Xでログイン",
-              colors: const Color(0xff495960),
-              onTap: () async {
-                MyUser? user = await SocialLogin().twitterSignIn(widget.isFullTime, authProvider);
-                if (user != null) {
-                  if (user.nameKanJi != "" || user.nameFu != "") {
-                    if (user.isFullTimeStaff == true) {
-                      context.go(MyRoute.workerJobSearchFullTime);
-                    } else {
-                      context.go(MyRoute.workerJobSearchPartTime);
-                    }
-                  } else {
-                    if (widget.isFullTime) {
-                      MyPageRoute.goTo(context, NewFormRegistrationPage(myUser: user));
-                    } else {
-                      MyPageRoute.goTo(context, NewFormRegistrationForPartTimePage(myUser: user));
-                    }
-                  }
-                } else {
-                  MessageWidget.show("X でログイン中にエラーが発生しました");
-                }
-              }),
-          // AppSize.spaceHeight16,
-          // AppSize.spaceHeight16,
-          // Center(
-          //   child: Text(
-          //     "またはメールアドレスで登録",
-          //     style: TextStyle(
-          //         color: AppColor.primaryColor,
-          //         fontWeight: FontWeight.w600,
-          //         fontSize: 18),
-          //   ),
-          // ),
-          AppSize.spaceHeight16,
-          AppSize.spaceHeight16,
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
-            child: Align(alignment: Alignment.centerLeft, child: Text("メールアドレス")),
-          ),
-          AppSize.spaceHeight5,
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
-            child: PrimaryTextField(isRequired: true, hint: "sample@sample.com", controller: email, isObsecure: false),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
-            child: Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.password)),
-          ),
-          AppSize.spaceHeight5,
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
-            child: PrimaryTextField(
-              hint: "*****************",
-              controller: password,
-              isRequired: true,
-              isObsecure: isShow,
-              suffix: !isShow
-                  ? IconButton(
-                      onPressed: () {
-                        setState(() {
-                          isShow = !isShow;
-                        });
-                      },
-                      icon: Icon(FlutterIcons.eye_ent, color: AppColor.greyColor),
-                    )
-                  : IconButton(
-                      onPressed: () {
-                        setState(() {
-                          isShow = !isShow;
-                        });
-                      },
-                      icon: Icon(FlutterIcons.eye_with_line_ent, color: AppColor.greyColor),
-                    ),
-            ),
-          ),
-          AppSize.spaceHeight16,
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
-            child: SizedBox(
-              width: AppSize.getDeviceWidth(context),
-              child: ButtonWidget(
-                  title: authProvider.isLogin ? "ログイン" : "Register",
-                  color: AppColor.secondaryColor,
-                  onPress: () => authProvider.isLogin ? onLogin() : onRegister()),
-            ),
-          ),
-          const Spacer(),
-          //Register Account as a gig-worker
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
-            child: SizedBox(
-              width: AppSize.getDeviceWidth(context),
-              child: ButtonWidget(
-                color: Colors.white,
-                title: "新規登録をする方はこちら",
-                onPress: () => context.go(MyRoute.registerAsGigWorker),
+                      "パスワードをお忘れの方はこちら＞",
+                      style: kNormalText.copyWith(color: AppColor.primaryColor),
+                    )),
               ),
             ),
-          ),
-          AppSize.spaceHeight16,
-          Text(
-            ConstValue.appVersion,
-            style: normalTextStyle,
-          ),
-        ],
+            // const Spacer(),
+            //Register Account as a gig-worker
+            AppSize.spaceHeight30,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: Responsive.isMobile(context) ? 16 : AppSize.getDeviceWidth(context) * 0.1),
+              child: SizedBox(
+                width: AppSize.getDeviceWidth(context),
+                child: ButtonWidget(
+                  color: Colors.white,
+                  title: "新規登録をする方はこちら",
+                  onPress: () => context.go(MyRoute.registerAsGigWorker),
+                ),
+              ),
+            ),
+            AppSize.spaceHeight16,
+            Text(
+              "Version " + ConstValue.appVersion,
+              style: normalTextStyle,
+            ),
+          ],
+        ),
       ),
     );
   }

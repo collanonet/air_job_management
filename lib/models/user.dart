@@ -37,6 +37,7 @@ class MyUser {
   String? city;
   String? street;
   String? building;
+  String? address;
   bool? notWorking;
   bool? contractJob;
   bool? fullTimeJob;
@@ -99,11 +100,13 @@ class MyUser {
       this.driver_license_url,
       this.number_card_url,
       this.passport_url,
-      this.resident_record_url});
+      this.resident_record_url,
+      this.address});
 
   factory MyUser.fromJson(Map<String, dynamic> json) {
     return MyUser(
       uid: json["uid"],
+      address: json["address"],
       basic_resident_register_url: json["basic_resident_register_url"],
       driver_license_url: json["driver_license_url"],
       number_card_url: json["number_card_url"],
@@ -153,6 +156,7 @@ class MyUser {
   }
 
   Map<String, dynamic> toJson() => {
+        "address": address,
         "driver_license_url": driver_license_url,
         "resident_record_url": resident_record_url,
         "passport_url": passport_url,
