@@ -28,49 +28,42 @@ class SearchJobApi {
 
   Future<bool> createJobRequest(SearchJob job, MyUser myUser, List<ShiftModel> shiftList) async {
     try {
-      var doc =
-          await jobcollection.where("job_id", isEqualTo: job.uid).where("user_id", isEqualTo: myUser.uid).where("status", isEqualTo: "pending").get();
+      var doc = await jobcollection.where("user_id", isEqualTo: myUser.uid).where("status", isEqualTo: "pending").get();
       List<String> dateList = shiftList.map((e) => DateToAPIHelper.convertDateToString(e.date!)).toList();
-      bool isNotExist = true;
       if (doc.size > 0) {
         for (var data in doc.docs) {
           var d = data.data()["shift"] as List;
           List<String> dateFromDB = d.map((e) => e["date"] as String).toList();
           bool isContain = CommonUtils().containsAny(dateList, dateFromDB);
           if (isContain) {
-            isNotExist = false;
-            break;
+            errorMessage = "他のジョブリクエストとスケジュールが重複している。";
+            return false;
           }
         }
       }
-      if (doc.size == 0 || isNotExist) {
-        await jobcollection.add({
-          "job_id": job.uid,
-          "company_id": job.companyId,
-          "job_title": job.title,
-          "job_location": job.jobLocation,
-          "image_job_url": job.image,
-          "user_id": myUser.uid,
-          "created_at": DateTime.now(),
-          "username": "${myUser.nameKanJi} ${myUser.nameFu}",
-          "status": "pending",
-          "user": myUser.toJson(),
-          "shift": shiftList
-              .map((e) => {
-                    "start_work_time": e.startWorkTime,
-                    "end_work_time": e.endWorkTime,
-                    "start_break_time": e.endBreakTime,
-                    "end_break_time": e.endBreakTime,
-                    "date": DateToAPIHelper.convertDateToString(e.date!),
-                    "price": e.price.toString()
-                  })
-              .toList()
-        });
-        return true;
-      } else {
-        errorMessage = "あなたはすでにこの求人に応募しています! 企業が面接を受けるまでお待ちください。";
-        return false;
-      }
+      await jobcollection.add({
+        "job_id": job.uid,
+        "company_id": job.companyId,
+        "job_title": job.title,
+        "job_location": job.jobLocation,
+        "image_job_url": job.image,
+        "user_id": myUser.uid,
+        "created_at": DateTime.now(),
+        "username": "${myUser.nameKanJi} ${myUser.nameFu}",
+        "status": "pending",
+        "user": myUser.toJson(),
+        "shift": shiftList
+            .map((e) => {
+                  "start_work_time": e.startWorkTime,
+                  "end_work_time": e.endWorkTime,
+                  "start_break_time": e.endBreakTime,
+                  "end_break_time": e.endBreakTime,
+                  "date": DateToAPIHelper.convertDateToString(e.date!),
+                  "price": e.price.toString()
+                })
+            .toList()
+      });
+      return true;
     } catch (e) {
       debugPrint("Error createJobRequest $e");
       errorMessage = e.toString();

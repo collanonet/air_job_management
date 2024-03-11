@@ -2,6 +2,7 @@ import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/helper/status_helper.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
+import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -56,7 +57,7 @@ class ApplicantCardWidget extends StatelessWidget {
                         Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                           Expanded(
                             child: Text(
-                              job.userName ?? "",
+                              job.userName != null ? job.userName!.split(" ")[0].toString() : "",
                               style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
                               overflow: TextOverflow.fade,
                             ),
@@ -70,7 +71,8 @@ class ApplicantCardWidget extends StatelessWidget {
                                 )
                         ]),
                         Text(
-                          calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) + "   ${job.myUser?.gender}",
+                          calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) +
+                              "   ${job.myUser?.gender == null || job.myUser?.gender == "" ? JapaneseText.empty : job.myUser?.gender}",
                           style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 14),
                           overflow: TextOverflow.fade,
                         ),

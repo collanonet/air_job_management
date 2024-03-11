@@ -52,6 +52,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
         AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
         MyUser? users = await UserApiServices().getProfileUser(user.uid);
         Company? company = await UserApiServices().getProfileCompany(user.uid);
+        authProvider.setProfile = users;
         if (company != null) {
           authProvider.setCompany = company;
           // context.go(MyRoute.companyDashboard);

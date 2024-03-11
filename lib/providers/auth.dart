@@ -56,7 +56,7 @@ class AuthProvider with ChangeNotifier {
     step = 1;
   }
 
-  set setProfile(MyUser myUser) {
+  set setProfile(MyUser? myUser) {
     this.myUser = myUser;
   }
 

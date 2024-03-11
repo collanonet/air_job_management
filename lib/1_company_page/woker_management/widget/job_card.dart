@@ -70,7 +70,7 @@ class JobApplyCardWidget extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                job.userName ?? "",
+                                job.userName != null ? job.userName!.split(" ")[0].toString() : "",
                                 style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
                                 overflow: TextOverflow.fade,
                               ),
