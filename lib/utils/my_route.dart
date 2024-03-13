@@ -5,7 +5,8 @@ class MyRoute {
   static var companyShift = "/company/shift";
   static var companyApplicant = "/company/applicant";
   static var companyWorker = "/company/worker-management";
-  static var companyCreateWorkerMgt = '/company/worker-management/outside-worker/create';
+  static var companyCreateWorkerMgt =
+      '/company/worker-management/outside-worker/create';
   static var companyTimeManagement = "/company/time-management";
   static var companyUsageDetail = "/company/usage-detail";
   static var companyInformationManagement = "/company/information-management";
@@ -34,6 +35,7 @@ class MyRoute {
   static var registerAsGigWorkerSuccess = "/register/success";
   static var workerJobSearchPartTime = "/worker/search-job";
   static var workerJobSearchFullTime = "/worker/search-job-full";
+  static var successApplyJob = "/worker/apply-job-success";
   static var workerFavourite = "/worker/favourite";
   static var workerMyJob = "/worker/my_job";
   static var workerChat = "/worker/chat";

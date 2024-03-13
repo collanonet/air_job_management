@@ -1,3 +1,4 @@
+import 'package:air_job_management/2_worker_page/search/confirm_apply_job_dialog.dart';
 import 'package:air_job_management/api/company.dart';
 import 'package:air_job_management/const/const.dart';
 import 'package:air_job_management/helper/currency_format.dart';
@@ -6,7 +7,6 @@ import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/models/worker_model/search_job.dart';
 import 'package:air_job_management/models/worker_model/shift.dart';
-import 'package:air_job_management/pages/register/widget/check_box.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/favorite_provider.dart';
 import 'package:air_job_management/utils/app_color.dart';
@@ -26,7 +26,14 @@ import 'package:provider/provider.dart';
 import '../../pages/login.dart';
 
 class SearchScreenDetial extends StatefulWidget {
-  SearchScreenDetial({key, required this.info, this.docId, this.index, required this.isFullTime, this.isViewDetail}) : super(key: key);
+  SearchScreenDetial(
+      {key,
+      required this.info,
+      this.docId,
+      this.index,
+      required this.isFullTime,
+      this.isViewDetail})
+      : super(key: key);
   SearchJob info;
   bool? isViewDetail;
   var docId;
@@ -64,9 +71,13 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
     getCompany();
     DateTime startDate = DateToAPIHelper.fromApiToLocal(widget.info.startDate!);
     DateTime endDate = DateToAPIHelper.fromApiToLocal(widget.info.endDate!);
-    List<DateTime> dateList = [DateToAPIHelper.timeToDateTime(widget.info.startTimeHour!, dateTime: startDate)];
+    List<DateTime> dateList = [
+      DateToAPIHelper.timeToDateTime(widget.info.startTimeHour!,
+          dateTime: startDate)
+    ];
     for (var i = 1; i <= (startDate.difference(endDate).inDays * -1); ++i) {
-      dateList.add(DateTime(startDate.year, startDate.month, startDate.day + i));
+      dateList
+          .add(DateTime(startDate.year, startDate.month, startDate.day + i));
     }
     for (var date in dateList) {
       if (date.isAfter(DateTime.now())) {
@@ -79,12 +90,14 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
             startWorkTime: widget.info.startTimeHour!));
       }
     }
-    companyLatLng = LatLng(double.parse(widget.info.location!.lat!), double.parse(widget.info.location!.lng!));
+    companyLatLng = LatLng(double.parse(widget.info.location!.lat!),
+        double.parse(widget.info.location!.lng!));
     _addMarker(companyLatLng!, "origin", BitmapDescriptor.defaultMarker);
   }
 
   getCompany() async {
-    company = await CompanyApiServices().getACompany(widget.info.companyId ?? "");
+    company =
+        await CompanyApiServices().getACompany(widget.info.companyId ?? "");
     if (mounted) {
       setState(() {});
     }
@@ -122,7 +135,9 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
               child: Icon(
                 Icons.favorite,
                 size: 30,
-                color: fa.lists.contains(widget.info.uid) ? Colors.yellow : Colors.white,
+                color: fa.lists.contains(widget.info.uid)
+                    ? Colors.yellow
+                    : Colors.white,
               ),
             ),
           )
@@ -134,7 +149,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
         child: SingleChildScrollView(
           controller: scrollController,
           child: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection("search_job").snapshots(),
+            stream:
+                FirebaseFirestore.instance.collection("search_job").snapshots(),
             builder: (context, snapshot) {
               return SafeArea(
                 child: Column(
@@ -146,74 +162,13 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                           height: AppSize.getDeviceHeight(context) * 0.3,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                                image: NetworkImage(
-                                    widget.info.image != null && widget.info.image != "" ? widget.info.image! : ConstValue.defaultBgImage),
+                                image: NetworkImage(widget.info.image != null &&
+                                        widget.info.image != ""
+                                    ? widget.info.image!
+                                    : ConstValue.defaultBgImage),
                                 fit: BoxFit.cover),
                           ),
                         ),
-                        // Positioned(
-                        //   top: 10,
-                        //   left: 10,
-                        //   child: Container(
-                        //       width: 40,
-                        //       height: 40,
-                        //       decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
-                        //       child: Center(child: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_rounded)))),
-                        // ),
-                        // Positioned(
-                        //   top: 10,
-                        //   right: 10,
-                        //   child: Row(
-                        //     mainAxisAlignment: MainAxisAlignment.end,
-                        //     children: [
-                        //       Container(
-                        //         width: 40,
-                        //         height: 40,
-                        //         decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: AppColor.bgfav),
-                        //         child: Center(
-                        //           child: GestureDetector(
-                        //             onTap: () => setState(() {
-                        //               fa.onfav(widget.info.uid);
-                        //               fa.ontap(widget.docId, widget.info);
-                        //             }),
-                        //             child: Icon(
-                        //               Icons.favorite,
-                        //               size: 30,
-                        //               color: fa.lists.contains(widget.info.uid) ? Colors.yellow : Colors.white,
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ),
-                        //       const SizedBox(
-                        //         width: 8,
-                        //       ),
-                        //       // Container(
-                        //       //   width: 40,
-                        //       //   height: 40,
-                        //       //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
-                        //       //   child: Center(
-                        //       //     child: IconButton(
-                        //       //       onPressed: () {
-                        //       //         MyPageRoute.goTo(
-                        //       //           context,
-                        //       //           MessagePage(
-                        //       //             companyID: widget.info.companyId ?? "ABC",
-                        //       //             companyName: widget.info.company,
-                        //       //             companyImageUrl: widget.info.image,
-                        //       //           ),
-                        //       //         );
-                        //       //       },
-                        //       //       icon: const Icon(
-                        //       //         Icons.chat_bubble,
-                        //       //         color: Colors.black,
-                        //       //         size: 25,
-                        //       //       ),
-                        //       //     ),
-                        //       //   ),
-                        //       // )
-                        //     ],
-                        //   ),
-                        // ),
                         Positioned(
                           bottom: 16,
                           right: 16,
@@ -221,13 +176,17 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                             height: 45,
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             decoration: BoxDecoration(
-                                border: Border.all(color: AppColor.greyColor, width: 1),
+                                border: Border.all(
+                                    color: AppColor.greyColor, width: 1),
                                 borderRadius: BorderRadius.circular(16),
                                 color: Colors.white),
                             child: Center(
                               child: Text(
-                                CurrencyFormatHelper.displayData(widget.info.hourlyWag),
-                                style: kTitleText.copyWith(fontWeight: FontWeight.w600, color: AppColor.greyColor),
+                                CurrencyFormatHelper.displayData(
+                                    widget.info.hourlyWag),
+                                style: kTitleText.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColor.greyColor),
                               ),
                             ),
                           ),
@@ -245,7 +204,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                           Center(
                             child: Text(
                               widget.info.title.toString(),
-                              style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                              style: kNormalText.copyWith(
+                                  color: AppColor.primaryColor, fontSize: 15),
                             ),
                           ),
                           AppSize.spaceHeight8,
@@ -258,37 +218,43 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                           title(JapaneseText.jobDescription),
                           Text(
                             widget.info.description.toString(),
-                            style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            style: kNormalText.copyWith(
+                                fontSize: 15, fontFamily: "Normal"),
                           ),
                           divider(),
                           title(JapaneseText.belongings),
                           Text(
                             widget.info.belongings.toString(),
-                            style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            style: kNormalText.copyWith(
+                                fontSize: 15, fontFamily: "Normal"),
                           ),
                           divider(),
                           title("注意事項"),
                           Text(
                             widget.info.notes.toString(),
-                            style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            style: kNormalText.copyWith(
+                                fontSize: 15, fontFamily: "Normal"),
                           ),
                           divider(),
                           title("持ち物"),
                           Text(
                             "${widget.info.occupationType.toString()}   ${widget.info.majorOccupation.toString()}",
-                            style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            style: kNormalText.copyWith(
+                                fontSize: 15, fontFamily: "Normal"),
                           ),
                           divider(),
                           title("働くための条件"),
                           Text(
                             "${widget.info.workCatchPhrase}",
-                            style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            style: kNormalText.copyWith(
+                                fontSize: 15, fontFamily: "Normal"),
                           ),
                           divider(),
                           title('働く場所'),
                           Text(
                             "${widget.info.location?.postalCode}   ${widget.info.jobLocation}\n${widget.info.location?.street} ${widget.info.location?.building}\n${widget.info.location?.accessAddress}",
-                            style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            style: kNormalText.copyWith(
+                                fontSize: 15, fontFamily: "Normal"),
                           ),
                           divider(),
                           googlemap(context),
@@ -333,7 +299,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
           : Visibility(
               visible: shiftList.isEmpty ? false : true,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: InkWell(
                   onTap: () async {
                     if (auth.myUser != null) {
@@ -386,197 +353,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
   showConfirmOrderDialog() {
     showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-              content: Container(
-                width: AppSize.getDeviceWidth(context) * 0.8,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                          width: AppSize.getDeviceWidth(context),
-                          height: AppSize.getDeviceHeight(context) * 0.3,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                    widget.info.image != null && widget.info.image != "" ? widget.info.image! : ConstValue.defaultBgImage),
-                                fit: BoxFit.cover),
-                          ),
-                        ),
-                        // Positioned(
-                        //   top: 10,
-                        //   left: 10,
-                        //   child: Container(
-                        //       width: 40,
-                        //       height: 40,
-                        //       decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
-                        //       child: Center(child: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_rounded)))),
-                        // ),
-                        // Positioned(
-                        //   top: 10,
-                        //   right: 10,
-                        //   child: Row(
-                        //     mainAxisAlignment: MainAxisAlignment.end,
-                        //     children: [
-                        //       Container(
-                        //         width: 40,
-                        //         height: 40,
-                        //         decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: AppColor.bgfav),
-                        //         child: Center(
-                        //           child: GestureDetector(
-                        //             onTap: () => setState(() {
-                        //               fa.onfav(widget.info.uid);
-                        //               fa.ontap(widget.docId, widget.info);
-                        //             }),
-                        //             child: Icon(
-                        //               Icons.favorite,
-                        //               size: 30,
-                        //               color: fa.lists.contains(widget.info.uid) ? Colors.yellow : Colors.white,
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ),
-                        //       const SizedBox(
-                        //         width: 8,
-                        //       ),
-                        //       // Container(
-                        //       //   width: 40,
-                        //       //   height: 40,
-                        //       //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
-                        //       //   child: Center(
-                        //       //     child: IconButton(
-                        //       //       onPressed: () {
-                        //       //         MyPageRoute.goTo(
-                        //       //           context,
-                        //       //           MessagePage(
-                        //       //             companyID: widget.info.companyId ?? "ABC",
-                        //       //             companyName: widget.info.company,
-                        //       //             companyImageUrl: widget.info.image,
-                        //       //           ),
-                        //       //         );
-                        //       //       },
-                        //       //       icon: const Icon(
-                        //       //         Icons.chat_bubble,
-                        //       //         color: Colors.black,
-                        //       //         size: 25,
-                        //       //       ),
-                        //       //     ),
-                        //       //   ),
-                        //       // )
-                        //     ],
-                        //   ),
-                        // ),
-                        Positioned(
-                          bottom: 16,
-                          right: 16,
-                          child: Container(
-                            height: 45,
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            decoration: BoxDecoration(
-                                border: Border.all(color: AppColor.greyColor, width: 1),
-                                borderRadius: BorderRadius.circular(16),
-                                color: Colors.white),
-                            child: Center(
-                              child: Text(
-                                CurrencyFormatHelper.displayData(widget.info.hourlyWag),
-                                style: kTitleText.copyWith(fontWeight: FontWeight.w600, color: AppColor.greyColor),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    Center(
-                      child: Text(
-                        widget.info.title.toString(),
-                        style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 15),
-                      ),
-                    ),
-                    AppSize.spaceHeight8,
-                    Text(widget.info.notes.toString()),
-                    AppSize.spaceHeight16,
-                    ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: selectedShiftList.length,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return Container(
-                            margin: const EdgeInsets.only(bottom: 10),
-                            decoration: BoxDecoration(
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(0xff00000010),
-                                    offset: Offset(0, 9), // changes position of shadow
-                                  ),
-                                ],
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(width: 1, color: AppColor.secondaryColor),
-                                color: Color(0xffFAFFD3)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 51,
-                                          height: 51,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                dateTimeToMonthDay(selectedShiftList[index].date),
-                                                style: kNormalText.copyWith(fontFamily: "Bold", fontSize: 13, color: AppColor.primaryColor),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(top: 3, left: 5),
-                                                child: Text(
-                                                  toJapanWeekDayWithInt(selectedShiftList[index].date!.weekday),
-                                                  style: kNormalText.copyWith(fontFamily: "Normal", fontSize: 9, color: AppColor.primaryColor),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        AppSize.spaceWidth16,
-                                        Text(
-                                          "${selectedShiftList[index].startWorkTime} 〜 ${selectedShiftList[index].endWorkTime}",
-                                          style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
-                                        ),
-                                        AppSize.spaceWidth16,
-                                        Text(
-                                          "${CurrencyFormatHelper.displayDataRightYen(selectedShiftList[index].price)}",
-                                          style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  AppSize.spaceWidth16,
-                                  const Icon(
-                                    Icons.check_rounded,
-                                    color: Colors.green,
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
-                    AppSize.spaceHeight16,
-                    CheckBoxListTileWidget(
-                        size: AppSize.getDeviceWidth(context),
-                        title: "お仕事の内容や注意事項などすべて確認しました。",
-                        val: fa.checkBox,
-                        onChange: (v) {
-                          fa.onChangeCheckBox(!fa.checkBox);
-                          print("${fa.checkBox}");
-                        })
-                  ],
-                ),
-              ),
-            ));
+        builder: (context) => ConfirmApplyJobDialog(
+            selectedShiftList: selectedShiftList, info: widget.info));
   }
 
   buildShiftList() {
@@ -598,9 +376,14 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                       ),
                     ],
                     borderRadius: BorderRadius.circular(5),
-                    border:
-                        Border.all(width: 1, color: selectedShiftList.contains(shiftList[index]) ? AppColor.secondaryColor : AppColor.bgPageColor),
-                    color: selectedShiftList.contains(shiftList[index]) ? const Color(0xffFAFFD3) : AppColor.whiteColor),
+                    border: Border.all(
+                        width: 1,
+                        color: selectedShiftList.contains(shiftList[index])
+                            ? AppColor.secondaryColor
+                            : AppColor.bgPageColor),
+                    color: selectedShiftList.contains(shiftList[index])
+                        ? const Color(0xffFAFFD3)
+                        : AppColor.whiteColor),
                 child: InkWell(
                   onTap: () {
                     setState(() {
@@ -627,13 +410,21 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                                   children: [
                                     Text(
                                       dateTimeToMonthDay(shiftList[index].date),
-                                      style: kNormalText.copyWith(fontFamily: "Bold", fontSize: 13, color: AppColor.primaryColor),
+                                      style: kNormalText.copyWith(
+                                          fontFamily: "Bold",
+                                          fontSize: 13,
+                                          color: AppColor.primaryColor),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(top: 3, left: 5),
+                                      padding: const EdgeInsets.only(
+                                          top: 3, left: 5),
                                       child: Text(
-                                        toJapanWeekDayWithInt(shiftList[index].date!.weekday),
-                                        style: kNormalText.copyWith(fontFamily: "Normal", fontSize: 9, color: AppColor.primaryColor),
+                                        toJapanWeekDayWithInt(
+                                            shiftList[index].date!.weekday),
+                                        style: kNormalText.copyWith(
+                                            fontFamily: "Normal",
+                                            fontSize: 9,
+                                            color: AppColor.primaryColor),
                                       ),
                                     )
                                   ],
@@ -642,12 +433,14 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                               AppSize.spaceWidth16,
                               Text(
                                 "${shiftList[index].startWorkTime} 〜 ${shiftList[index].endWorkTime}",
-                                style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                                style: kNormalText.copyWith(
+                                    fontSize: 15, fontFamily: "Normal"),
                               ),
                               AppSize.spaceWidth16,
                               Text(
                                 "${CurrencyFormatHelper.displayDataRightYen(shiftList[index].price)}",
-                                style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                                style: kNormalText.copyWith(
+                                    fontSize: 15, fontFamily: "Normal"),
                               ),
                             ],
                           ),
@@ -683,7 +476,9 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
-          Text(title, style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 15)),
+          Text(title,
+              style: kNormalText.copyWith(
+                  color: AppColor.primaryColor, fontSize: 15)),
         ],
       ),
     );
@@ -719,17 +514,26 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                 AppSize.spaceHeight16,
                 Text(
                   "${company?.companyName}",
-                  style: kNormalText.copyWith(fontFamily: "Bold", fontSize: 20, color: AppColor.primaryColor),
+                  style: kNormalText.copyWith(
+                      fontFamily: "Bold",
+                      fontSize: 20,
+                      color: AppColor.primaryColor),
                 ),
                 AppSize.spaceHeight16,
                 Container(
                   width: 56,
                   height: 26,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), border: Border.all(width: 2, color: AppColor.secondaryColor)),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      border:
+                          Border.all(width: 2, color: AppColor.secondaryColor)),
                   child: Center(
                       child: Text(
                     "GOLD",
-                    style: kNormalText.copyWith(fontFamily: "Bold", fontSize: 12, color: AppColor.secondaryColor),
+                    style: kNormalText.copyWith(
+                        fontFamily: "Bold",
+                        fontSize: 12,
+                        color: AppColor.secondaryColor),
                   )),
                 ),
                 // Text(
@@ -801,22 +605,28 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                     child: Container(
                       width: 80,
                       // height: 100,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppColor.whiteColor, boxShadow: [
-                        BoxShadow(
-                          offset: const Offset(-1, -1),
-                          color: Colors.grey.withOpacity(0.2),
-                          blurRadius: 10,
-                        ),
-                        BoxShadow(
-                          offset: const Offset(1, 1),
-                          color: Colors.grey.withOpacity(0.2),
-                          blurRadius: 10,
-                        )
-                      ]),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: AppColor.whiteColor,
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(-1, -1),
+                              color: Colors.grey.withOpacity(0.2),
+                              blurRadius: 10,
+                            ),
+                            BoxShadow(
+                              offset: const Offset(1, 1),
+                              color: Colors.grey.withOpacity(0.2),
+                              blurRadius: 10,
+                            )
+                          ]),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [conditionList[index]["icon"], Text(conditionList[index]["title"])],
+                        children: [
+                          conditionList[index]["icon"],
+                          Text(conditionList[index]["title"])
+                        ],
                       ),
                     ),
                   ),
@@ -850,7 +660,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
 
   _addMarker(LatLng position, String id, BitmapDescriptor descriptor) {
     MarkerId markerId = MarkerId(id);
-    Marker marker = Marker(markerId: markerId, icon: descriptor, position: position);
+    Marker marker =
+        Marker(markerId: markerId, icon: descriptor, position: position);
     markers[markerId] = marker;
   }
 }
