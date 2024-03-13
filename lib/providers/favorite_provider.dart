@@ -5,6 +5,12 @@ import 'package:flutter/material.dart';
 
 class FavoriteProvider extends ChangeNotifier {
   late bool isfav;
+  bool checkBox = false;
+
+  onChangeCheckBox(bool val) {
+    checkBox = val;
+    notifyListeners();
+  }
 
   onget() {
     try {

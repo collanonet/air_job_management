@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import '../../const/const.dart';
 import '../../models/worker_model/search_job.dart';
 import '../../utils/respnsive.dart';
-import '../search/search_screen_dedial.dart';
+import '../search/search_job_detail.dart';
 
 class FullTimeJob extends StatefulWidget {
   final bool isFullTime;
@@ -74,10 +74,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
   ValueNotifier<bool> loading = ValueNotifier<bool>(true);
   onGetData() async {
     jobSearchList = [];
-    var data = await FirebaseFirestore.instance
-        .collection("search_job")
-        .where('employment_type', isEqualTo: '正社員')
-        .get();
+    var data = await FirebaseFirestore.instance.collection("search_job").where('employment_type', isEqualTo: '正社員').get();
     if (data.size > 0) {
       for (var d in data.docs) {
         var info = SearchJob.fromJson(d.data());
@@ -130,9 +127,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
                                   borderRadius: BorderRadius.circular(16),
                                   child: Image.asset(
                                     'assets/logo22.png',
-                                    width: Responsive.isMobile(context)
-                                        ? 100
-                                        : 120,
+                                    width: Responsive.isMobile(context) ? 100 : 120,
                                   ),
                                 ),
                                 Container(
@@ -147,8 +142,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
                                   child: Center(
                                     child: Text(
                                       '条件を保存',
-                                      style: kNormalText.copyWith(
-                                          color: Colors.white),
+                                      style: kNormalText.copyWith(color: Colors.white),
                                     ),
                                   ),
                                 )
@@ -159,8 +153,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
                           dropdown(),
                           searchbox(),
                           Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
+                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                             child: Divider(
                               height: 2,
                               color: AppColor.whiteColor,
@@ -178,10 +171,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
                                   ),
                                   Text(
                                     ' 検索履歴・保存条件',
-                                    style: normalTextStyle.copyWith(
-                                        fontFamily: "Normal",
-                                        fontSize: 12,
-                                        color: Colors.white),
+                                    style: normalTextStyle.copyWith(fontFamily: "Normal", fontSize: 12, color: Colors.white),
                                   ),
                                 ],
                               ),
@@ -191,8 +181,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
                       ),
                     ),
                     Padding(
-                      padding:
-                          const EdgeInsets.only(left: 10, top: 16, right: 16),
+                      padding: const EdgeInsets.only(left: 10, top: 16, right: 16),
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: InkWell(
@@ -205,17 +194,12 @@ class _FullTimeJobState extends State<FullTimeJob> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(
-                                isSortByRelevance
-                                    ? Icons.keyboard_arrow_up_rounded
-                                    : Icons.keyboard_arrow_down_rounded,
+                                isSortByRelevance ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
                                 color: AppColor.primaryColor,
                               ),
                               Text(
                                 ' 関連性順',
-                                style: normalTextStyle.copyWith(
-                                    fontFamily: "Normal",
-                                    fontSize: 12,
-                                    color: AppColor.primaryColor),
+                                style: normalTextStyle.copyWith(fontFamily: "Normal", fontSize: 12, color: AppColor.primaryColor),
                               ),
                             ],
                           ),
@@ -279,8 +263,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
               child: Center(
                 child: Text(
                   '検索',
-                  style: normalTextStyle.copyWith(
-                      fontSize: 18, fontFamily: "Bold", color: Colors.white),
+                  style: normalTextStyle.copyWith(fontSize: 18, fontFamily: "Bold", color: Colors.white),
                 ),
               ),
             ),
@@ -312,19 +295,10 @@ class _FullTimeJobState extends State<FullTimeJob> {
             Card(
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: AppColor.whiteColor,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: const [
-                      BoxShadow(
-                          offset: Offset(1, 1),
-                          color: Colors.grey,
-                          blurRadius: 10),
-                      BoxShadow(
-                          offset: Offset(-1, -1),
-                          color: Colors.grey,
-                          blurRadius: 10)
-                    ]),
+                decoration: BoxDecoration(color: AppColor.whiteColor, borderRadius: BorderRadius.circular(10), boxShadow: const [
+                  BoxShadow(offset: Offset(1, 1), color: Colors.grey, blurRadius: 10),
+                  BoxShadow(offset: Offset(-1, -1), color: Colors.grey, blurRadius: 10)
+                ]),
                 child: Column(
                   children: [
                     under(info),
@@ -346,8 +320,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
         children: [
           Text(
             info.title.toString(),
-            style:
-                titleStyle.copyWith(color: AppColor.primaryColor, fontSize: 16),
+            style: titleStyle.copyWith(color: AppColor.primaryColor, fontSize: 16),
           ),
           AppSize.spaceHeight5,
           Row(
@@ -405,10 +378,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
               topRight: Radius.circular(10),
             ),
             image: DecorationImage(
-                image: NetworkImage(info.image != null && info.image != ""
-                    ? info.image
-                    : ConstValue.defaultBgImage),
-                fit: BoxFit.cover),
+                image: NetworkImage(info.image != null && info.image != "" ? info.image : ConstValue.defaultBgImage), fit: BoxFit.cover),
           ),
         ),
         Column(
@@ -469,9 +439,7 @@ class _FullTimeJobState extends State<FullTimeJob> {
       children: [
         Container(
           width: MediaQuery.of(context).size.width - 32,
-          decoration: BoxDecoration(
-              color: AppColor.whiteColor,
-              borderRadius: BorderRadius.circular(5)),
+          decoration: BoxDecoration(color: AppColor.whiteColor, borderRadius: BorderRadius.circular(5)),
           child: DropdownButtonHideUnderline(
               child: DropdownButton(
                   icon: Padding(

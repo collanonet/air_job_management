@@ -1,5 +1,4 @@
 import 'package:air_job_management/api/company.dart';
-import 'package:air_job_management/api/worker_api/search_api.dart';
 import 'package:air_job_management/const/const.dart';
 import 'package:air_job_management/helper/currency_format.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
@@ -7,6 +6,7 @@ import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/models/worker_model/search_job.dart';
 import 'package:air_job_management/models/worker_model/shift.dart';
+import 'package:air_job_management/pages/register/widget/check_box.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/favorite_provider.dart';
 import 'package:air_job_management/utils/app_color.dart';
@@ -14,9 +14,7 @@ import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/page_route.dart';
 import 'package:air_job_management/utils/style.dart';
-import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_back_button.dart';
-import 'package:air_job_management/widgets/custom_dialog.dart';
 import 'package:air_job_management/widgets/show_message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -58,6 +56,7 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
   late GoogleMapController mapController;
   Map<MarkerId, Marker> markers = {};
   LatLng? companyLatLng;
+  late FavoriteProvider fa;
 
   @override
   void initState() {
@@ -99,12 +98,16 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
 
   @override
   Widget build(BuildContext context) {
-    FavoriteProvider fa = Provider.of<FavoriteProvider>(context);
+    fa = Provider.of<FavoriteProvider>(context);
     var auth = Provider.of<AuthProvider>(context);
     return Scaffold(
+      backgroundColor: AppColor.bgPageColor,
       appBar: AppBar(
         elevation: 0,
-        title: Text("仕事の詳細"),
+        title: Text(
+          "仕事の詳細",
+          style: kNormalText.copyWith(fontSize: 15),
+        ),
         leading: CustomBackButtonWidget(textColor: AppColor.whiteColor),
         backgroundColor: AppColor.primaryColor,
         leadingWidth: 120,
@@ -337,18 +340,19 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                       if (selectedShiftList.isEmpty) {
                         MessageWidget.show("少なくとも 1 つのシフトを選択してください");
                       } else {
-                        CustomDialog.confirmDialog(
-                            context: context,
-                            onApprove: () async {
-                              Navigator.pop(context);
-                              bool isSuccess = await SearchJobApi().createJobRequest(widget.info, auth.myUser!, selectedShiftList);
-                              if (isSuccess) {
-                                toastMessageSuccess(JapaneseText.successCreate, context);
-                                Navigator.pop(context);
-                              } else {
-                                toastMessageError(errorMessage, context);
-                              }
-                            });
+                        showConfirmOrderDialog();
+                        // CustomDialog.confirmDialog(
+                        //     context: context,
+                        //     onApprove: () async {
+                        //       Navigator.pop(context);
+                        //       bool isSuccess = await SearchJobApi().createJobRequest(widget.info, auth.myUser!, selectedShiftList);
+                        //       if (isSuccess) {
+                        //         toastMessageSuccess(JapaneseText.successCreate, context);
+                        //         Navigator.pop(context);
+                        //       } else {
+                        //         toastMessageError(errorMessage, context);
+                        //       }
+                        //     });
                       }
                     } else {
                       MyPageRoute.goTo(
@@ -379,6 +383,202 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
     );
   }
 
+  showConfirmOrderDialog() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              content: Container(
+                width: AppSize.getDeviceWidth(context) * 0.8,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Stack(
+                      children: [
+                        Container(
+                          width: AppSize.getDeviceWidth(context),
+                          height: AppSize.getDeviceHeight(context) * 0.3,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: NetworkImage(
+                                    widget.info.image != null && widget.info.image != "" ? widget.info.image! : ConstValue.defaultBgImage),
+                                fit: BoxFit.cover),
+                          ),
+                        ),
+                        // Positioned(
+                        //   top: 10,
+                        //   left: 10,
+                        //   child: Container(
+                        //       width: 40,
+                        //       height: 40,
+                        //       decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
+                        //       child: Center(child: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.arrow_back_rounded)))),
+                        // ),
+                        // Positioned(
+                        //   top: 10,
+                        //   right: 10,
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.end,
+                        //     children: [
+                        //       Container(
+                        //         width: 40,
+                        //         height: 40,
+                        //         decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: AppColor.bgfav),
+                        //         child: Center(
+                        //           child: GestureDetector(
+                        //             onTap: () => setState(() {
+                        //               fa.onfav(widget.info.uid);
+                        //               fa.ontap(widget.docId, widget.info);
+                        //             }),
+                        //             child: Icon(
+                        //               Icons.favorite,
+                        //               size: 30,
+                        //               color: fa.lists.contains(widget.info.uid) ? Colors.yellow : Colors.white,
+                        //             ),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       const SizedBox(
+                        //         width: 8,
+                        //       ),
+                        //       // Container(
+                        //       //   width: 40,
+                        //       //   height: 40,
+                        //       //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white),
+                        //       //   child: Center(
+                        //       //     child: IconButton(
+                        //       //       onPressed: () {
+                        //       //         MyPageRoute.goTo(
+                        //       //           context,
+                        //       //           MessagePage(
+                        //       //             companyID: widget.info.companyId ?? "ABC",
+                        //       //             companyName: widget.info.company,
+                        //       //             companyImageUrl: widget.info.image,
+                        //       //           ),
+                        //       //         );
+                        //       //       },
+                        //       //       icon: const Icon(
+                        //       //         Icons.chat_bubble,
+                        //       //         color: Colors.black,
+                        //       //         size: 25,
+                        //       //       ),
+                        //       //     ),
+                        //       //   ),
+                        //       // )
+                        //     ],
+                        //   ),
+                        // ),
+                        Positioned(
+                          bottom: 16,
+                          right: 16,
+                          child: Container(
+                            height: 45,
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: AppColor.greyColor, width: 1),
+                                borderRadius: BorderRadius.circular(16),
+                                color: Colors.white),
+                            child: Center(
+                              child: Text(
+                                CurrencyFormatHelper.displayData(widget.info.hourlyWag),
+                                style: kTitleText.copyWith(fontWeight: FontWeight.w600, color: AppColor.greyColor),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    Center(
+                      child: Text(
+                        widget.info.title.toString(),
+                        style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                      ),
+                    ),
+                    AppSize.spaceHeight8,
+                    Text(widget.info.notes.toString()),
+                    AppSize.spaceHeight16,
+                    ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: selectedShiftList.length,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 10),
+                            decoration: BoxDecoration(
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Color(0xff00000010),
+                                    offset: Offset(0, 9), // changes position of shadow
+                                  ),
+                                ],
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(width: 1, color: AppColor.secondaryColor),
+                                color: Color(0xffFAFFD3)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 51,
+                                          height: 51,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                dateTimeToMonthDay(selectedShiftList[index].date),
+                                                style: kNormalText.copyWith(fontFamily: "Bold", fontSize: 13, color: AppColor.primaryColor),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 3, left: 5),
+                                                child: Text(
+                                                  toJapanWeekDayWithInt(selectedShiftList[index].date!.weekday),
+                                                  style: kNormalText.copyWith(fontFamily: "Normal", fontSize: 9, color: AppColor.primaryColor),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                        AppSize.spaceWidth16,
+                                        Text(
+                                          "${selectedShiftList[index].startWorkTime} 〜 ${selectedShiftList[index].endWorkTime}",
+                                          style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                                        ),
+                                        AppSize.spaceWidth16,
+                                        Text(
+                                          "${CurrencyFormatHelper.displayDataRightYen(selectedShiftList[index].price)}",
+                                          style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  AppSize.spaceWidth16,
+                                  const Icon(
+                                    Icons.check_rounded,
+                                    color: Colors.green,
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                    AppSize.spaceHeight16,
+                    CheckBoxListTileWidget(
+                        size: AppSize.getDeviceWidth(context),
+                        title: "お仕事の内容や注意事項などすべて確認しました。",
+                        val: fa.checkBox,
+                        onChange: (v) {
+                          fa.onChangeCheckBox(!fa.checkBox);
+                          print("${fa.checkBox}");
+                        })
+                  ],
+                ),
+              ),
+            ));
+  }
+
   buildShiftList() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -389,6 +589,18 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                decoration: BoxDecoration(
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0xff00000010),
+                        offset: Offset(0, 9), // changes position of shadow
+                      ),
+                    ],
+                    borderRadius: BorderRadius.circular(5),
+                    border:
+                        Border.all(width: 1, color: selectedShiftList.contains(shiftList[index]) ? AppColor.secondaryColor : AppColor.bgPageColor),
+                    color: selectedShiftList.contains(shiftList[index]) ? const Color(0xffFAFFD3) : AppColor.whiteColor),
                 child: InkWell(
                   onTap: () {
                     setState(() {
@@ -406,11 +618,10 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                         Expanded(
                           child: Row(
                             children: [
-                              Container(
+                              SizedBox(
                                 width: 51,
                                 height: 51,
-                                decoration: boxDecoration7,
-                                child: Column(
+                                child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
@@ -418,9 +629,12 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                                       dateTimeToMonthDay(shiftList[index].date),
                                       style: kNormalText.copyWith(fontFamily: "Bold", fontSize: 13, color: AppColor.primaryColor),
                                     ),
-                                    Text(
-                                      toJapanWeekDayWithInt(shiftList[index].date!.weekday),
-                                      style: kNormalText.copyWith(fontFamily: "Normal", fontSize: 9, color: AppColor.primaryColor),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 3, left: 5),
+                                      child: Text(
+                                        toJapanWeekDayWithInt(shiftList[index].date!.weekday),
+                                        style: kNormalText.copyWith(fontFamily: "Normal", fontSize: 9, color: AppColor.primaryColor),
+                                      ),
                                     )
                                   ],
                                 ),
@@ -440,14 +654,14 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                         ),
                         AppSize.spaceWidth16,
                         if (selectedShiftList.contains(shiftList[index]))
-                          Icon(
-                            Icons.check_box,
-                            color: AppColor.primaryColor,
+                          const Icon(
+                            Icons.check_rounded,
+                            color: Colors.green,
                           )
                         else
-                          Icon(
-                            Icons.check_box_outline_blank_outlined,
-                            color: AppColor.primaryColor,
+                          const Icon(
+                            Icons.check_rounded,
+                            color: Colors.grey,
                           )
                       ],
                     ),

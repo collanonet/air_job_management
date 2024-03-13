@@ -19,7 +19,7 @@ import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
 import '../../utils/date_time_utils.dart';
 import '../../utils/my_route.dart';
-import '../search/search_screen_dedial.dart';
+import '../search/search_job_detail.dart';
 import 'filter/filter_option.dart';
 
 class PartTimeJob extends StatefulWidget {

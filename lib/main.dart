@@ -73,8 +73,10 @@ final GoRouter _router = GoRouter(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
         print("Initial called ${state.location}");
+        // return CreateJobRequestSuccessPage();
+        // return VerifyUserEmailPage(myUser: MyUser(), isFullTime: isFullTime);
         // return NewFormRegistrationForPartTimePage(myUser: MyUser(email: "sopheadavid+010101@yandex.com", uid: "2EIYGvWGVeahijOngeNZSUAJLCG2"));
-        return SplashScreen(
+        return const SplashScreen(
           isFromWorker: false,
         );
       },

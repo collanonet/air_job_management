@@ -1,4 +1,4 @@
-import 'package:air_job_management/2_worker_page/search/search_screen_dedial.dart';
+import 'package:air_job_management/2_worker_page/search/search_job_detail.dart';
 import 'package:air_job_management/models/worker_model/search_job.dart';
 import 'package:air_job_management/providers/favorite_provider.dart';
 import 'package:air_job_management/utils/style.dart';

@@ -10,6 +10,7 @@ import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
 import '../../utils/page_route.dart';
 import '../../utils/respnsive.dart';
+import '../../utils/style.dart';
 import '../../utils/toast_message_util.dart';
 import '../../widgets/loading.dart';
 import '../login.dart';
@@ -35,7 +36,7 @@ class _VerifyUserEmailPageState extends State<VerifyUserEmailPage> with AfterBui
       color: Colors.black.withOpacity(0.3),
       progressIndicator: LoadingWidget(AppColor.whiteColor),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColor.bgPageColor,
         body: SafeArea(
           child: SingleChildScrollView(
             child: Center(
@@ -43,15 +44,15 @@ class _VerifyUserEmailPageState extends State<VerifyUserEmailPage> with AfterBui
                 width: AppSize.getDeviceWidth(context) * 0.95,
                 height: AppSize.getDeviceHeight(context) * 0.96,
                 padding: const EdgeInsets.all(8),
-                color: Colors.white,
+                color: AppColor.bgPageColor,
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Align(
-                          alignment: Alignment.centerLeft,
-                          child: IconButton(
+                      Row(
+                        children: [
+                          IconButton(
                               onPressed: () => MyPageRoute.goToReplace(
                                   context,
                                   LoginPage(
@@ -61,19 +62,57 @@ class _VerifyUserEmailPageState extends State<VerifyUserEmailPage> with AfterBui
                               icon: Icon(
                                 Icons.arrow_back,
                                 color: AppColor.primaryColor,
-                              ))),
-                      Center(
-                          child: Image.asset(
-                        "assets/svgs/img.png",
-                        width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.3),
-                      )),
-                      //Email & Pass
-                      Text("登録を行います。\nまずはメールアドレスに届いたURLをクリックし認証を行ってください。\nその後こちらの「送信する」をクリックしてください。(${widget.myUser?.email})"),
+                              )),
+                          Expanded(
+                              child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 20),
+                              child: Text(
+                                "確認",
+                                style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                              ),
+                            ),
+                          ))
+                        ],
+                      ),
+                      AppSize.spaceHeight16,
+                      Container(
+                        width: AppSize.getDeviceWidth(context),
+                        decoration: boxDecoration,
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 50),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(
+                              "assets/logo.png",
+                              width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.25),
+                            ),
+                            // Icon(
+                            //   Icons.location_on_outlined,
+                            //   size: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.2 : 0.1),
+                            //   color: AppColor.primaryColor,
+                            // ),
+                            AppSize.spaceHeight30,
+                            AppSize.spaceHeight30,
+                            Text("ご登録のメールアドレスに認証用のURLをお送りしました。ご確認ください。",
+                                textAlign: TextAlign.center,
+                                style: kNormalText.copyWith(fontSize: 16, fontFamily: "Regular", color: AppColor.darkGrey))
+                          ],
+                        ),
+                      ),
                       AppSize.spaceHeight30,
                       Center(
                         child: SizedBox(
-                            width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.6 : 0.20),
-                            child: ButtonWidget(color: AppColor.primaryColor, onPress: () => verifyAccount(), title: "送信する")),
+                          width: AppSize.getDeviceWidth(context) * (Responsive.isMobile(context) ? 0.8 : 0.25),
+                          child: ButtonWidget(
+                            title: "他のお仕事を見る",
+                            onPress: () => verifyAccount(),
+                            radius: 5,
+                            color: AppColor.secondaryColor,
+                          ),
+                        ),
                       ),
                       //Test
                       AppSize.spaceHeight16,
@@ -98,22 +137,29 @@ class _VerifyUserEmailPageState extends State<VerifyUserEmailPage> with AfterBui
   }
 
   verifyAccount() async {
-    setState(() {
-      isLoading = true;
-    });
-    await FirebaseAuth.instance.currentUser?.reload();
-    await Future.delayed(const Duration(seconds: 1));
-    bool isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
-    setState(() {
-      isLoading = false;
-    });
-    if (isEmailVerified) {
-      if (widget.isFullTime) {
-        MyPageRoute.goTo(context, NewFormRegistrationPage(myUser: widget.myUser));
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      await FirebaseAuth.instance.currentUser?.reload();
+      await Future.delayed(const Duration(seconds: 1));
+      bool isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
+      setState(() {
+        isLoading = false;
+      });
+      if (isEmailVerified) {
+        if (widget.isFullTime) {
+          MyPageRoute.goTo(context, NewFormRegistrationPage(myUser: widget.myUser));
+        } else {
+          MyPageRoute.goTo(context, NewFormRegistrationForPartTimePage(myUser: widget.myUser));
+        }
       } else {
-        MyPageRoute.goTo(context, NewFormRegistrationForPartTimePage(myUser: widget.myUser));
+        toastMessageError("検証に失敗しました。 メールにアクセスし、送信されたURLを再度ご確認ください。", context);
       }
-    } else {
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
       toastMessageError("検証に失敗しました。 メールにアクセスし、送信されたURLを再度ご確認ください。", context);
     }
   }
