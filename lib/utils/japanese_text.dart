@@ -1,4 +1,10 @@
 class JapaneseText {
+  static String jobStatusSeekerApproved = "確定済";
+  static String jobStatusSeekerCanceled = "不承諾";
+  static String jobStatusSeekerRejected = "辞退済";
+  static String jobStatusSeekerPending = "確認中";
+  static String jobStatusSeekerCompleted = "稼働済";
+
   static String home = "ホーム";
   static String contactUs = "お問い合わせ";
   static String aboutUs = "会社概要";

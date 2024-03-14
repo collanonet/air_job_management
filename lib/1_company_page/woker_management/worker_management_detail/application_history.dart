@@ -236,7 +236,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
           setState(() {
             isLoading = true;
           });
-          bool isSuccess = await WorkerManagementApiService().updateJobStatus(job.uid!, action == "確定する" ? "approved" : "canceled");
+          bool isSuccess = await WorkerManagementApiService().updateJobStatus(job.uid!, action == "確定する" ? "approved" : "rejected");
           if (isSuccess) {
             jobList = await WorkerManagementApiService().getAllJobApplyForAUSer(authProvider.myCompany?.uid ?? "", widget.myUser?.uid ?? "");
             setState(() {

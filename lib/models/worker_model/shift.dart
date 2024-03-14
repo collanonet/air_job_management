@@ -11,8 +11,20 @@ class ShiftModel {
   String? startBreakTime;
   String? endBreakTime;
   SearchJob? myJob;
+  String? status;
+  String? jobId;
   ShiftModel(
-      {this.date, this.price, this.endBreakTime, this.startBreakTime, this.endWorkTime, this.startWorkTime, this.image, this.title, this.myJob});
+      {this.date,
+      this.status,
+      this.price,
+      this.endBreakTime,
+      this.startBreakTime,
+      this.endWorkTime,
+      this.startWorkTime,
+      this.image,
+      this.title,
+      this.myJob,
+      this.jobId});
 
   factory ShiftModel.fromJson(Map<String, dynamic> json) => ShiftModel(
       date: DateToAPIHelper.fromApiToLocal(json["date"].toString()),
@@ -20,6 +32,7 @@ class ShiftModel {
       startBreakTime: json["start_break_time"],
       endWorkTime: json["end_work_time"],
       endBreakTime: json["end_break_time"],
+      status: json["status"],
       price: json["price"]);
 
   @override

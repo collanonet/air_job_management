@@ -3,6 +3,8 @@ import 'package:air_job_management/2_worker_page/myjob/past_screen.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:flutter/material.dart';
 
+import 'all_job_apply.dart';
+
 class JobScreen extends StatelessWidget {
   const JobScreen({super.key, required this.uid});
 
@@ -29,7 +31,10 @@ class JobScreen extends StatelessWidget {
             labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             tabs: const [
               Tab(
-                text: "今後の予定",
+                text: "応募一覧",
+              ),
+              Tab(
+                text: "仕事の予定",
               ),
               Tab(text: "完了した仕事"),
             ],
@@ -38,6 +43,9 @@ class JobScreen extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
+            AppJobApplyPage(
+              uid: uid,
+            ),
             FutureJob(
               uid: uid,
             ),

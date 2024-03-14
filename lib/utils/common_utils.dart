@@ -1,3 +1,8 @@
+import 'package:air_job_management/utils/app_color.dart';
+import 'package:air_job_management/utils/japanese_text.dart';
+import 'package:air_job_management/utils/style.dart';
+import 'package:flutter/material.dart';
+
 class CommonUtils {
   static Future<void> waiting([int mili = 1000]) async {
     await Future.delayed(Duration(milliseconds: mili));
@@ -47,5 +52,67 @@ class CommonUtils {
       return true;
     }
     return false;
+  }
+
+  static Widget displayStatusForSeeker(String status) {
+    if (status == "canceled" || status == "rejected") {
+      return Container(
+        height: 25,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+        decoration: BoxDecoration(color: backgroundColorStatusFromApiToLocal(status), border: Border.all(width: 1, color: const Color(0xff98A6B5))),
+        child: Center(
+          child: displayStatusText(status),
+        ),
+      );
+    } else {
+      return Container(
+        height: 25,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+        decoration: BoxDecoration(color: backgroundColorStatusFromApiToLocal(status)),
+        child: Center(
+          child: displayStatusText(status),
+        ),
+      );
+    }
+  }
+
+  static Widget displayStatusText(String status) {
+    if (status == "canceled" || status == "rejected") {
+      return Text(
+        statusFromApiToLocal(status),
+        style: kNormalText.copyWith(fontSize: 12, color: const Color(0xff98A6B5)),
+      );
+    } else {
+      return Text(
+        statusFromApiToLocal(status),
+        style: kNormalText.copyWith(fontSize: 12, color: Colors.white),
+      );
+    }
+  }
+
+  static Color backgroundColorStatusFromApiToLocal(String status) {
+    if (status == "approved") {
+      return const Color(0xff7DC338);
+    } else if (status == "canceled" || status == "rejected") {
+      return AppColor.whiteColor;
+    } else if (status == "pending") {
+      return const Color(0xff6DC9E5);
+    } else {
+      return const Color(0xff98A6B5);
+    }
+  }
+
+  static String statusFromApiToLocal(String status) {
+    if (status == "approved") {
+      return JapaneseText.jobStatusSeekerApproved;
+    } else if (status == "canceled") {
+      return JapaneseText.jobStatusSeekerCanceled;
+    } else if (status == "rejected") {
+      return JapaneseText.jobStatusSeekerRejected;
+    } else if (status == "pending") {
+      return JapaneseText.jobStatusSeekerPending;
+    } else {
+      return JapaneseText.jobStatusSeekerCompleted;
+    }
   }
 }

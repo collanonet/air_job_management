@@ -3,6 +3,8 @@ import 'package:air_job_management/api/worker_api/search_api.dart';
 import 'package:air_job_management/const/const.dart';
 import 'package:air_job_management/models/worker_model/job.dart';
 import 'package:air_job_management/models/worker_model/search_job.dart';
+import 'package:air_job_management/utils/app_size.dart';
+import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/page_route.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,15 +17,15 @@ import '../../models/worker_model/shift.dart';
 import '../../utils/app_color.dart';
 import '../../utils/style.dart';
 
-class FutureJob extends StatefulWidget {
+class AppJobApplyPage extends StatefulWidget {
   final String uid;
-  const FutureJob({super.key, required this.uid});
+  const AppJobApplyPage({super.key, required this.uid});
 
   @override
-  State<FutureJob> createState() => _FutureJobState();
+  State<AppJobApplyPage> createState() => _AppJobApplyPageState();
 }
 
-class _FutureJobState extends State<FutureJob> {
+class _AppJobApplyPageState extends State<AppJobApplyPage> {
   //get Day
   DateTime getDate(DateTime d) => DateTime(d.year, d.month, d.day);
   DateTime date = DateTime.now();
@@ -35,14 +37,15 @@ class _FutureJobState extends State<FutureJob> {
   onGetData() async {
     shiftList = [];
     if (user?.uid != null) {
-      var data =
-          await FirebaseFirestore.instance.collection("job").where("status", isEqualTo: "pending").where("user_id", isEqualTo: user!.uid).get();
+      var data = await FirebaseFirestore.instance.collection("job").where("user_id", isEqualTo: user!.uid).get();
       for (var d in data.docs) {
         var info = Myjob.fromJson(d.data());
         info.uid = d.id;
         var job = await SearchJobApi().getASearchJob(info.jobId!);
         for (var d in info.shiftList!) {
           shiftList.add(ShiftModel(
+              jobId: info.uid,
+              status: info.status ?? "pending",
               myJob: job,
               image: info.image,
               title: info.jobTitle,
@@ -98,14 +101,18 @@ class _FutureJobState extends State<FutureJob> {
       onTap: () => MyPageRoute.goTo(
           context,
           ViewJobDetail(
-            shiftModel: info,
             info: info.myJob,
-          )),
+            shiftModel: info,
+          ), onRefreshData: () async {
+        loading.value = true;
+        await onGetData();
+      }),
       child: SizedBox(
         height: 80,
+        width: AppSize.getDeviceWidth(context),
         // color: Colors.amber,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
           child: Row(
             children: [
               Padding(
@@ -123,62 +130,67 @@ class _FutureJobState extends State<FutureJob> {
                   ],
                 ),
               ),
-              Container(
-                width: 330,
-                height: 67,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.whiteColor, boxShadow: [
-                  BoxShadow(offset: const Offset(1, 1), color: AppColor.greyColor.withOpacity(0.2), blurRadius: 5),
-                  BoxShadow(offset: const Offset(-1, -1), color: AppColor.greyColor.withOpacity(0.2), blurRadius: 5)
-                ]),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 94,
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(5),
-                          bottomLeft: Radius.circular(5),
+              Expanded(
+                child: Container(
+                  width: 330,
+                  height: 67,
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.whiteColor, boxShadow: [
+                    BoxShadow(offset: const Offset(1, 1), color: AppColor.greyColor.withOpacity(0.2), blurRadius: 5),
+                    BoxShadow(offset: const Offset(-1, -1), color: AppColor.greyColor.withOpacity(0.2), blurRadius: 5)
+                  ]),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 94,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(5),
+                            bottomLeft: Radius.circular(5),
+                          ),
+                          image: DecorationImage(image: NetworkImage(info.image ?? ConstValue.defaultBgImage), fit: BoxFit.cover),
                         ),
-                        image: DecorationImage(image: NetworkImage(info.image ?? ConstValue.defaultBgImage), fit: BoxFit.cover),
                       ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: Column(
-                          children: [
-                            Text(
-                              info.title ?? "",
-                              style: kNormalText,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  "${info.startWorkTime} 〜 ${info.endWorkTime}",
-                                  style: kNormalText.copyWith(fontSize: 12, fontFamily: "Normal"),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  CurrencyFormatHelper.displayData(info.price),
-                                  style: kNormalText.copyWith(
-                                    color: AppColor.primaryColor,
-                                    fontFamily: "Bold",
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                info.title ?? "",
+                                style: kNormalText,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "${info.startWorkTime} 〜 ${info.endWorkTime}",
+                                    style: kNormalText.copyWith(fontSize: 12, fontFamily: "Normal"),
                                   ),
-                                )
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    CurrencyFormatHelper.displayData(info.price),
+                                    style: kNormalText.copyWith(
+                                      color: AppColor.primaryColor,
+                                      fontFamily: "Bold",
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    )
-                  ],
+                      CommonUtils.displayStatusForSeeker(info.status),
+                      AppSize.spaceWidth8
+                    ],
+                  ),
                 ),
-              )
+              ),
             ],
           ),
         ),
