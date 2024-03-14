@@ -26,7 +26,12 @@ class ChatPage extends StatelessWidget {
               color: Colors.white,
             )),
         centerTitle: true,
-        title: Text("メッセージ", style: TextStyle(color: AppColor.primaryColor)),
+        title: Text("メッセージ",
+            style: TextStyle(
+                color: AppColor.primaryColor,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Normal")),
       ),
       body: list.isEmpty
           ? const Center(child: EmptyDataWidget())
@@ -37,10 +42,14 @@ class ChatPage extends StatelessWidget {
                 var item = list[index];
                 var companyID = item.split("_").last;
                 return FutureBuilder(
-                  future: FirebaseFirestore.instance.collection("company").doc(companyID).get(),
+                  future: FirebaseFirestore.instance
+                      .collection("company")
+                      .doc(companyID)
+                      .get(),
                   builder: (context, snapshot) {
                     var data = snapshot.data?.data();
-                    bool isLoading = snapshot.connectionState == ConnectionState.waiting;
+                    bool isLoading =
+                        snapshot.connectionState == ConnectionState.waiting;
                     if (data == null) {
                       return const SizedBox();
                     }
@@ -56,20 +65,29 @@ class ChatPage extends StatelessWidget {
                         );
                       },
                       leading: CircleAvatar(
-                        backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                        backgroundColor:
+                            Theme.of(context).colorScheme.surfaceVariant,
                         backgroundImage: NetworkImage(
                           data["company_profile"] ?? "",
                         ),
                       ),
-                      title: Text(isLoading ? "Loading..." : data["company_name"] ?? "Unknown"),
+                      title: Text(isLoading
+                          ? "Loading..."
+                          : data["company_name"] ?? "Unknown"),
                       subtitle: StreamBuilder(
-                        stream: MessageApi(provider.myUser!.uid!, companyID).messageRef.limit(1).orderBy("created_at", descending: true).snapshots(),
+                        stream: MessageApi(provider.myUser!.uid!, companyID)
+                            .messageRef
+                            .limit(1)
+                            .orderBy("created_at", descending: true)
+                            .snapshots(),
                         builder: (context, snapshot) {
                           var d = snapshot.data?.docs.first;
                           String message = d?["message"] ?? "";
                           int type = d?["type"] ?? 1;
                           return Text(
-                            snapshot.connectionState == ConnectionState.waiting ? "Loading..." : [message, "An Image", "A File"][type],
+                            snapshot.connectionState == ConnectionState.waiting
+                                ? "Loading..."
+                                : [message, "An Image", "A File"][type],
                           );
                         },
                       ),

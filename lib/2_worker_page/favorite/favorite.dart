@@ -30,7 +30,8 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
   ValueNotifier<bool> loading = ValueNotifier<bool>(true);
   onGetData() async {
     try {
-      var data = await FirebaseFirestore.instance.collection("search_job").get();
+      var data =
+          await FirebaseFirestore.instance.collection("search_job").get();
       if (data.size > 0) {
         for (var d in data.docs) {
           var info = SearchJob.fromJson(d.data());
@@ -84,7 +85,11 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
         elevation: 0,
         title: Text(
           'お気に入り',
-          style: TextStyle(color: AppColor.primaryColor),
+          style: TextStyle(
+              color: AppColor.primaryColor,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              fontFamily: "Normal"),
         ),
       ),
       body: loading.value
@@ -98,21 +103,24 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
                       child: jobSearchList.isEmpty
                           ? const EmptyDataWidget()
                           : Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
                               child: CustomScrollView(
                                 key: GlobalKey(),
                                 slivers: [
                                   SliverGrid(
-                                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                        maxCrossAxisExtent: 350,
-                                        mainAxisSpacing: 16,
-                                        crossAxisSpacing: 16,
-                                        childAspectRatio: 10 / 15,
-                                        mainAxisExtent: 260),
+                                    gridDelegate:
+                                        const SliverGridDelegateWithMaxCrossAxisExtent(
+                                            maxCrossAxisExtent: 350,
+                                            mainAxisSpacing: 16,
+                                            crossAxisSpacing: 16,
+                                            childAspectRatio: 10 / 15,
+                                            mainAxisExtent: 260),
                                     delegate: SliverChildBuilderDelegate(
                                       (BuildContext context, int index) {
                                         var info = jobSearchList[index];
-                                        return product(context, info, info.uid, favorite, index, auth);
+                                        return product(context, info, info.uid,
+                                            favorite, index, auth);
                                       },
                                       childCount: jobSearchList.length,
                                     ),
@@ -127,11 +135,14 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
     );
   }
 
-  Widget product(BuildContext context, SearchJob info, var docId, FavoriteProvider fa, int index, var auth) {
+  Widget product(BuildContext context, SearchJob info, var docId,
+      FavoriteProvider fa, int index, var auth) {
     return Card(
       child: Container(
         alignment: Alignment.center,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: AppColor.whiteColor),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: AppColor.whiteColor),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
@@ -164,8 +175,14 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
                           ),
                         ),
                         child: ClipRRect(
-                          borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16)),
-                          child: Image.network(info.image != null && info.image != "" ? info.image! : ConstValue.defaultBgImage, fit: BoxFit.cover),
+                          borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(16),
+                              topLeft: Radius.circular(16)),
+                          child: Image.network(
+                              info.image != null && info.image != ""
+                                  ? info.image!
+                                  : ConstValue.defaultBgImage,
+                              fit: BoxFit.cover),
                         ),
                       ),
                     ),
@@ -177,12 +194,15 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
                           Container(
                             height: 35,
                             width: 35,
-                            decoration: BoxDecoration(color: AppColor.bgPageColor, shape: BoxShape.circle),
+                            decoration: BoxDecoration(
+                                color: AppColor.bgPageColor,
+                                shape: BoxShape.circle),
                             child: Center(
                               child: InkWell(
                                   onTap: () {
                                     setState(() {
-                                      if (FirebaseAuth.instance.currentUser != null) {
+                                      if (FirebaseAuth.instance.currentUser !=
+                                          null) {
                                         fa.onfav(info.uid);
                                         fa.ontap(docId, info);
                                       } else {
@@ -193,7 +213,9 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
                                   child: Icon(
                                     Icons.favorite,
                                     size: 25,
-                                    color: fa.lists.contains(info.uid) ? Colors.yellow : Colors.white,
+                                    color: fa.lists.contains(info.uid)
+                                        ? Colors.yellow
+                                        : Colors.white,
                                   )),
                             ),
                           )
@@ -208,17 +230,22 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
                     info.title.toString(),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
-                    style: kNormalText.copyWith(fontSize: 14, color: AppColor.primaryColor, fontWeight: FontWeight.w600),
+                    style: kNormalText.copyWith(
+                        fontSize: 14,
+                        color: AppColor.primaryColor,
+                        fontWeight: FontWeight.w600),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         " ${info.startTimeHour}~${info.endTimeHour}",
-                        style: kNormalText.copyWith(fontSize: 10, color: AppColor.greyColor),
+                        style: kNormalText.copyWith(
+                            fontSize: 10, color: AppColor.greyColor),
                       ),
                       // Text(info.totime.toString()),
                     ],
@@ -230,10 +257,14 @@ class _FavoriteSreenState extends State<FavoriteSreen> {
                   ),
                   child: Align(
                       alignment: Alignment.centerLeft,
-                      child: Text(CurrencyFormatHelper.displayData(info.hourlyWag),
+                      child: Text(
+                          CurrencyFormatHelper.displayData(info.hourlyWag),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: kNormalText.copyWith(fontSize: 16, color: AppColor.primaryColor, fontWeight: FontWeight.w600))),
+                          style: kNormalText.copyWith(
+                              fontSize: 16,
+                              color: AppColor.primaryColor,
+                              fontWeight: FontWeight.w600))),
                 )
               ],
             ),

@@ -86,9 +86,10 @@ class _ViewProfileState extends State<ViewProfile> {
         title: Text(
           "マイページ",
           style: TextStyle(
-            color: colorxd = const Color(0xFFEDAD34),
-            fontWeight: FontWeight.bold,
-          ),
+              color: colorxd = const Color(0xFFEDAD34),
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              fontFamily: "Normal"),
         ),
         actions: [
           myUser == null
@@ -104,7 +105,8 @@ class _ViewProfileState extends State<ViewProfile> {
                     color: AppColor.primaryColor,
                   ))
               : IconButton(
-                  onPressed: () => MyPageRoute.goTo(context, const LogoutPage()),
+                  onPressed: () =>
+                      MyPageRoute.goTo(context, const LogoutPage()),
                   icon: Icon(
                     Icons.logout,
                     color: AppColor.primaryColor,
@@ -143,7 +145,10 @@ class _ViewProfileState extends State<ViewProfile> {
                               ),
                               Text(
                                 "${myUser?.nameKanJi}",
-                                style: TextStyle(color: colorxd = const Color(0xFFEDAD34), fontWeight: FontWeight.bold, fontSize: 25),
+                                style: TextStyle(
+                                    color: colorxd = const Color(0xFFEDAD34),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25),
                               ),
                             ],
                           ),
@@ -153,7 +158,9 @@ class _ViewProfileState extends State<ViewProfile> {
                         : Container(
                             width: 360,
                             height: 195,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Colors.white),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                color: Colors.white),
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Column(
@@ -162,13 +169,19 @@ class _ViewProfileState extends State<ViewProfile> {
                                     width: 60,
                                     height: 28,
                                     decoration: BoxDecoration(
-                                      border: Border.all(color: colorxd = const Color(0xFFF38301), width: 2),
+                                      border: Border.all(
+                                          color: colorxd =
+                                              const Color(0xFFF38301),
+                                          width: 2),
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                     alignment: Alignment.center,
                                     child: Text(
                                       "残高",
-                                      style: TextStyle(color: colorxd = const Color(0xFFF38301), fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                          color: colorxd =
+                                              const Color(0xFFF38301),
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                   const SizedBox(
@@ -178,7 +191,8 @@ class _ViewProfileState extends State<ViewProfile> {
                                     child: Text(
                                       "¥ ${myUser?.balance}",
                                       style: TextStyle(
-                                        color: colorxd = const Color(0xFFF38301),
+                                        color: colorxd =
+                                            const Color(0xFFF38301),
                                         fontSize: 40,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -194,26 +208,37 @@ class _ViewProfileState extends State<ViewProfile> {
                                           title: "本当に出金しますか？",
                                           titleText: "出金の確認",
                                           onApprove: () async {
-                                            bool checkPending = await WithdrawApi().isPending(myUser?.uid);
+                                            bool checkPending =
+                                                await WithdrawApi()
+                                                    .isPending(myUser?.uid);
                                             if (checkPending) {
                                               Navigator.pop(context);
                                               //You already requested this amount!  Please waiting for approval from admin.
-                                              toastMessageError("この金額はすでにリクエストされています。 管理者からの承認を待ってください。", context);
+                                              toastMessageError(
+                                                  "この金額はすでにリクエストされています。 管理者からの承認を待ってください。",
+                                                  context);
                                             } else {
                                               try {
                                                 await WithdrawApi().Withdraw(
                                                     amount: myUser?.balance,
                                                     createdAt: DateTime.now(),
-                                                    date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                                                    date: DateFormat(
+                                                            'yyyy-MM-dd')
+                                                        .format(DateTime.now()),
                                                     status: "pending",
-                                                    time: DateFormat('kk:mm').format(DateTime.now()),
+                                                    time: DateFormat('kk:mm')
+                                                        .format(DateTime.now()),
                                                     updatedAt: DateTime.now(),
                                                     workerID: myUser?.uid,
-                                                    workerName: "${myUser?.firstName} ${myUser?.lastName}");
+                                                    workerName:
+                                                        "${myUser?.firstName} ${myUser?.lastName}");
                                                 Navigator.pop(context);
-                                                toastMessageSuccess(JapaneseText.successCreate, context);
+                                                toastMessageSuccess(
+                                                    JapaneseText.successCreate,
+                                                    context);
                                               } catch (e) {
-                                                toastMessageError(e.toString(), context);
+                                                toastMessageError(
+                                                    e.toString(), context);
                                               }
                                             }
                                           });
@@ -223,12 +248,16 @@ class _ViewProfileState extends State<ViewProfile> {
                                       height: 50,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(7),
-                                        color: colorxd = const Color(0xFFF38301),
+                                        color: colorxd =
+                                            const Color(0xFFF38301),
                                       ),
                                       child: const Center(
                                         child: Text(
                                           "引き出す",
-                                          style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ),
                                     ),
@@ -249,7 +278,9 @@ class _ViewProfileState extends State<ViewProfile> {
                         width: AppSize.getDeviceWidth(context),
                         margin: const EdgeInsets.all(16),
                         padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16)),
                         child: Material(
                           color: Colors.transparent,
                           child: Column(
@@ -279,10 +310,13 @@ class _ViewProfileState extends State<ViewProfile> {
       children: [
         Text(
           JapaneseText.account,
-          style: kNormalText.copyWith(fontWeight: FontWeight.w600, color: AppColor.primaryColor),
+          style: kNormalText.copyWith(
+              fontWeight: FontWeight.w600, color: AppColor.primaryColor),
         ),
         AppSize.spaceHeight16,
-        customListTile(JapaneseText.identification, onTap: () => MyPageRoute.goTo(context, const IdentificationMenuPage())),
+        customListTile(JapaneseText.identification,
+            onTap: () =>
+                MyPageRoute.goTo(context, const IdentificationMenuPage())),
         customListTile(JapaneseText.editProfile, onTap: () {
           Navigator.push(
               context,
@@ -308,12 +342,16 @@ class _ViewProfileState extends State<ViewProfile> {
       children: [
         Text(
           JapaneseText.jobHistory,
-          style: kNormalText.copyWith(fontWeight: FontWeight.w600, color: AppColor.primaryColor),
+          style: kNormalText.copyWith(
+              fontWeight: FontWeight.w600, color: AppColor.primaryColor),
         ),
         AppSize.spaceHeight16,
-        customListTile(JapaneseText.compensationManagement, onTap: () => toastMessageSuccess("未実施", context)),
-        customListTile(JapaneseText.completedWork, onTap: () => toastMessageSuccess("未実施", context)),
-        customListTile(JapaneseText.checkingAndPrintingTheWithholdingTaxSlip, onTap: () => toastMessageSuccess("未実施", context)),
+        customListTile(JapaneseText.compensationManagement,
+            onTap: () => toastMessageSuccess("未実施", context)),
+        customListTile(JapaneseText.completedWork,
+            onTap: () => toastMessageSuccess("未実施", context)),
+        customListTile(JapaneseText.checkingAndPrintingTheWithholdingTaxSlip,
+            onTap: () => toastMessageSuccess("未実施", context)),
       ],
     );
   }
@@ -324,7 +362,8 @@ class _ViewProfileState extends State<ViewProfile> {
       children: [
         Text(
           JapaneseText.setting,
-          style: kNormalText.copyWith(fontWeight: FontWeight.w600, color: AppColor.primaryColor),
+          style: kNormalText.copyWith(
+              fontWeight: FontWeight.w600, color: AppColor.primaryColor),
         ),
         AppSize.spaceHeight16,
         customListTile(JapaneseText.accountSetting,
@@ -333,16 +372,23 @@ class _ViewProfileState extends State<ViewProfile> {
                 AccountSettingPage(
                   myUser: myUser,
                 ))),
-        customListTile(JapaneseText.locationInfoSetting, onTap: () => MyPageRoute.goTo(context, const LocationSettingPage())),
-        customListTile(JapaneseText.pushNotificationSetting, onTap: () => MyPageRoute.goTo(context, const NotificationSettingPage())),
+        customListTile(JapaneseText.locationInfoSetting,
+            onTap: () =>
+                MyPageRoute.goTo(context, const LocationSettingPage())),
+        customListTile(JapaneseText.pushNotificationSetting,
+            onTap: () =>
+                MyPageRoute.goTo(context, const NotificationSettingPage())),
         AppSize.spaceHeight16,
         Text(
           JapaneseText.support,
-          style: kNormalText.copyWith(fontWeight: FontWeight.w600, color: AppColor.primaryColor),
+          style: kNormalText.copyWith(
+              fontWeight: FontWeight.w600, color: AppColor.primaryColor),
         ),
         AppSize.spaceHeight16,
-        customListTile(JapaneseText.faq, onTap: () => MyPageRoute.goTo(context, const FAQPage())),
-        customListTile(JapaneseText.inquiry, onTap: () => MyPageRoute.goTo(context, const ContactUsPage())),
+        customListTile(JapaneseText.faq,
+            onTap: () => MyPageRoute.goTo(context, const FAQPage())),
+        customListTile(JapaneseText.inquiry,
+            onTap: () => MyPageRoute.goTo(context, const ContactUsPage())),
       ],
     );
   }
@@ -351,11 +397,16 @@ class _ViewProfileState extends State<ViewProfile> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        customListTile(JapaneseText.privacy, onTap: () => MyPageRoute.goTo(context, const PrivatePolicy())),
-        customListTile(JapaneseText.termsOfService, onTap: () => MyPageRoute.goTo(context, const TermOfUse())),
-        customListTile(JapaneseText.rangeOfOccupationsHandled, onTap: () => MyPageRoute.goTo(context, const WithDrawProcedures())),
-        customListTile(JapaneseText.unsubscribed, onTap: () => MyPageRoute.goTo(context, const UnsubscribePage())),
-        customListTile(JapaneseText.logout, onTap: () => MyPageRoute.goTo(context, const LogoutPage())),
+        customListTile(JapaneseText.privacy,
+            onTap: () => MyPageRoute.goTo(context, const PrivatePolicy())),
+        customListTile(JapaneseText.termsOfService,
+            onTap: () => MyPageRoute.goTo(context, const TermOfUse())),
+        customListTile(JapaneseText.rangeOfOccupationsHandled,
+            onTap: () => MyPageRoute.goTo(context, const WithDrawProcedures())),
+        customListTile(JapaneseText.unsubscribed,
+            onTap: () => MyPageRoute.goTo(context, const UnsubscribePage())),
+        customListTile(JapaneseText.logout,
+            onTap: () => MyPageRoute.goTo(context, const LogoutPage())),
       ],
     );
   }
@@ -372,7 +423,9 @@ class _ViewProfileState extends State<ViewProfile> {
             color: AppColor.primaryColor,
           ),
         ),
-        const Padding(padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5), child: Divider()),
+        const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            child: Divider()),
       ],
     );
   }

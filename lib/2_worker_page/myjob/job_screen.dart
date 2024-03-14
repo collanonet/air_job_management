@@ -1,6 +1,7 @@
 import 'package:air_job_management/2_worker_page/myjob/future_screen.dart';
 import 'package:air_job_management/2_worker_page/myjob/past_screen.dart';
 import 'package:air_job_management/utils/app_color.dart';
+import 'package:air_job_management/utils/respnsive.dart';
 import 'package:flutter/material.dart';
 
 import 'all_job_apply.dart';
@@ -14,21 +15,22 @@ class JobScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       animationDuration: const Duration(milliseconds: 500),
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
-          leading: IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              )),
+          leading: const SizedBox(),
+          leadingWidth: 0,
           title: TabBar(
             labelColor: AppColor.primaryColor,
             indicatorColor: AppColor.primaryColor,
-            labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            indicatorWeight: 3,
+            isScrollable: Responsive.isMobile(context) ? true : false,
+            labelStyle: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                fontFamily: "Normal"),
             tabs: const [
               Tab(
                 text: "応募一覧",
