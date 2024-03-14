@@ -121,6 +121,7 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
           "仕事の詳細",
           style: kNormalText.copyWith(fontSize: 15),
         ),
+        centerTitle: true,
         leading: CustomBackButtonWidget(textColor: AppColor.whiteColor),
         backgroundColor: AppColor.primaryColor,
         leadingWidth: 120,

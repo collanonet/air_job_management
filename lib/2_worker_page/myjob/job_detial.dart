@@ -1,6 +1,5 @@
 import 'package:air_job_management/api/company.dart';
 import 'package:air_job_management/helper/currency_format.dart';
-import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/models/worker_model/search_job.dart';
@@ -24,7 +23,8 @@ import '../../widgets/custom_back_button.dart';
 import '../../widgets/custom_dialog.dart';
 
 class ViewJobDetail extends StatefulWidget {
-  ViewJobDetail({key, required this.info, required this.shiftModel}) : super(key: key);
+  ViewJobDetail({key, required this.info, required this.shiftModel})
+      : super(key: key);
   SearchJob info;
   ShiftModel shiftModel;
 
@@ -56,29 +56,15 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
   void initState() {
     super.initState();
     getCompany();
-    DateTime startDate = DateToAPIHelper.fromApiToLocal(widget.info.startDate!);
-    DateTime endDate = DateToAPIHelper.fromApiToLocal(widget.info.endDate!);
-    List<DateTime> dateList = [DateToAPIHelper.timeToDateTime(widget.info.startTimeHour!, dateTime: startDate)];
-    for (var i = 1; i <= (startDate.difference(endDate).inDays * -1); ++i) {
-      dateList.add(DateTime(startDate.year, startDate.month, startDate.day + i));
-    }
-    for (var date in dateList) {
-      if (date.isAfter(DateTime.now())) {
-        shiftList.add(ShiftModel(
-            startBreakTime: widget.info.startBreakTimeHour!,
-            date: date,
-            endBreakTime: widget.info.endBreakTimeHour!,
-            endWorkTime: widget.info.endTimeHour!,
-            price: widget.info.hourlyWag!,
-            startWorkTime: widget.info.startTimeHour!));
-      }
-    }
-    companyLatLng = LatLng(double.parse(widget.info.location!.lat!), double.parse(widget.info.location!.lng!));
+    shiftList.add(widget.shiftModel);
+    companyLatLng = LatLng(double.parse(widget.info.location!.lat!),
+        double.parse(widget.info.location!.lng!));
     _addMarker(companyLatLng!, "origin", BitmapDescriptor.defaultMarker);
   }
 
   getCompany() async {
-    company = await CompanyApiServices().getACompany(widget.info.companyId ?? "");
+    company =
+        await CompanyApiServices().getACompany(widget.info.companyId ?? "");
     if (mounted) {
       setState(() {});
     }
@@ -103,6 +89,7 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
           "仕事の詳細",
           style: kNormalText.copyWith(fontSize: 15),
         ),
+        centerTitle: true,
         leading: CustomBackButtonWidget(textColor: AppColor.whiteColor),
         backgroundColor: AppColor.primaryColor,
         leadingWidth: 120,
@@ -117,7 +104,9 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
               child: Icon(
                 Icons.favorite,
                 size: 30,
-                color: fa.lists.contains(widget.info.uid) ? Colors.yellow : Colors.white,
+                color: fa.lists.contains(widget.info.uid)
+                    ? Colors.yellow
+                    : Colors.white,
               ),
             ),
           )
@@ -129,7 +118,8 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
         child: SingleChildScrollView(
           controller: scrollController,
           child: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection("search_job").snapshots(),
+            stream:
+                FirebaseFirestore.instance.collection("search_job").snapshots(),
             builder: (context, snapshot) {
               return SafeArea(
                 child: Column(
@@ -141,8 +131,10 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
                           height: AppSize.getDeviceHeight(context) * 0.3,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                                image: NetworkImage(
-                                    widget.info.image != null && widget.info.image != "" ? widget.info.image! : ConstValue.defaultBgImage),
+                                image: NetworkImage(widget.info.image != null &&
+                                        widget.info.image != ""
+                                    ? widget.info.image!
+                                    : ConstValue.defaultBgImage),
                                 fit: BoxFit.cover),
                           ),
                         ),
@@ -153,13 +145,17 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
                             height: 45,
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             decoration: BoxDecoration(
-                                border: Border.all(color: AppColor.greyColor, width: 1),
+                                border: Border.all(
+                                    color: AppColor.greyColor, width: 1),
                                 borderRadius: BorderRadius.circular(16),
                                 color: Colors.white),
                             child: Center(
                               child: Text(
-                                CurrencyFormatHelper.displayData(widget.info.hourlyWag),
-                                style: kTitleText.copyWith(fontWeight: FontWeight.w600, color: AppColor.greyColor),
+                                CurrencyFormatHelper.displayData(
+                                    widget.info.hourlyWag),
+                                style: kTitleText.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColor.greyColor),
                               ),
                             ),
                           ),
@@ -177,7 +173,8 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
                           Center(
                             child: Text(
                               widget.info.title.toString(),
-                              style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                              style: kNormalText.copyWith(
+                                  color: AppColor.primaryColor, fontSize: 15),
                             ),
                           ),
                           AppSize.spaceHeight8,
@@ -190,37 +187,43 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
                           title(JapaneseText.jobDescription),
                           Text(
                             widget.info.description.toString(),
-                            style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            style: kNormalText.copyWith(
+                                fontSize: 15, fontFamily: "Normal"),
                           ),
                           divider(),
                           title(JapaneseText.belongings),
                           Text(
                             widget.info.belongings.toString(),
-                            style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            style: kNormalText.copyWith(
+                                fontSize: 15, fontFamily: "Normal"),
                           ),
                           divider(),
                           title("注意事項"),
                           Text(
                             widget.info.notes.toString(),
-                            style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            style: kNormalText.copyWith(
+                                fontSize: 15, fontFamily: "Normal"),
                           ),
                           divider(),
                           title("持ち物"),
                           Text(
                             "${widget.info.occupationType.toString()}   ${widget.info.majorOccupation.toString()}",
-                            style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            style: kNormalText.copyWith(
+                                fontSize: 15, fontFamily: "Normal"),
                           ),
                           divider(),
                           title("働くための条件"),
                           Text(
                             "${widget.info.workCatchPhrase}",
-                            style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            style: kNormalText.copyWith(
+                                fontSize: 15, fontFamily: "Normal"),
                           ),
                           divider(),
                           title('働く場所'),
                           Text(
                             "${widget.info.location?.postalCode}   ${widget.info.jobLocation}\n${widget.info.location?.street} ${widget.info.location?.building}\n${widget.info.location?.accessAddress}",
-                            style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            style: kNormalText.copyWith(
+                                fontSize: 15, fontFamily: "Normal"),
                           ),
                           divider(),
                           googlemap(context),
@@ -276,6 +279,7 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
               return Container(
                 margin: const EdgeInsets.only(bottom: 10),
                 decoration: BoxDecoration(
+                    color: const Color(0xffFAFFD3),
                     boxShadow: const [
                       BoxShadow(
                         color: Color(0xff00000010),
@@ -284,8 +288,7 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
                     ],
                     borderRadius: BorderRadius.circular(5),
                     border:
-                        Border.all(width: 1, color: selectedShiftList.contains(shiftList[index]) ? AppColor.secondaryColor : AppColor.bgPageColor),
-                    color: selectedShiftList.contains(shiftList[index]) ? const Color(0xffFAFFD3) : AppColor.whiteColor),
+                        Border.all(width: 1, color: AppColor.secondaryColor)),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
@@ -302,13 +305,21 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
                                 children: [
                                   Text(
                                     dateTimeToMonthDay(shiftList[index].date),
-                                    style: kNormalText.copyWith(fontFamily: "Bold", fontSize: 13, color: AppColor.primaryColor),
+                                    style: kNormalText.copyWith(
+                                        fontFamily: "Bold",
+                                        fontSize: 13,
+                                        color: AppColor.primaryColor),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(top: 3, left: 5),
+                                    padding:
+                                        const EdgeInsets.only(top: 3, left: 5),
                                     child: Text(
-                                      toJapanWeekDayWithInt(shiftList[index].date!.weekday),
-                                      style: kNormalText.copyWith(fontFamily: "Normal", fontSize: 9, color: AppColor.primaryColor),
+                                      toJapanWeekDayWithInt(
+                                          shiftList[index].date!.weekday),
+                                      style: kNormalText.copyWith(
+                                          fontFamily: "Normal",
+                                          fontSize: 9,
+                                          color: AppColor.primaryColor),
                                     ),
                                   )
                                 ],
@@ -317,27 +328,23 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
                             AppSize.spaceWidth16,
                             Text(
                               "${shiftList[index].startWorkTime} 〜 ${shiftList[index].endWorkTime}",
-                              style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                              style: kNormalText.copyWith(
+                                  fontSize: 15, fontFamily: "Normal"),
                             ),
                             AppSize.spaceWidth16,
                             Text(
                               "${CurrencyFormatHelper.displayDataRightYen(shiftList[index].price)}",
-                              style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                              style: kNormalText.copyWith(
+                                  fontSize: 15, fontFamily: "Normal"),
                             ),
                           ],
                         ),
                       ),
                       AppSize.spaceWidth16,
-                      if (selectedShiftList.contains(shiftList[index]))
-                        const Icon(
-                          Icons.check_rounded,
-                          color: Colors.green,
-                        )
-                      else
-                        const Icon(
-                          Icons.check_rounded,
-                          color: Colors.grey,
-                        )
+                      const Icon(
+                        Icons.check_rounded,
+                        color: Colors.green,
+                      )
                     ],
                   ),
                 ),
@@ -362,7 +369,8 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
           setState(() {
             isLoading = true;
           });
-          bool isSuccess = await WorkerManagementApiService().updateJobStatus(widget.shiftModel.jobId!, "canceled");
+          bool isSuccess = await WorkerManagementApiService()
+              .updateJobStatus(widget.shiftModel.jobId!, "canceled");
           if (isSuccess) {
             setState(() {
               isLoading = false;
@@ -385,7 +393,9 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
-          Text(title, style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 15)),
+          Text(title,
+              style: kNormalText.copyWith(
+                  color: AppColor.primaryColor, fontSize: 15)),
         ],
       ),
     );
@@ -439,22 +449,28 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
                     child: Container(
                       width: 80,
                       // height: 100,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppColor.whiteColor, boxShadow: [
-                        BoxShadow(
-                          offset: const Offset(-1, -1),
-                          color: Colors.grey.withOpacity(0.2),
-                          blurRadius: 10,
-                        ),
-                        BoxShadow(
-                          offset: const Offset(1, 1),
-                          color: Colors.grey.withOpacity(0.2),
-                          blurRadius: 10,
-                        )
-                      ]),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: AppColor.whiteColor,
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(-1, -1),
+                              color: Colors.grey.withOpacity(0.2),
+                              blurRadius: 10,
+                            ),
+                            BoxShadow(
+                              offset: const Offset(1, 1),
+                              color: Colors.grey.withOpacity(0.2),
+                              blurRadius: 10,
+                            )
+                          ]),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [conditionList[index]["icon"], Text(conditionList[index]["title"])],
+                        children: [
+                          conditionList[index]["icon"],
+                          Text(conditionList[index]["title"])
+                        ],
                       ),
                     ),
                   ),
@@ -473,7 +489,8 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
 
   _addMarker(LatLng position, String id, BitmapDescriptor descriptor) {
     MarkerId markerId = MarkerId(id);
-    Marker marker = Marker(markerId: markerId, icon: descriptor, position: position);
+    Marker marker =
+        Marker(markerId: markerId, icon: descriptor, position: position);
     markers[markerId] = marker;
   }
 }
