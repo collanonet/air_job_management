@@ -22,7 +22,8 @@ import '../../../widgets/custom_textfield.dart';
 
 class JobPostingShiftPageForCompany extends StatefulWidget {
   final bool? isFromCopyShift;
-  const JobPostingShiftPageForCompany({super.key, this.isFromCopyShift = false});
+  final bool isView;
+  const JobPostingShiftPageForCompany({super.key, this.isFromCopyShift = false, this.isView = false});
 
   @override
   State<JobPostingShiftPageForCompany> createState() => _JobPostingShiftPageForCompanyState();
@@ -46,369 +47,18 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
             child: SingleChildScrollView(
               controller: scrollController2,
               primary: false,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppSize.spaceHeight16,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TitleWidget(title: JapaneseText.applicationRequirement),
-                      IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close))
-                    ],
-                  ),
-                  AppSize.spaceHeight16,
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      CustomChooseDateOrTimeWidget(
-                        width: 200,
-                        title: JapaneseText.startWorkingDay,
-                        onTap: () async {
-                          var date = await showDatePicker(
-                              context: context, initialDate: provider.startWorkDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
-                          if (date != null) {
-                            setState(() {
-                              provider.startWorkDate = date;
-                              if (provider.startWorkDate.isAfter(provider.endWorkDate)) {
-                                provider.endWorkDate = date;
-                              }
-                            });
-                          }
-                        },
-                        val: toJapanDateWithoutWeekDay(provider.startWorkDate),
-                        isHaveIcon: true,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
-                        child: Text(
-                          " 〜 ",
-                          style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
-                        ),
-                      ),
-                      CustomChooseDateOrTimeWidget(
-                        width: 200,
-                        title: JapaneseText.endWorkingDay,
-                        onTap: () async {
-                          var date = await showDatePicker(
-                              context: context, initialDate: provider.endWorkDate, firstDate: provider.startWorkDate, lastDate: DateTime(2100));
-                          if (date != null) {
-                            setState(() {
-                              provider.endWorkDate = date;
-                            });
-                          }
-                        },
-                        val: toJapanDateWithoutWeekDay(provider.endWorkDate),
-                        isHaveIcon: true,
-                      ),
-                    ],
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      CustomChooseDateOrTimeWidget(
-                        title: JapaneseText.startWorkingTime,
-                        onTap: () async {
-                          var time = await showTimePicker(
-                              context: context,
-                              initialTime: TimeOfDay(hour: provider.startWorkingTime.hour, minute: provider.startWorkingTime.minute));
-                          if (time != null) {
-                            setState(() {
-                              provider.startWorkingTime = DateTime(1, 1, 1, time.hour, time.minute);
-                            });
-                          }
-                        },
-                        val: dateTimeToHourAndMinute(provider.startWorkingTime),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
-                        child: Text(
-                          " 〜 ",
-                          style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
-                        ),
-                      ),
-                      CustomChooseDateOrTimeWidget(
-                        title: JapaneseText.endWorkingTime,
-                        onTap: () async {
-                          var time = await showTimePicker(
-                              context: context, initialTime: TimeOfDay(hour: provider.endWorkingTime.hour, minute: provider.endWorkingTime.minute));
-                          if (time != null) {
-                            setState(() {
-                              provider.endWorkingTime = DateTime(1, 1, 1, time.hour, time.minute);
-                            });
-                          }
-                        },
-                        val: dateTimeToHourAndMinute(provider.endWorkingTime),
-                      ),
-                      AppSize.spaceWidth32,
-                      CustomChooseDateOrTimeWidget(
-                        title: JapaneseText.startBreakTime,
-                        onTap: () async {
-                          var time = await showTimePicker(
-                              context: context, initialTime: TimeOfDay(hour: provider.startBreakTime.hour, minute: provider.startBreakTime.minute));
-                          if (time != null) {
-                            setState(() {
-                              provider.startBreakTime = DateTime(1, 1, 1, time.hour, time.minute);
-                            });
-                          }
-                        },
-                        val: dateTimeToHourAndMinute(provider.startBreakTime),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
-                        child: Text(
-                          " 〜 ",
-                          style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
-                        ),
-                      ),
-                      CustomChooseDateOrTimeWidget(
-                        title: JapaneseText.endBreakTime,
-                        onTap: () async {
-                          var time = await showTimePicker(
-                              context: context, initialTime: TimeOfDay(hour: provider.endBreakTime.hour, minute: provider.endBreakTime.minute));
-                          if (time != null) {
-                            setState(() {
-                              provider.endBreakTime = DateTime(1, 1, 1, time.hour, time.minute);
-                            });
-                          }
-                        },
-                        val: dateTimeToHourAndMinute(provider.endBreakTime),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    JapaneseText.numberOfPeopleRecruiting + " (半角文字)",
-                    style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
-                  ),
-                  AppSize.spaceHeight5,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 150,
-                        child: PrimaryTextField(
-                          hint: "20",
-                          controller: provider.numberOfRecruitPeople,
-                          isRequired: true,
-                        ),
-                      ),
-                      AppSize.spaceWidth5,
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 5),
-                        child: Text("人", style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16)),
-                      )
-                    ],
-                  ),
-                  Text(
-                    JapaneseText.recruitmentDeadlineTime,
-                    style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
-                  ),
-                  AppSize.spaceHeight5,
-                  CustomDropDownWidget(
-                    radius: 5,
-                    selectItem: provider.selectedDeadline,
-                    list: provider.applicationDeadlineList,
-                    onChange: (v) => provider.onChangeSelectDeadline(v),
-                    width: 300,
-                  ),
-                  AppSize.spaceHeight20,
-                  Divider(
-                    color: AppColor.thirdColor.withOpacity(0.3),
-                  ),
-                  AppSize.spaceHeight20,
-                  Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.publicSetting, style: kNormalText.copyWith(fontSize: 12))),
-                  AppSize.spaceHeight5,
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 7),
-                        child: RadioListTileWidget(
-                            title: JapaneseText.openToPublic,
-                            onChange: (v) => provider.onChangeSelectPublicSetting(JapaneseText.openToPublic),
-                            size: 120,
-                            val: provider.selectedPublicSetting),
-                      ),
-                      AppSize.spaceWidth32,
-                      Padding(
-                        padding: const EdgeInsets.only(top: 7),
-                        child: RadioListTileWidget(
-                            title: JapaneseText.groupLimitRelease,
-                            onChange: (v) => provider.onChangeSelectPublicSetting(JapaneseText.groupLimitRelease),
-                            size: 180,
-                            val: provider.selectedPublicSetting),
-                      ),
-                      AppSize.spaceWidth32,
-                      RadioListTileWidget(
-                          title: JapaneseText.urlLimited,
-                          subTitle: JapaneseText.subUrlLimited,
-                          onChange: (v) => provider.onChangeSelectPublicSetting(JapaneseText.urlLimited),
-                          size: 600,
-                          val: provider.selectedPublicSetting),
-                    ],
-                  ),
-                  AppSize.spaceHeight20,
-                  Divider(
-                    color: AppColor.thirdColor.withOpacity(0.3),
-                  ),
-                  AppSize.spaceHeight20,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            JapaneseText.hourlyWage,
-                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
-                          ),
-                          AppSize.spaceHeight5,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 150,
-                                child: PrimaryTextField(
-                                  hint: "",
-                                  controller: provider.hourlyWag,
-                                  isRequired: true,
-                                ),
-                              ),
-                              AppSize.spaceWidth5,
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 5),
-                                child: Text("円", style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16)),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                      AppSize.spaceWidth32,
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            JapaneseText.transportExpense,
-                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
-                          ),
-                          AppSize.spaceHeight5,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 150,
-                                child: PrimaryTextField(
-                                  hint: "",
-                                  controller: provider.transportExp,
-                                  isRequired: true,
-                                ),
-                              ),
-                              AppSize.spaceWidth5,
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 5),
-                                child: Text("円", style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16)),
-                              )
-                            ],
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                  AppSize.spaceHeight20,
-                  Divider(
-                    color: AppColor.thirdColor.withOpacity(0.3),
-                  ),
-                  AppSize.spaceHeight20,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            JapaneseText.emergencyContact,
-                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
-                          ),
-                          AppSize.spaceHeight5,
-                          SizedBox(
-                            width: 300,
-                            child: PrimaryTextField(
-                              hint: "",
-                              controller: provider.emergencyContact,
-                              isRequired: true,
-                              isPhoneNumber: true,
-                            ),
-                          ),
-                        ],
-                      ),
-                      AppSize.spaceWidth32,
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            JapaneseText.measuresToPreventPassiveSmoking,
-                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
-                          ),
-                          AppSize.spaceHeight5,
-                          CustomDropDownWidget(
-                            radius: 5,
-                            selectItem: provider.selectSmokingInDoor,
-                            list: provider.allowSmokingInDoor,
-                            onChange: (v) => provider.onChangeAllowSmokingInDoor(v),
-                            width: 300,
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16, top: 20),
-                        child: checkBoxTile(
-                            size: 300,
-                            title: JapaneseText.workInAreasWhereSmokingIsAllowed,
-                            val: provider.isAllowSmokingInArea,
-                            onChange: (v) => provider.onChangeAllowSmokingInArea(v)),
-                      )
-                    ],
-                  ),
-                  if (widget.isFromCopyShift == true)
-                    Center(
-                      child: SizedBox(
-                        width: 200,
-                        child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () => updateShiftFrameJob()),
-                      ),
-                    )
-                  else
-                    const SizedBox(),
-                  AppSize.spaceHeight50,
-                ],
-              ),
-            )),
-      );
-    } else {
-      return Expanded(
-        child: Container(
-          width: AppSize.getDeviceWidth(context),
-          decoration: boxDecorationNoTopRadius,
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          child: Scrollbar(
-              isAlwaysShown: true,
-              controller: scrollController2,
-              child: SingleChildScrollView(
-                controller: scrollController2,
-                primary: false,
+              child: AbsorbPointer(
+                absorbing: !widget.isView,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppSize.spaceHeight16,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [TitleWidget(title: JapaneseText.applicationRequirement), SizedBox()],
+                      children: [
+                        TitleWidget(title: JapaneseText.applicationRequirement),
+                        IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close))
+                      ],
                     ),
                     AppSize.spaceHeight16,
                     Row(
@@ -546,7 +196,6 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                             hint: "20",
                             controller: provider.numberOfRecruitPeople,
                             isRequired: true,
-                            isPhoneNumber: true,
                           ),
                         ),
                         AppSize.spaceWidth5,
@@ -741,6 +390,366 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                       const SizedBox(),
                     AppSize.spaceHeight50,
                   ],
+                ),
+              ),
+            )),
+      );
+    } else {
+      return Expanded(
+        child: Container(
+          width: AppSize.getDeviceWidth(context),
+          decoration: boxDecorationNoTopRadius,
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Scrollbar(
+              isAlwaysShown: true,
+              controller: scrollController2,
+              child: SingleChildScrollView(
+                controller: scrollController2,
+                primary: false,
+                child: AbsorbPointer(
+                  absorbing: widget.isView,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppSize.spaceHeight16,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [TitleWidget(title: JapaneseText.applicationRequirement), SizedBox()],
+                      ),
+                      AppSize.spaceHeight16,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          CustomChooseDateOrTimeWidget(
+                            width: 200,
+                            title: JapaneseText.startWorkingDay,
+                            onTap: () async {
+                              var date = await showDatePicker(
+                                  context: context, initialDate: provider.startWorkDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
+                              if (date != null) {
+                                setState(() {
+                                  provider.startWorkDate = date;
+                                  if (provider.startWorkDate.isAfter(provider.endWorkDate)) {
+                                    provider.endWorkDate = date;
+                                  }
+                                });
+                              }
+                            },
+                            val: toJapanDateWithoutWeekDay(provider.startWorkDate),
+                            isHaveIcon: true,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+                            child: Text(
+                              " 〜 ",
+                              style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
+                            ),
+                          ),
+                          CustomChooseDateOrTimeWidget(
+                            width: 200,
+                            title: JapaneseText.endWorkingDay,
+                            onTap: () async {
+                              var date = await showDatePicker(
+                                  context: context, initialDate: provider.endWorkDate, firstDate: provider.startWorkDate, lastDate: DateTime(2100));
+                              if (date != null) {
+                                setState(() {
+                                  provider.endWorkDate = date;
+                                });
+                              }
+                            },
+                            val: toJapanDateWithoutWeekDay(provider.endWorkDate),
+                            isHaveIcon: true,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          CustomChooseDateOrTimeWidget(
+                            title: JapaneseText.startWorkingTime,
+                            onTap: () async {
+                              var time = await showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay(hour: provider.startWorkingTime.hour, minute: provider.startWorkingTime.minute));
+                              if (time != null) {
+                                setState(() {
+                                  provider.startWorkingTime = DateTime(1, 1, 1, time.hour, time.minute);
+                                });
+                              }
+                            },
+                            val: dateTimeToHourAndMinute(provider.startWorkingTime),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+                            child: Text(
+                              " 〜 ",
+                              style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
+                            ),
+                          ),
+                          CustomChooseDateOrTimeWidget(
+                            title: JapaneseText.endWorkingTime,
+                            onTap: () async {
+                              var time = await showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay(hour: provider.endWorkingTime.hour, minute: provider.endWorkingTime.minute));
+                              if (time != null) {
+                                setState(() {
+                                  provider.endWorkingTime = DateTime(1, 1, 1, time.hour, time.minute);
+                                });
+                              }
+                            },
+                            val: dateTimeToHourAndMinute(provider.endWorkingTime),
+                          ),
+                          AppSize.spaceWidth32,
+                          CustomChooseDateOrTimeWidget(
+                            title: JapaneseText.startBreakTime,
+                            onTap: () async {
+                              var time = await showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay(hour: provider.startBreakTime.hour, minute: provider.startBreakTime.minute));
+                              if (time != null) {
+                                setState(() {
+                                  provider.startBreakTime = DateTime(1, 1, 1, time.hour, time.minute);
+                                });
+                              }
+                            },
+                            val: dateTimeToHourAndMinute(provider.startBreakTime),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+                            child: Text(
+                              " 〜 ",
+                              style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
+                            ),
+                          ),
+                          CustomChooseDateOrTimeWidget(
+                            title: JapaneseText.endBreakTime,
+                            onTap: () async {
+                              var time = await showTimePicker(
+                                  context: context, initialTime: TimeOfDay(hour: provider.endBreakTime.hour, minute: provider.endBreakTime.minute));
+                              if (time != null) {
+                                setState(() {
+                                  provider.endBreakTime = DateTime(1, 1, 1, time.hour, time.minute);
+                                });
+                              }
+                            },
+                            val: dateTimeToHourAndMinute(provider.endBreakTime),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        JapaneseText.numberOfPeopleRecruiting + " (半角文字)",
+                        style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
+                      ),
+                      AppSize.spaceHeight5,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 150,
+                            child: PrimaryTextField(
+                              hint: "20",
+                              controller: provider.numberOfRecruitPeople,
+                              isRequired: true,
+                              isPhoneNumber: true,
+                            ),
+                          ),
+                          AppSize.spaceWidth5,
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 5),
+                            child: Text("人", style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16)),
+                          )
+                        ],
+                      ),
+                      Text(
+                        JapaneseText.recruitmentDeadlineTime,
+                        style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
+                      ),
+                      AppSize.spaceHeight5,
+                      CustomDropDownWidget(
+                        radius: 5,
+                        selectItem: provider.selectedDeadline,
+                        list: provider.applicationDeadlineList,
+                        onChange: (v) => provider.onChangeSelectDeadline(v),
+                        width: 300,
+                      ),
+                      AppSize.spaceHeight20,
+                      Divider(
+                        color: AppColor.thirdColor.withOpacity(0.3),
+                      ),
+                      AppSize.spaceHeight20,
+                      Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.publicSetting, style: kNormalText.copyWith(fontSize: 12))),
+                      AppSize.spaceHeight5,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 7),
+                            child: RadioListTileWidget(
+                                title: JapaneseText.openToPublic,
+                                onChange: (v) => provider.onChangeSelectPublicSetting(JapaneseText.openToPublic),
+                                size: 120,
+                                val: provider.selectedPublicSetting),
+                          ),
+                          AppSize.spaceWidth32,
+                          Padding(
+                            padding: const EdgeInsets.only(top: 7),
+                            child: RadioListTileWidget(
+                                title: JapaneseText.groupLimitRelease,
+                                onChange: (v) => provider.onChangeSelectPublicSetting(JapaneseText.groupLimitRelease),
+                                size: 180,
+                                val: provider.selectedPublicSetting),
+                          ),
+                          AppSize.spaceWidth32,
+                          RadioListTileWidget(
+                              title: JapaneseText.urlLimited,
+                              subTitle: JapaneseText.subUrlLimited,
+                              onChange: (v) => provider.onChangeSelectPublicSetting(JapaneseText.urlLimited),
+                              size: 600,
+                              val: provider.selectedPublicSetting),
+                        ],
+                      ),
+                      AppSize.spaceHeight20,
+                      Divider(
+                        color: AppColor.thirdColor.withOpacity(0.3),
+                      ),
+                      AppSize.spaceHeight20,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                JapaneseText.hourlyWage,
+                                style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
+                              ),
+                              AppSize.spaceHeight5,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 150,
+                                    child: PrimaryTextField(
+                                      hint: "",
+                                      controller: provider.hourlyWag,
+                                      isRequired: true,
+                                    ),
+                                  ),
+                                  AppSize.spaceWidth5,
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: Text("円", style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16)),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                          AppSize.spaceWidth32,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                JapaneseText.transportExpense,
+                                style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
+                              ),
+                              AppSize.spaceHeight5,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 150,
+                                    child: PrimaryTextField(
+                                      hint: "",
+                                      controller: provider.transportExp,
+                                      isRequired: true,
+                                    ),
+                                  ),
+                                  AppSize.spaceWidth5,
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 5),
+                                    child: Text("円", style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16)),
+                                  )
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      AppSize.spaceHeight20,
+                      Divider(
+                        color: AppColor.thirdColor.withOpacity(0.3),
+                      ),
+                      AppSize.spaceHeight20,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                JapaneseText.emergencyContact,
+                                style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
+                              ),
+                              AppSize.spaceHeight5,
+                              SizedBox(
+                                width: 300,
+                                child: PrimaryTextField(
+                                  hint: "",
+                                  controller: provider.emergencyContact,
+                                  isRequired: true,
+                                  isPhoneNumber: true,
+                                ),
+                              ),
+                            ],
+                          ),
+                          AppSize.spaceWidth32,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                JapaneseText.measuresToPreventPassiveSmoking,
+                                style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
+                              ),
+                              AppSize.spaceHeight5,
+                              CustomDropDownWidget(
+                                radius: 5,
+                                selectItem: provider.selectSmokingInDoor,
+                                list: provider.allowSmokingInDoor,
+                                onChange: (v) => provider.onChangeAllowSmokingInDoor(v),
+                                width: 300,
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 16, top: 20),
+                            child: checkBoxTile(
+                                size: 300,
+                                title: JapaneseText.workInAreasWhereSmokingIsAllowed,
+                                val: provider.isAllowSmokingInArea,
+                                onChange: (v) => provider.onChangeAllowSmokingInArea(v)),
+                          )
+                        ],
+                      ),
+                      if (widget.isFromCopyShift == true)
+                        Center(
+                          child: SizedBox(
+                            width: 200,
+                            child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () => updateShiftFrameJob()),
+                          ),
+                        )
+                      else
+                        const SizedBox(),
+                      AppSize.spaceHeight50,
+                    ],
+                  ),
                 ),
               )),
         ),

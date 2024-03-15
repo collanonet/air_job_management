@@ -21,7 +21,8 @@ import '../widget/matching_and_copy_button.dart';
 import '../widget/shift_frame_card.dart';
 
 class JobPostingShiftFramePageForCompany extends StatefulWidget {
-  const JobPostingShiftFramePageForCompany({super.key});
+  final bool isView;
+  const JobPostingShiftFramePageForCompany({super.key, this.isView = false});
 
   @override
   State<JobPostingShiftFramePageForCompany> createState() => _JobPostingShiftFramePageForCompanyState();
@@ -46,74 +47,77 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
         child: Column(
           children: [
             AppSize.spaceHeight16,
-            Row(
-              children: [
-                const TitleWidget(title: "シフト枠　一覧"),
-                Expanded(
-                    child: MatchingAndCopyButtonWidget(
-                  onAdd: () {
-                    if (selectShiftFrame == null) {
-                      MessageWidget.show("Please select one job first before matching!");
-                    } else {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => HomePageForCompany(
-                                    page: MatchingWorkerPage(
-                                      jobPosting: provider.jobPosting!,
-                                      shiftFrame: selectShiftFrame!,
-                                    ),
-                                  ))).then((value) {
-                        if (value != null && value == true) {
-                          onRefreshData();
-                        }
-                      });
-                    }
-                  },
-                  onCopyPaste: () {
-                    if (selectShiftFrame == null) {
-                      MessageWidget.show("Please select one job first before matching!");
-                    } else {
-                      var now = DateTime.now();
-                      provider.transportExp.text = selectShiftFrame!.transportExpenseFee!;
-                      provider.hourlyWag.text = selectShiftFrame!.hourlyWag!;
-                      provider.numberOfRecruitPeople.text = selectShiftFrame!.recruitmentNumberPeople!;
-                      provider.startWorkDate = DateToAPIHelper.fromApiToLocal(selectShiftFrame!.startDate!);
-                      provider.endWorkDate = DateToAPIHelper.fromApiToLocal(selectShiftFrame!.endDate!);
-                      provider.startWorkingTime = DateTime(
-                          now.year,
-                          now.month,
-                          now.day,
-                          int.parse(selectShiftFrame!.startWorkTime.toString().split(":")[0]),
-                          int.parse(selectShiftFrame!.startWorkTime.toString().split(":")[1]),
-                          0);
-                      provider.endWorkingTime = DateTime(
-                          now.year,
-                          now.month,
-                          now.day,
-                          int.parse(selectShiftFrame!.endWorkTime.toString().split(":")[0]),
-                          int.parse(selectShiftFrame!.endWorkTime.toString().split(":")[1]),
-                          0);
-                      provider.startBreakTime = DateTime(
-                          now.year,
-                          now.month,
-                          now.day,
-                          int.parse(selectShiftFrame!.startBreakTime.toString().split(":")[0]),
-                          int.parse(selectShiftFrame!.startBreakTime.toString().split(":")[1]),
-                          0);
-                      provider.endBreakTime = DateTime(
-                          now.year,
-                          now.month,
-                          now.day,
-                          int.parse(selectShiftFrame!.endBreakTime.toString().split(":")[0]),
-                          int.parse(selectShiftFrame!.endBreakTime.toString().split(":")[1]),
-                          0);
-                      setState(() {});
-                      showCopyAndPaste();
-                    }
-                  },
-                ))
-              ],
+            AbsorbPointer(
+              absorbing: widget.isView,
+              child: Row(
+                children: [
+                  const TitleWidget(title: "シフト枠　一覧"),
+                  Expanded(
+                      child: MatchingAndCopyButtonWidget(
+                    onAdd: () {
+                      if (selectShiftFrame == null) {
+                        MessageWidget.show("Please select one job first before matching!");
+                      } else {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => HomePageForCompany(
+                                      page: MatchingWorkerPage(
+                                        jobPosting: provider.jobPosting!,
+                                        shiftFrame: selectShiftFrame!,
+                                      ),
+                                    ))).then((value) {
+                          if (value != null && value == true) {
+                            onRefreshData();
+                          }
+                        });
+                      }
+                    },
+                    onCopyPaste: () {
+                      if (selectShiftFrame == null) {
+                        MessageWidget.show("Please select one job first before matching!");
+                      } else {
+                        var now = DateTime.now();
+                        provider.transportExp.text = selectShiftFrame!.transportExpenseFee!;
+                        provider.hourlyWag.text = selectShiftFrame!.hourlyWag!;
+                        provider.numberOfRecruitPeople.text = selectShiftFrame!.recruitmentNumberPeople!;
+                        provider.startWorkDate = DateToAPIHelper.fromApiToLocal(selectShiftFrame!.startDate!);
+                        provider.endWorkDate = DateToAPIHelper.fromApiToLocal(selectShiftFrame!.endDate!);
+                        provider.startWorkingTime = DateTime(
+                            now.year,
+                            now.month,
+                            now.day,
+                            int.parse(selectShiftFrame!.startWorkTime.toString().split(":")[0]),
+                            int.parse(selectShiftFrame!.startWorkTime.toString().split(":")[1]),
+                            0);
+                        provider.endWorkingTime = DateTime(
+                            now.year,
+                            now.month,
+                            now.day,
+                            int.parse(selectShiftFrame!.endWorkTime.toString().split(":")[0]),
+                            int.parse(selectShiftFrame!.endWorkTime.toString().split(":")[1]),
+                            0);
+                        provider.startBreakTime = DateTime(
+                            now.year,
+                            now.month,
+                            now.day,
+                            int.parse(selectShiftFrame!.startBreakTime.toString().split(":")[0]),
+                            int.parse(selectShiftFrame!.startBreakTime.toString().split(":")[1]),
+                            0);
+                        provider.endBreakTime = DateTime(
+                            now.year,
+                            now.month,
+                            now.day,
+                            int.parse(selectShiftFrame!.endBreakTime.toString().split(":")[0]),
+                            int.parse(selectShiftFrame!.endBreakTime.toString().split(":")[1]),
+                            0);
+                        setState(() {});
+                        showCopyAndPaste();
+                      }
+                    },
+                  ))
+                ],
+              ),
             ),
             AppSize.spaceHeight16,
             Row(

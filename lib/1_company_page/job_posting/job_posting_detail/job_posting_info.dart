@@ -18,7 +18,8 @@ import '../../../widgets/custom_dropdown_string.dart';
 import '../../../widgets/custom_textfield.dart';
 
 class JobPostingInformationPageForCompany extends StatefulWidget {
-  const JobPostingInformationPageForCompany({super.key});
+  final bool isView;
+  const JobPostingInformationPageForCompany({super.key, this.isView = false});
 
   @override
   State<JobPostingInformationPageForCompany> createState() => _JobPostingInformationPageForCompanyState();
@@ -42,26 +43,29 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
           child: SingleChildScrollView(
             primary: false,
             controller: scrollController2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppSize.spaceHeight16,
-                titleWidget(),
-                AppSize.spaceHeight20,
-                Divider(
-                  color: AppColor.thirdColor.withOpacity(0.3),
-                ),
-                AppSize.spaceHeight20,
-                buildApplicationRequirement(),
-                AppSize.spaceHeight20,
-                Divider(
-                  color: AppColor.thirdColor.withOpacity(0.3),
-                ),
-                AppSize.spaceHeight20,
-                buildWorkLocation(),
-                AppSize.spaceHeight20,
-                AppSize.spaceHeight50,
-              ],
+            child: AbsorbPointer(
+              absorbing: widget.isView,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppSize.spaceHeight16,
+                  titleWidget(),
+                  AppSize.spaceHeight20,
+                  Divider(
+                    color: AppColor.thirdColor.withOpacity(0.3),
+                  ),
+                  AppSize.spaceHeight20,
+                  buildApplicationRequirement(),
+                  AppSize.spaceHeight20,
+                  Divider(
+                    color: AppColor.thirdColor.withOpacity(0.3),
+                  ),
+                  AppSize.spaceHeight20,
+                  buildWorkLocation(),
+                  AppSize.spaceHeight20,
+                  AppSize.spaceHeight50,
+                ],
+              ),
             ),
           ),
         ),

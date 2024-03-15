@@ -1,3 +1,4 @@
+import 'package:air_job_management/1_company_page/job_posting/create_or_edit_job_posting.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
@@ -54,10 +55,20 @@ class JobCardDisplay extends StatelessWidget {
                   ),
                   AppSize.spaceWidth16,
                   Expanded(
-                    child: Text(
-                      title,
-                      style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
-                      overflow: TextOverflow.fade,
+                    child: InkWell(
+                      onTap: () => showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                content: CreateOrEditJobPostingPageForCompany(
+                                  isView: true,
+                                  jobPosting: shiftFrame.uid,
+                                ),
+                              )),
+                      child: Text(
+                        title,
+                        style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
+                        overflow: TextOverflow.fade,
+                      ),
                     ),
                   )
                 ],

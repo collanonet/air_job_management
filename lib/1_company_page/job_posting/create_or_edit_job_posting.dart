@@ -29,7 +29,8 @@ import '../../widgets/show_message.dart';
 class CreateOrEditJobPostingPageForCompany extends StatefulWidget {
   final String? jobPosting;
   final bool? isCopyPaste;
-  const CreateOrEditJobPostingPageForCompany({super.key, this.jobPosting, this.isCopyPaste});
+  final bool isView;
+  const CreateOrEditJobPostingPageForCompany({super.key, this.jobPosting, this.isCopyPaste, this.isView = false});
 
   @override
   State<CreateOrEditJobPostingPageForCompany> createState() => _CreateOrEditJobPostingPageForCompanyState();
@@ -66,9 +67,13 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
           AppSize.spaceHeight8,
           tabSelection(),
           if (provider.selectedMenu == provider.tabMenu[0])
-            const JobPostingInformationPageForCompany()
+            JobPostingInformationPageForCompany(
+              isView: widget.isView,
+            )
           else if (provider.selectedMenu == provider.tabMenu[1])
-            const JobPostingShiftPageForCompany()
+            JobPostingShiftPageForCompany(
+              isView: widget.isView,
+            )
           else if (widget.isCopyPaste == true && widget.jobPosting == null)
             const Padding(
               padding: EdgeInsets.only(top: 100),
@@ -77,7 +82,9 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
               ),
             )
           else
-            const JobPostingShiftFramePageForCompany(),
+            JobPostingShiftFramePageForCompany(
+              isView: widget.isView,
+            ),
           if (provider.selectedMenu != provider.tabMenu[2])
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -88,13 +95,16 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
                       radius: 25,
                       color: AppColor.whiteColor,
                       title: "キャンセル",
-                      onPress: () => widget.isCopyPaste == true ? Navigator.pop(context) : context.go(MyRoute.companyJobPosting),
+                      onPress: () =>
+                          widget.isCopyPaste == true || widget.isView == true ? Navigator.pop(context) : context.go(MyRoute.companyJobPosting),
                     )),
                 AppSize.spaceWidth16,
-                SizedBox(
-                  width: 200,
-                  child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () => saveJobPostingData()),
-                )
+                widget.isView == true
+                    ? const SizedBox()
+                    : SizedBox(
+                        width: 200,
+                        child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () => saveJobPostingData()),
+                      )
               ]),
             )
           else

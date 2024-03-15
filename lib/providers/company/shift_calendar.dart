@@ -144,12 +144,8 @@ class ShiftCalendarProvider with ChangeNotifier {
   initializeJobPosting() async {
     onChangeLoading(true);
     jobPostingList.clear();
-    for (var job in jobApplyList) {
-      var j = await JobPostingApiService().getAJobPosting(job.jobId!);
-      if (j != null) {
-        jobPostingList.add(j);
-      }
-    }
+    var data = await Future.wait([for (var job in jobApplyList) JobPostingApiService().getAJobPosting(job.jobId!)]);
+    jobPostingList = data.map((e) => e!).toList();
     onChangeLoading(false);
   }
 
