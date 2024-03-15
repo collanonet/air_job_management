@@ -4,11 +4,13 @@ import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/app_color.dart';
 import '../../../utils/app_size.dart';
 import '../../../utils/style.dart';
+import '../../job_posting/create_or_edit_job_posting.dart';
 import '../../woker_management/widget/job_card.dart';
 
 class ApplicantCardWidget extends StatelessWidget {
@@ -50,33 +52,43 @@ class ApplicantCardWidget extends StatelessWidget {
                   ),
                   AppSize.spaceWidth16,
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                          Expanded(
-                            child: Text(
-                              job.userName != null ? job.userName!.split(" ")[0].toString() : "",
-                              style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
-                              overflow: TextOverflow.fade,
+                    child: InkWell(
+                      onTap: () {
+                        if (job.userId != null) {
+                          provider.setJob = job;
+                          context.go("/company/worker-management/${job.uid}");
+                        } else {
+                          context.go("/company/worker-management/outside-worker/${job.uid}");
+                        }
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                            Expanded(
+                              child: Text(
+                                job.userName != null ? job.userName!.split(" ")[0].toString() : "",
+                                style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                                overflow: TextOverflow.fade,
+                              ),
                             ),
+                            AppSize.spaceWidth5,
+                            job.userId != null
+                                ? const SizedBox()
+                                : Icon(
+                                    Icons.star,
+                                    color: AppColor.primaryColor,
+                                  )
+                          ]),
+                          Text(
+                            calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) +
+                                "   ${job.myUser?.gender == null || job.myUser?.gender == "" ? JapaneseText.empty : job.myUser?.gender}",
+                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 14),
+                            overflow: TextOverflow.fade,
                           ),
-                          AppSize.spaceWidth5,
-                          job.userId != null
-                              ? const SizedBox()
-                              : Icon(
-                                  Icons.star,
-                                  color: AppColor.primaryColor,
-                                )
-                        ]),
-                        Text(
-                          calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) +
-                              "   ${job.myUser?.gender == null || job.myUser?.gender == "" ? JapaneseText.empty : job.myUser?.gender}",
-                          style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 14),
-                          overflow: TextOverflow.fade,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   )
                 ],
@@ -93,11 +105,21 @@ class ApplicantCardWidget extends StatelessWidget {
               flex: 1,
             ),
             Expanded(
-              child: Center(
-                child: Text(
-                  "${job.jobTitle}",
-                  style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 16),
-                  overflow: TextOverflow.fade,
+              child: InkWell(
+                onTap: () => showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          content: CreateOrEditJobPostingPageForCompany(
+                            isView: true,
+                            jobPosting: job.jobId,
+                          ),
+                        )),
+                child: Center(
+                  child: Text(
+                    "${job.jobTitle}",
+                    style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 16),
+                    overflow: TextOverflow.fade,
+                  ),
                 ),
               ),
               flex: 4,
