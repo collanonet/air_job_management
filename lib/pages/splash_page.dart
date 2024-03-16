@@ -24,7 +24,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
-import '../1_company_page/home/home.dart';
 import '../utils/app_size.dart';
 
 bool isFullTime = true;
@@ -55,12 +54,12 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
         authProvider.setProfile = users;
         if (company != null) {
           authProvider.setCompany = company;
-          // context.go(MyRoute.companyDashboard);
-          MyPageRoute.goToReplace(
-              context,
-              HomePageForCompany(
-                selectItem: JapaneseText.dashboardCompany,
-              ));
+          context.go(MyRoute.companyDashboard);
+          // MyPageRoute.goToReplace(
+          //     context,
+          //     HomePageForCompany(
+          //       selectItem: JapaneseText.dashboardCompany,
+          //     ));
         } else {
           if (users!.role == RoleHelper.admin) {
             context.go(MyRoute.dashboard);

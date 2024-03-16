@@ -16,6 +16,7 @@ import '../../../utils/style.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/empty_data.dart';
 import '../../../widgets/loading.dart';
+import '../../job_posting/create_or_edit_job_posting.dart';
 
 class ApplicationHistoryPage extends StatefulWidget {
   final MyUser? myUser;
@@ -146,10 +147,20 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  job.jobTitle ?? "",
-                                  style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
-                                  overflow: TextOverflow.fade,
+                                InkWell(
+                                  onTap: () => showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                            content: CreateOrEditJobPostingPageForCompany(
+                                              isView: true,
+                                              jobPosting: job.jobId,
+                                            ),
+                                          )),
+                                  child: Text(
+                                    job.jobTitle ?? "",
+                                    style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
+                                    overflow: TextOverflow.fade,
+                                  ),
                                 ),
                                 // Text(
                                 //   job.jobLocation ?? "",
