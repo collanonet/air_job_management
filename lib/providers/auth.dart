@@ -166,12 +166,13 @@ class AuthProvider with ChangeNotifier {
       UserCredential authResult = await firebaseAuth.signInWithEmailAndPassword(email: email.trim(), password: password);
       User? user = authResult.user;
       Company? company = await UserApiServices().getProfileCompany(user!.uid);
-      setLoading(false);
       if (company != null) {
+        setLoading(false);
         return company;
       } else {
         await logout();
         setErrorMessage("権限がありません。");
+        setLoading(false);
         return null;
       }
     } on SocketException {
@@ -188,7 +189,7 @@ class AuthProvider with ChangeNotifier {
       } else if (e.toString().contains("invalid-email")) {
         setErrorMessage("無効なメールアドレス");
       } else {
-        setErrorMessage("何かがうまくいかなかった");
+        setErrorMessage("${e.toString()}");
       }
       notifyListeners();
       return null;

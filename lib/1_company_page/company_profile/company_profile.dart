@@ -277,23 +277,23 @@ class _CompanyProfilePageState extends State<CompanyProfilePage> with AfterBuild
                     ),
                   ],
                 )),
-            AppSize.spaceWidth16,
-            SizedBox(
-                width: AppSize.getDeviceWidth(context) * 0.15,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(JapaneseText.companyLatLng),
-                    AppSize.spaceHeight5,
-                    PrimaryTextField(
-                      controller: provider.companyLatLng,
-                      isRequired: true,
-                      hint: '',
-                      marginBottom: 5,
-                      validator: (value) => FormValidator.validateLatLang(value),
-                    ),
-                  ],
-                )),
+            // AppSize.spaceWidth16,
+            // SizedBox(
+            //     width: AppSize.getDeviceWidth(context) * 0.15,
+            //     child: Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: [
+            //         Text(JapaneseText.companyLatLng),
+            //         AppSize.spaceHeight5,
+            //         PrimaryTextField(
+            //           controller: provider.companyLatLng,
+            //           isRequired: true,
+            //           hint: '',
+            //           marginBottom: 5,
+            //           validator: (value) => FormValidator.validateLatLang(value),
+            //         ),
+            //       ],
+            //     )),
           ],
         ),
         AppSize.spaceHeight16,
@@ -485,7 +485,7 @@ class _CompanyProfilePageState extends State<CompanyProfilePage> with AfterBuild
                   PrimaryTextField(
                     controller: provider.tax,
                     hint: '',
-                    isRequired: true,
+                    isRequired: false,
                   ),
                 ],
               ),

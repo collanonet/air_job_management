@@ -115,9 +115,41 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "カレンダー表示",
-            style: titleStyle,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "カレンダー表示",
+                style: titleStyle,
+              ),
+              Row(
+                children: [
+                  Container(
+                    width: 80,
+                    height: 30,
+                    color: const Color(0xff7DC338),
+                    child: Center(
+                      child: Text(
+                        "満枠",
+                        style: kNormalText.copyWith(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  AppSize.spaceWidth8,
+                  Container(
+                    width: 80,
+                    height: 30,
+                    color: AppColor.primaryColor,
+                    child: Center(
+                      child: Text(
+                        "空き",
+                        style: kNormalText.copyWith(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
           ),
           buildMonthDisplay(),
           AppSize.spaceHeight8,
@@ -212,7 +244,9 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                                             return Container(
                                               margin: const EdgeInsets.only(left: 5, right: 5, bottom: 4),
                                               width: 400,
-                                              color: AppColor.primaryColor,
+                                              color: shift.applicantCount.toString() == shift.recruitmentCount.toString()
+                                                  ? const Color(0xff7DC338)
+                                                  : AppColor.primaryColor,
                                               height: 20,
                                               child: Material(
                                                 color: Colors.transparent,
@@ -221,15 +255,35 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                                                     showDialog(
                                                         context: context,
                                                         builder: (context) => ShiftDetailDialogWidget(
-                                                              jobId: date.jobId!,
+                                                              jobId: shift.jobId!,
                                                               date: date.date,
                                                             ));
                                                   },
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 5),
-                                                    child: Text(
-                                                      "${shift.startWorkTime} - ${shift.endWorkTime}",
-                                                      style: kNormalText.copyWith(color: Colors.white, fontSize: 12),
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: Text(
+                                                            "${shift.startWorkTime} - ${shift.endWorkTime} ",
+                                                            style: kNormalText.copyWith(color: Colors.white, fontSize: 12),
+                                                          ),
+                                                        ),
+                                                        const Icon(
+                                                          Icons.person,
+                                                          color: Colors.white,
+                                                          size: 15,
+                                                        ),
+                                                        AppSize.spaceWidth5,
+                                                        Padding(
+                                                          padding: const EdgeInsets.only(bottom: 1),
+                                                          child: Text(
+                                                            "${shift.applicantCount}/${shift.recruitmentCount}",
+                                                            style: kNormalText.copyWith(color: Colors.white, fontSize: 11),
+                                                          ),
+                                                        ),
+                                                        AppSize.spaceWidth5,
+                                                      ],
                                                     ),
                                                   ),
                                                 ),

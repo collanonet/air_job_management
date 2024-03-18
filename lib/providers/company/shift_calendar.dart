@@ -30,12 +30,13 @@ class ShiftCalendarProvider with ChangeNotifier {
     this.companyId = companyId;
   }
 
-  initData() {
+  initData() async {
     selectDisplay = JapaneseText.calendarDisplay;
     jobTitleList = [ItemSelectModel(title: JapaneseText.all, id: "")];
     selectedJobTitle = ItemSelectModel(title: JapaneseText.all, id: "");
     startWorkDate = null;
     endWorkDate = null;
+    await initializeJobPosting();
   }
 
   refreshData() {
@@ -43,8 +44,8 @@ class ShiftCalendarProvider with ChangeNotifier {
     filterApplicantList();
   }
 
-  initializeRangeDate() {
-    initData();
+  initializeRangeDate() async {
+    await initData();
     rangeDateList.clear();
     DateTime lastDate = DateTime(month.year, month.month + 1, 0);
     for (var i = 1; i <= lastDate.day; ++i) {
@@ -155,8 +156,17 @@ class ShiftCalendarProvider with ChangeNotifier {
     }
     for (var job in jobApplyList) {
       for (var shift in job.shiftList!) {
+        shift.applicantCount = 0;
         for (var data in rangeDateList) {
           if (data.date == shift.date) {
+            shift.jobId = job.uid;
+            //find recruitment
+            for (var j in jobPostingList) {
+              if (job.jobId == j.uid) {
+                shift.recruitmentCount = j.numberOfRecruit ?? "0";
+                break;
+              }
+            }
             data.shiftModelList!.add(shift);
             data.jobId = job.uid;
             break;
@@ -166,6 +176,18 @@ class ShiftCalendarProvider with ChangeNotifier {
     }
     for (var data in rangeDateList) {
       data.shiftModelList = data.shiftModelList!.toSet().toList();
+      //Find Apply Count
+
+      for (var shift in data.shiftModelList!) {
+        for (var job in jobApplyList) {
+          var dateList = job.shiftList!.map((e) => e.date).toList();
+          if (job.myUser != null &&
+              dateList.contains(shift.date) &&
+              (job.shiftList![0].startWorkTime == shift.startWorkTime && job.shiftList![0].endWorkTime == shift.endWorkTime)) {
+            shift.applicantCount++;
+          }
+        }
+      }
     }
   }
 }

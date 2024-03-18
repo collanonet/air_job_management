@@ -23,6 +23,7 @@ import '../utils/japanese_text.dart';
 import '../utils/my_route.dart';
 import '../utils/page_route.dart';
 import '../utils/style.dart';
+import '../utils/toast_message_util.dart';
 
 class LoginPage extends StatefulWidget {
   final bool isFromWorker;
@@ -321,7 +322,7 @@ class _LoginPageState extends State<LoginPage> {
           }
         }
       } else {
-        MessageWidget.show("${authProvider.errorMessage}");
+        toastMessageError("${authProvider.errorMessage}", context);
       }
     }
   }

@@ -137,10 +137,13 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        job.userName ?? "",
-                                        style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
-                                        overflow: TextOverflow.fade,
+                                      SizedBox(
+                                        width: 120,
+                                        child: Text(
+                                          job.myUser?.nameKanJi != null && job.myUser?.nameKanJi != "" ? "${job.myUser?.nameKanJi}" : "データなし",
+                                          style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
+                                          overflow: TextOverflow.fade,
+                                        ),
                                       ),
                                       AppSize.spaceWidth5,
                                       job.userId != null
@@ -148,22 +151,28 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                           : Icon(
                                               Icons.star,
                                               color: AppColor.primaryColor,
+                                            ),
+                                      AppSize.spaceWidth16,
+                                      job.myUser?.dob != null
+                                          ? SizedBox(
+                                              width: 60,
+                                              child: Text(
+                                                calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) +
+                                                    "   ${job.myUser?.gender ?? "データなし"}",
+                                                style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                                                overflow: TextOverflow.fade,
+                                              ),
                                             )
+                                          : SizedBox(
+                                              width: 100,
+                                              child: Text(
+                                                job.myUser?.gender ?? "データなし",
+                                                style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                                                overflow: TextOverflow.fade,
+                                              ),
+                                            ),
                                     ],
                                   ),
-                                  AppSize.spaceWidth16,
-                                  job.myUser?.dob != null
-                                      ? Text(
-                                          calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) +
-                                              "   ${job.myUser?.gender ?? "データなし"}",
-                                          style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
-                                          overflow: TextOverflow.fade,
-                                        )
-                                      : Text(
-                                          job.myUser?.gender ?? "データなし",
-                                          style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
-                                          overflow: TextOverflow.fade,
-                                        ),
                                   AppSize.spaceWidth16,
                                   AppSize.spaceWidth16,
                                   StatusHelper().displayStatus(job.status)

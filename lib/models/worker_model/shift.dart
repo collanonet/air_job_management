@@ -13,6 +13,8 @@ class ShiftModel {
   SearchJob? myJob;
   String? status;
   String? jobId;
+  int applicantCount;
+  String recruitmentCount;
   ShiftModel(
       {this.date,
       this.status,
@@ -24,7 +26,9 @@ class ShiftModel {
       this.image,
       this.title,
       this.myJob,
-      this.jobId});
+      this.jobId,
+      this.applicantCount = 0,
+      this.recruitmentCount = "0"});
 
   factory ShiftModel.fromJson(Map<String, dynamic> json) => ShiftModel(
       date: DateToAPIHelper.fromApiToLocal(json["date"].toString()),

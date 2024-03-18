@@ -3,6 +3,7 @@ import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/respnsive.dart';
 import 'package:air_job_management/utils/style.dart';
+import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:air_job_management/widgets/custom_textfield.dart';
@@ -198,7 +199,7 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
         authProvider.setCompany = user;
         context.go(MyRoute.companyDashboard);
       } else {
-        MessageWidget.show("${authProvider.errorMessage}");
+        toastMessageError("${authProvider.errorMessage}", context);
       }
     }
   }

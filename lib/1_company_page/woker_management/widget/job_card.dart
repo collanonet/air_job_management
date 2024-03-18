@@ -174,5 +174,9 @@ String calculateAge(DateTime birthDate) {
       age--;
     }
   }
-  return age.toString() + "歳";
+  if (age > 0) {
+    return age.toString() + "歳";
+  } else {
+    return "0歳";
+  }
 }

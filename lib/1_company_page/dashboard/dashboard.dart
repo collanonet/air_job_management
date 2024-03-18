@@ -1,6 +1,7 @@
 import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/dashboard.dart';
+import 'package:air_job_management/providers/home.dart';
 import 'package:air_job_management/widgets/loading.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,6 +27,7 @@ class DashboardPageForCompany extends StatefulWidget {
 class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with AfterBuildMixin {
   late AuthProvider authProvider;
   late DashboardForCompanyProvider provider;
+  late HomeProvider homeProvider;
 
   @override
   void initState() {
@@ -35,6 +37,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
 
   @override
   Widget build(BuildContext context) {
+    homeProvider = Provider.of<HomeProvider>(context);
     authProvider = Provider.of<AuthProvider>(context);
     provider = Provider.of<DashboardForCompanyProvider>(context);
     return SizedBox(
@@ -58,8 +61,8 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
           AppSize.spaceHeight16,
           buildSummaryApplicant(),
           AppSize.spaceHeight16,
-          buildSummaryMessage(),
-          AppSize.spaceHeight16,
+          // buildSummaryMessage(),
+          // AppSize.spaceHeight16,
           buildNotificationModelList()
         ],
       );
@@ -122,38 +125,70 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              TitleWidget(title: "応募者"),
-              AppSize.spaceHeight8,
-              Text(
-                "${provider.applicantList.length}名",
-                style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor),
-              )
-            ],
+          InkWell(
+            onTap: () {
+              homeProvider.onChangeSelectItemForCompany(homeProvider.menuListForCompany[3]);
+              var route = homeProvider.checkRouteForCompany(homeProvider);
+              context.go(route);
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                TitleWidget(title: "応募者"),
+                AppSize.spaceHeight8,
+                Text(
+                  "${provider.applicantList.length}名",
+                  style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor),
+                )
+              ],
+            ),
+          ),
+          verticalDivider(),
+          InkWell(
+            onTap: () {
+              homeProvider.onChangeSelectItemForCompany(homeProvider.menuListForCompany[4]);
+              var route = homeProvider.checkRouteForCompany(homeProvider);
+              context.go(route);
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                TitleWidget(title: "ワーカー"),
+                AppSize.spaceHeight8,
+                Text("${provider.workerCount}名", style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor))
+              ],
+            ),
+          ),
+          verticalDivider(),
+          InkWell(
+            onTap: () {
+              homeProvider.onChangeSelectItemForCompany(homeProvider.menuListForCompany[1]);
+              var route = homeProvider.checkRouteForCompany(homeProvider);
+              context.go(route);
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                TitleWidget(title: "掲載中のシフト枠"),
+                AppSize.spaceHeight8,
+                Text("${provider.jobPostingList.length}件",
+                    style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor))
+              ],
+            ),
           ),
           verticalDivider(),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              TitleWidget(title: "ワーカー"),
+              TitleWidget(title: "ご利用明細発行"),
               AppSize.spaceHeight8,
-              Text("${provider.workerCount}名", style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor))
+              Text("0件", style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor))
             ],
-          ),
-          verticalDivider(),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              TitleWidget(title: "掲載中のシフト枠"),
-              AppSize.spaceHeight8,
-              Text("${provider.jobPostingList.length}件", style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor))
-            ],
-          ),
+          )
         ],
       ),
     );
