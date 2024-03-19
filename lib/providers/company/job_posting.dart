@@ -8,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
+import '../../1_company_page/job_posting/job_posting_detail/job_posting_shift.dart';
 import '../../models/company.dart';
 
 class JobPostingForCompanyProvider with ChangeNotifier {
@@ -238,6 +239,8 @@ class JobPostingForCompanyProvider with ChangeNotifier {
     jobPosterProfile = [null];
     jobPosting = await JobPostingApiService().getAJobPosting(id.toString());
     if (jobPosting != null) {
+      initialTags = jobPosting?.limitGroupEmail ?? [];
+      print("Tag is $initialTags");
       jobPosterProfile.addAll(jobPosting!.coverList!);
       title.text = jobPosting?.title ?? "";
       jobDescription.text = jobPosting?.description ?? "";

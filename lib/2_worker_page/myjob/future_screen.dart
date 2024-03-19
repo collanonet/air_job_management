@@ -256,9 +256,7 @@ class _FutureJobState extends State<FutureJob> {
   _buildMonthCellWidget(month) {
     List<ShiftModel> dataDisplay = [];
     for (int i = 0; i < shiftList.length; i++) {
-      print("${month.date} x ${shiftList[i].date}");
       if (CommonUtils.isTheSameDate(month.date, shiftList[i].date)) {
-        print("Have ${shiftList[i].date}");
         dataDisplay.add(shiftList[i]);
       }
     }

@@ -142,6 +142,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
           if (urlPosterList.isNotEmpty) {
             provider.jobPosting?.image = urlPosterList[0];
           }
+          provider.jobPosting?.limitGroupEmail = initialTags;
           provider.jobPosting?.employmentType ??= JapaneseText.partTimeJob;
           provider.jobPosting?.company = authProvider.myCompany?.companyName;
           provider.jobPosting?.companyId = authProvider.myCompany?.uid;

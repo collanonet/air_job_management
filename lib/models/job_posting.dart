@@ -1,6 +1,7 @@
 import 'package:air_job_management/utils/date_time_utils.dart';
 
 class JobPosting {
+  List<String>? limitGroupEmail;
   String? uid;
   DateTime? createdAt;
   String? status;
@@ -216,6 +217,7 @@ class JobPosting {
 
   JobPosting(
       {this.status,
+      this.limitGroupEmail,
       this.shiftFrameList,
       this.applyCount = 0,
       this.passedInterviewCount,
@@ -407,6 +409,7 @@ class JobPosting {
       identical(this, other) || other is JobPosting && runtimeType == other.runtimeType && uid == other.uid && title == other.title;
 
   factory JobPosting.fromJson(Map<String, dynamic> json) => JobPosting(
+      limitGroupEmail: json["limit_group_email"] != null ? List<String>.from(json["limit_group_email"].map((e) => e)) : [],
       shiftFrameList: json["shiftFrameList"] == null ? [] : List<ShiftFrame>.from(json["shiftFrameList"]!.map((x) => ShiftFrame.fromJson(x))),
       coverList: json["cover_list"] != null ? List<String>.from(json["cover_list"].map((e) => e)) : [],
       applicationDateline: json["applicationDateline"],
@@ -590,6 +593,7 @@ class JobPosting {
       endBreakTimeHour: json["end_break_time_hour"]);
 
   Map<String, dynamic> toJson() => {
+        "limit_group_email": limitGroupEmail != null ? limitGroupEmail!.map((e) => e).toList() : [],
         "shiftFrameList": shiftFrameList != null ? shiftFrameList!.map((e) => e.toJson()).toList() : [],
         "jobLocation": jobLocation,
         "applicationDateline": applicationDateline,

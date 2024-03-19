@@ -7,10 +7,12 @@ import 'package:air_job_management/providers/company/job_posting.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
+import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_choose_date_or_time.dart';
 import 'package:air_job_management/widgets/custom_dropdown_string.dart';
 import 'package:air_job_management/widgets/show_message.dart';
 import 'package:air_job_management/widgets/title.dart';
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +20,10 @@ import '../../../helper/date_to_api.dart';
 import '../../../pages/register/widget/radio_list_tile.dart';
 import '../../../utils/app_size.dart';
 import '../../../widgets/custom_button.dart';
+import '../../../widgets/custom_chip.dart';
 import '../../../widgets/custom_textfield.dart';
+
+List<String> initialTags = [];
 
 class JobPostingShiftPageForCompany extends StatefulWidget {
   final bool? isFromCopyShift;
@@ -612,6 +617,51 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                               size: 600,
                               val: provider.selectedPublicSetting),
                         ],
+                      ),
+                      AppSize.spaceHeight5,
+                      Visibility(
+                        visible: provider.selectedPublicSetting == JapaneseText.groupLimitRelease,
+                        child: CustomChipTags(
+                          list: initialTags,
+                          chipColor: AppColor.primaryColor,
+                          iconColor: Colors.white,
+                          textColor: Colors.white,
+                          decoration: InputDecoration(hintText: "求職者のメールアドレスを入力してください。", fillColor: AppColor.primaryColor),
+                          keyboardType: TextInputType.text,
+                        ),
+                      ),
+                      Visibility(
+                        visible: provider.selectedPublicSetting == JapaneseText.urlLimited,
+                        child: Row(
+                          children: [
+                            //Job need to be create first before can send link to other
+                            SelectionArea(
+                              child: Text(
+                                provider.jobPosting?.uid == null
+                                    ? "他の求職者にリンクを送信する前に、まず求人を作成する必要があります。"
+                                    : "https://air-job.web.app/job-posting/${provider.jobPosting?.uid}",
+                                style: kNormalText.copyWith(fontSize: 15, color: Colors.blue, decoration: TextDecoration.underline),
+                              ),
+                            ),
+                            AppSize.spaceWidth16,
+                            Container(
+                              height: 20,
+                              width: 1,
+                              color: Colors.grey,
+                            ),
+                            AppSize.spaceWidth16,
+                            InkWell(
+                              child: Text(
+                                "コピー",
+                                style: kNormalText.copyWith(fontSize: 15, color: Colors.blue),
+                              ),
+                              onTap: () {
+                                FlutterClipboard.copy("https://air-job.web.app/job-posting/${provider.jobPosting?.uid}");
+                                toastMessageSuccess("リンクのコピー成功", context);
+                              },
+                            )
+                          ],
+                        ),
                       ),
                       AppSize.spaceHeight20,
                       Divider(
