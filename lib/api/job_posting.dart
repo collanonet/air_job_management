@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../const/const.dart';
 import '../models/notification.dart';
+import '../models/worker_model/search_job.dart';
 
 class JobPostingApiService {
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -85,6 +86,22 @@ class JobPostingApiService {
       }
     } catch (e) {
       debugPrint("Error getAJobPosting =>> ${e.toString()}");
+      return null;
+    }
+  }
+
+  Future<SearchJob?> getASearchJob(String uid) async {
+    try {
+      DocumentSnapshot doc = await jobPostingRef.doc(uid).get();
+      if (doc.exists) {
+        SearchJob jobPosting = SearchJob.fromJson(doc.data() as Map<String, dynamic>);
+        jobPosting.uid = uid;
+        return jobPosting;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      debugPrint("Error getASearchJob =>> ${e.toString()}");
       return null;
     }
   }

@@ -23,7 +23,6 @@ class _TabReviewPenaltyState extends State<TabReviewPenalty> {
   @override
   void initState() {
     authProvider = context.read<AuthProvider>();
-    ;
     super.initState();
   }
 

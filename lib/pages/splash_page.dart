@@ -26,7 +26,7 @@ import 'package:sura_flutter/sura_flutter.dart';
 
 import '../utils/app_size.dart';
 
-bool isFullTime = true;
+bool isFullTime = false;
 
 class SplashScreen extends StatefulWidget {
   final bool isFromWorker;
@@ -45,57 +45,42 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
 
   startTime() async {
     FirebaseAuth.instance.authStateChanges().listen((user) async {
-      if (user != null) {
-        await FirebaseAuth.instance.currentUser?.reload();
-        bool isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
-        AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
-        MyUser? users = await UserApiServices().getProfileUser(user.uid);
-        Company? company = await UserApiServices().getProfileCompany(user.uid);
-        authProvider.setProfile = users;
-        if (company != null) {
-          authProvider.setCompany = company;
-          context.go(MyRoute.companyDashboard);
-          // MyPageRoute.goToReplace(
-          //     context,
-          //     HomePageForCompany(
-          //       selectItem: JapaneseText.dashboardCompany,
-          //     ));
-        } else {
-          if (users!.role == RoleHelper.admin) {
-            context.go(MyRoute.dashboard);
-          } else if (users.role == RoleHelper.worker && isEmailVerified == true) {
-            if (users.isFullTimeStaff == true) {
-              isFullTime = true;
-              context.go(MyRoute.workerSearchJobPage);
-              // MyPageRoute.goToReplace(
-              //     context,
-              //     RootPage(
-              //       users.uid!,
-              //       isFullTime: true,
-              //     ));
-            } else {
-              // MyPageRoute.goToReplace(
-              //     context,
-              //     RootPage(
-              //       users.uid!,
-              //       isFullTime: false,
-              //     ));
-              isFullTime = false;
-              context.go(MyRoute.workerSearchJobPage);
+      if (GoRouter.of(context).location == "/") {
+        if (user != null) {
+          await FirebaseAuth.instance.currentUser?.reload();
+          bool isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
+          AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
+          MyUser? users = await UserApiServices().getProfileUser(user.uid);
+          Company? company = await UserApiServices().getProfileCompany(user.uid);
+          authProvider.setProfile = users;
+          if (company != null) {
+            authProvider.setCompany = company;
+            context.go(MyRoute.companyDashboard);
+          } else {
+            if (users!.role == RoleHelper.admin) {
+              context.go(MyRoute.dashboard);
+            } else if (users.role == RoleHelper.worker && isEmailVerified == true) {
+              if (users.isFullTimeStaff == true) {
+                isFullTime = true;
+                context.go(MyRoute.workerSearchJobPage);
+              } else {
+                isFullTime = false;
+                context.go(MyRoute.workerSearchJobPage);
+              }
+            } else if (users.role == RoleHelper.worker && isEmailVerified == false) {
+              MyPageRoute.goToReplace(
+                  context,
+                  VerifyUserEmailPage(
+                    myUser: users,
+                    isFullTime: users.isFullTimeStaff!,
+                  ));
             }
-          } else if (users.role == RoleHelper.worker && isEmailVerified == false) {
-            MyPageRoute.goToReplace(
-                context,
-                VerifyUserEmailPage(
-                  myUser: users,
-                  isFullTime: users.isFullTimeStaff!,
-                ));
           }
+        } else {
+          setState(() {
+            isSplash = false;
+          });
         }
-      } else {
-        setState(() {
-          isSplash = false;
-        });
       }
     });
   }

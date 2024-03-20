@@ -1,5 +1,6 @@
 import 'package:air_job_management/2_worker_page/search/confirm_apply_job_dialog.dart';
 import 'package:air_job_management/api/company.dart';
+import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/const/const.dart';
 import 'package:air_job_management/helper/currency_format.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
@@ -15,30 +16,30 @@ import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/page_route.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/custom_back_button.dart';
+import 'package:air_job_management/widgets/loading.dart';
 import 'package:air_job_management/widgets/show_message.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:sura_flutter/sura_flutter.dart';
 
+import '../../api/user_api.dart';
+import '../../models/user.dart';
 import '../../pages/login.dart';
 
-class SearchScreenDetial extends StatefulWidget {
-  SearchScreenDetial({key, required this.info, this.docId, this.index, required this.isFullTime, this.isViewDetail}) : super(key: key);
-  SearchJob info;
-  bool? isViewDetail;
-  var docId;
-  int? index;
-  final bool isFullTime;
-
+class ViewJobDetailViaLinkPage extends StatefulWidget {
+  final String jobId;
+  const ViewJobDetailViaLinkPage({key, required this.jobId}) : super(key: key);
   //Review review;
 
   @override
-  State<SearchScreenDetial> createState() => _SearchScreenDetialState();
+  State<ViewJobDetailViaLinkPage> createState() => _ViewJobDetailViaLinkPageState();
 }
 
-class _SearchScreenDetialState extends State<SearchScreenDetial> {
+class _ViewJobDetailViaLinkPageState extends State<ViewJobDetailViaLinkPage> with AfterBuildMixin {
   double ratingg = 0.0;
   ScrollController scrollController = ScrollController();
   List<dynamic> conditionList = [
@@ -56,34 +57,11 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
   Map<MarkerId, Marker> markers = {};
   LatLng? companyLatLng;
   late FavoriteProvider fa;
-
-  @override
-  void initState() {
-    super.initState();
-    getCompany();
-    DateTime startDate = DateToAPIHelper.fromApiToLocal(widget.info.startDate!);
-    DateTime endDate = DateToAPIHelper.fromApiToLocal(widget.info.endDate!);
-    List<DateTime> dateList = [DateToAPIHelper.timeToDateTime(widget.info.startTimeHour!, dateTime: startDate)];
-    for (var i = 1; i <= (startDate.difference(endDate).inDays * -1); ++i) {
-      dateList.add(DateTime(startDate.year, startDate.month, startDate.day + i));
-    }
-    for (var date in dateList) {
-      if (date.isAfter(DateTime.now())) {
-        shiftList.add(ShiftModel(
-            startBreakTime: widget.info.startBreakTimeHour!,
-            date: date,
-            endBreakTime: widget.info.endBreakTimeHour!,
-            endWorkTime: widget.info.endTimeHour!,
-            price: widget.info.hourlyWag!,
-            startWorkTime: widget.info.startTimeHour!));
-      }
-    }
-    companyLatLng = LatLng(double.parse(widget.info.location!.lat!), double.parse(widget.info.location!.lng!));
-    _addMarker(companyLatLng!, "origin", BitmapDescriptor.defaultMarker);
-  }
+  late SearchJob job;
+  bool isLoading = true;
 
   getCompany() async {
-    company = await CompanyApiServices().getACompany(widget.info.companyId ?? "");
+    company = await CompanyApiServices().getACompany(job.companyId ?? "");
     if (mounted) {
       setState(() {});
     }
@@ -111,198 +89,185 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
         leading: CustomBackButtonWidget(textColor: AppColor.whiteColor),
         backgroundColor: AppColor.primaryColor,
         leadingWidth: 120,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: InkWell(
-              onTap: () => setState(() {
-                fa.onfav(widget.info.uid);
-                fa.ontap(widget.docId, widget.info);
-              }),
-              child: Icon(
-                Icons.favorite,
-                size: 30,
-                color: fa.lists.contains(widget.info.uid) ? Colors.yellow : Colors.white,
-              ),
-            ),
-          )
-        ],
       ),
-      body: Scrollbar(
-        controller: scrollController,
-        isAlwaysShown: true,
-        child: SingleChildScrollView(
-          controller: scrollController,
-          child: SafeArea(
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    Container(
-                      width: AppSize.getDeviceWidth(context),
-                      height: AppSize.getDeviceHeight(context) * 0.3,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image:
-                                NetworkImage(widget.info.image != null && widget.info.image != "" ? widget.info.image! : ConstValue.defaultBgImage),
-                            fit: BoxFit.cover),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 16,
-                      right: 16,
-                      child: Container(
-                        height: 45,
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: AppColor.greyColor, width: 1), borderRadius: BorderRadius.circular(16), color: Colors.white),
-                        child: Center(
-                          child: Text(
-                            CurrencyFormatHelper.displayData(widget.info.hourlyWag),
-                            style: kTitleText.copyWith(fontWeight: FontWeight.w600, color: AppColor.greyColor),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 10,
-                  ),
+      body: isLoading
+          ? Center(
+              child: LoadingWidget(AppColor.primaryColor),
+            )
+          : Scrollbar(
+              controller: scrollController,
+              isAlwaysShown: true,
+              child: SingleChildScrollView(
+                controller: scrollController,
+                child: SafeArea(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
-                        child: Text(
-                          widget.info.title.toString(),
-                          style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                      Stack(
+                        children: [
+                          Container(
+                            width: AppSize.getDeviceWidth(context),
+                            height: AppSize.getDeviceHeight(context) * 0.3,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: NetworkImage(job.image != null && job.image != "" ? job.image! : ConstValue.defaultBgImage),
+                                  fit: BoxFit.cover),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 16,
+                            right: 16,
+                            child: Container(
+                              height: 45,
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: AppColor.greyColor, width: 1),
+                                  borderRadius: BorderRadius.circular(16),
+                                  color: Colors.white),
+                              child: Center(
+                                child: Text(
+                                  CurrencyFormatHelper.displayData(job.hourlyWag),
+                                  style: kTitleText.copyWith(fontWeight: FontWeight.w600, color: AppColor.greyColor),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 10,
                         ),
-                      ),
-                      AppSize.spaceHeight8,
-                      Text(widget.info.notes.toString()),
-                      AppSize.spaceHeight16,
-                      buildShiftList(),
-                      title("待遇"),
-                      condition(),
-                      divider(),
-                      title(JapaneseText.jobDescription),
-                      Text(
-                        widget.info.description.toString(),
-                        style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
-                      ),
-                      divider(),
-                      title(JapaneseText.belongings),
-                      Text(
-                        widget.info.belongings.toString(),
-                        style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
-                      ),
-                      divider(),
-                      title("注意事項"),
-                      Text(
-                        widget.info.notes.toString(),
-                        style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
-                      ),
-                      divider(),
-                      title("持ち物"),
-                      Text(
-                        "${widget.info.occupationType.toString()}   ${widget.info.majorOccupation.toString()}",
-                        style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
-                      ),
-                      divider(),
-                      title("働くための条件"),
-                      Text(
-                        "${widget.info.workCatchPhrase}",
-                        style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
-                      ),
-                      divider(),
-                      title('働く場所'),
-                      Text(
-                        "${widget.info.location?.postalCode}   ${widget.info.jobLocation}\n${widget.info.location?.street} ${widget.info.location?.building}\n${widget.info.location?.accessAddress}",
-                        style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
-                      ),
-                      divider(),
-                      googlemap(context),
-                      divider(),
-                      title('アクセス'),
-                      Text(widget.info.remarkOfRequirement.toString()),
-                      divider(),
-                      title("評価"),
-                      rattingstar(),
-                      divider(),
-                      title('レビュー'),
-                      SizedBox(
-                        width: AppSize.getDeviceWidth(context),
-                        height: AppSize.getDeviceHeight(context) * 0.5,
-                        child: ListView.builder(
-                          itemCount: widget.info.reviews!.length,
-                          itemBuilder: (context, index) {
-                            return revieww(widget.info, index);
-                          },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Center(
+                              child: Text(
+                                job.title.toString(),
+                                style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                              ),
+                            ),
+                            AppSize.spaceHeight8,
+                            Text(job.notes.toString()),
+                            AppSize.spaceHeight16,
+                            buildShiftList(),
+                            title("待遇"),
+                            condition(),
+                            divider(),
+                            title(JapaneseText.jobDescription),
+                            Text(
+                              job.description.toString(),
+                              style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            ),
+                            divider(),
+                            title(JapaneseText.belongings),
+                            Text(
+                              job.belongings.toString(),
+                              style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            ),
+                            divider(),
+                            title("注意事項"),
+                            Text(
+                              job.notes.toString(),
+                              style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            ),
+                            divider(),
+                            title("持ち物"),
+                            Text(
+                              "${job.occupationType.toString()}   ${job.majorOccupation.toString()}",
+                              style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            ),
+                            divider(),
+                            title("働くための条件"),
+                            Text(
+                              "${job.workCatchPhrase}",
+                              style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            ),
+                            divider(),
+                            title('働く場所'),
+                            Text(
+                              "${job.location?.postalCode}   ${job.jobLocation}\n${job.location?.street} ${job.location?.building}\n${job.location?.accessAddress}",
+                              style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                            ),
+                            divider(),
+                            googlemap(context),
+                            divider(),
+                            title('アクセス'),
+                            Text(job.remarkOfRequirement.toString()),
+                            divider(),
+                            title("評価"),
+                            rattingstar(),
+                            divider(),
+                            title('レビュー'),
+                            SizedBox(
+                              width: AppSize.getDeviceWidth(context),
+                              height: AppSize.getDeviceHeight(context) * 0.5,
+                              child: ListView.builder(
+                                itemCount: job.reviews!.length,
+                                itemBuilder: (context, index) {
+                                  return revieww(job, index);
+                                },
+                              ),
+                            ),
+                            AppSize.spaceHeight30,
+                            Center(
+                              child: Image.asset(
+                                "assets/logo.png",
+                                width: 200,
+                              ),
+                            ),
+                            AppSize.spaceHeight30,
+                          ],
                         ),
-                      ),
-                      AppSize.spaceHeight30,
-                      Center(
-                        child: Image.asset(
-                          "assets/logo.png",
-                          width: 200,
-                        ),
-                      ),
-                      AppSize.spaceHeight30,
+                      )
                     ],
                   ),
-                )
-              ],
+                ),
+              ),
+            ),
+      bottomNavigationBar: Visibility(
+        visible: (shiftList.isEmpty || users == null) ? false : true,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: InkWell(
+            onTap: () async {
+              if (auth.myUser != null) {
+                if (selectedShiftList.isEmpty) {
+                  MessageWidget.show("少なくとも 1 つのシフトを選択してください");
+                } else {
+                  showConfirmOrderDialog();
+                }
+              } else {
+                MyPageRoute.goTo(
+                    context,
+                    const LoginPage(
+                      isFromWorker: true,
+                      isFullTime: false,
+                    ));
+              }
+            },
+            child: Container(
+              width: AppSize.getDeviceWidth(context),
+              height: AppSize.getDeviceHeight(context) * 0.075,
+              decoration: BoxDecoration(
+                color: AppColor.secondaryColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Text(
+                  'エアジョブに登録する',
+                  style: kNormalText.copyWith(color: Colors.white),
+                ),
+              ),
             ),
           ),
         ),
       ),
-      bottomNavigationBar: widget.isViewDetail == true
-          ? const SizedBox()
-          : Visibility(
-              visible: shiftList.isEmpty ? false : true,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: InkWell(
-                  onTap: () async {
-                    if (auth.myUser != null) {
-                      if (selectedShiftList.isEmpty) {
-                        MessageWidget.show("少なくとも 1 つのシフトを選択してください");
-                      } else {
-                        showConfirmOrderDialog();
-                      }
-                    } else {
-                      MyPageRoute.goTo(
-                          context,
-                          LoginPage(
-                            isFromWorker: true,
-                            isFullTime: widget.isFullTime,
-                          ));
-                    }
-                  },
-                  child: Container(
-                    width: AppSize.getDeviceWidth(context),
-                    height: AppSize.getDeviceHeight(context) * 0.075,
-                    decoration: BoxDecoration(
-                      color: AppColor.secondaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'エアジョブに登録する',
-                        style: kNormalText.copyWith(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
     );
   }
 
   showConfirmOrderDialog() {
-    showDialog(context: context, builder: (context) => ConfirmApplyJobDialog(selectedShiftList: selectedShiftList, info: widget.info));
+    showDialog(context: context, builder: (context) => ConfirmApplyJobDialog(selectedShiftList: selectedShiftList, info: job));
   }
 
   buildShiftList() {
@@ -397,7 +362,7 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
             }),
         AppSize.spaceHeight20,
         Text(
-          "${toJapanDate(DateTime.now())} ${widget.info.startTimeHour}〜${widget.info.endTimeHour}    ${widget.info.majorOccupation}    ${CurrencyFormatHelper.displayDataRightYen(widget.info.hourlyWag)}",
+          "${toJapanDate(DateTime.now())} ${job.startTimeHour}〜${job.endTimeHour}    ${job.majorOccupation}    ${CurrencyFormatHelper.displayDataRightYen(job.hourlyWag)}",
           style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
         )
       ],
@@ -578,5 +543,43 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
     MarkerId markerId = MarkerId(id);
     Marker marker = Marker(markerId: markerId, icon: descriptor, position: position);
     markers[markerId] = marker;
+  }
+
+  MyUser? users;
+  @override
+  void afterBuild(BuildContext context) async {
+    var uid = FirebaseAuth.instance.currentUser?.uid ?? "";
+    users = await UserApiServices().getProfileUser(uid);
+    var jobPost = await JobPostingApiService().getASearchJob(widget.jobId);
+    if (jobPost != null) {
+      job = jobPost;
+      getCompany();
+      DateTime startDate = DateToAPIHelper.fromApiToLocal(job.startDate!);
+      DateTime endDate = DateToAPIHelper.fromApiToLocal(job.endDate!);
+      List<DateTime> dateList = [DateToAPIHelper.timeToDateTime(job.startTimeHour!, dateTime: startDate)];
+      for (var i = 1; i <= (startDate.difference(endDate).inDays * -1); ++i) {
+        dateList.add(DateTime(startDate.year, startDate.month, startDate.day + i));
+      }
+      for (var date in dateList) {
+        if (date.isAfter(DateTime.now())) {
+          shiftList.add(ShiftModel(
+              startBreakTime: job.startBreakTimeHour!,
+              date: date,
+              endBreakTime: job.endBreakTimeHour!,
+              endWorkTime: job.endTimeHour!,
+              price: job.hourlyWag!,
+              startWorkTime: job.startTimeHour!));
+        }
+      }
+      companyLatLng = LatLng(double.parse(job.location!.lat!), double.parse(job.location!.lng!));
+      _addMarker(companyLatLng!, "origin", BitmapDescriptor.defaultMarker);
+      setState(() {
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 }

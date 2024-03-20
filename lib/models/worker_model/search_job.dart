@@ -220,6 +220,8 @@ class SearchJob {
   String? startBreakTimeHour;
   String? endBreakTimeHour;
 
+  List<String>? limitGroupEmail;
+
   SearchJob(
       {this.favorite = false,
       this.jobLocation,
@@ -402,9 +404,11 @@ class SearchJob {
       this.youCanChooseTheTimeAndDayOfTheWeek,
       this.youCanWorkForAlongTime,
       this.createdAt,
-      this.coverList});
+      this.coverList,
+      this.limitGroupEmail});
 
   factory SearchJob.fromJson(Map<String, dynamic> json) => SearchJob(
+        limitGroupEmail: json["limit_group_email"] != null ? List<String>.from(json["limit_group_email"].map((e) => e)) : [],
         belongings: json["belongings"] ?? "",
         notes: json["notes"] ?? "",
         jobLocation: json["jobLocation"] ?? "",

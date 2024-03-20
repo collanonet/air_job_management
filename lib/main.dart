@@ -8,6 +8,7 @@ import 'package:air_job_management/1_company_page/woker_management/create_outsid
 import 'package:air_job_management/1_company_page/woker_management/root_worker_management_detail.dart';
 import 'package:air_job_management/2_worker_page/manage/manage_screen.dart';
 import 'package:air_job_management/2_worker_page/root/root_page.dart';
+import 'package:air_job_management/2_worker_page/search/job_detail_via_link.dart';
 import 'package:air_job_management/pages/company/create_or_edit_company.dart';
 import 'package:air_job_management/pages/home/home.dart';
 import 'package:air_job_management/pages/job_posting/create_or_edit_job.dart';
@@ -82,6 +83,19 @@ final GoRouter _router = GoRouter(
         );
       },
       routes: <RouteBase>[
+        GoRoute(
+            path: "job-posting",
+            builder: (BuildContext context, GoRouterState state) {
+              return const ViewJobDetailViaLinkPage(jobId: "");
+            },
+            routes: [
+              GoRoute(
+                path: ":uid",
+                builder: (BuildContext context, GoRouterState state) {
+                  return ViewJobDetailViaLinkPage(jobId: state.pathParameters["uid"].toString());
+                },
+              ),
+            ]),
         GoRoute(
             path: MyRoute.workerPage.removeSlash(),
             builder: (BuildContext context, GoRouterState state) {

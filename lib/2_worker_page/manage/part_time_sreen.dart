@@ -11,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../const/const.dart';
 import '../../models/worker_model/search_job.dart';
@@ -30,7 +31,7 @@ class PartTimeJob extends StatefulWidget {
   State<PartTimeJob> createState() => _PartTimeJobState();
 }
 
-class _PartTimeJobState extends State<PartTimeJob> {
+class _PartTimeJobState extends State<PartTimeJob> with AfterBuildMixin {
   DateTime _selectedDate = DateTime.now();
   List<DateTime> _dateList = [];
   List<SearchJob> jobSearchList = [];
@@ -50,7 +51,8 @@ class _PartTimeJobState extends State<PartTimeJob> {
       if (data.size > 0) {
         for (var d in data.docs) {
           var info = SearchJob.fromJson(d.data());
-          if (info.employmentType != "正社員") {
+          if (info.employmentType != "正社員" &&
+              (info.selectedPublicSetting == JapaneseText.openToPublic || info.limitGroupEmail!.contains(auth.myUser?.email))) {
             info.uid = d.id;
             DateTime startDate = MyDateTimeUtils.fromApiToLocal(info.startDate!);
             startDate = DateTime(startDate.year, startDate.month, startDate.day, 0, 0);
@@ -85,7 +87,6 @@ class _PartTimeJobState extends State<PartTimeJob> {
     for (var i = 1; i <= 6; ++i) {
       _dateList.add(DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day + i));
     }
-    onGetData();
   }
 
   var favoritecollection = FirebaseFirestore.instance;
@@ -501,5 +502,10 @@ class _PartTimeJobState extends State<PartTimeJob> {
         )
       ],
     );
+  }
+
+  @override
+  void afterBuild(BuildContext context) {
+    onGetData();
   }
 }

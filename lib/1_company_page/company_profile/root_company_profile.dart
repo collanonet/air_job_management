@@ -139,6 +139,7 @@ class _RootCompanyPageState extends State<RootCompanyPage> with AfterBuildMixin 
           tax: companyProvider.tax.text,
           tel: companyProvider.tel.text,
           companyLatLng: companyProvider.companyLatLng.text,
+          branchList: authProvider.myCompany!.branchList!.map((e) => e).toList(),
           rePresentative: RePresentative(kana: companyProvider.kana.text, kanji: companyProvider.kanji.text),
           manager: companyProvider.managerList.map((e) => RePresentative(kanji: e["kanji"]?.text.trim(), kana: e["kana"]?.text.trim())).toList());
       String? val = await CompanyApiServices().updateCompanyInfo(c);
