@@ -6,7 +6,6 @@ import 'package:air_job_management/helper/currency_format.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/models/company.dart';
-import 'package:air_job_management/models/worker_model/search_job.dart';
 import 'package:air_job_management/models/worker_model/shift.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/favorite_provider.dart';
@@ -28,6 +27,7 @@ import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../api/user_api.dart';
 import '../../models/user.dart';
+import '../../models/worker_model/search_job.dart';
 import '../../pages/login.dart';
 
 class ViewJobDetailViaLinkPage extends StatefulWidget {
@@ -57,11 +57,11 @@ class _ViewJobDetailViaLinkPageState extends State<ViewJobDetailViaLinkPage> wit
   Map<MarkerId, Marker> markers = {};
   LatLng? companyLatLng;
   late FavoriteProvider fa;
-  late SearchJob job;
+  SearchJob? job;
   bool isLoading = true;
 
   getCompany() async {
-    company = await CompanyApiServices().getACompany(job.companyId ?? "");
+    company = await CompanyApiServices().getACompany(job!.companyId ?? "");
     if (mounted) {
       setState(() {});
     }
@@ -109,7 +109,7 @@ class _ViewJobDetailViaLinkPageState extends State<ViewJobDetailViaLinkPage> wit
                             height: AppSize.getDeviceHeight(context) * 0.3,
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image: NetworkImage(job.image != null && job.image != "" ? job.image! : ConstValue.defaultBgImage),
+                                  image: NetworkImage(job!.image != null && job!.image != "" ? job!.image! : ConstValue.defaultBgImage),
                                   fit: BoxFit.cover),
                             ),
                           ),
@@ -125,7 +125,7 @@ class _ViewJobDetailViaLinkPageState extends State<ViewJobDetailViaLinkPage> wit
                                   color: Colors.white),
                               child: Center(
                                 child: Text(
-                                  CurrencyFormatHelper.displayData(job.hourlyWag),
+                                  CurrencyFormatHelper.displayData(job!.hourlyWag),
                                   style: kTitleText.copyWith(fontWeight: FontWeight.w600, color: AppColor.greyColor),
                                 ),
                               ),
@@ -143,12 +143,12 @@ class _ViewJobDetailViaLinkPageState extends State<ViewJobDetailViaLinkPage> wit
                           children: [
                             Center(
                               child: Text(
-                                job.title.toString(),
+                                job!.title.toString(),
                                 style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 15),
                               ),
                             ),
                             AppSize.spaceHeight8,
-                            Text(job.notes.toString()),
+                            Text(job!.notes.toString()),
                             AppSize.spaceHeight16,
                             buildShiftList(),
                             title("待遇"),
@@ -156,44 +156,44 @@ class _ViewJobDetailViaLinkPageState extends State<ViewJobDetailViaLinkPage> wit
                             divider(),
                             title(JapaneseText.jobDescription),
                             Text(
-                              job.description.toString(),
+                              job!.description.toString(),
                               style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
                             ),
                             divider(),
                             title(JapaneseText.belongings),
                             Text(
-                              job.belongings.toString(),
+                              job!.belongings.toString(),
                               style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
                             ),
                             divider(),
                             title("注意事項"),
                             Text(
-                              job.notes.toString(),
+                              job!.notes.toString(),
                               style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
                             ),
                             divider(),
                             title("持ち物"),
                             Text(
-                              "${job.occupationType.toString()}   ${job.majorOccupation.toString()}",
+                              "${job!.occupationType.toString()}   ${job!.majorOccupation.toString()}",
                               style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
                             ),
                             divider(),
                             title("働くための条件"),
                             Text(
-                              "${job.workCatchPhrase}",
+                              "${job!.workCatchPhrase}",
                               style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
                             ),
                             divider(),
                             title('働く場所'),
                             Text(
-                              "${job.location?.postalCode}   ${job.jobLocation}\n${job.location?.street} ${job.location?.building}\n${job.location?.accessAddress}",
+                              "${job!.location?.postalCode}   ${job!.jobLocation}\n${job!.location?.street} ${job!.location?.building}\n${job!.location?.accessAddress}",
                               style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
                             ),
                             divider(),
                             googlemap(context),
                             divider(),
                             title('アクセス'),
-                            Text(job.remarkOfRequirement.toString()),
+                            Text(job!.remarkOfRequirement.toString()),
                             divider(),
                             title("評価"),
                             rattingstar(),
@@ -203,9 +203,9 @@ class _ViewJobDetailViaLinkPageState extends State<ViewJobDetailViaLinkPage> wit
                               width: AppSize.getDeviceWidth(context),
                               height: AppSize.getDeviceHeight(context) * 0.5,
                               child: ListView.builder(
-                                itemCount: job.reviews!.length,
+                                itemCount: job!.reviews!.length,
                                 itemBuilder: (context, index) {
-                                  return revieww(job, index);
+                                  return revieww(job!, index);
                                 },
                               ),
                             ),
@@ -267,7 +267,7 @@ class _ViewJobDetailViaLinkPageState extends State<ViewJobDetailViaLinkPage> wit
   }
 
   showConfirmOrderDialog() {
-    showDialog(context: context, builder: (context) => ConfirmApplyJobDialog(selectedShiftList: selectedShiftList, info: job));
+    showDialog(context: context, builder: (context) => ConfirmApplyJobDialog(selectedShiftList: selectedShiftList, info: job!));
   }
 
   buildShiftList() {
@@ -362,7 +362,7 @@ class _ViewJobDetailViaLinkPageState extends State<ViewJobDetailViaLinkPage> wit
             }),
         AppSize.spaceHeight20,
         Text(
-          "${toJapanDate(DateTime.now())} ${job.startTimeHour}〜${job.endTimeHour}    ${job.majorOccupation}    ${CurrencyFormatHelper.displayDataRightYen(job.hourlyWag)}",
+          "${toJapanDate(DateTime.now())} ${job!.startTimeHour}〜${job!.endTimeHour}    ${job!.majorOccupation}    ${CurrencyFormatHelper.displayDataRightYen(job!.hourlyWag)}",
           style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
         )
       ],
@@ -554,24 +554,24 @@ class _ViewJobDetailViaLinkPageState extends State<ViewJobDetailViaLinkPage> wit
     if (jobPost != null) {
       job = jobPost;
       getCompany();
-      DateTime startDate = DateToAPIHelper.fromApiToLocal(job.startDate!);
-      DateTime endDate = DateToAPIHelper.fromApiToLocal(job.endDate!);
-      List<DateTime> dateList = [DateToAPIHelper.timeToDateTime(job.startTimeHour!, dateTime: startDate)];
+      DateTime startDate = DateToAPIHelper.fromApiToLocal(job!.startDate!);
+      DateTime endDate = DateToAPIHelper.fromApiToLocal(job!.endDate!);
+      List<DateTime> dateList = [DateToAPIHelper.timeToDateTime(job!.startTimeHour!, dateTime: startDate)];
       for (var i = 1; i <= (startDate.difference(endDate).inDays * -1); ++i) {
         dateList.add(DateTime(startDate.year, startDate.month, startDate.day + i));
       }
       for (var date in dateList) {
         if (date.isAfter(DateTime.now())) {
           shiftList.add(ShiftModel(
-              startBreakTime: job.startBreakTimeHour!,
+              startBreakTime: job!.startBreakTimeHour!,
               date: date,
-              endBreakTime: job.endBreakTimeHour!,
-              endWorkTime: job.endTimeHour!,
-              price: job.hourlyWag!,
-              startWorkTime: job.startTimeHour!));
+              endBreakTime: job!.endBreakTimeHour!,
+              endWorkTime: job!.endTimeHour!,
+              price: job!.hourlyWag!,
+              startWorkTime: job!.startTimeHour!));
         }
       }
-      companyLatLng = LatLng(double.parse(job.location!.lat!), double.parse(job.location!.lng!));
+      companyLatLng = LatLng(double.parse(job!.location!.lat!), double.parse(job!.location!.lng!));
       _addMarker(companyLatLng!, "origin", BitmapDescriptor.defaultMarker);
       setState(() {
         isLoading = false;
