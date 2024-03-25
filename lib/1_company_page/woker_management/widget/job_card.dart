@@ -1,12 +1,14 @@
 import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../utils/app_color.dart';
 import '../../../utils/app_size.dart';
+import '../../../utils/japanese_text.dart';
 import '../../../utils/style.dart';
 
 class JobApplyCardWidget extends StatelessWidget {
@@ -19,7 +21,6 @@ class JobApplyCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var provider = Provider.of<WorkerManagementProvider>(context);
     return Container(
-      height: 110,
       width: AppSize.getDeviceWidth(context),
       padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
       margin: const EdgeInsets.only(bottom: 4, left: 0, right: 0),
@@ -47,15 +48,24 @@ class JobApplyCardWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
-                    child: Center(
-                      child: Icon(
-                        Icons.person,
-                        color: AppColor.whiteColor,
-                        size: 35,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: CachedNetworkImage(
+                      width: 48,
+                      height: 48,
+                      imageUrl: job.myUser?.profileImage ?? "",
+                      fit: BoxFit.cover,
+                      errorWidget: (_, __, ___) => Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
+                        child: Center(
+                          child: Icon(
+                            Icons.person,
+                            color: AppColor.whiteColor,
+                            size: 35,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -70,7 +80,7 @@ class JobApplyCardWidget extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                job.userName != null ? job.userName!.split(" ")[0].toString() : "",
+                                (job.myUser?.nameKanJi != null && job.myUser?.nameKanJi != "") ? "${job.myUser?.nameKanJi}" : JapaneseText.empty,
                                 style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
                                 overflow: TextOverflow.fade,
                               ),

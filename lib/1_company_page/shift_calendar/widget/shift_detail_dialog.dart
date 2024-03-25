@@ -7,14 +7,17 @@ import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
+import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:air_job_management/widgets/loading.dart';
 import 'package:air_job_management/widgets/title.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../helper/date_to_api.dart';
-import '../../../helper/status_helper.dart';
+import '../../../widgets/custom_dialog.dart';
+import '../../../widgets/custom_loading_overlay.dart';
 import '../../woker_management/widget/job_card.dart';
 
 class ShiftDetailDialogWidget extends StatefulWidget {
@@ -37,29 +40,33 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      insetPadding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      actions: isLoading
-          ? []
-          : [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: SizedBox(
-                    width: 130,
-                    child: ButtonWidget(
-                      onPress: () => Navigator.pop(context),
-                      title: JapaneseText.close,
-                      color: AppColor.primaryColor,
-                      radius: 30,
-                    ),
-                  ),
-                ),
-              )
-            ],
-      content: SizedBox(
-        width: AppSize.getDeviceHeight(context) * 0.8,
-        // height: AppSize.getDeviceHeight(context) * 0.6,
-        child: isLoading ? SizedBox(height: 150, child: LoadingWidget(AppColor.primaryColor)) : buildJobDetail(),
+      // actions: isLoading
+      //     ? []
+      //     : [
+      //         Center(
+      //           child: Padding(
+      //             padding: const EdgeInsets.only(bottom: 20),
+      //             child: SizedBox(
+      //               width: 130,
+      //               child: ButtonWidget(
+      //                 onPress: () => Navigator.pop(context),
+      //                 title: JapaneseText.close,
+      //                 color: AppColor.primaryColor,
+      //                 radius: 30,
+      //               ),
+      //             ),
+      //           ),
+      //         )
+      //       ],
+      content: CustomLoadingOverlay(
+        isLoading: isLoading,
+        child: SizedBox(
+          width: AppSize.getDeviceWidth(context) * 0.9,
+          // height: AppSize.getDeviceHeight(context) * 0.6,
+          child: applicantList.isEmpty && isLoading ? SizedBox(height: 150, child: LoadingWidget(AppColor.primaryColor)) : buildJobDetail(),
+        ),
       ),
     );
   }
@@ -67,6 +74,8 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
   buildJobDetail() {
     return SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,11 +109,98 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                     horizontalDivider(),
                     displayColumn("公開設定", "${jobPosting?.selectedPublicSetting}"),
                     horizontalDivider(),
-                    displayColumn("募集人数", "$countApplyPeople/${jobPosting?.numberOfRecruit}"),
+                    displayColumn("募集人数", "${jobPosting?.numberOfRecruit}"),
+                    horizontalDivider(),
+                    displayColumn("確定人数", "$countApplyPeople"),
+                    Expanded(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 75),
+                          child: Text(
+                            "任意のワーカーを選んでまとめて",
+                            style: normalTextStyle.copyWith(fontSize: 13),
+                          ),
+                        ),
+                        AppSize.spaceHeight8,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            SizedBox(
+                              width: 130,
+                              child: ButtonWidget(
+                                radius: 25,
+                                color: AppColor.whiteColor,
+                                title: "確定する",
+                                onPress: () {},
+                              ),
+                            ),
+                            AppSize.spaceWidth8,
+                            SizedBox(
+                              width: 130,
+                              child: ButtonWidget(
+                                radius: 25,
+                                color: AppColor.whiteColor,
+                                title: "キャンセル",
+                                onPress: () {},
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ))
                   ],
                 ),
                 AppSize.spaceHeight16,
                 divider(),
+                AppSize.spaceHeight30,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 80),
+                            child: Text(
+                              "氏名（漢字）",
+                              style: normalTextStyle.copyWith(fontSize: 13),
+                            ),
+                          )),
+                      flex: 2,
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text("年齢/性別", style: normalTextStyle.copyWith(fontSize: 13)),
+                      ),
+                      flex: 2,
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text("電話番号", style: normalTextStyle.copyWith(fontSize: 13)),
+                      ),
+                      flex: 2,
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text("Good率", style: normalTextStyle.copyWith(fontSize: 13)),
+                      ),
+                      flex: 1,
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text("稼働回数", style: normalTextStyle.copyWith(fontSize: 13)),
+                      ),
+                      flex: 1,
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text("状態", style: normalTextStyle.copyWith(fontSize: 13)),
+                      ),
+                      flex: 3,
+                    ),
+                  ],
+                ),
                 AppSize.spaceHeight16,
                 ListView.builder(
                     shrinkWrap: true,
@@ -113,72 +209,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                     itemBuilder: (context, index) {
                       var job = applicantList[index];
                       var dateList = job.shiftList!.map((e) => e.date).toList();
-                      return job.myUser == null || !dateList.contains(widget.date)
-                          ? const SizedBox()
-                          : SizedBox(
-                              height: 50,
-                              width: AppSize.getDeviceWidth(context),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 30,
-                                    height: 30,
-                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.person,
-                                        color: AppColor.whiteColor,
-                                        size: 25,
-                                      ),
-                                    ),
-                                  ),
-                                  AppSize.spaceWidth16,
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        width: 120,
-                                        child: Text(
-                                          job.myUser?.nameKanJi != null && job.myUser?.nameKanJi != "" ? "${job.myUser?.nameKanJi}" : "データなし",
-                                          style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
-                                          overflow: TextOverflow.fade,
-                                        ),
-                                      ),
-                                      AppSize.spaceWidth5,
-                                      job.userId != null
-                                          ? const SizedBox()
-                                          : Icon(
-                                              Icons.star,
-                                              color: AppColor.primaryColor,
-                                            ),
-                                      AppSize.spaceWidth16,
-                                      job.myUser?.dob != null
-                                          ? SizedBox(
-                                              width: 60,
-                                              child: Text(
-                                                calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) +
-                                                    "   ${job.myUser?.gender ?? "データなし"}",
-                                                style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
-                                                overflow: TextOverflow.fade,
-                                              ),
-                                            )
-                                          : SizedBox(
-                                              width: 100,
-                                              child: Text(
-                                                job.myUser?.gender ?? "データなし",
-                                                style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
-                                                overflow: TextOverflow.fade,
-                                              ),
-                                            ),
-                                    ],
-                                  ),
-                                  AppSize.spaceWidth16,
-                                  AppSize.spaceWidth16,
-                                  StatusHelper().displayStatus(job.status)
-                                ],
-                              ),
-                            );
+                      return job.myUser == null || !dateList.contains(widget.date) ? const SizedBox() : buildUserApplyList(job);
                     })
               ],
             ),
@@ -186,6 +217,180 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
         ],
       ),
     );
+  }
+
+  buildUserApplyList(WorkerManagement job) {
+    return Container(
+      width: AppSize.getDeviceWidth(context),
+      padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
+      margin: const EdgeInsets.only(bottom: 8, left: 0, right: 0),
+      decoration: BoxDecoration(
+          color: job.isSelect == true ? Colors.orange.withOpacity(0.1) : Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(width: 1, color: AppColor.primaryColor)),
+      child: Row(
+        children: [
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: CachedNetworkImage(
+                    width: 48,
+                    height: 48,
+                    imageUrl: job.myUser?.profileImage ?? "",
+                    fit: BoxFit.cover,
+                    errorWidget: (_, __, ___) => Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
+                      child: Center(
+                        child: Icon(
+                          Icons.person,
+                          color: AppColor.whiteColor,
+                          size: 35,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                AppSize.spaceWidth16,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              (job.myUser?.nameKanJi != null && job.myUser?.nameKanJi != "") ? "${job.myUser?.nameKanJi}" : JapaneseText.empty,
+                              style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                              overflow: TextOverflow.fade,
+                            ),
+                          ),
+                          AppSize.spaceWidth16,
+                          job.userId != null
+                              ? const SizedBox()
+                              : Icon(
+                                  Icons.star,
+                                  color: AppColor.primaryColor,
+                                )
+                        ],
+                      ),
+                      Text(
+                        job.jobLocation ?? "",
+                        style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 15),
+                        overflow: TextOverflow.fade,
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+            flex: 2,
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 32),
+              child: Center(
+                child: Text(
+                  calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) + "   ${job.myUser?.gender}",
+                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                  overflow: TextOverflow.fade,
+                ),
+              ),
+            ),
+            flex: 2,
+          ),
+          Expanded(
+            child: Center(
+              child: Text(
+                "${job.myUser?.phone}",
+                style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                overflow: TextOverflow.fade,
+              ),
+            ),
+            flex: 2,
+          ),
+          Expanded(
+            child: Center(
+              child: Text(
+                "${job.myUser?.rating ?? "95"}%",
+                style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                overflow: TextOverflow.fade,
+              ),
+            ),
+            flex: 1,
+          ),
+          Expanded(
+            child: Center(
+              child: Text(
+                "${job.applyCount}回",
+                style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                overflow: TextOverflow.fade,
+              ),
+            ),
+            flex: 1,
+          ),
+          Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 150,
+                    child: ButtonWidget(
+                      radius: 25,
+                      color: job.status == "approved" ? AppColor.primaryColor : AppColor.whiteColor,
+                      title: "確定する",
+                      onPress: () => updateJobStatus(job, "確定する"),
+                    ),
+                  ),
+                  AppSize.spaceWidth8,
+                  SizedBox(
+                    width: 150,
+                    child: ButtonWidget(
+                      radius: 25,
+                      color: job.status == "canceled" ? AppColor.primaryColor : AppColor.whiteColor,
+                      title: "キャンセル",
+                      onPress: () => updateJobStatus(job, "キャンセル"),
+                    ),
+                  )
+                ],
+              ),
+              flex: 3),
+        ],
+      ),
+    );
+  }
+
+  updateJobStatus(WorkerManagement job, String action) {
+    CustomDialog.confirmDialog(
+        context: context,
+        onApprove: () async {
+          Navigator.pop(context);
+          setState(() {
+            isLoading = true;
+          });
+          bool isSuccess = await WorkerManagementApiService().updateJobStatus(job.uid!, action == "確定する" ? "approved" : "rejected");
+          if (isSuccess) {
+            await getData();
+            setState(() {
+              isLoading = false;
+            });
+            toastMessageSuccess(JapaneseText.successUpdate, context);
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+            toastMessageError(JapaneseText.failUpdate, context);
+          }
+        },
+        title: "本当に確定しますか？",
+        titleText: action);
   }
 
   horizontalDivider() {
@@ -199,9 +404,9 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
 
   divider() {
     return Container(
-      width: AppSize.getDeviceHeight(context) * 0.8,
+      width: AppSize.getDeviceHeight(context) * 0.9,
       height: 0.5,
-      color: AppColor.secondaryColor,
+      color: AppColor.bgPageColor,
     );
   }
 

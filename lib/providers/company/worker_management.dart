@@ -154,11 +154,6 @@ class WorkerManagementProvider with ChangeNotifier {
 
   getWorkerApply(String companyId, {bool isForMatchPage = false}) async {
     workManagementList = await WorkerManagementApiService().getAllJobApply(companyId);
-    // for (var item in list) {
-    //   if (item.status == JapaneseText.hired) {
-    //     workManagementList.add(item);
-    //   }
-    // }
     if (isForMatchPage == true) {
       List<WorkerManagement> workerWithoutJob = [];
       for (var job in workManagementList) {

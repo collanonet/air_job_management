@@ -1,3 +1,4 @@
+import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -44,7 +45,14 @@ class WorkerManagementApiService {
           list.add(company);
         }
         Map<String, int> userOrderCount = {};
+        var data = await Future.wait([for (var job in list) UserApiServices().getProfileUser(job.userId.toString())]);
         for (var job in list) {
+          for (var u in data) {
+            if (u != null && u.uid == job.userId) {
+              job.myUser = u;
+              break;
+            }
+          }
           job.shiftList!.sort((a, b) => a.date!.compareTo(b.date!));
           if (job.userId != null) {
             if (userOrderCount.containsKey(job.userId)) {
@@ -133,6 +141,34 @@ class WorkerManagementApiService {
           WorkerManagement company = WorkerManagement.fromJson(doc.docs[i].data() as Map<String, dynamic>);
           company.uid = doc.docs[i].id;
           list.add(company);
+        }
+        Map<String, int> userOrderCount = {};
+        var data = await Future.wait([for (var job in list) UserApiServices().getProfileUser(job.userId.toString())]);
+        for (var job in list) {
+          for (var u in data) {
+            if (u != null && u.uid == job.userId) {
+              job.myUser = u;
+              break;
+            }
+          }
+          job.shiftList!.sort((a, b) => a.date!.compareTo(b.date!));
+          if (job.userId != null) {
+            if (userOrderCount.containsKey(job.userId)) {
+              // Increment count for existing user
+              userOrderCount[job.userId!] = userOrderCount[job.userId]! + 1;
+              // Update order count in the Order instance
+            } else {
+              // Initialize count for new user
+              userOrderCount[job.userId!] = 1;
+            }
+          }
+        }
+        for (var job in list) {
+          if (userOrderCount.containsKey(job.userId)) {
+            job.applyCount = userOrderCount[job.userId];
+          } else {
+            job.applyCount = 1;
+          }
         }
         return list;
       } else {

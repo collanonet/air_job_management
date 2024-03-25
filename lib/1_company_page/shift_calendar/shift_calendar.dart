@@ -207,7 +207,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                     child: GridView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 16 / 8),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 12 / 8),
                         itemCount: 42,
                         itemBuilder: (BuildContext context, int i) {
                           if (i + 1 >= provider.firstDate.weekday) {
@@ -254,9 +254,13 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                                                   onTap: () {
                                                     showDialog(
                                                         context: context,
-                                                        builder: (context) => ShiftDetailDialogWidget(
-                                                              jobId: shift.jobId!,
-                                                              date: date.date,
+                                                        builder: (context) => Padding(
+                                                              padding: EdgeInsets.symmetric(
+                                                                  horizontal: AppSize.getDeviceHeight(context) * 0.1, vertical: 32),
+                                                              child: ShiftDetailDialogWidget(
+                                                                jobId: shift.jobId!,
+                                                                date: date.date,
+                                                              ),
                                                             ));
                                                   },
                                                   child: Padding(

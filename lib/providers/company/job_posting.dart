@@ -17,6 +17,8 @@ class JobPostingForCompanyProvider with ChangeNotifier {
   List<WorkerManagement> jobApplyList = [];
   List<dynamic> jobPosterProfile = [null];
 
+  TextEditingController searchController = TextEditingController(text: "");
+
   String selectedMenu = JapaneseText.companyJobInformation;
 
   List<String> tabMenu = [JapaneseText.companyJobInformation, JapaneseText.companyShiftFrame, JapaneseText.companyShiftList];
@@ -180,6 +182,23 @@ class JobPostingForCompanyProvider with ChangeNotifier {
   DateTime startBreakTime = DateTime(now.year, now.month, now.day, 12, 0, 0);
   DateTime endBreakTime = DateTime(now.year, now.month, now.day, 13, 0, 0);
 
+  filterData(String id) async {
+    String text = searchController.text;
+    await getAllJobPost(id);
+    if (text.isNotEmpty) {
+      List<JobPosting> jobPostingFilterList = [];
+      for (var job in jobPostingList) {
+        if (job.majorOccupation!.toLowerCase().contains(text.toLowerCase()) ||
+            job.title!.toLowerCase().contains(text.toLowerCase()) ||
+            job.jobLocation!.toLowerCase().contains(text.toLowerCase())) {
+          jobPostingFilterList.add(job);
+        }
+      }
+      jobPostingList = jobPostingFilterList;
+      notifyListeners();
+    }
+  }
+
   getAllJobPost(String id) async {
     jobPostingList = await JobPostingApiService().getAllJobPostByCompany(id);
     jobApplyList = await WorkerManagementApiService().getAllJobApply(id);
@@ -194,6 +213,7 @@ class JobPostingForCompanyProvider with ChangeNotifier {
   }
 
   onInitForList() {
+    searchController = TextEditingController(text: "");
     selectedStatus = null;
     isLoading = true;
     imageUrl = "";

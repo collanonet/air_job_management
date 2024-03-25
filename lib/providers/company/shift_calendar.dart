@@ -10,16 +10,10 @@ import '../../models/job_posting.dart';
 import '../../utils/japanese_text.dart';
 
 class ShiftCalendarProvider with ChangeNotifier {
-  List<String> displayList = [
-    JapaneseText.calendarDisplay,
-    JapaneseText.listDisplay
-  ];
+  List<String> displayList = [JapaneseText.calendarDisplay, JapaneseText.listDisplay];
   String selectDisplay = JapaneseText.calendarDisplay;
-  List<ItemSelectModel> jobTitleList = [
-    ItemSelectModel(title: JapaneseText.all, id: "")
-  ];
-  ItemSelectModel? selectedJobTitle =
-      ItemSelectModel(title: JapaneseText.all, id: "");
+  List<ItemSelectModel> jobTitleList = [ItemSelectModel(title: JapaneseText.all, id: "")];
+  ItemSelectModel? selectedJobTitle = ItemSelectModel(title: JapaneseText.all, id: "");
   bool isLoading = false;
   DateTime? startWorkDate;
   DateTime? endWorkDate;
@@ -54,8 +48,7 @@ class ShiftCalendarProvider with ChangeNotifier {
     rangeDateList.clear();
     DateTime lastDate = DateTime(month.year, month.month + 1, 0);
     for (var i = 1; i <= lastDate.day; ++i) {
-      rangeDateList.add(CalendarModel(
-          date: DateTime(month.year, month.month, i), shiftModelList: []));
+      rangeDateList.add(CalendarModel(date: DateTime(month.year, month.month, i), shiftModelList: []));
     }
   }
 
@@ -102,8 +95,7 @@ class ShiftCalendarProvider with ChangeNotifier {
 
     ///Filter application by job title
     List<WorkerManagement> afterFilterSelectJobTitle = [];
-    if (selectedJobTitle != null &&
-        selectedJobTitle?.title != JapaneseText.all) {
+    if (selectedJobTitle != null && selectedJobTitle?.title != JapaneseText.all) {
       for (var job in jobApplyList) {
         if (job.jobId == selectedJobTitle?.id) {
           afterFilterSelectJobTitle.add(job);
@@ -116,8 +108,7 @@ class ShiftCalendarProvider with ChangeNotifier {
     List<WorkerManagement> afterFilterRangeDate = [];
     if (startWorkDate != null && endWorkDate != null) {
       for (var job in afterFilterSelectJobTitle) {
-        bool isWithin = isDateRangeWithin(job.shiftList!.first.date!,
-            job.shiftList!.last.date!, startWorkDate!, endWorkDate!);
+        bool isWithin = isDateRangeWithin(job.shiftList!.first.date!, job.shiftList!.last.date!, startWorkDate!, endWorkDate!);
         if (isWithin) {
           afterFilterRangeDate.add(job);
         }
@@ -131,8 +122,7 @@ class ShiftCalendarProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool isDateRangeWithin(
-      DateTime start1, DateTime end1, DateTime start2, DateTime end2) {
+  bool isDateRangeWithin(DateTime start1, DateTime end1, DateTime start2, DateTime end2) {
     return start1.isAfterOrEqualTo(start2) && end1.isBeforeOrEqualTo(end2);
   }
 
@@ -155,11 +145,12 @@ class ShiftCalendarProvider with ChangeNotifier {
   initializeJobPosting() async {
     onChangeLoading(true);
     jobPostingList.clear();
-    var data = await Future.wait([
-      for (var job in jobApplyList)
-        JobPostingApiService().getAJobPosting(job.jobId!)
-    ]);
-    jobPostingList = data.map((e) => e!).toList();
+    var data = await Future.wait([for (var job in jobApplyList) JobPostingApiService().getAJobPosting(job.jobId.toString())]);
+    for (var job in data) {
+      if (job != null) {
+        jobPostingList.add(job);
+      }
+    }
     onChangeLoading(false);
   }
 
@@ -196,8 +187,7 @@ class ShiftCalendarProvider with ChangeNotifier {
           var dateList = job.shiftList!.map((e) => e.date).toList();
           if (job.myUser != null &&
               dateList.contains(shift.date) &&
-              (job.shiftList![0].startWorkTime == shift.startWorkTime &&
-                  job.shiftList![0].endWorkTime == shift.endWorkTime)) {
+              (job.shiftList![0].startWorkTime == shift.startWorkTime && job.shiftList![0].endWorkTime == shift.endWorkTime)) {
             shift.applicantCount++;
           }
         }

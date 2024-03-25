@@ -1,3 +1,4 @@
+import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/custom_textfield.dart';
@@ -8,12 +9,10 @@ import '../../../providers/company/job_posting.dart';
 
 class JobPostingFilterFilterDataWidgetForCompany extends StatelessWidget {
   JobPostingFilterFilterDataWidgetForCompany({Key? key}) : super(key: key);
-
-  final TextEditingController searchController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<JobPostingForCompanyProvider>(context);
+    var auth = Provider.of<AuthProvider>(context);
     return Container(
       width: AppSize.getDeviceWidth(context),
       decoration: boxDecoration,
@@ -34,9 +33,12 @@ class JobPostingFilterFilterDataWidgetForCompany extends StatelessWidget {
           SizedBox(
             width: AppSize.getDeviceWidth(context) * 0.5,
             child: PrimaryTextField(
-              controller: searchController,
+              controller: provider.searchController,
               hint: "タイトルを入れます",
               isRequired: false,
+              onChange: (v) {
+                provider.filterData(auth.myCompany?.uid ?? "");
+              },
             ),
           )
         ],

@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../../../api/user_api.dart';
+import '../../../pages/register/widget/radio_list_tile.dart';
 import '../../../utils/app_size.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_textfield.dart';
@@ -42,6 +43,7 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController ordinaryAutoLisence = TextEditingController(text: "");
   List<TextEditingController> otherQualList = [TextEditingController(text: "")];
   List<TextEditingController> employmentHistoryList = [TextEditingController(text: "")];
+  String gender = "";
   bool isShow = true;
   bool isLoading = false;
   DateTime dateTime = DateTime.now();
@@ -70,6 +72,7 @@ class _EditProfileState extends State<EditProfile> {
         imageUrl = await fileToUrl(_image!, "images");
         widget.seeker.profileImage = imageUrl;
       }
+      widget.seeker.gender = gender;
       widget.seeker.address = address.text;
       widget.seeker.building = phone.text;
       widget.seeker.street = street.text;
@@ -114,6 +117,7 @@ class _EditProfileState extends State<EditProfile> {
     finalEdu.text = widget.seeker.finalEdu ?? "";
     graduateSchoolFaculty.text = widget.seeker.graduationSchool ?? "";
     imageUrl = widget.seeker.profileImage ?? "";
+    gender = widget.seeker.gender ?? "";
     if (widget.seeker.academicBgList != null && widget.seeker.academicBgList!.isNotEmpty) {
       academicBgList = widget.seeker.academicBgList!.map((e) => TextEditingController(text: e.toString())).toList();
     }
@@ -312,6 +316,55 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ],
                     ),
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          JapaneseText.gender,
+                          style: kNormalText.copyWith(fontSize: 12),
+                        )),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                            padding: const EdgeInsets.only(top: 7),
+                            child: RadioListTileWidget(
+                              title: JapaneseText.male,
+                              onChange: (v) {
+                                setState(() {
+                                  gender = v;
+                                });
+                              },
+                              size: 120,
+                              val: gender,
+                            )),
+                        Padding(
+                            padding: const EdgeInsets.only(top: 7),
+                            child: RadioListTileWidget(
+                              title: JapaneseText.female,
+                              onChange: (v) {
+                                setState(() {
+                                  gender = v;
+                                });
+                              },
+                              size: 120,
+                              val: gender,
+                            )),
+                        Padding(
+                            padding: const EdgeInsets.only(top: 7),
+                            child: RadioListTileWidget(
+                              title: "その他",
+                              onChange: (v) {
+                                setState(() {
+                                  gender = v;
+                                });
+                              },
+                              size: 120,
+                              val: gender,
+                            )),
+                      ],
+                    ),
+                    AppSize.spaceHeight8,
                     buildUserLocation(),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

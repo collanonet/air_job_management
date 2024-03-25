@@ -18,7 +18,6 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var provider = Provider.of<JobPostingForCompanyProvider>(context);
     return Container(
-      height: 110,
       width: AppSize.getDeviceWidth(context),
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 4, left: 0, right: 0),
