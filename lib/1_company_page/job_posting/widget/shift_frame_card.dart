@@ -23,10 +23,10 @@ class ShiftFrameCardWidget extends StatelessWidget {
       isExpired = true;
     }
     return Container(
-      height: 110,
+      // height: 110,
       width: AppSize.getDeviceWidth(context),
       padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.only(bottom: 16, left: 0, right: 0),
+      margin: const EdgeInsets.only(bottom: 8, left: 0, right: 0),
       decoration: BoxDecoration(
           color: shiftFrame == selectShiftFrame ? Colors.orange.withOpacity(0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(16),

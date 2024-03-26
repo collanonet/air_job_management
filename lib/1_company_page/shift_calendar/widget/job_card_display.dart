@@ -24,7 +24,6 @@ class JobCardDisplay extends StatelessWidget {
       isExpired = true;
     }
     return Container(
-      height: 110,
       width: AppSize.getDeviceWidth(context),
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 16, left: 0, right: 0),

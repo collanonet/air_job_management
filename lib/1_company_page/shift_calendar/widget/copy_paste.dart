@@ -5,8 +5,9 @@ import '../../../utils/app_size.dart';
 import '../../../widgets/custom_button.dart';
 
 class CopyPasteShiftCalendarWidget extends StatelessWidget {
-  final Function onClick;
-  const CopyPasteShiftCalendarWidget({super.key, required this.onClick});
+  final Function onCopyPaste;
+  final Function onMatching;
+  const CopyPasteShiftCalendarWidget({super.key, required this.onCopyPaste, required this.onMatching});
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +19,14 @@ class CopyPasteShiftCalendarWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             const Spacer(),
-            const SizedBox(),
+            SizedBox(
+              width: 160,
+              child: ButtonWidget(radius: 25, title: "手動マッチング", color: AppColor.primaryColor, onPress: () => onMatching()),
+            ),
             AppSize.spaceWidth16,
             SizedBox(
-              width: 230,
-              child: ButtonWidget(radius: 25, title: "コピーして作成", color: AppColor.primaryColor, onPress: () => onClick()),
+              width: 160,
+              child: ButtonWidget(radius: 25, title: "コピーして作成", color: AppColor.primaryColor, onPress: () => onCopyPaste()),
             ),
           ],
         ),

@@ -22,7 +22,8 @@ import '../../woker_management/widget/job_card.dart';
 class MatchingWorkerPage extends StatefulWidget {
   final JobPosting jobPosting;
   final ShiftFrame shiftFrame;
-  const MatchingWorkerPage({super.key, required this.jobPosting, required this.shiftFrame});
+  final Function onSuccess;
+  const MatchingWorkerPage({super.key, required this.jobPosting, required this.shiftFrame, required this.onSuccess});
 
   @override
   State<MatchingWorkerPage> createState() => _MatchingWorkerPageState();
@@ -56,9 +57,10 @@ class _MatchingWorkerPageState extends State<MatchingWorkerPage> with AfterBuild
     workerManagementProvider = Provider.of<WorkerManagementProvider>(context);
     return CustomLoadingOverlay(
       isLoading: isLoading,
-      child: SizedBox(
+      child: Container(
         width: AppSize.getDeviceWidth(context),
         height: AppSize.getDeviceHeight(context),
+        color: AppColor.bgPageColor,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -66,11 +68,6 @@ class _MatchingWorkerPageState extends State<MatchingWorkerPage> with AfterBuild
               const WorkerManagementFilterDataWidgetForCompany(
                 isHaveClose: true,
               ),
-              AppSize.spaceHeight16,
-              Align(
-                  alignment: Alignment.centerRight,
-                  child: SizedBox(
-                      width: 180, child: ButtonWidget(radius: 25, title: "マッチングする", color: AppColor.primaryColor, onPress: () => onMatchUser()))),
               AppSize.spaceHeight16,
               Expanded(
                   child: Container(
@@ -84,16 +81,24 @@ class _MatchingWorkerPageState extends State<MatchingWorkerPage> with AfterBuild
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "ワーカー　一覧",
+                            "${widget.jobPosting.title}",
                             style: titleStyle,
                           ),
-                          IconButton(
-                              onPressed: () async {
-                                workerManagementProvider.onChangeLoading(true);
-                                workerManagementProvider.onInitForList();
-                                getData();
-                              },
-                              icon: const Icon(Icons.refresh))
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: 180,
+                                  child: ButtonWidget(radius: 25, title: "マッチングする", color: AppColor.primaryColor, onPress: () => onMatchUser())),
+                              AppSize.spaceWidth16,
+                              IconButton(
+                                  onPressed: () async {
+                                    workerManagementProvider.onChangeLoading(true);
+                                    workerManagementProvider.onInitForList();
+                                    getData();
+                                  },
+                                  icon: const Icon(Icons.refresh))
+                            ],
+                          ),
                         ],
                       ),
                       AppSize.spaceHeight30,
@@ -191,7 +196,8 @@ class _MatchingWorkerPageState extends State<MatchingWorkerPage> with AfterBuild
     setState(() {
       isLoading = false;
     });
-    Navigator.pop(context, true);
+    Navigator.pop(context);
+    widget.onSuccess();
   }
 
   buildList() {

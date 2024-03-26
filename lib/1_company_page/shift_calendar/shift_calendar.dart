@@ -19,7 +19,9 @@ import '../../models/company.dart';
 import '../../providers/auth.dart';
 import '../../utils/app_size.dart';
 import '../../utils/my_route.dart';
+import '../../utils/toast_message_util.dart';
 import '../../widgets/custom_loading_overlay.dart';
+import '../job_posting/create_or_edit_job_posting.dart';
 
 class ShiftCalendarPage extends StatefulWidget {
   const ShiftCalendarPage({super.key});
@@ -62,7 +64,16 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                       children: [
                         buildTab(provider.displayList[0]),
                         buildTab(provider.displayList[1]),
-                        Expanded(child: CopyPasteShiftCalendarWidget(onClick: () {}))
+                        Expanded(
+                            child: CopyPasteShiftCalendarWidget(onMatching: () {
+                          toastMessageSuccess("We are going to create this matching soon", context);
+                        }, onCopyPaste: () {
+                          if (provider.jobPosting == null || provider.selectDisplay == provider.displayList[0]) {
+                            toastMessageError("最初にコピーしたいジョブを選択してください。", context);
+                          } else {
+                            showCopyAndPaste();
+                          }
+                        }))
                       ],
                     ),
                     if (provider.selectDisplay == provider.displayList[0]) buildCalendarWidget() else buildList()
@@ -418,9 +429,9 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                   title: job.title!,
                   shiftFrame: job,
                   onClick: () {
-                    // setState(() {
-                    //   provider.jobPosting = job;
-                    // });
+                    setState(() {
+                      provider.jobPosting = job;
+                    });
                   },
                   selectShiftFrame: provider.jobPosting,
                 );
@@ -428,6 +439,24 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
         ],
       ),
     );
+  }
+
+  showCopyAndPaste() {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceHeight(context) * 0.1, vertical: 32),
+            child: CreateOrEditJobPostingPageForCompany(
+              jobPosting: provider.jobPosting!.uid,
+              isCopyPaste: true,
+            ),
+          );
+        }).then((value) {
+      if (value == true) {
+        getData();
+      }
+    });
   }
 
   @override

@@ -1,8 +1,7 @@
-import 'package:air_job_management/1_company_page/home/home.dart';
 import 'package:air_job_management/1_company_page/job_posting/job_posting_detail/job_posting_shift.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/matching_worker.dart';
 import 'package:air_job_management/providers/auth.dart';
-import 'package:air_job_management/widgets/show_message.dart';
+import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -56,26 +55,24 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
                       child: MatchingAndCopyButtonWidget(
                     onAdd: () {
                       if (selectShiftFrame == null) {
-                        MessageWidget.show("Please select one job first before matching!");
+                        toastMessageError("マッチングの前に、まず1つの仕事を選んでください！", context);
                       } else {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => HomePageForCompany(
-                                      page: MatchingWorkerPage(
-                                        jobPosting: provider.jobPosting!,
-                                        shiftFrame: selectShiftFrame!,
-                                      ),
-                                    ))).then((value) {
-                          if (value != null && value == true) {
-                            onRefreshData();
-                          }
-                        });
+                        showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                                  content: MatchingWorkerPage(
+                                    jobPosting: provider.jobPosting!,
+                                    shiftFrame: selectShiftFrame!,
+                                    onSuccess: () {
+                                      onRefreshData();
+                                    },
+                                  ),
+                                ));
                       }
                     },
                     onCopyPaste: () {
                       if (selectShiftFrame == null) {
-                        MessageWidget.show("Please select one job first before matching!");
+                        toastMessageError("マッチングの前に、まず1つの仕事を選んでください！", context);
                       } else {
                         var now = DateTime.now();
                         provider.transportExp.text = selectShiftFrame!.transportExpenseFee!;
@@ -224,11 +221,12 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
   }
 
   onRefreshData() async {
+    debugPrint("Refresh data");
     setState(() {
       isLoading = true;
     });
     shiftFrameList = [];
-    await provider.onInitForJobPostingDetail(authProvider.myCompany?.uid ?? "");
+    // await provider.onInitForJobPostingDetail(authProvider.myCompany?.uid ?? "");
     getData();
   }
 

@@ -48,6 +48,7 @@ class _FutureJobState extends State<FutureJob> {
         var job = await SearchJobApi().getASearchJob(info.jobId!);
         for (var d in info.shiftList!) {
           shiftList.add(ShiftModel(
+              status: d.status,
               myJob: job,
               image: info.image,
               title: info.jobTitle,

@@ -4,12 +4,16 @@ import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
+import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_dialog.dart';
 import 'package:air_job_management/widgets/show_message.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
+import '../../../api/worker_api/search_api.dart';
+import '../../../models/worker_model/search_job.dart';
+import '../../../models/worker_model/shift.dart';
 import '../../../utils/app_color.dart';
 import '../../../utils/app_size.dart';
 import '../../../utils/style.dart';
@@ -30,6 +34,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
   List<WorkerManagement> jobList = [];
   bool isLoading = true;
   late AuthProvider authProvider;
+  List<ShiftModel> shiftList = [];
 
   @override
   void initState() {
@@ -109,15 +114,15 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
         child: LoadingWidget(AppColor.primaryColor),
       );
     } else {
-      if (jobList.isNotEmpty) {
+      if (shiftList.isNotEmpty) {
         return ListView.separated(
-            itemCount: jobList.length,
+            itemCount: shiftList.length,
             shrinkWrap: true,
-            separatorBuilder: (context, index) => Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == jobList.length ? 20 : 0)),
+            separatorBuilder: (context, index) => Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == shiftList.length ? 20 : 0)),
             itemBuilder: (context, index) {
-              WorkerManagement job = jobList[index];
+              ShiftModel shift = shiftList[index];
               return Container(
-                height: 110,
+                // height: 110,
                 width: AppSize.getDeviceWidth(context),
                 padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
                 margin: const EdgeInsets.only(bottom: 4, left: 0, right: 0),
@@ -153,11 +158,11 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                                       builder: (context) => AlertDialog(
                                             content: CreateOrEditJobPostingPageForCompany(
                                               isView: true,
-                                              jobPosting: job.jobId,
+                                              jobPosting: shift.myJob!.uid,
                                             ),
                                           )),
                                   child: Text(
-                                    job.jobTitle ?? "",
+                                    shift.myJob?.title ?? "",
                                     style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
                                     overflow: TextOverflow.fade,
                                   ),
@@ -179,7 +184,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                         padding: const EdgeInsets.only(right: 32),
                         child: Center(
                           child: Text(
-                            "${DateToAPIHelper.convertDateToString(job.shiftList!.first.date!)} ~ ${DateToAPIHelper.convertDateToString(job.shiftList!.last.date!)}",
+                            "${DateToAPIHelper.convertDateToString(shift.date!)}  ${shift.startWorkTime}〜${shift.endWorkTime}",
                             style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                             overflow: TextOverflow.fade,
                           ),
@@ -195,9 +200,19 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                             width: 150,
                             child: ButtonWidget(
                               radius: 25,
-                              color: job.status == "approved" ? AppColor.primaryColor : AppColor.whiteColor,
+                              color: shift.status == "completed"
+                                  ? AppColor.bgPageColor
+                                  : shift.status == "approved"
+                                      ? AppColor.primaryColor
+                                      : AppColor.whiteColor,
                               title: "確定する",
-                              onPress: () => updateJobStatus(job, "確定する"),
+                              onPress: () {
+                                if (shift.status != "completed") {
+                                  updateJobStatus(index, shift, "確定する");
+                                } else {
+                                  toastMessageError("この仕事は完了しました。", context);
+                                }
+                              },
                             ),
                           ),
                           AppSize.spaceWidth32,
@@ -205,9 +220,19 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                             width: 150,
                             child: ButtonWidget(
                               radius: 25,
-                              color: job.status == "canceled" ? AppColor.primaryColor : AppColor.whiteColor,
+                              color: shift.status == "completed"
+                                  ? AppColor.bgPageColor
+                                  : shift.status == "rejected"
+                                      ? AppColor.primaryColor
+                                      : AppColor.whiteColor,
                               title: "キャンセル",
-                              onPress: () => updateJobStatus(job, "キャンセル"),
+                              onPress: () {
+                                if (shift.status != "completed") {
+                                  updateJobStatus(index, shift, "キャンセル");
+                                } else {
+                                  toastMessageError("この仕事は完了しました。", context);
+                                }
+                              },
                             ),
                           )
                         ],
@@ -233,13 +258,25 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
   }
 
   getData() async {
+    shiftList = [];
     jobList = await WorkerManagementApiService().getAllJobApplyForAUSer(authProvider.myCompany?.uid ?? "", widget.myUser?.uid ?? "");
+    var data = await Future.wait([for (var job in jobList) SearchJobApi().getASearchJob(job.jobId.toString())]);
+    for (var d in jobList) {
+      SearchJob? job = data[jobList.indexOf(d)];
+      for (var shift in d.shiftList!) {
+        shift.myJob = job;
+        shift.jobId = d.uid;
+      }
+      shiftList.addAll(d.shiftList!);
+    }
     setState(() {
       isLoading = false;
     });
   }
 
-  updateJobStatus(WorkerManagement job, String action) {
+  updateJobStatus(int index, ShiftModel shiftModel, String action) {
+    shiftModel.status = action == "確定する" ? "approved" : "rejected";
+    shiftList[index] = shiftModel;
     CustomDialog.confirmDialog(
         context: context,
         onApprove: () async {
@@ -247,12 +284,9 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
           setState(() {
             isLoading = true;
           });
-          bool isSuccess = await WorkerManagementApiService().updateJobStatus(job.uid!, action == "確定する" ? "approved" : "rejected");
+          bool isSuccess = await WorkerManagementApiService().updateShiftStatus(shiftList, shiftList[index].jobId!);
           if (isSuccess) {
-            jobList = await WorkerManagementApiService().getAllJobApplyForAUSer(authProvider.myCompany?.uid ?? "", widget.myUser?.uid ?? "");
-            setState(() {
-              isLoading = false;
-            });
+            await getData();
             MessageWidget.show(JapaneseText.successUpdate);
           } else {
             setState(() {

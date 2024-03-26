@@ -36,8 +36,18 @@ class ShiftModel {
       startBreakTime: json["start_break_time"],
       endWorkTime: json["end_work_time"],
       endBreakTime: json["end_break_time"],
-      status: json["status"],
+      status: json["status"] ?? "pending",
       price: json["price"]);
+
+  Map<String, dynamic> toJson() => {
+        "date": DateToAPIHelper.convertDateToString(date!),
+        "start_work_time": startWorkTime,
+        "start_break_time": startBreakTime,
+        "end_work_time": endWorkTime,
+        "end_break_time": endBreakTime,
+        "status": status,
+        "price": price
+      };
 
   @override
   int get hashCode => date.hashCode ^ startBreakTime.hashCode ^ endWorkTime.hashCode;

@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import '../../helper/date_to_api.dart';
+import '../../models/worker_model/shift.dart';
 
 class WorkerManagementApiService {
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -95,6 +96,18 @@ class WorkerManagementApiService {
     } catch (e) {
       debugPrint("Error getAJob =>> ${e.toString()}");
       return null;
+    }
+  }
+
+  Future<bool> updateShiftStatus(List<ShiftModel> shiftList, String jobId) async {
+    try {
+      shiftList = shiftList.toSet().toList();
+      print(shiftList.map((e) => e.status));
+      await jobRef.doc(jobId).update({"shift": shiftList.map((e) => e.toJson())});
+      return true;
+    } catch (e) {
+      debugPrint("Error updateJobStatus =>> ${e.toString()}");
+      return false;
     }
   }
 
