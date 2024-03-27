@@ -22,6 +22,7 @@ import '../../utils/my_route.dart';
 import '../../utils/toast_message_util.dart';
 import '../../widgets/custom_loading_overlay.dart';
 import '../job_posting/create_or_edit_job_posting.dart';
+import '../job_posting/widget/matching_worker.dart';
 
 class ShiftCalendarPage extends StatefulWidget {
   const ShiftCalendarPage({super.key});
@@ -66,7 +67,11 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                         buildTab(provider.displayList[1]),
                         Expanded(
                             child: CopyPasteShiftCalendarWidget(onMatching: () {
-                          toastMessageSuccess("We are going to create this matching soon", context);
+                          if (provider.jobPosting == null || provider.selectDisplay == provider.displayList[0]) {
+                            toastMessageError("最初にコピーしたいジョブを選択してください。", context);
+                          } else {
+                            showMatching();
+                          }
                         }, onCopyPaste: () {
                           if (provider.jobPosting == null || provider.selectDisplay == provider.displayList[0]) {
                             toastMessageError("最初にコピーしたいジョブを選択してください。", context);
@@ -399,18 +404,18 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                 ),
                 flex: 2,
               ),
-              Expanded(
-                child: Center(
-                  child: Text("募集人数", style: normalTextStyle.copyWith(fontSize: 13)),
-                ),
-                flex: 1,
-              ),
-              Expanded(
-                child: Center(
-                  child: Text("応募人数", style: normalTextStyle.copyWith(fontSize: 13)),
-                ),
-                flex: 1,
-              ),
+              // Expanded(
+              //   child: Center(
+              //     child: Text("募集人数", style: normalTextStyle.copyWith(fontSize: 13)),
+              //   ),
+              //   flex: 1,
+              // ),
+              // Expanded(
+              //   child: Center(
+              //     child: Text("応募人数", style: normalTextStyle.copyWith(fontSize: 13)),
+              //   ),
+              //   flex: 1,
+              // ),
               SizedBox(
                   width: 100,
                   child: Center(
@@ -439,6 +444,20 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
         ],
       ),
     );
+  }
+
+  showMatching() {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              content: MatchingWorkerPage(
+                jobPosting: provider.jobPosting!,
+                shiftFrame: provider.jobPosting!.shiftFrameList!.first,
+                onSuccess: () {
+                  //Refresh data
+                },
+              ),
+            ));
   }
 
   showCopyAndPaste() {

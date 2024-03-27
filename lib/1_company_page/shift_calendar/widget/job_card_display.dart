@@ -84,26 +84,26 @@ class JobCardDisplay extends StatelessWidget {
               ),
               flex: 2,
             ),
-            Expanded(
-              child: Center(
-                child: Text(
-                  shiftFrame.numberOfRecruit ?? "",
-                  style: kTitleText.copyWith(color: AppColor.darkGrey, fontSize: 16),
-                  overflow: TextOverflow.fade,
-                ),
-              ),
-              flex: 1,
-            ),
-            Expanded(
-              child: Center(
-                child: Text(
-                  "${shiftFrame.applyCount}",
-                  style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
-                  overflow: TextOverflow.fade,
-                ),
-              ),
-              flex: 1,
-            ),
+            // Expanded(
+            //   child: Center(
+            //     child: Text(
+            //       shiftFrame.numberOfRecruit ?? "",
+            //       style: kTitleText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+            //       overflow: TextOverflow.fade,
+            //     ),
+            //   ),
+            //   flex: 1,
+            // ),
+            // Expanded(
+            //   child: Center(
+            //     child: Text(
+            //       "${shiftFrame.applyCount}",
+            //       style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
+            //       overflow: TextOverflow.fade,
+            //     ),
+            //   ),
+            //   flex: 1,
+            // ),
             Container(
                 width: 100,
                 height: 36,

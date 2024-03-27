@@ -64,14 +64,56 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                       "応募求人　一覧",
                       style: titleStyle,
                     ),
-                    IconButton(
-                        onPressed: () async {
-                          setState(() {
-                            isLoading = true;
-                          });
-                          getData();
-                        },
-                        icon: const Icon(Icons.refresh))
+                    Row(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 75),
+                              child: Text(
+                                "任意のワーカーを選んでまとめて",
+                                style: normalTextStyle.copyWith(fontSize: 13),
+                              ),
+                            ),
+                            AppSize.spaceHeight8,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                SizedBox(
+                                  width: 130,
+                                  child: ButtonWidget(
+                                    radius: 25,
+                                    color: AppColor.whiteColor,
+                                    title: "確定する",
+                                    onPress: () {},
+                                  ),
+                                ),
+                                AppSize.spaceWidth8,
+                                SizedBox(
+                                  width: 130,
+                                  child: ButtonWidget(
+                                    radius: 25,
+                                    color: AppColor.whiteColor,
+                                    title: "キャンセル",
+                                    onPress: () {},
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                        AppSize.spaceWidth16,
+                        IconButton(
+                            onPressed: () async {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              getData();
+                            },
+                            icon: const Icon(Icons.refresh)),
+                      ],
+                    )
                   ],
                 ),
                 AppSize.spaceHeight30,

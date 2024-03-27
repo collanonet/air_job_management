@@ -34,7 +34,6 @@ class _HomePageForCompanyState extends State<HomePageForCompany> with AfterBuild
 
   @override
   Widget build(BuildContext context) {
-    print("Home Called");
     homeProvider = Provider.of<HomeProvider>(context);
     authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(

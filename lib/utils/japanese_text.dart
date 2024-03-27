@@ -1,4 +1,8 @@
 class JapaneseText {
+  static String attendance = "勤怠";
+  static String byMonth = "月ごと";
+  static String perWorker = "ワーカーごと";
+
   static String jobStatusSeekerApproved = "確定済";
   static String jobStatusSeekerCanceled = "不承諾";
   static String jobStatusSeekerRejected = "辞退済";
