@@ -4,6 +4,10 @@ toJapanDateTime(DateTime dateTime) {
   return "${dateTime.year}/${dateTime.month}/${dateTime.day}（${toJapanWeekDay(DateFormat('EEEE').format(dateTime).toString())}） ${DateFormat.Hm().format(dateTime)}";
 }
 
+toJapanMonthDayWeekday(DateTime dateTime) {
+  return "${dateTime.month}月${dateTime.day}日（${toJapanWeekDay(DateFormat('EEEE').format(dateTime).toString())}）";
+}
+
 toJapanDate(DateTime? dateTime) {
   if (dateTime != null) {
     return "${dateTime.year}/${dateTime.month}/${dateTime.day}（${toJapanWeekDay(DateFormat('EEEE').format(dateTime).toString())}）";

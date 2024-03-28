@@ -9,14 +9,26 @@ class EntryExitHistoryProvider with ChangeNotifier {
   bool isLoading = false;
   List<String> displayList = [JapaneseText.byMonth, JapaneseText.perWorker];
   String selectDisplay = JapaneseText.byMonth;
-  DateTime month = DateTime.now();
+  DateTime startDay = DateTime.now();
+  DateTime endDay = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
+  List<DateTime> dateList = [];
 
   set setLoading(bool loading) {
     isLoading = loading;
   }
 
+  initData() {
+    dateList = [];
+    startDay = DateTime.now();
+    endDay = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
+    for (int i = 1; i < endDay.day + 1; i++) {
+      dateList.add(DateTime(endDay.year, endDay.month, i));
+    }
+  }
+
   onChangeMonth(DateTime now) {
-    month = now;
+    startDay = DateTime(now.year, now.month, 1);
+    endDay = DateTime(now.year, now.month + 1, 0);
     notifyListeners();
   }
 
