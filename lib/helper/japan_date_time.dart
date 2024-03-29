@@ -1,5 +1,9 @@
 import 'package:intl/intl.dart';
 
+toJapanDateTimeNoWeekDay(DateTime dateTime) {
+  return "${dateTime.year}/${dateTime.month}/${dateTime.day} ${DateFormat.Hm().format(dateTime)}";
+}
+
 toJapanDateTime(DateTime dateTime) {
   return "${dateTime.year}/${dateTime.month}/${dateTime.day}（${toJapanWeekDay(DateFormat('EEEE').format(dateTime).toString())}） ${DateFormat.Hm().format(dateTime)}";
 }

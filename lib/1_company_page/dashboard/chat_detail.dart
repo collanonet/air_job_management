@@ -3,6 +3,7 @@ import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/pages/job_seeker/job_seeker_detail/chat.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/style.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,13 +15,13 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../api/user_api.dart';
 import '../../../utils/app_color.dart';
 
-class CompanyChatPage extends StatefulWidget {
+class DashboardChatPage extends StatefulWidget {
   final MyUser myUser;
   final String companyID;
   final String? companyName;
   final String? companyImageUrl;
 
-  const CompanyChatPage({
+  const DashboardChatPage({
     super.key,
     required this.myUser,
     required this.companyID,
@@ -29,10 +30,10 @@ class CompanyChatPage extends StatefulWidget {
   });
 
   @override
-  State<CompanyChatPage> createState() => _CompanyChatPageState();
+  State<DashboardChatPage> createState() => _DashboardChatPageState();
 }
 
-class _CompanyChatPageState extends State<CompanyChatPage> {
+class _DashboardChatPageState extends State<DashboardChatPage> {
   String get companyName {
     if (widget.companyName != null) {
       return widget.companyName!;
@@ -40,9 +41,8 @@ class _CompanyChatPageState extends State<CompanyChatPage> {
     return "Unknown";
   }
 
-  ScrollController scrollController = ScrollController();
   late final MessageApi messageApi;
-
+  ScrollController scrollController = ScrollController();
   late final Stream messageStream;
 
   @override
@@ -58,10 +58,20 @@ class _CompanyChatPageState extends State<CompanyChatPage> {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        width: AppSize.getDeviceWidth(context),
-        decoration: boxDecoration,
+        color: const Color(0xffE4EDF4),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "${widget.myUser.nameKanJi}",
+                  style: titleStyle.copyWith(fontSize: 15),
+                ),
+              ),
+            ),
             Expanded(
               child: buildMessageList,
             ),
@@ -136,15 +146,46 @@ class _CompanyChatPageState extends State<CompanyChatPage> {
                               ),
                             )
                           : const SizedBox(),
+                      !isMe && message.type == 0
+                          ? Padding(
+                              padding: const EdgeInsets.only(bottom: 30, right: 5),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(25),
+                                child: CachedNetworkImage(
+                                  width: 25,
+                                  height: 25,
+                                  imageUrl: widget.myUser.profileImage ?? "",
+                                  fit: BoxFit.cover,
+                                  errorWidget: (_, __, ___) => Container(
+                                    width: 25,
+                                    height: 25,
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.person,
+                                        color: AppColor.whiteColor,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : const SizedBox(),
                       Container(
                         constraints: BoxConstraints(
                           minWidth: 40,
-                          maxWidth: AppSize.getDeviceWidth(context) * 0.6,
+                          maxWidth: AppSize.getDeviceWidth(context) * 0.45,
                         ),
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: !isMe ? const Color(0xffF0F3F5) : const Color(0xffFFF2D3),
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(isMe ? 20 : 0),
+                            topRight: Radius.circular(!isMe ? 20 : 0),
+                            bottomRight: Radius.circular(20),
+                            bottomLeft: Radius.circular(20),
+                          ),
                         ),
                         child: [
                           Text(

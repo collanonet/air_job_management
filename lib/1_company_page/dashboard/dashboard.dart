@@ -1,3 +1,4 @@
+import 'package:air_job_management/1_company_page/dashboard/chat.dart';
 import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/dashboard.dart';
@@ -44,7 +45,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
       width: AppSize.getDeviceWidth(context),
       height: AppSize.getDeviceHeight(context),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(top: 16, bottom: 16, right: 16),
         child: buildBody(),
       ),
     );
@@ -54,17 +55,20 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
     if (provider.isLoading) {
       return LoadingWidget(AppColor.primaryColor);
     } else {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          buildProfileCompany(),
-          AppSize.spaceHeight16,
-          buildSummaryApplicant(),
-          AppSize.spaceHeight16,
-          // buildSummaryMessage(),
-          // AppSize.spaceHeight16,
-          buildNotificationModelList()
-        ],
+      return SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            buildProfileCompany(),
+            AppSize.spaceHeight16,
+            buildSummaryApplicant(),
+            AppSize.spaceHeight16,
+            // buildSummaryMessage(),
+            ChatPageAtDashboard(),
+            AppSize.spaceHeight16,
+            buildNotificationModelList()
+          ],
+        ),
       );
     }
   }
@@ -198,7 +202,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
     return Container(
       width: AppSize.getDeviceWidth(context),
       decoration: boxDecoration,
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.only(top: 32, bottom: 32, right: 32),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
@@ -231,8 +235,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
   }
 
   buildNotificationModelList() {
-    return Expanded(
-        child: Container(
+    return Container(
       width: AppSize.getDeviceWidth(context),
       decoration: boxDecoration,
       padding: const EdgeInsets.all(32),
@@ -240,49 +243,48 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
         children: [
           const TitleWidget(title: "お知らせ"),
           AppSize.spaceHeight16,
-          Expanded(
-            child: ListView.builder(
-                itemCount: provider.notificationList.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  var notification = provider.notificationList[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: Row(
-                          children: [
-                            Container(
-                              width: 150,
-                              height: 30,
-                              decoration:
-                                  BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(width: 2, color: Color(0xff6DC9E5))),
-                              child: Center(
-                                child: Text(
-                                  notification.title ?? "",
-                                  style: kNormalText.copyWith(color: Color(0xff6DC9E5), fontSize: 16),
-                                ),
+          ListView.builder(
+              itemCount: provider.notificationList.length,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                var notification = provider.notificationList[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: Row(
+                        children: [
+                          Container(
+                            width: 150,
+                            height: 30,
+                            decoration:
+                                BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(width: 2, color: Color(0xff6DC9E5))),
+                            child: Center(
+                              child: Text(
+                                notification.title ?? "",
+                                style: kNormalText.copyWith(color: Color(0xff6DC9E5), fontSize: 16),
                               ),
                             ),
-                            AppSize.spaceWidth32,
-                            Expanded(
-                                child: Text(
-                              notification.des ?? "",
-                              style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 16),
-                              overflow: TextOverflow.fade,
-                            ))
-                          ],
-                        )),
-                        Text(toJapanMonthAndYearDay(notification.date!), style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16))
-                      ],
-                    ),
-                  );
-                }),
-          ),
+                          ),
+                          AppSize.spaceWidth32,
+                          Expanded(
+                              child: Text(
+                            notification.des ?? "",
+                            style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 16),
+                            overflow: TextOverflow.fade,
+                          ))
+                        ],
+                      )),
+                      Text(toJapanMonthAndYearDay(notification.date!), style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16))
+                    ],
+                  ),
+                );
+              }),
         ],
       ),
-    ));
+    );
   }
 
   verticalDivider() {
