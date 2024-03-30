@@ -1,8 +1,10 @@
 import 'package:air_job_management/api/company/worker_managment.dart';
 import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/models/worker_model/shift.dart';
+import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
@@ -130,20 +132,30 @@ class _MatchingWorkerPageState extends State<MatchingWorkerPage> with AfterBuild
                             flex: 2,
                           ),
                           Expanded(
-                            child: Center(
-                              child: Text("Good率", style: normalTextStyle.copyWith(fontSize: 13)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(FontAwesome.arrow_circle_down, color: AppColor.primaryColor,),
+                                AppSize.spaceWidth5,
+                                Text("Good率", style: normalTextStyle.copyWith(fontSize: 13)),
+                              ],
                             ),
                             flex: 1,
                           ),
                           Expanded(
-                            child: Center(
-                              child: Text("最終稼働日", style: normalTextStyle.copyWith(fontSize: 13)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(FontAwesome.arrow_circle_down, color: AppColor.primaryColor,),
+                                AppSize.spaceWidth5,
+                                Text("最終稼働日", style: normalTextStyle.copyWith(fontSize: 13)),
+                              ],
                             ),
                             flex: 2,
                           ),
                           Expanded(
                             child: Center(
-                              child: Text("稼働回数", style: normalTextStyle.copyWith(fontSize: 13)),
+                              child: Text("状態", style: normalTextStyle.copyWith(fontSize: 13)),
                             ),
                             flex: 1,
                           ),
