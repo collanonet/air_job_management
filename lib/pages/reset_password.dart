@@ -55,10 +55,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 borderRadius: BorderRadius.circular(10),
                 color: AppColor.whiteColor,
               ),
-              margin: const EdgeInsets.all(16),
+              margin: EdgeInsets.all(Responsive.isDesktop(context) ? AppSize.getDeviceHeight(context) * 0.1 : 16),
               padding: const EdgeInsets.symmetric(vertical: 30),
               width: AppSize.getDeviceWidth(context) * (Responsive.isDesktop(context) ? 0.5 : 0.9),
-              height: AppSize.getDeviceHeight(context) - 32,
+              height: AppSize.getDeviceHeight(context) - (Responsive.isDesktop(context) ? AppSize.getDeviceHeight(context) * 0.2 : 32),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [

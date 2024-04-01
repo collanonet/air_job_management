@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
         borderRadius: BorderRadius.circular(10),
         color: AppColor.whiteColor,
       ),
-      margin: const EdgeInsets.all(16),
+      margin: EdgeInsets.all(Responsive.isDesktop(context) ? AppSize.getDeviceHeight(context) * 0.1 : 16),
       padding: const EdgeInsets.symmetric(vertical: 16),
       width: AppSize.getDeviceWidth(context) * (Responsive.isDesktop(context) ? 0.5 : 0.9),
       height: AppSize.getDeviceHeight(context),
