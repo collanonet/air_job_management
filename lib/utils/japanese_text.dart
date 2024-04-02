@@ -19,6 +19,7 @@ class JapaneseText {
   static String phoneNumber = "電話番号";
 
   static String calendarDisplay = "カレンダー表示";
+  static String perShift = "シフトごと";
   static String listDisplay = "リスト表示";
   static String close = "閉じる";
   static String hired = "確定済";

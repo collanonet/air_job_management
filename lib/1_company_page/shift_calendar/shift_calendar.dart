@@ -1,5 +1,4 @@
 import 'package:air_job_management/1_company_page/shift_calendar/widget/copy_paste.dart';
-import 'package:air_job_management/1_company_page/shift_calendar/widget/filter.dart';
 import 'package:air_job_management/1_company_page/shift_calendar/widget/job_card_display.dart';
 import 'package:air_job_management/1_company_page/shift_calendar/widget/shift_detail_dialog.dart';
 import 'package:air_job_management/providers/company/shift_calendar.dart';
@@ -11,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../api/user_api.dart';
 import '../../helper/japan_date_time.dart';
@@ -35,6 +35,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
   late AuthProvider authProvider;
   late ShiftCalendarProvider provider;
   ScrollController scrollController = ScrollController();
+  late ShiftCalendarDataSource shiftCalendarDataSource;
 
   @override
   void initState() {
@@ -48,9 +49,12 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
     provider = Provider.of<ShiftCalendarProvider>(context);
     return CustomLoadingOverlay(
         isLoading: provider.isLoading,
-        child: SizedBox(
+        child: Container(
           width: AppSize.getDeviceWidth(context),
           height: AppSize.getDeviceHeight(context),
+          margin: const EdgeInsets.all(16.0),
+          decoration: boxDecoration,
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Scrollbar(
@@ -60,11 +64,12 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                 controller: scrollController,
                 child: Column(
                   children: [
-                    const ShiftCalendarFilterDataWidgetForCompany(),
+                    // const ShiftCalendarFilterDataWidgetForCompany(),
                     Row(
                       children: [
                         buildTab(provider.displayList[0]),
                         buildTab(provider.displayList[1]),
+                        buildTab(provider.displayList[2]),
                         Expanded(
                             child: CopyPasteShiftCalendarWidget(onMatching: () {
                           if (provider.jobPosting == null || provider.selectDisplay == provider.displayList[0]) {
@@ -81,7 +86,12 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                         }))
                       ],
                     ),
-                    if (provider.selectDisplay == provider.displayList[0]) buildCalendarWidget() else buildList()
+                    if (provider.selectDisplay == provider.displayList[0])
+                      buildShiftPerDay()
+                    else if (provider.selectDisplay == provider.displayList[1])
+                      buildShiftPerMonth()
+                    else
+                      buildCalendarWidget()
                   ],
                 ),
               ),
@@ -92,7 +102,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
 
   buildTab(String title) {
     return Container(
-      width: 200,
+      width: 130,
       height: 40,
       decoration: BoxDecoration(
           color: title == provider.selectDisplay ? AppColor.primaryColor : const Color(0xffFFF7E5),
@@ -118,6 +128,71 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  buildShiftPerDay() {
+    return Column(
+      children: [
+        AppSize.spaceHeight16,
+        buildMonthDisplay(true),
+        AppSize.spaceHeight16,
+        AppSize.spaceHeight30,
+        SfDataGrid(
+            source: shiftCalendarDataSource,
+            columnWidthMode: ColumnWidthMode.fill,
+            isScrollbarAlwaysShown: false,
+            rowHeight: 45,
+            headerRowHeight: 80,
+            shrinkWrapRows: true,
+            shrinkWrapColumns: true,
+            gridLinesVisibility: GridLinesVisibility.both,
+            headerGridLinesVisibility: GridLinesVisibility.none,
+            // horizontalScrollController: scrollController1,
+            horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+            verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+            columns: provider.rangeDateList
+                .map((e) => GridColumn(
+                    width: 50,
+                    label: Center(
+                        child: Column(
+                      children: [
+                        Text(e.date.day.toString()),
+                        Container(
+                          width: 48,
+                          height: 23,
+                          margin: const EdgeInsets.symmetric(vertical: 5),
+                          color: (e.date.weekday == 6 || e.date.weekday == 7) ? Colors.redAccent.withOpacity(0.1) : Colors.blue.withOpacity(0.1),
+                          alignment: Alignment.center,
+                          child: Text(
+                            toJapanWeekDayWithInt(e.date.weekday),
+                            style: kNormalText.copyWith(fontSize: 10),
+                          ),
+                        ),
+                        Container(
+                          width: 48,
+                          height: 23,
+                          color: Colors.green,
+                          alignment: Alignment.center,
+                          child: Text(
+                            "2/2",
+                            style: kNormalText.copyWith(fontSize: 10, color: Colors.white),
+                          ),
+                        )
+                      ],
+                    )),
+                    columnName: '$e'))
+                .toList())
+      ],
+    );
+  }
+
+  buildShiftPerMonth() {
+    return Center(
+      child: Text(
+        "Shift Per Month",
+        style: kNormalText,
       ),
     );
   }
@@ -167,7 +242,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
               )
             ],
           ),
-          buildMonthDisplay(),
+          buildMonthDisplay(false),
           AppSize.spaceHeight8,
           Center(
             child: SizedBox(
@@ -332,46 +407,136 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
     );
   }
 
-  buildMonthDisplay() {
-    return Center(
-      child: Container(
-        height: 45,
-        width: 180,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(width: 1, color: AppColor.primaryColor),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-                onPressed: () async {
-                  provider.onChangeMonth(DateTime(provider.month.year, provider.month.month - 1, provider.month.day));
-                  await getData();
-                },
-                icon: Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  size: 25,
-                  color: AppColor.primaryColor,
-                )),
-            Text(
-              "${toJapanMonthAndYear(provider.month)}",
-              style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
+  buildMonthDisplay(bool isShowStatus) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Center(
+          child: Container(
+            height: 45,
+            width: 180,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(width: 1, color: AppColor.primaryColor),
             ),
-            IconButton(
-                onPressed: () async {
-                  provider.onChangeMonth(DateTime(provider.month.year, provider.month.month + 1, provider.month.day));
-                  await getData();
-                },
-                icon: Icon(
-                  color: AppColor.primaryColor,
-                  Icons.arrow_forward_ios_rounded,
-                  size: 25,
-                )),
-          ],
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                    onPressed: () async {
+                      provider.onChangeMonth(DateTime(provider.month.year, provider.month.month - 1, provider.month.day));
+                      await getData();
+                    },
+                    icon: Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      size: 25,
+                      color: AppColor.primaryColor,
+                    )),
+                Text(
+                  "${toJapanMonthAndYear(provider.month)}",
+                  style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
+                ),
+                IconButton(
+                    onPressed: () async {
+                      provider.onChangeMonth(DateTime(provider.month.year, provider.month.month + 1, provider.month.day));
+                      await getData();
+                    },
+                    icon: Icon(
+                      color: AppColor.primaryColor,
+                      Icons.arrow_forward_ios_rounded,
+                      size: 25,
+                    )),
+              ],
+            ),
+          ),
         ),
-      ),
+        isShowStatus
+            ? Positioned(
+                right: 16,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 80,
+                      height: 30,
+                      color: const Color(0xff7DC338),
+                      child: Center(
+                        child: Text(
+                          "満枠",
+                          style: kNormalText.copyWith(fontSize: 16, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    AppSize.spaceWidth8,
+                    Container(
+                      width: 80,
+                      height: 30,
+                      color: AppColor.primaryColor,
+                      child: Center(
+                        child: Text(
+                          "空き",
+                          style: kNormalText.copyWith(fontSize: 16, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    AppSize.spaceWidth8,
+                    Text(
+                      "確定",
+                      style: kNormalText.copyWith(fontSize: 15),
+                    ),
+                    AppSize.spaceWidth8,
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      color: AppColor.primaryColor,
+                      child: Column(
+                        children: [
+                          Text(
+                            "10:30",
+                            style: kNormalText.copyWith(fontSize: 13, color: Colors.white),
+                          ),
+                          Text(
+                            "~",
+                            style: kNormalText.copyWith(fontSize: 16, color: Colors.white, height: 0.4),
+                          ),
+                          Text(
+                            "15:00",
+                            style: kNormalText.copyWith(fontSize: 13, color: Colors.white),
+                          )
+                        ],
+                      ),
+                    ),
+                    AppSize.spaceWidth8,
+                    Text(
+                      "未確定",
+                      style: kNormalText.copyWith(fontSize: 15),
+                    ),
+                    AppSize.spaceWidth8,
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      decoration: BoxDecoration(color: Colors.orange.withOpacity(0.2), border: Border.all(width: 2, color: AppColor.primaryColor)),
+                      child: Column(
+                        children: [
+                          Text(
+                            "11:30",
+                            style: kNormalText.copyWith(fontSize: 13, color: Colors.black),
+                          ),
+                          Text(
+                            "~",
+                            style: kNormalText.copyWith(fontSize: 16, color: Colors.black, height: 0.4),
+                          ),
+                          Text(
+                            "19:00",
+                            style: kNormalText.copyWith(fontSize: 13, color: Colors.black),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )
+            : const SizedBox()
+      ],
     );
   }
 
@@ -481,6 +646,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
   @override
   void afterBuild(BuildContext context) {
     getData();
+    shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
   }
 
   getData() async {
@@ -500,5 +666,42 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
       await provider.getApplicantList(authProvider.myCompany?.uid ?? "");
       provider.onChangeLoading(false);
     }
+  }
+}
+
+class ShiftCalendarDataSource extends DataGridSource {
+  // ignore: non_constant_identifier_names
+  /// Creates the employee data source class with required details.
+  ShiftCalendarDataSource({required ShiftCalendarProvider provider}) {
+    _employeeData = [
+      // DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
+      // DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
+      // DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
+      // DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
+      // DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
+      // DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
+      // DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
+      // DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
+      // DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
+    ];
+  }
+
+  List<DataGridRow> _employeeData = [];
+
+  @override
+  List<DataGridRow> get rows => _employeeData;
+
+  @override
+  DataGridRowAdapter buildRow(DataGridRow row) {
+    return DataGridRowAdapter(
+        cells: row.getCells().map<Widget>((e) {
+      return Container(
+        alignment: Alignment.center,
+        child: Text(
+          e.value.toString(),
+          style: kNormalText.copyWith(fontSize: 11),
+        ),
+      );
+    }).toList());
   }
 }

@@ -10,8 +10,8 @@ import '../../models/job_posting.dart';
 import '../../utils/japanese_text.dart';
 
 class ShiftCalendarProvider with ChangeNotifier {
-  List<String> displayList = [JapaneseText.calendarDisplay, JapaneseText.listDisplay];
-  String selectDisplay = JapaneseText.calendarDisplay;
+  List<String> displayList = [JapaneseText.perWorker, JapaneseText.perShift, JapaneseText.calendarDisplay];
+  String selectDisplay = JapaneseText.perWorker;
   List<ItemSelectModel> jobTitleList = [ItemSelectModel(title: JapaneseText.all, id: "")];
   ItemSelectModel? selectedJobTitle = ItemSelectModel(title: JapaneseText.all, id: "");
   bool isLoading = false;
@@ -31,7 +31,7 @@ class ShiftCalendarProvider with ChangeNotifier {
   }
 
   initData() async {
-    selectDisplay = JapaneseText.calendarDisplay;
+    // selectDisplay = JapaneseText.calendarDisplay;
     jobTitleList = [ItemSelectModel(title: JapaneseText.all, id: "")];
     selectedJobTitle = ItemSelectModel(title: JapaneseText.all, id: "");
     startWorkDate = null;
@@ -61,9 +61,9 @@ class ShiftCalendarProvider with ChangeNotifier {
 
   onChangeDisplay(String val) {
     selectDisplay = val;
-    if (val == displayList[1]) {
-      initializeJobPosting();
-    }
+    // if (val == displayList[1]) {
+    //   initializeJobPosting();
+    // }
     notifyListeners();
   }
 
