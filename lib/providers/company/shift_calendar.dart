@@ -21,6 +21,7 @@ class ShiftCalendarProvider with ChangeNotifier {
   static DateTime now = DateTime.now();
   String companyId = "";
   List<CalendarModel> rangeDateList = [];
+  List<DateTime> dateTimeList = [];
   DateTime firstDate = DateTime(now.year, now.month, 1);
 
   JobPosting? jobPosting;
@@ -45,17 +46,19 @@ class ShiftCalendarProvider with ChangeNotifier {
 
   initializeRangeDate() async {
     await initData();
+    dateTimeList.clear();
     rangeDateList.clear();
     DateTime lastDate = DateTime(month.year, month.month + 1, 0);
     for (var i = 1; i <= lastDate.day; ++i) {
+      dateTimeList.add(DateTime(month.year, month.month, i));
       rangeDateList.add(CalendarModel(date: DateTime(month.year, month.month, i), shiftModelList: []));
     }
   }
 
-  onChangeMonth(DateTime month) {
+  onChangeMonth(DateTime month) async {
     this.month = month;
     firstDate = DateTime(month.year, month.month, 1);
-    initializeRangeDate();
+    await initializeRangeDate();
     notifyListeners();
   }
 
