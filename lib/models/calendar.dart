@@ -4,5 +4,13 @@ class CalendarModel {
   DateTime date;
   List<ShiftModel>? shiftModelList;
   String? jobId;
-  CalendarModel({required this.date, this.shiftModelList = const [], this.jobId = ""});
+  String? applyName;
+  CalendarModel({required this.date, this.shiftModelList = const [], this.jobId = "", this.applyName = ""});
+}
+
+class GroupedCalendarModel {
+  String? applyName;
+  List<CalendarModel>? calendarModels;
+  List<ShiftModel> allShiftModels = [];
+  GroupedCalendarModel({this.applyName, this.calendarModels});
 }

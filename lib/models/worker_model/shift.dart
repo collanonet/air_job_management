@@ -15,6 +15,7 @@ class ShiftModel {
   String? jobId;
   int applicantCount;
   String recruitmentCount;
+  List<String>? userNameList;
   ShiftModel(
       {this.date,
       this.status,

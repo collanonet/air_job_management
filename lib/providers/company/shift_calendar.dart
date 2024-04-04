@@ -1,5 +1,8 @@
+import 'dart:collection';
+
 import 'package:air_job_management/models/calendar.dart';
 import 'package:air_job_management/models/item_select.dart';
+import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/extension.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -21,6 +24,7 @@ class ShiftCalendarProvider with ChangeNotifier {
   static DateTime now = DateTime.now();
   String companyId = "";
   List<CalendarModel> rangeDateList = [];
+  List<GroupedCalendarModel> groupDataByName = [];
   List<DateTime> dateTimeList = [];
   DateTime firstDate = DateTime(now.year, now.month, 1);
 
@@ -163,9 +167,10 @@ class ShiftCalendarProvider with ChangeNotifier {
     }
     for (var job in jobApplyList) {
       for (var shift in job.shiftList!) {
+        //For Apply Job List
         shift.applicantCount = 0;
         for (var data in rangeDateList) {
-          if (data.date == shift.date) {
+          if (CommonUtils.isTheSameDate(data.date, shift.date)) {
             shift.jobId = job.uid;
             //find recruitment
             for (var j in jobPostingList) {
@@ -176,6 +181,7 @@ class ShiftCalendarProvider with ChangeNotifier {
             }
             data.shiftModelList!.add(shift);
             data.jobId = job.uid;
+            data.applyName = job.myUser?.nameKanJi ?? job.userName ?? "";
             break;
           }
         }
@@ -184,17 +190,57 @@ class ShiftCalendarProvider with ChangeNotifier {
     for (var data in rangeDateList) {
       data.shiftModelList = data.shiftModelList!.toSet().toList();
       //Find Apply Count
-
       for (var shift in data.shiftModelList!) {
+        shift.userNameList = [];
         for (var job in jobApplyList) {
+          if (job.userId == "vDQqNTUxSEdY5YtT8zgtXehvUyB2") {
+            print("Shift ${job.shiftList!.map((e) => e.date)}");
+          }
           var dateList = job.shiftList!.map((e) => e.date).toList();
           if (job.myUser != null &&
               dateList.contains(shift.date) &&
               (job.shiftList![0].startWorkTime == shift.startWorkTime && job.shiftList![0].endWorkTime == shift.endWorkTime)) {
             shift.applicantCount++;
+            shift.userNameList!.add(job.myUser?.nameKanJi ?? job.userName.toString());
           }
         }
       }
     }
+
+    // Grouping by applyName
+    var calendarNameList = groupByApplyName(rangeDateList);
+
+    for (var cal in calendarNameList) {
+      if (cal.applyName == "") {
+        calendarNameList.remove(cal);
+      }
+    }
+    groupDataByName = calendarNameList;
+
+    for (var data in groupDataByName) {
+      data.allShiftModels = [];
+      for (var rang in rangeDateList) {
+        if (rang.applyName == data.applyName) {
+          print("Shift ${rang.applyName} // ${rang.shiftModelList!.map((e) => e.date)}");
+          data.allShiftModels.addAll(rang.shiftModelList!);
+        }
+      }
+    }
+  }
+
+  List<GroupedCalendarModel> groupByApplyName(List<CalendarModel> calendarList) {
+    Map<String?, GroupedCalendarModel> groupedData = HashMap();
+
+    for (var calendarModel in calendarList) {
+      if (groupedData.containsKey(calendarModel.applyName)) {
+        groupedData[calendarModel.applyName]?.allShiftModels.addAll(calendarModel.shiftModelList ?? []);
+      } else {
+        GroupedCalendarModel groupedModel = GroupedCalendarModel(applyName: calendarModel.applyName);
+        groupedModel.allShiftModels.addAll(calendarModel.shiftModelList ?? []);
+        groupedData[calendarModel.applyName] = groupedModel;
+      }
+    }
+
+    return groupedData.values.toList();
   }
 }

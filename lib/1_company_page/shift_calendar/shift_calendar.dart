@@ -6,6 +6,7 @@ import 'package:air_job_management/1_company_page/shift_calendar/widget/shift_de
 import 'package:air_job_management/models/worker_model/shift.dart';
 import 'package:air_job_management/providers/company/shift_calendar.dart';
 import 'package:air_job_management/utils/app_color.dart';
+import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -57,7 +58,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
           height: AppSize.getDeviceHeight(context),
           margin: const EdgeInsets.all(16.0),
           decoration: boxDecoration,
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Scrollbar(
@@ -149,7 +150,30 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
               Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 50, right: 5),
+                    padding: const EdgeInsets.only(top: 73),
+                    child: SizedBox(
+                      height: provider.groupDataByName.length * 45,
+                      width: 80,
+                      child: ListView.builder(
+                          itemCount: provider.groupDataByName.length,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return SizedBox(
+                              height: 45,
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  "${provider.groupDataByName[index].applyName}",
+                                  style: kNormalText,
+                                ),
+                              ),
+                            );
+                          }),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 50, right: 5, left: 10),
                     child: Column(
                       children: [
                         Icon(
@@ -159,7 +183,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                         ),
                         AppSize.spaceHeight5,
                         Container(
-                          height: 400,
+                          height: provider.groupDataByName.length * 45,
                           width: 35,
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.primaryColor),
                           child: Material(
@@ -205,11 +229,12 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                               horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
                               verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
                               columns: provider.rangeDateList.map((e) {
-                                ShiftModel? shift;
+                                int applyCount = 0;
+                                int recCount = 0;
                                 for (var s in e.shiftModelList!) {
                                   if (s.date == e.date) {
-                                    shift = s;
-                                    break;
+                                    applyCount += s.applicantCount;
+                                    recCount += int.parse(s.recruitmentCount);
                                   }
                                 }
                                 return GridColumn(
@@ -234,25 +259,23 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                                         Container(
                                           width: 48,
                                           height: 23,
-                                          color: shift?.applicantCount.toString() == shift?.recruitmentCount.toString()
-                                              ? const Color(0xff7DC338)
-                                              : AppColor.primaryColor,
+                                          color: applyCount == recCount ? const Color(0xff7DC338) : AppColor.primaryColor,
                                           alignment: Alignment.center,
                                           child: Text(
-                                            "${shift?.applicantCount ?? 0}/${shift?.recruitmentCount ?? 0}",
+                                            "$applyCount/$recCount",
                                             style: kNormalText.copyWith(fontSize: 10, color: Colors.white),
                                           ),
                                         )
                                       ],
                                     )),
-                                    columnName: '${e.date.toString()}');
+                                    columnName: e.date.toString());
                               }).toList()),
                         ),
                       ),
                     ),
                   ),
                   Container(
-                    height: 400,
+                    height: provider.groupDataByName.length * 45,
                     width: 35,
                     margin: const EdgeInsets.only(top: 73, left: 5),
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.primaryColor),
@@ -763,17 +786,16 @@ class ShiftCalendarDataSource extends DataGridSource {
   // ignore: non_constant_identifier_names
   /// Creates the employee data source class with required details.
   ShiftCalendarDataSource({required ShiftCalendarProvider provider}) {
-    _employeeData = [
-      DataGridRow(cells: provider.rangeDateList.map((e) => DataGridCell<CalendarModel>(columnName: '${e.date.toString()}', value: e)).toList()),
-      DataGridRow(cells: provider.rangeDateList.map((e) => DataGridCell<CalendarModel>(columnName: '${e.date.toString()}', value: e)).toList()),
-      DataGridRow(cells: provider.rangeDateList.map((e) => DataGridCell<CalendarModel>(columnName: '${e.date.toString()}', value: e)).toList()),
-      DataGridRow(cells: provider.rangeDateList.map((e) => DataGridCell<CalendarModel>(columnName: '${e.date.toString()}', value: e)).toList()),
-      DataGridRow(cells: provider.rangeDateList.map((e) => DataGridCell<CalendarModel>(columnName: '${e.date.toString()}', value: e)).toList()),
-      DataGridRow(cells: provider.rangeDateList.map((e) => DataGridCell<CalendarModel>(columnName: '${e.date.toString()}', value: e)).toList()),
-      DataGridRow(cells: provider.rangeDateList.map((e) => DataGridCell<CalendarModel>(columnName: '${e.date.toString()}', value: e)).toList()),
-      DataGridRow(cells: provider.rangeDateList.map((e) => DataGridCell<CalendarModel>(columnName: '${e.date.toString()}', value: e)).toList()),
-      DataGridRow(cells: provider.rangeDateList.map((e) => DataGridCell<CalendarModel>(columnName: '${e.date.toString()}', value: e)).toList()),
-    ];
+    for (GroupedCalendarModel data in provider.groupDataByName) {
+      // List<CalendarModel> calendarList = data.calendarModels ?? [];
+      // List<ShiftModel> shiftList = [];
+      // for (var cal in calendarList) {
+      //   shiftList.addAll(cal.shiftModelList!);
+      // }
+      // data.allShiftModels = shiftList;
+      _employeeData.add(DataGridRow(
+          cells: provider.rangeDateList.map((e) => DataGridCell<GroupedCalendarModel>(columnName: e.date.toString(), value: data)).toList()));
+    }
   }
 
   List<DataGridRow> _employeeData = [];
@@ -785,12 +807,17 @@ class ShiftCalendarDataSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((e) {
-      CalendarModel calendarModel = e.value;
+      GroupedCalendarModel calendarModel = e.value;
+      if (calendarModel.applyName == "asf") {
+        print(
+            "${e.columnName} Shift ${calendarModel.applyName} ${calendarModel.allShiftModels.length}, ${calendarModel.allShiftModels.map((e) => e.date!).toList()} ${CommonUtils.isArrayOfDateContainDate(calendarModel.allShiftModels.map((e) => e.date!).toList(), DateTime.parse(e.columnName))}");
+      }
       ShiftModel? shiftModel;
-      for (var shift in calendarModel.shiftModelList!) {
-        if (shift.date == calendarModel.date) {
+      int countShift = 0;
+      for (var shift in calendarModel.allShiftModels) {
+        if (CommonUtils.isTheSameDate(shift.date, DateTime.parse(e.columnName))) {
           shiftModel = shift;
-          break;
+          countShift++;
         }
       }
       return shiftModel == null
@@ -803,7 +830,7 @@ class ShiftCalendarDataSource extends DataGridSource {
               color: AppColor.primaryColor,
               margin: const EdgeInsets.all(1),
               child: Text(
-                "${shiftModel.startWorkTime}\n~\n${shiftModel.endWorkTime}",
+                "Count: $countShift \n ${shiftModel.startWorkTime}\n~\n${shiftModel.endWorkTime}",
                 textAlign: TextAlign.center,
                 style: kNormalText.copyWith(fontSize: 11, color: Colors.white, height: 1),
               ),
