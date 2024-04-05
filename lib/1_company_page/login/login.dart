@@ -39,8 +39,8 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
 
   @override
   void initState() {
-    // email = TextEditingController(text: 'sopheadavid+10@yandex.com');
-    // password = TextEditingController(text: '123456');
+    email = TextEditingController(text: 'sopheadavid+10@yandex.com');
+    password = TextEditingController(text: '123456789');
     super.initState();
   }
 

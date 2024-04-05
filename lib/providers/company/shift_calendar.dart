@@ -10,6 +10,7 @@ import '../../api/company/worker_managment.dart';
 import '../../api/job_posting.dart';
 import '../../models/company/worker_management.dart';
 import '../../models/job_posting.dart';
+import '../../models/worker_model/shift.dart';
 import '../../utils/japanese_text.dart';
 
 class ShiftCalendarProvider with ChangeNotifier {
@@ -30,6 +31,7 @@ class ShiftCalendarProvider with ChangeNotifier {
 
   JobPosting? jobPosting;
   List<JobPosting> jobPostingList = [];
+  List<WorkerManagement> jobApplyPerDay = [];
 
   set setCompanyId(String companyId) {
     this.companyId = companyId;
@@ -193,9 +195,6 @@ class ShiftCalendarProvider with ChangeNotifier {
       for (var shift in data.shiftModelList!) {
         shift.userNameList = [];
         for (var job in jobApplyList) {
-          if (job.userId == "vDQqNTUxSEdY5YtT8zgtXehvUyB2") {
-            print("Shift ${job.shiftList!.map((e) => e.date)}");
-          }
           var dateList = job.shiftList!.map((e) => e.date).toList();
           if (job.myUser != null &&
               dateList.contains(shift.date) &&
@@ -206,26 +205,34 @@ class ShiftCalendarProvider with ChangeNotifier {
         }
       }
     }
+    jobApplyPerDay = [];
+
+    for(var job in jobApplyList){
+      List<ShiftModel> shiftList = job.shiftList ?? [];
+      if(shiftList.isNotEmpty != null && CommonUtils.containsAnyDate(rangeDateList.map((e) => e.date).toList(), shiftList.map((e) => e.date!).toList())){
+        jobApplyPerDay.add(job);
+      }
+    }
 
     // Grouping by applyName
-    var calendarNameList = groupByApplyName(rangeDateList);
+    // List<CalendarModel> calendarNameList = const [];
+    //
+    // for (var cal in calendarNameList) {
+    //   if (cal.applyName == "") {
+    //     calendarNameList.remove(cal);
+    //   }
+    // }
+    // groupDataByName = calendarNameList;
 
-    for (var cal in calendarNameList) {
-      if (cal.applyName == "") {
-        calendarNameList.remove(cal);
-      }
-    }
-    groupDataByName = calendarNameList;
-
-    for (var data in groupDataByName) {
-      data.allShiftModels = [];
-      for (var rang in rangeDateList) {
-        if (rang.applyName == data.applyName) {
-          print("Shift ${rang.applyName} // ${rang.shiftModelList!.map((e) => e.date)}");
-          data.allShiftModels.addAll(rang.shiftModelList!);
-        }
-      }
-    }
+    // for (var data in groupDataByName) {
+    //   data.allShiftModels = [];
+    //   for (var rang in rangeDateList) {
+    //     if (rang.applyName == data.applyName) {
+    //       print("Shift ${rang.applyName} // ${rang.shiftModelList!.map((e) => e.date)}");
+    //       data.allShiftModels!.addAll(rang.shiftModelList!);
+    //     }
+    //   }
+    // }
   }
 
   List<GroupedCalendarModel> groupByApplyName(List<CalendarModel> calendarList) {
@@ -233,10 +240,10 @@ class ShiftCalendarProvider with ChangeNotifier {
 
     for (var calendarModel in calendarList) {
       if (groupedData.containsKey(calendarModel.applyName)) {
-        groupedData[calendarModel.applyName]?.allShiftModels.addAll(calendarModel.shiftModelList ?? []);
+        groupedData[calendarModel.applyName]?.allShiftModels!.addAll(calendarModel.shiftModelList ?? []);
       } else {
         GroupedCalendarModel groupedModel = GroupedCalendarModel(applyName: calendarModel.applyName);
-        groupedModel.allShiftModels.addAll(calendarModel.shiftModelList ?? []);
+        groupedModel.allShiftModels!.addAll(calendarModel.shiftModelList ?? []);
         groupedData[calendarModel.applyName] = groupedModel;
       }
     }

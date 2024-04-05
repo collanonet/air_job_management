@@ -10,7 +10,8 @@ class CalendarModel {
 
 class GroupedCalendarModel {
   String? applyName;
+  String? status;
   List<CalendarModel>? calendarModels;
-  List<ShiftModel> allShiftModels = [];
-  GroupedCalendarModel({this.applyName, this.calendarModels});
+  List<ShiftModel>? allShiftModels = [];
+  GroupedCalendarModel({this.applyName, this.calendarModels, this.allShiftModels, this.status});
 }
