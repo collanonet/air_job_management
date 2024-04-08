@@ -304,58 +304,151 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
     return shiftCalendarDataSource == null
         ? const SizedBox()
         : Column(
-      children: [
-        AppSize.spaceHeight16,
-        buildMonthDisplay(true),
-        AppSize.spaceHeight16,
-        AppSize.spaceHeight30,
-        Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 73),
-              child: SizedBox(
-                height: provider.jobApplyPerDay.length * 45,
-                width: 80,
-                child: ListView.builder(
-                    itemCount: provider.jobApplyPerDay.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return SizedBox(
-                        height: 45,
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            "${provider.jobApplyPerDay[index].myUser?.nameKanJi}",
-                            style: kNormalText.copyWith(fontFamily: "Bold"),
+            children: [
+              AppSize.spaceHeight16,
+              buildMonthDisplay(true),
+              AppSize.spaceHeight16,
+              AppSize.spaceHeight30,
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 73),
+                    child: SizedBox(
+                      height: provider.jobApplyPerDay.length * 45,
+                      width: 80,
+                      child: ListView.builder(
+                          itemCount: provider.jobApplyPerDay.length,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return SizedBox(
+                              height: 45,
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  "${provider.jobApplyPerDay[index].myUser?.nameKanJi}",
+                                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                                ),
+                              ),
+                            );
+                          }),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 50, right: 5, left: 10),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.person,
+                          size: 20,
+                          color: AppColor.primaryColor,
+                        ),
+                        AppSize.spaceHeight5,
+                        Container(
+                          height: provider.jobApplyPerDay.length * 45,
+                          width: 35,
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.primaryColor),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () =>
+                                  scrollControllerForShiftPerDay.animateTo(0, duration: const Duration(milliseconds: 1000), curve: Curves.ease),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.arrow_back_ios_new_rounded,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      );
-                    }),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 50, right: 5, left: 10),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.person,
-                    size: 20,
-                    color: AppColor.primaryColor,
+                      ],
+                    ),
                   ),
-                  AppSize.spaceHeight5,
+                  Expanded(
+                    child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
+                        PointerDeviceKind.touch,
+                        PointerDeviceKind.mouse,
+                      }),
+                      child: Scrollbar(
+                        controller: scrollControllerForShiftPerDay,
+                        isAlwaysShown: true,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          controller: scrollControllerForShiftPerDay,
+                          child: SfDataGrid(
+                              source: shiftCalendarDataSourceForJob,
+                              columnWidthMode: ColumnWidthMode.fill,
+                              isScrollbarAlwaysShown: false,
+                              rowHeight: 45,
+                              headerRowHeight: 65,
+                              shrinkWrapRows: true,
+                              shrinkWrapColumns: true,
+                              gridLinesVisibility: GridLinesVisibility.none,
+                              headerGridLinesVisibility: GridLinesVisibility.none,
+                              // horizontalScrollController: scrollControllerForShiftPerDay,
+                              horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+                              verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+                              columns: provider.rangeDateList.map((e) {
+                                int applyCount = 0;
+                                int recCount = 0;
+                                for (var s in e.shiftModelList!) {
+                                  if (s.date == e.date) {
+                                    applyCount += s.applicantCount;
+                                    recCount += int.parse(s.recruitmentCount);
+                                  }
+                                }
+                                return GridColumn(
+                                    width: 80,
+                                    label: Center(
+                                        child: Column(
+                                      children: [
+                                        Text(e.date.day.toString()),
+                                        Container(
+                                          width: 78,
+                                          height: 23,
+                                          margin: const EdgeInsets.symmetric(vertical: 5),
+                                          color: (e.date.weekday == 6 || e.date.weekday == 7)
+                                              ? Colors.redAccent.withOpacity(0.1)
+                                              : Colors.blue.withOpacity(0.1),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            toJapanWeekDayWithInt(e.date.weekday),
+                                            style: kNormalText.copyWith(fontSize: 10),
+                                          ),
+                                        ),
+                                        // Container(
+                                        //   width: 78,
+                                        //   height: 23,
+                                        //   color: applyCount == recCount ? const Color(0xff7DC338) : AppColor.primaryColor,
+                                        //   alignment: Alignment.center,
+                                        //   child: Text(
+                                        //     "$applyCount/$recCount",
+                                        //     style: kNormalText.copyWith(fontSize: 10, color: Colors.white),
+                                        //   ),
+                                        // )
+                                      ],
+                                    )),
+                                    columnName: e.date.toString());
+                              }).toList()),
+                        ),
+                      ),
+                    ),
+                  ),
                   Container(
                     height: provider.jobApplyPerDay.length * 45,
                     width: 35,
+                    margin: const EdgeInsets.only(top: 73, left: 5),
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.primaryColor),
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        onTap: () =>
-                            scrollControllerForShiftPerDay.animateTo(0, duration: const Duration(milliseconds: 1000), curve: Curves.ease),
+                        onTap: () => scrollControllerForShiftPerDay.animateTo(scrollControllerForShiftPerDay.position.maxScrollExtent,
+                            duration: const Duration(milliseconds: 1000), curve: Curves.ease),
                         child: const Center(
                           child: Icon(
-                            Icons.arrow_back_ios_new_rounded,
+                            Icons.arrow_forward_ios_rounded,
                             color: Colors.white,
                           ),
                         ),
@@ -363,102 +456,9 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                     ),
                   ),
                 ],
-              ),
-            ),
-            Expanded(
-              child: ScrollConfiguration(
-                behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
-                  PointerDeviceKind.touch,
-                  PointerDeviceKind.mouse,
-                }),
-                child: Scrollbar(
-                  controller: scrollControllerForShiftPerDay,
-                  isAlwaysShown: true,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    controller: scrollControllerForShiftPerDay,
-                    child: SfDataGrid(
-                        source: shiftCalendarDataSourceForJob,
-                        columnWidthMode: ColumnWidthMode.fill,
-                        isScrollbarAlwaysShown: false,
-                        rowHeight: 45,
-                        headerRowHeight: 65,
-                        shrinkWrapRows: true,
-                        shrinkWrapColumns: true,
-                        gridLinesVisibility: GridLinesVisibility.none,
-                        headerGridLinesVisibility: GridLinesVisibility.none,
-                        // horizontalScrollController: scrollControllerForShiftPerDay,
-                        horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
-                        verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
-                        columns: provider.rangeDateList.map((e) {
-                          int applyCount = 0;
-                          int recCount = 0;
-                          for (var s in e.shiftModelList!) {
-                            if (s.date == e.date) {
-                              applyCount += s.applicantCount;
-                              recCount += int.parse(s.recruitmentCount);
-                            }
-                          }
-                          return GridColumn(
-                              width: 80,
-                              label: Center(
-                                  child: Column(
-                                    children: [
-                                      Text(e.date.day.toString()),
-                                      Container(
-                                        width: 78,
-                                        height: 23,
-                                        margin: const EdgeInsets.symmetric(vertical: 5),
-                                        color: (e.date.weekday == 6 || e.date.weekday == 7)
-                                            ? Colors.redAccent.withOpacity(0.1)
-                                            : Colors.blue.withOpacity(0.1),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          toJapanWeekDayWithInt(e.date.weekday),
-                                          style: kNormalText.copyWith(fontSize: 10),
-                                        ),
-                                      ),
-                                      // Container(
-                                      //   width: 78,
-                                      //   height: 23,
-                                      //   color: applyCount == recCount ? const Color(0xff7DC338) : AppColor.primaryColor,
-                                      //   alignment: Alignment.center,
-                                      //   child: Text(
-                                      //     "$applyCount/$recCount",
-                                      //     style: kNormalText.copyWith(fontSize: 10, color: Colors.white),
-                                      //   ),
-                                      // )
-                                    ],
-                                  )),
-                              columnName: e.date.toString());
-                        }).toList()),
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              height: provider.jobApplyPerDay.length * 45,
-              width: 35,
-              margin: const EdgeInsets.only(top: 73, left: 5),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.primaryColor),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () => scrollControllerForShiftPerDay.animateTo(scrollControllerForShiftPerDay.position.maxScrollExtent,
-                      duration: const Duration(milliseconds: 1000), curve: Curves.ease),
-                  child: const Center(
-                    child: Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        )
-      ],
-    );
+              )
+            ],
+          );
   }
 
   buildCalendarWidget() {
@@ -679,6 +679,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
           child: Container(
             height: 45,
             width: 180,
+            margin: const EdgeInsets.only(right: 64),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
               border: Border.all(width: 1, color: AppColor.primaryColor),
@@ -726,36 +727,36 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      width: 80,
+                      width: 60,
                       height: 30,
                       color: const Color(0xff7DC338),
                       child: Center(
                         child: Text(
                           "満枠",
-                          style: kNormalText.copyWith(fontSize: 16, color: Colors.white),
+                          style: kNormalText.copyWith(fontSize: 13, color: Colors.white),
                         ),
                       ),
                     ),
                     AppSize.spaceWidth8,
                     Container(
-                      width: 80,
+                      width: 60,
                       height: 30,
                       color: AppColor.primaryColor,
                       child: Center(
                         child: Text(
                           "空き",
-                          style: kNormalText.copyWith(fontSize: 16, color: Colors.white),
+                          style: kNormalText.copyWith(fontSize: 13, color: Colors.white),
                         ),
                       ),
                     ),
                     AppSize.spaceWidth8,
                     Text(
                       "確定",
-                      style: kNormalText.copyWith(fontSize: 15),
+                      style: kNormalText.copyWith(fontSize: 13),
                     ),
                     AppSize.spaceWidth8,
                     Container(
-                      width: 80,
+                      width: 65,
                       height: 50,
                       color: AppColor.primaryColor,
                       child: Column(
@@ -779,11 +780,11 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                     AppSize.spaceWidth8,
                     Text(
                       "未確定",
-                      style: kNormalText.copyWith(fontSize: 15),
+                      style: kNormalText.copyWith(fontSize: 13),
                     ),
                     AppSize.spaceWidth8,
                     Container(
-                      width: 80,
+                      width: 65,
                       height: 50,
                       decoration: BoxDecoration(color: Colors.orange.withOpacity(0.2), border: Border.all(width: 2, color: AppColor.primaryColor)),
                       child: Column(
@@ -948,12 +949,12 @@ class ShiftCalendarDataSource extends DataGridSource {
   ShiftCalendarDataSource({required ShiftCalendarProvider provider}) {
     for (var job in provider.jobApplyPerDay) {
       _employeeData.add(DataGridRow(
-          cells: provider.rangeDateList.map((e) => DataGridCell<GroupedCalendarModel>(columnName: e.date.toString(), value: GroupedCalendarModel(
-              applyName: job.myUser?.nameKanJi ?? "Empty",
-              allShiftModels: job.shiftList,
-              calendarModels: [],
-            status: job.status
-          ))).toList()));
+          cells: provider.rangeDateList
+              .map((e) => DataGridCell<GroupedCalendarModel>(
+                  columnName: e.date.toString(),
+                  value: GroupedCalendarModel(
+                      applyName: job.myUser?.nameKanJi ?? "Empty", allShiftModels: job.shiftList, calendarModels: [], status: job.status)))
+              .toList()));
     }
   }
 
@@ -976,15 +977,16 @@ class ShiftCalendarDataSource extends DataGridSource {
       return shiftModel == null
           ? Container(
               margin: const EdgeInsets.all(1),
-        color: const Color(0xffF0F3F5),
+              color: const Color(0xffF0F3F5),
             )
           : Container(
               alignment: Alignment.center,
               margin: const EdgeInsets.all(1),
               decoration: BoxDecoration(
-                color: calendarModel.status == "approved" ? AppColor.primaryColor : Colors.orange.withOpacity(0.2),
-                border: Border.all(width: calendarModel.status == "approved" ? 0 : 2, color: calendarModel.status == "approved" ? Colors.white :  AppColor.primaryColor)
-              ),
+                  color: calendarModel.status == "approved" ? AppColor.primaryColor : Colors.orange.withOpacity(0.2),
+                  border: Border.all(
+                      width: calendarModel.status == "approved" ? 0 : 2,
+                      color: calendarModel.status == "approved" ? Colors.white : AppColor.primaryColor)),
               child: Text(
                 "${shiftModel.startWorkTime}\n~\n${shiftModel.endWorkTime}",
                 textAlign: TextAlign.center,
@@ -1001,12 +1003,12 @@ class ShiftCalendarDataSourceForJob extends DataGridSource {
   ShiftCalendarDataSourceForJob({required ShiftCalendarProvider provider}) {
     for (var job in provider.jobApplyPerDay) {
       _employeeData.add(DataGridRow(
-          cells: provider.rangeDateList.map((e) => DataGridCell<GroupedCalendarModel>(columnName: e.date.toString(), value: GroupedCalendarModel(
-              applyName: job.myUser?.nameKanJi ?? "Empty",
-              allShiftModels: job.shiftList,
-              calendarModels: [],
-              status: job.status
-          ))).toList()));
+          cells: provider.rangeDateList
+              .map((e) => DataGridCell<GroupedCalendarModel>(
+                  columnName: e.date.toString(),
+                  value: GroupedCalendarModel(
+                      applyName: job.myUser?.nameKanJi ?? "Empty", allShiftModels: job.shiftList, calendarModels: [], status: job.status)))
+              .toList()));
     }
   }
 
@@ -1019,32 +1021,86 @@ class ShiftCalendarDataSourceForJob extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((e) {
-          GroupedCalendarModel calendarModel = e.value;
-          ShiftModel? shiftModel;
-          for (var shift in calendarModel.allShiftModels!) {
-            if (CommonUtils.isTheSameDate(shift.date, DateTime.parse(e.columnName))) {
-              shiftModel = shift;
-            }
-          }
-          return shiftModel == null
-              ? Container(
-            margin: const EdgeInsets.all(1),
-            color: const Color(0xffF0F3F5),
-          )
-              : Container(
-            alignment: Alignment.center,
-            margin: const EdgeInsets.all(1),
-            decoration: BoxDecoration(
-                color: calendarModel.status == "approved" ? AppColor.primaryColor : Colors.orange.withOpacity(0.2),
-                border: Border.all(width: calendarModel.status == "approved" ? 0 : 2, color: calendarModel.status == "approved" ? Colors.white :  AppColor.primaryColor)
-            ),
-            child: Text(
-              "${shiftModel.startWorkTime}\n~\n${shiftModel.endWorkTime}",
-              textAlign: TextAlign.center,
-              style: kNormalText.copyWith(fontSize: 11, color: calendarModel.status == "approved" ? Colors.white : Colors.black, height: 1),
-            ),
-          );
-        }).toList());
+      GroupedCalendarModel calendarModel = e.value;
+      ShiftModel? shiftModel;
+      for (var shift in calendarModel.allShiftModels!) {
+        if (CommonUtils.isTheSameDate(shift.date, DateTime.parse(e.columnName))) {
+          shiftModel = shift;
+        }
+      }
+      return shiftModel == null
+          ? Container(
+              margin: const EdgeInsets.all(1),
+              color: const Color(0xffF0F3F5),
+            )
+          : Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.all(1),
+              decoration: BoxDecoration(
+                  color: calendarModel.status == "approved" ? AppColor.primaryColor : Colors.orange.withOpacity(0.2),
+                  border: Border.all(
+                      width: calendarModel.status == "approved" ? 0 : 2,
+                      color: calendarModel.status == "approved" ? Colors.white : AppColor.primaryColor)),
+              child: Text(
+                "${shiftModel.startWorkTime}\n~\n${shiftModel.endWorkTime}",
+                textAlign: TextAlign.center,
+                style: kNormalText.copyWith(fontSize: 11, color: calendarModel.status == "approved" ? Colors.white : Colors.black, height: 1),
+              ),
+            );
+    }).toList());
   }
 }
 
+class ShiftCalendarDataSourceByJobPosting extends DataGridSource {
+  // ignore: non_constant_identifier_names
+  /// Creates the employee data source class with required details.
+  ShiftCalendarDataSourceForJob({required ShiftCalendarProvider provider}) {
+    for (var job in provider.jobApplyPerDay) {
+      _employeeData.add(DataGridRow(
+          cells: provider.rangeDateList
+              .map((e) => DataGridCell<GroupedCalendarModel>(
+                  columnName: e.date.toString(),
+                  value: GroupedCalendarModel(
+                      applyName: job.myUser?.nameKanJi ?? "Empty", allShiftModels: job.shiftList, calendarModels: [], status: job.status)))
+              .toList()));
+    }
+  }
+
+  List<DataGridRow> _employeeData = [];
+
+  @override
+  List<DataGridRow> get rows => _employeeData;
+
+  @override
+  DataGridRowAdapter buildRow(DataGridRow row) {
+    return DataGridRowAdapter(
+        cells: row.getCells().map<Widget>((e) {
+      GroupedCalendarModel calendarModel = e.value;
+      ShiftModel? shiftModel;
+      for (var shift in calendarModel.allShiftModels!) {
+        if (CommonUtils.isTheSameDate(shift.date, DateTime.parse(e.columnName))) {
+          shiftModel = shift;
+        }
+      }
+      return shiftModel == null
+          ? Container(
+              margin: const EdgeInsets.all(1),
+              color: const Color(0xffF0F3F5),
+            )
+          : Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.all(1),
+              decoration: BoxDecoration(
+                  color: calendarModel.status == "approved" ? AppColor.primaryColor : Colors.orange.withOpacity(0.2),
+                  border: Border.all(
+                      width: calendarModel.status == "approved" ? 0 : 2,
+                      color: calendarModel.status == "approved" ? Colors.white : AppColor.primaryColor)),
+              child: Text(
+                "${shiftModel.startWorkTime}\n~\n${shiftModel.endWorkTime}",
+                textAlign: TextAlign.center,
+                style: kNormalText.copyWith(fontSize: 11, color: calendarModel.status == "approved" ? Colors.white : Colors.black, height: 1),
+              ),
+            );
+    }).toList());
+  }
+}
