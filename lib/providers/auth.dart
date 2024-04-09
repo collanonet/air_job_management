@@ -5,6 +5,8 @@ import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/models/company.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../const/const.dart';
 import '../models/user.dart';
@@ -25,6 +27,8 @@ class AuthProvider with ChangeNotifier {
   get isLogin => _isLogin;
 
   int step = 1;
+
+  static AuthProvider getProvider(BuildContext context, {bool listen = true}) => Provider.of<AuthProvider>(context, listen: listen);
 
   onChangeSelectMenu(String val) {
     selectedMenu = val;
@@ -196,11 +200,14 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<Company?> createCompanyAccount(String email, String password) async {
+  Future<Company?> createCompanyAccount(String email, String password, {Company? c}) async {
     try {
       UserCredential authResult = await firebaseAuth.createUserWithEmailAndPassword(email: email.trim(), password: password);
       User? user = authResult.user;
-      Company company = Company(companyUserId: user!.uid, email: email.trim(), companyName: '', companyProfile: ConstValue.defaultBgImage);
+      Company company = c ?? Company(companyUserId: user!.uid, email: email.trim(), companyName: '', companyProfile: ConstValue.defaultBgImage);
+      if (c != null) {
+        c.companyUserId = user!.uid;
+      }
       String base64Encrypted = EncryptUtils.encryptPassword(password);
       company.hashPassword = base64Encrypted;
       String? message = await CompanyApiServices().createCompany(company);

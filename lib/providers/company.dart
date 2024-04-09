@@ -35,6 +35,7 @@ class CompanyProvider with ChangeNotifier {
   late TextEditingController tel;
   late TextEditingController tax;
   late TextEditingController email;
+  late TextEditingController password;
   late TextEditingController kanji;
   late TextEditingController kana;
   late TextEditingController content;
@@ -84,6 +85,7 @@ class CompanyProvider with ChangeNotifier {
     managerList = [];
     if (id != null) {
       company = await CompanyApiServices().getACompany(id);
+      password.text = "123456789";
       remark.text = company!.remark ?? "";
       nameKhanJi.text = company!.managerNameKhanJi ?? "";
       nameFu.text = company!.managerNameFu ?? "";
@@ -126,6 +128,7 @@ class CompanyProvider with ChangeNotifier {
     managerList = [];
     isLoadingForDetail = true;
     imageUrl = "";
+    password = TextEditingController(text: "");
     area = TextEditingController(text: "");
     industry = TextEditingController(text: "");
     companyName = TextEditingController(text: "");
@@ -172,6 +175,7 @@ class CompanyProvider with ChangeNotifier {
     content.dispose();
     area.dispose();
     industry.dispose();
+    password.dispose();
   }
 
   set setImage(String val) {

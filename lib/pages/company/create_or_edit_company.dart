@@ -1,6 +1,7 @@
 import 'package:air_job_management/api/company.dart';
 import 'package:air_job_management/const/status.dart';
 import 'package:air_job_management/models/company.dart';
+import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
@@ -9,6 +10,7 @@ import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:air_job_management/widgets/custom_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:sura_flutter/sura_flutter.dart';
@@ -28,6 +30,7 @@ class CreateOrEditCompanyPage extends StatefulWidget {
 
 class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with AfterBuildMixin {
   late CompanyProvider provider;
+  late AuthProvider authProvider;
   final _formKey = GlobalKey<FormState>();
   ScrollController scrollController = ScrollController();
 
@@ -58,7 +61,10 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with 
       if (widget.id != null) {
         val = await CompanyApiServices().updateCompanyInfo(c);
       } else {
-        val = await CompanyApiServices().createCompany(c);
+        Company? com = await authProvider.createCompanyAccount(provider.email.text.trim(), provider.password.text, c: c);
+        if (com != null) {
+          val = ConstValue.success;
+        }
       }
       provider.onChangeLoadingForDetail(false);
       if (val == ConstValue.success) {
@@ -92,6 +98,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with 
   @override
   Widget build(BuildContext context) {
     provider = CompanyProvider.getProvider(context);
+    authProvider = AuthProvider.getProvider(context);
     return Form(
       key: _formKey,
       child: CustomLoadingOverlay(
@@ -389,6 +396,8 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with 
     ));
   }
 
+  bool isShow = true;
+
   buildTelFaxAndEmail() {
     return Align(
       alignment: Alignment.centerLeft,
@@ -397,6 +406,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with 
         child: Row(
           children: [
             Expanded(
+              flex: 1,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -410,23 +420,24 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with 
                 ],
               ),
             ),
+            // AppSize.spaceWidth16,
+            // Expanded(
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       const Text("FAX"),
+            //       AppSize.spaceHeight5,
+            //       PrimaryTextField(
+            //         controller: provider.tax,
+            //         hint: '',
+            //         isRequired: true,
+            //       ),
+            //     ],
+            //   ),
+            // ),
             AppSize.spaceWidth16,
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("FAX"),
-                  AppSize.spaceHeight5,
-                  PrimaryTextField(
-                    controller: provider.tax,
-                    hint: '',
-                    isRequired: true,
-                  ),
-                ],
-              ),
-            ),
-            AppSize.spaceWidth16,
-            Expanded(
+              flex: 2,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -437,7 +448,50 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with 
                     hint: '',
                     isRequired: true,
                     isEmail: true,
+                    readOnly: widget.id != null ? true : false,
                   ),
+                ],
+              ),
+            ),
+            AppSize.spaceWidth16,
+            Expanded(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(JapaneseText.password),
+                  AppSize.spaceHeight5,
+                  widget.id != null
+                      ? PrimaryTextField(
+                          controller: provider.password,
+                          hint: '',
+                          isRequired: true,
+                          isObsecure: true,
+                          readOnly: true,
+                        )
+                      : PrimaryTextField(
+                          controller: provider.password,
+                          hint: '',
+                          isRequired: true,
+                          isObsecure: isShow,
+                          suffix: !isShow
+                              ? IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isShow = !isShow;
+                                    });
+                                  },
+                                  icon: Icon(FlutterIcons.eye_ent, color: AppColor.greyColor),
+                                )
+                              : IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isShow = !isShow;
+                                    });
+                                  },
+                                  icon: Icon(FlutterIcons.eye_with_line_ent, color: AppColor.greyColor),
+                                ),
+                        ),
                 ],
               ),
             )

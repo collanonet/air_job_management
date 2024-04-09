@@ -114,6 +114,7 @@ class UserApiServices {
   }
 
   Future<Company?> getProfileCompany(String uid) async {
+    print("Get company $uid");
     try {
       var doc = await companyRef.where("company_user_id", isEqualTo: uid).get();
       if (doc.docs.isNotEmpty) {
