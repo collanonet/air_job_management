@@ -1,5 +1,14 @@
 import 'package:air_job_management/utils/date_time_utils.dart';
 
+class JobPostingDataTable {
+  String recruitNumber;
+  int applyCount;
+  String job;
+  String jobId;
+  List<DateTime> dateList;
+  JobPostingDataTable({required this.dateList, this.job = "", this.jobId = "", this.applyCount = 0, this.recruitNumber = "0"});
+}
+
 class JobPosting {
   List<String>? limitGroupEmail;
   String? uid;

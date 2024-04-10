@@ -20,6 +20,7 @@ import '../../api/user_api.dart';
 import '../../helper/japan_date_time.dart';
 import '../../models/calendar.dart';
 import '../../models/company.dart';
+import '../../models/job_posting.dart';
 import '../../providers/auth.dart';
 import '../../utils/app_size.dart';
 import '../../utils/my_route.dart';
@@ -41,6 +42,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
   ScrollController scrollController = ScrollController();
   late ShiftCalendarDataSource shiftCalendarDataSource;
   late ShiftCalendarDataSourceForJob shiftCalendarDataSourceForJob;
+  late ShiftCalendarDataSourceByJobPosting shiftCalendarDataSourceByJobPosting;
 
   @override
   void initState() {
@@ -314,10 +316,10 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                   Padding(
                     padding: const EdgeInsets.only(top: 73),
                     child: SizedBox(
-                      height: provider.jobApplyPerDay.length * 45,
+                      height: provider.jobPostingDataTableList.length * 45,
                       width: 80,
                       child: ListView.builder(
-                          itemCount: provider.jobApplyPerDay.length,
+                          itemCount: provider.jobPostingDataTableList.length,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
@@ -326,7 +328,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                               child: Align(
                                 alignment: Alignment.centerRight,
                                 child: Text(
-                                  "${provider.jobApplyPerDay[index].myUser?.nameKanJi}",
+                                  provider.jobPostingDataTableList[index].job,
                                   style: kNormalText.copyWith(fontFamily: "Bold"),
                                 ),
                               ),
@@ -345,7 +347,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                         ),
                         AppSize.spaceHeight5,
                         Container(
-                          height: provider.jobApplyPerDay.length * 45,
+                          height: provider.jobPostingDataTableList.length * 45,
                           width: 35,
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.primaryColor),
                           child: Material(
@@ -378,7 +380,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                           scrollDirection: Axis.horizontal,
                           controller: scrollControllerForShiftPerDay,
                           child: SfDataGrid(
-                              source: shiftCalendarDataSourceForJob,
+                              source: shiftCalendarDataSourceByJobPosting,
                               columnWidthMode: ColumnWidthMode.fill,
                               isScrollbarAlwaysShown: false,
                               rowHeight: 45,
@@ -437,7 +439,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                     ),
                   ),
                   Container(
-                    height: provider.jobApplyPerDay.length * 45,
+                    height: provider.jobPostingDataTableList.length * 45,
                     width: 35,
                     margin: const EdgeInsets.only(top: 73, left: 5),
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.primaryColor),
@@ -694,6 +696,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                       await getData();
                       shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
                       shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
+                      shiftCalendarDataSourceByJobPosting = ShiftCalendarDataSourceByJobPosting(provider: provider);
                     },
                     icon: Icon(
                       Icons.arrow_back_ios_new_rounded,
@@ -710,6 +713,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                       await getData();
                       shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
                       shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
+                      shiftCalendarDataSourceByJobPosting = ShiftCalendarDataSourceByJobPosting(provider: provider);
                     },
                     icon: Icon(
                       color: AppColor.primaryColor,
@@ -921,6 +925,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
     await getData();
     shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
     shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
+    shiftCalendarDataSourceByJobPosting = ShiftCalendarDataSourceByJobPosting(provider: provider);
   }
 
   getData() async {
@@ -1054,14 +1059,11 @@ class ShiftCalendarDataSourceForJob extends DataGridSource {
 class ShiftCalendarDataSourceByJobPosting extends DataGridSource {
   // ignore: non_constant_identifier_names
   /// Creates the employee data source class with required details.
-  ShiftCalendarDataSourceForJob({required ShiftCalendarProvider provider}) {
-    for (var job in provider.jobApplyPerDay) {
+  ShiftCalendarDataSourceByJobPosting({required ShiftCalendarProvider provider}) {
+    for (var job in provider.jobPostingDataTableList) {
       _employeeData.add(DataGridRow(
           cells: provider.rangeDateList
-              .map((e) => DataGridCell<GroupedCalendarModel>(
-                  columnName: e.date.toString(),
-                  value: GroupedCalendarModel(
-                      applyName: job.myUser?.nameKanJi ?? "Empty", allShiftModels: job.shiftList, calendarModels: [], status: job.status)))
+              .map((e) => DataGridCell<JobPostingDataTable?>(columnName: e.date.toString(), value: job.dateList.contains(e.date) ? job : null))
               .toList()));
     }
   }
@@ -1075,14 +1077,8 @@ class ShiftCalendarDataSourceByJobPosting extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((e) {
-      GroupedCalendarModel calendarModel = e.value;
-      ShiftModel? shiftModel;
-      for (var shift in calendarModel.allShiftModels!) {
-        if (CommonUtils.isTheSameDate(shift.date, DateTime.parse(e.columnName))) {
-          shiftModel = shift;
-        }
-      }
-      return shiftModel == null
+      JobPostingDataTable? job = e.value;
+      return job == null
           ? Container(
               margin: const EdgeInsets.all(1),
               color: const Color(0xffF0F3F5),
@@ -1091,14 +1087,15 @@ class ShiftCalendarDataSourceByJobPosting extends DataGridSource {
               alignment: Alignment.center,
               margin: const EdgeInsets.all(1),
               decoration: BoxDecoration(
-                  color: calendarModel.status == "approved" ? AppColor.primaryColor : Colors.orange.withOpacity(0.2),
+                  color: int.parse(job.recruitNumber) <= job.applyCount ? Colors.green : Colors.orange.withOpacity(0.2),
                   border: Border.all(
-                      width: calendarModel.status == "approved" ? 0 : 2,
-                      color: calendarModel.status == "approved" ? Colors.white : AppColor.primaryColor)),
+                      width: int.parse(job.recruitNumber) <= job.applyCount ? 0 : 2,
+                      color: int.parse(job.recruitNumber) <= job.applyCount ? Colors.green : AppColor.secondaryColor)),
               child: Text(
-                "${shiftModel.startWorkTime}\n~\n${shiftModel.endWorkTime}",
+                "${job.applyCount}/${job.recruitNumber}",
                 textAlign: TextAlign.center,
-                style: kNormalText.copyWith(fontSize: 11, color: calendarModel.status == "approved" ? Colors.white : Colors.black, height: 1),
+                style: kNormalText.copyWith(
+                    fontSize: 11, color: int.parse(job.recruitNumber) <= job.applyCount ? Colors.white : Colors.black, height: 1),
               ),
             );
     }).toList());

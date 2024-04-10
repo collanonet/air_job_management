@@ -26,6 +26,7 @@ class ShiftCalendarProvider with ChangeNotifier {
   String companyId = "";
   List<CalendarModel> rangeDateList = [];
   List<GroupedCalendarModel> groupDataByName = [];
+  List<JobPostingDataTable> jobPostingDataTableList = [];
   List<DateTime> dateTimeList = [];
   DateTime firstDate = DateTime(now.year, now.month, 1);
 
@@ -174,15 +175,18 @@ class ShiftCalendarProvider with ChangeNotifier {
         for (var data in rangeDateList) {
           if (CommonUtils.isTheSameDate(data.date, shift.date)) {
             shift.jobId = job.uid;
+            String major = "";
             //find recruitment
             for (var j in jobPostingList) {
               if (job.jobId == j.uid) {
+                major = j.occupationType ?? "";
                 shift.recruitmentCount = j.numberOfRecruit ?? "0";
                 break;
               }
             }
             data.shiftModelList!.add(shift);
             data.jobId = job.uid;
+            data.major = major;
             data.applyName = job.myUser?.nameKanJi ?? job.userName ?? "";
             break;
           }
@@ -207,12 +211,15 @@ class ShiftCalendarProvider with ChangeNotifier {
     }
     jobApplyPerDay = [];
 
-    for(var job in jobApplyList){
+    for (var job in jobApplyList) {
       List<ShiftModel> shiftList = job.shiftList ?? [];
-      if(shiftList.isNotEmpty != null && CommonUtils.containsAnyDate(rangeDateList.map((e) => e.date).toList(), shiftList.map((e) => e.date!).toList())){
+      if (shiftList.isNotEmpty != null &&
+          CommonUtils.containsAnyDate(rangeDateList.map((e) => e.date).toList(), shiftList.map((e) => e.date!).toList())) {
         jobApplyPerDay.add(job);
       }
     }
+
+    findJobByOccupation();
 
     // Grouping by applyName
     // List<CalendarModel> calendarNameList = const [];
@@ -233,6 +240,26 @@ class ShiftCalendarProvider with ChangeNotifier {
     //     }
     //   }
     // }
+  }
+
+  findJobByOccupation() {
+    jobPostingDataTableList = [];
+    for (var j in jobPostingList) {
+      JobPostingDataTable jobPostingDataTable =
+          JobPostingDataTable(dateList: dateTimeList, recruitNumber: j.numberOfRecruit.toString(), jobId: j.uid ?? "", job: j.occupationType ?? "");
+      int count = 0;
+      for (var job in jobApplyList) {
+        var dateList = job.shiftList!.map((e) => e.date).toList();
+        for (var date in dateTimeList) {
+          if (job.myUser != null && dateList.contains(date)) {
+            count++;
+          }
+        }
+      }
+      jobPostingDataTable.applyCount = count;
+      jobPostingDataTableList.add(jobPostingDataTable);
+    }
+    notifyListeners();
   }
 
   List<GroupedCalendarModel> groupByApplyName(List<CalendarModel> calendarList) {
