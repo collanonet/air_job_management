@@ -1,9 +1,13 @@
 import 'dart:collection';
 
+import 'package:air_job_management/api/user_api.dart';
+import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/calendar.dart';
+import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/models/item_select.dart';
 import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/extension.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../api/company/worker_managment.dart';
@@ -219,7 +223,7 @@ class ShiftCalendarProvider with ChangeNotifier {
       }
     }
 
-    findJobByOccupation();
+    // findJobByOccupation();
 
     // Grouping by applyName
     // List<CalendarModel> calendarNameList = const [];
@@ -242,22 +246,41 @@ class ShiftCalendarProvider with ChangeNotifier {
     // }
   }
 
-  findJobByOccupation() {
+  findJobByOccupation() async {
     jobPostingDataTableList = [];
+    String id = FirebaseAuth.instance.currentUser?.uid ?? "";
+    Company? company = await UserApiServices().getProfileCompany(id);
+    var jobPostingList = await JobPostingApiService().getAllJobPostByCompany(company?.uid ?? "");
     for (var j in jobPostingList) {
-      JobPostingDataTable jobPostingDataTable =
-          JobPostingDataTable(dateList: dateTimeList, recruitNumber: j.numberOfRecruit.toString(), jobId: j.uid ?? "", job: j.occupationType ?? "");
-      int count = 0;
-      for (var job in jobApplyList) {
-        var dateList = job.shiftList!.map((e) => e.date).toList();
-        for (var date in dateTimeList) {
-          if (job.myUser != null && dateList.contains(date)) {
-            count++;
+      var startDate = DateToAPIHelper.fromApiToLocal(j.startDate ?? "");
+      var endDate = DateToAPIHelper.fromApiToLocal(j.endDate ?? "");
+      List<DateTime> dList = CommonUtils.getDateRange(startDate, endDate);
+      if (company?.uid == j.companyId && CommonUtils.containsAnyDate(dateTimeList, dList)) {
+        JobPostingDataTable jobPostingDataTable = JobPostingDataTable(
+            countByDate: dateTimeList
+                .map((e) => CountByDate(date: e, count: 0, recruitNumber: j.numberOfRecruit.toString(), jobId: j.uid ?? "", jobApplyId: ""))
+                .toList(),
+            recruitNumber: j.numberOfRecruit.toString(),
+            jobId: j.uid ?? "",
+            job: j.occupationType ?? "");
+        int count = 0;
+        for (var date in jobPostingDataTable.countByDate) {
+          date.count = 0;
+          for (var job in jobApplyList) {
+            var dateList = job.shiftList!.map((e) => e.date).toList();
+            if (job.jobId == date.jobId && dateList.contains(date.date)) {
+              date.jobApplyId = job.uid ?? "";
+              date.count++;
+              // break;
+            }
           }
+          // print("Count by date ${date.date} x ${date.count}");
         }
+
+        jobPostingDataTable.job = j.majorOccupation ?? "Empty";
+        jobPostingDataTable.applyCount = count;
+        jobPostingDataTableList.add(jobPostingDataTable);
       }
-      jobPostingDataTable.applyCount = count;
-      jobPostingDataTableList.add(jobPostingDataTable);
     }
     notifyListeners();
   }

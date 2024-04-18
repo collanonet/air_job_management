@@ -91,11 +91,11 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                                 ),
                                 AppSize.spaceWidth8,
                                 SizedBox(
-                                  width: 130,
+                                  width: 150,
                                   child: ButtonWidget(
                                     radius: 25,
                                     color: AppColor.whiteColor,
-                                    title: "キャンセル",
+                                    title: "不承認にする",
                                     onPress: () {},
                                   ),
                                 )
@@ -267,7 +267,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                                   : shift.status == "rejected"
                                       ? AppColor.primaryColor
                                       : AppColor.whiteColor,
-                              title: "キャンセル",
+                              title: "不承認にする",
                               onPress: () {
                                 if (shift.status != "completed") {
                                   updateJobStatus(index, shift, "キャンセル");

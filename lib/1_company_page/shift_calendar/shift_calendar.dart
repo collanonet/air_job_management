@@ -46,6 +46,11 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
 
   @override
   void initState() {
+    var provider = Provider.of<ShiftCalendarProvider>(context, listen: false);
+    shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
+    shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
+    shiftCalendarDataSourceByJobPosting =
+        ShiftCalendarDataSourceByJobPosting(provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId));
     Provider.of<ShiftCalendarProvider>(context, listen: false).initializeRangeDate();
     super.initState();
   }
@@ -367,7 +372,9 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                       ],
                     ),
                   ),
-                  Expanded(
+                  SizedBox(
+                    height: (provider.jobPostingDataTableList.length * 45) + 70,
+                    width: AppSize.getDeviceWidth(context) * 0.65,
                     child: ScrollConfiguration(
                       behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
                         PointerDeviceKind.touch,
@@ -393,14 +400,6 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                               horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
                               verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
                               columns: provider.rangeDateList.map((e) {
-                                int applyCount = 0;
-                                int recCount = 0;
-                                for (var s in e.shiftModelList!) {
-                                  if (s.date == e.date) {
-                                    applyCount += s.applicantCount;
-                                    recCount += int.parse(s.recruitmentCount);
-                                  }
-                                }
                                 return GridColumn(
                                     width: 80,
                                     label: Center(
@@ -420,16 +419,6 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                                             style: kNormalText.copyWith(fontSize: 10),
                                           ),
                                         ),
-                                        // Container(
-                                        //   width: 78,
-                                        //   height: 23,
-                                        //   color: applyCount == recCount ? const Color(0xff7DC338) : AppColor.primaryColor,
-                                        //   alignment: Alignment.center,
-                                        //   child: Text(
-                                        //     "$applyCount/$recCount",
-                                        //     style: kNormalText.copyWith(fontSize: 10, color: Colors.white),
-                                        //   ),
-                                        // )
                                       ],
                                     )),
                                     columnName: e.date.toString());
@@ -608,18 +597,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                                               child: Material(
                                                 color: Colors.transparent,
                                                 child: InkWell(
-                                                  onTap: () {
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (context) => Padding(
-                                                              padding: EdgeInsets.symmetric(
-                                                                  horizontal: AppSize.getDeviceHeight(context) * 0.1, vertical: 32),
-                                                              child: ShiftDetailDialogWidget(
-                                                                jobId: shift.jobId!,
-                                                                date: date.date,
-                                                              ),
-                                                            ));
-                                                  },
+                                                  onTap: () => showJobApplyDialog(shift.date!, shift.jobId!),
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 5),
                                                     child: Row(
@@ -673,6 +651,18 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
     );
   }
 
+  showJobApplyDialog(DateTime date, String jobId) {
+    showDialog(
+        context: context,
+        builder: (context) => Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceHeight(context) * 0.1, vertical: 32),
+              child: ShiftDetailDialogWidget(
+                jobId: jobId,
+                date: date,
+              ),
+            ));
+  }
+
   buildMonthDisplay(bool isShowStatus) {
     return Stack(
       clipBehavior: Clip.none,
@@ -694,9 +684,11 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                     onPressed: () async {
                       provider.onChangeMonth(DateTime(provider.month.year, provider.month.month - 1, provider.month.day));
                       await getData();
+                      await provider.findJobByOccupation();
                       shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
                       shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
-                      shiftCalendarDataSourceByJobPosting = ShiftCalendarDataSourceByJobPosting(provider: provider);
+                      shiftCalendarDataSourceByJobPosting = ShiftCalendarDataSourceByJobPosting(
+                          provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId));
                     },
                     icon: Icon(
                       Icons.arrow_back_ios_new_rounded,
@@ -711,9 +703,11 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                     onPressed: () async {
                       provider.onChangeMonth(DateTime(provider.month.year, provider.month.month + 1, provider.month.day));
                       await getData();
+                      await provider.findJobByOccupation();
                       shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
                       shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
-                      shiftCalendarDataSourceByJobPosting = ShiftCalendarDataSourceByJobPosting(provider: provider);
+                      shiftCalendarDataSourceByJobPosting = ShiftCalendarDataSourceByJobPosting(
+                          provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId));
                     },
                     icon: Icon(
                       color: AppColor.primaryColor,
@@ -925,7 +919,9 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
     await getData();
     shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
     shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
-    shiftCalendarDataSourceByJobPosting = ShiftCalendarDataSourceByJobPosting(provider: provider);
+    await provider.findJobByOccupation();
+    shiftCalendarDataSourceByJobPosting =
+        ShiftCalendarDataSourceByJobPosting(provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId));
   }
 
   getData() async {
@@ -1059,15 +1055,15 @@ class ShiftCalendarDataSourceForJob extends DataGridSource {
 class ShiftCalendarDataSourceByJobPosting extends DataGridSource {
   // ignore: non_constant_identifier_names
   /// Creates the employee data source class with required details.
-  ShiftCalendarDataSourceByJobPosting({required ShiftCalendarProvider provider}) {
+  ShiftCalendarDataSourceByJobPosting({required ShiftCalendarProvider provider, required this.onTap}) {
     for (var job in provider.jobPostingDataTableList) {
       _employeeData.add(DataGridRow(
-          cells: provider.rangeDateList
-              .map((e) => DataGridCell<JobPostingDataTable?>(columnName: e.date.toString(), value: job.dateList.contains(e.date) ? job : null))
-              .toList()));
+          cells: job.countByDate.map((e) {
+        return DataGridCell<CountByDate?>(columnName: e.date.toString(), value: e);
+      }).toList()));
     }
   }
-
+  final Function onTap;
   List<DataGridRow> _employeeData = [];
 
   @override
@@ -1077,25 +1073,32 @@ class ShiftCalendarDataSourceByJobPosting extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((e) {
-      JobPostingDataTable? job = e.value;
-      return job == null
+      CountByDate job = e.value;
+      if (job.recruitNumber == null || job.recruitNumber == "") {
+        job.recruitNumber = "5";
+      }
+      // print("Job ${job.date} ${job.count}/${job.recruitNumber}");
+      return job.count == 0
           ? Container(
               margin: const EdgeInsets.all(1),
               color: const Color(0xffF0F3F5),
             )
-          : Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.all(1),
-              decoration: BoxDecoration(
-                  color: int.parse(job.recruitNumber) <= job.applyCount ? Colors.green : Colors.orange.withOpacity(0.2),
-                  border: Border.all(
-                      width: int.parse(job.recruitNumber) <= job.applyCount ? 0 : 2,
-                      color: int.parse(job.recruitNumber) <= job.applyCount ? Colors.green : AppColor.secondaryColor)),
-              child: Text(
-                "${job.applyCount}/${job.recruitNumber}",
-                textAlign: TextAlign.center,
-                style: kNormalText.copyWith(
-                    fontSize: 11, color: int.parse(job.recruitNumber) <= job.applyCount ? Colors.white : Colors.black, height: 1),
+          : InkWell(
+              onTap: () => onTap(job),
+              child: Container(
+                alignment: Alignment.center,
+                margin: const EdgeInsets.all(1),
+                decoration: BoxDecoration(
+                    color: int.parse(job.recruitNumber) <= job.count ? Colors.green : Colors.orange.withOpacity(0.2),
+                    border: Border.all(
+                        width: int.parse(job.recruitNumber) <= job.count ? 0 : 2,
+                        color: int.parse(job.recruitNumber) <= job.count ? Colors.green : AppColor.secondaryColor)),
+                child: Text(
+                  "${job.count}/${job.recruitNumber}",
+                  textAlign: TextAlign.center,
+                  style:
+                      kNormalText.copyWith(fontSize: 11, color: int.parse(job.recruitNumber) <= job.count ? Colors.white : Colors.black, height: 1),
+                ),
               ),
             );
     }).toList());

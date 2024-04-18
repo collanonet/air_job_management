@@ -8,6 +8,21 @@ class CommonUtils {
     await Future.delayed(Duration(milliseconds: mili));
   }
 
+  static List<DateTime> getDateRange(DateTime startDate, DateTime endDate) {
+    List<DateTime> dateRange = [];
+
+    // Iterate through the dates between start and end dates
+    for (var i = startDate; i.isBefore(endDate) || i.isAtSameMomentAs(endDate); i = i.add(Duration(days: 1))) {
+      dateRange.add(i);
+    }
+
+    return dateRange;
+  }
+
+  static bool isDateInRange(DateTime date, DateTime startDate, DateTime endDate) {
+    return date.isAfter(startDate) && date.isBefore(endDate);
+  }
+
   static isTheSameDate(DateTime? d, DateTime? d2) {
     if (d == null || d2 == null) {
       return false;

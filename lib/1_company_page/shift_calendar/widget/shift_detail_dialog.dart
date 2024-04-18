@@ -16,6 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../helper/date_to_api.dart';
+import '../../../models/worker_model/shift.dart';
+import '../../../utils/common_utils.dart';
 import '../../../widgets/custom_dialog.dart';
 import '../../../widgets/custom_loading_overlay.dart';
 import '../../woker_management/widget/job_card.dart';
@@ -138,11 +140,11 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                             ),
                             AppSize.spaceWidth8,
                             SizedBox(
-                              width: 130,
+                              width: 150,
                               child: ButtonWidget(
                                 radius: 25,
                                 color: AppColor.whiteColor,
-                                title: "キャンセル",
+                                title: "不承認にする",
                                 onPress: () {},
                               ),
                             )
@@ -209,7 +211,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                     itemBuilder: (context, index) {
                       var job = applicantList[index];
                       var dateList = job.shiftList!.map((e) => e.date).toList();
-                      return job.myUser == null || !dateList.contains(widget.date) ? const SizedBox() : buildUserApplyList(job);
+                      return job.myUser == null || !dateList.contains(widget.date) ? const SizedBox() : buildUserApplyList(job, index);
                     })
               ],
             ),
@@ -219,155 +221,189 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
     );
   }
 
-  buildUserApplyList(WorkerManagement job) {
-    return Container(
-      width: AppSize.getDeviceWidth(context),
-      padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
-      margin: const EdgeInsets.only(bottom: 8, left: 0, right: 0),
-      decoration: BoxDecoration(
-          color: job.isSelect == true ? Colors.orange.withOpacity(0.1) : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(width: 1, color: AppColor.primaryColor)),
-      child: Row(
-        children: [
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: CachedNetworkImage(
-                    width: 48,
-                    height: 48,
-                    imageUrl: job.myUser?.profileImage ?? "",
-                    fit: BoxFit.cover,
-                    errorWidget: (_, __, ___) => Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
-                      child: Center(
-                        child: Icon(
-                          Icons.person,
-                          color: AppColor.whiteColor,
-                          size: 35,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                AppSize.spaceWidth16,
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
+  buildUserApplyList(WorkerManagement job, int i) {
+    return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: job.shiftList!.length,
+        itemBuilder: (context, index) {
+          var shift = job.shiftList![index];
+          return !CommonUtils.isTheSameDate(shift.date, widget.date)
+              ? const SizedBox()
+              : Container(
+                  width: AppSize.getDeviceWidth(context),
+                  padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
+                  margin: const EdgeInsets.only(bottom: 8, left: 0, right: 0),
+                  decoration: BoxDecoration(
+                      color: job.isSelect == true ? Colors.orange.withOpacity(0.1) : Colors.transparent,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(width: 1, color: AppColor.primaryColor)),
+                  child: Row(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(
+                      Expanded(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(25),
+                              child: CachedNetworkImage(
+                                width: 48,
+                                height: 48,
+                                imageUrl: job.myUser?.profileImage ?? "",
+                                fit: BoxFit.cover,
+                                errorWidget: (_, __, ___) => Container(
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.person,
+                                      color: AppColor.whiteColor,
+                                      size: 35,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            AppSize.spaceWidth16,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          (job.myUser?.nameKanJi != null && job.myUser?.nameKanJi != "")
+                                              ? "${job.myUser?.nameKanJi}"
+                                              : JapaneseText.empty,
+                                          style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                                          overflow: TextOverflow.fade,
+                                        ),
+                                      ),
+                                      AppSize.spaceWidth16,
+                                      job.userId != null
+                                          ? const SizedBox()
+                                          : Icon(
+                                              Icons.star,
+                                              color: AppColor.primaryColor,
+                                            )
+                                    ],
+                                  ),
+                                  Text(
+                                    job.jobLocation ?? "",
+                                    style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 15),
+                                    overflow: TextOverflow.fade,
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        flex: 2,
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 32),
+                          child: Center(
                             child: Text(
-                              (job.myUser?.nameKanJi != null && job.myUser?.nameKanJi != "") ? "${job.myUser?.nameKanJi}" : JapaneseText.empty,
-                              style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                              calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) +
+                                  "   ${job.myUser?.gender}",
+                              style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                               overflow: TextOverflow.fade,
                             ),
                           ),
-                          AppSize.spaceWidth16,
-                          job.userId != null
-                              ? const SizedBox()
-                              : Icon(
-                                  Icons.star,
-                                  color: AppColor.primaryColor,
-                                )
-                        ],
+                        ),
+                        flex: 2,
                       ),
-                      Text(
-                        job.jobLocation ?? "",
-                        style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 15),
-                        overflow: TextOverflow.fade,
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            "${job.myUser?.phone}",
+                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                            overflow: TextOverflow.fade,
+                          ),
+                        ),
+                        flex: 2,
                       ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            "${job.myUser?.rating ?? "95"}%",
+                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                            overflow: TextOverflow.fade,
+                          ),
+                        ),
+                        flex: 1,
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            "${job.applyCount}回",
+                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                            overflow: TextOverflow.fade,
+                          ),
+                        ),
+                        flex: 1,
+                      ),
+                      Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 150,
+                                child: ButtonWidget(
+                                  radius: 25,
+                                  color: shift.status == "completed"
+                                      ? AppColor.bgPageColor
+                                      : shift.status == "approved"
+                                          ? AppColor.primaryColor
+                                          : AppColor.whiteColor,
+                                  title: "確定する",
+                                  onPress: () {
+                                    if (shift.status != "completed") {
+                                      updateJobStatus(job.shiftList!, shift, "確定する", index, job.uid!);
+                                    } else {
+                                      toastMessageError("この仕事は完了しました。", context);
+                                    }
+                                  },
+                                ),
+                              ),
+                              AppSize.spaceWidth32,
+                              SizedBox(
+                                width: 150,
+                                child: ButtonWidget(
+                                  radius: 25,
+                                  color: shift.status == "completed"
+                                      ? AppColor.bgPageColor
+                                      : shift.status == "rejected"
+                                          ? AppColor.primaryColor
+                                          : AppColor.whiteColor,
+                                  title: "不承認にする",
+                                  onPress: () {
+                                    if (shift.status != "completed") {
+                                      updateJobStatus(job.shiftList!, shift, "キャンセル", index, job.uid!);
+                                    } else {
+                                      toastMessageError("この仕事は完了しました。", context);
+                                    }
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                          flex: 3),
                     ],
                   ),
-                )
-              ],
-            ),
-            flex: 2,
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 32),
-              child: Center(
-                child: Text(
-                  calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) + "   ${job.myUser?.gender}",
-                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
-                  overflow: TextOverflow.fade,
-                ),
-              ),
-            ),
-            flex: 2,
-          ),
-          Expanded(
-            child: Center(
-              child: Text(
-                "${job.myUser?.phone}",
-                style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
-                overflow: TextOverflow.fade,
-              ),
-            ),
-            flex: 2,
-          ),
-          Expanded(
-            child: Center(
-              child: Text(
-                "${job.myUser?.rating ?? "95"}%",
-                style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
-                overflow: TextOverflow.fade,
-              ),
-            ),
-            flex: 1,
-          ),
-          Expanded(
-            child: Center(
-              child: Text(
-                "${job.applyCount}回",
-                style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
-                overflow: TextOverflow.fade,
-              ),
-            ),
-            flex: 1,
-          ),
-          Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 150,
-                    child: ButtonWidget(
-                      radius: 25,
-                      color: job.status == "approved" ? AppColor.primaryColor : AppColor.whiteColor,
-                      title: "確定する",
-                      onPress: () => updateJobStatus(job, "確定する"),
-                    ),
-                  ),
-                  AppSize.spaceWidth8,
-                  SizedBox(
-                    width: 150,
-                    child: ButtonWidget(
-                      radius: 25,
-                      color: job.status == "canceled" ? AppColor.primaryColor : AppColor.whiteColor,
-                      title: "キャンセル",
-                      onPress: () => updateJobStatus(job, "キャンセル"),
-                    ),
-                  )
-                ],
-              ),
-              flex: 3),
-        ],
-      ),
-    );
+                );
+        });
   }
 
-  updateJobStatus(WorkerManagement job, String action) {
+  updateJobStatus(List<ShiftModel> shiftList, ShiftModel shiftModel, String action, int index, String jobId) {
+    shiftModel.status = action == "確定する" ? "approved" : "rejected";
+    shiftList[index] = shiftModel;
     CustomDialog.confirmDialog(
         context: context,
         onApprove: () async {
@@ -375,7 +411,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
           setState(() {
             isLoading = true;
           });
-          bool isSuccess = await WorkerManagementApiService().updateJobStatus(job.uid!, action == "確定する" ? "approved" : "rejected");
+          bool isSuccess = await WorkerManagementApiService().updateShiftStatus(shiftList, jobId);
           if (isSuccess) {
             await getData();
             setState(() {

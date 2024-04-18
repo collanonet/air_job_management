@@ -5,8 +5,17 @@ class JobPostingDataTable {
   int applyCount;
   String job;
   String jobId;
-  List<DateTime> dateList;
-  JobPostingDataTable({required this.dateList, this.job = "", this.jobId = "", this.applyCount = 0, this.recruitNumber = "0"});
+  List<CountByDate> countByDate;
+  JobPostingDataTable({required this.countByDate, this.job = "", this.jobId = "", this.applyCount = 0, this.recruitNumber = "0"});
+}
+
+class CountByDate {
+  DateTime date;
+  int count;
+  String recruitNumber;
+  String jobApplyId;
+  String jobId;
+  CountByDate({required this.date, required this.count, required this.recruitNumber, required this.jobId, required this.jobApplyId});
 }
 
 class JobPosting {
