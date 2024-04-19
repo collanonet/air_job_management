@@ -9,6 +9,7 @@ import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
+import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:air_job_management/widgets/loading.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -38,38 +39,76 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
   JobPosting? jobPosting;
   DateTime now = DateTime.now();
   int countApplyPeople = 0;
+  List<String> menuTab = ["新規応募", "変更申請"];
+  String selectedTab = "新規応募";
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       insetPadding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      // actions: isLoading
-      //     ? []
-      //     : [
-      //         Center(
-      //           child: Padding(
-      //             padding: const EdgeInsets.only(bottom: 20),
-      //             child: SizedBox(
-      //               width: 130,
-      //               child: ButtonWidget(
-      //                 onPress: () => Navigator.pop(context),
-      //                 title: JapaneseText.close,
-      //                 color: AppColor.primaryColor,
-      //                 radius: 30,
-      //               ),
-      //             ),
-      //           ),
-      //         )
-      //       ],
       content: CustomLoadingOverlay(
         isLoading: isLoading,
         child: SizedBox(
           width: AppSize.getDeviceWidth(context) * 0.9,
-          // height: AppSize.getDeviceHeight(context) * 0.6,
+          height: AppSize.getDeviceHeight(context) * 0.9,
           child: applicantList.isEmpty && isLoading ? SizedBox(height: 150, child: LoadingWidget(AppColor.primaryColor)) : buildJobDetail(),
         ),
       ),
+    );
+  }
+
+  buildTab() {
+    return Row(
+      children: [
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                selectedTab = menuTab[0];
+              });
+            },
+            child: Container(
+              // width: AppSize.getDeviceWidth(context) * 0.41,
+              height: 39,
+              alignment: Alignment.center,
+              child: Text(
+                menuTab[0],
+                style: normalTextStyle.copyWith(
+                    fontSize: 16, fontFamily: "Bold", color: selectedTab == menuTab[0] ? Colors.white : AppColor.primaryColor),
+              ),
+              decoration: BoxDecoration(
+                  color: selectedTab == menuTab[0] ? AppColor.primaryColor : Colors.white,
+                  border: Border.all(width: 2, color: AppColor.primaryColor),
+                  borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16))),
+            ),
+          ),
+        ),
+        AppSize.spaceWidth16,
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                selectedTab = menuTab[1];
+              });
+            },
+            child: Container(
+              // width: AppSize.getDeviceWidth(context) * 0.41,
+              height: 39,
+              alignment: Alignment.center,
+              child: Text(
+                menuTab[1],
+                style:
+                    normalTextStyle.copyWith(fontSize: 16, fontFamily: "Bold", color: selectedTab == menuTab[1] ? Colors.white : AppColor.seaColor),
+              ),
+              decoration: BoxDecoration(
+                  color: selectedTab == menuTab[1] ? AppColor.seaColor : Colors.white,
+                  border: Border.all(width: 2, color: AppColor.seaColor),
+                  borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16))),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -114,48 +153,42 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                     displayColumn("募集人数", "${jobPosting?.numberOfRecruit}"),
                     horizontalDivider(),
                     displayColumn("確定人数", "$countApplyPeople"),
-                    Expanded(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 75),
-                          child: Text(
-                            "任意のワーカーを選んでまとめて",
-                            style: normalTextStyle.copyWith(fontSize: 13),
-                          ),
-                        ),
-                        AppSize.spaceHeight8,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            SizedBox(
-                              width: 130,
-                              child: ButtonWidget(
-                                radius: 25,
-                                color: AppColor.whiteColor,
-                                title: "確定する",
-                                onPress: () {},
-                              ),
-                            ),
-                            AppSize.spaceWidth8,
-                            SizedBox(
-                              width: 150,
-                              child: ButtonWidget(
-                                radius: 25,
-                                color: AppColor.whiteColor,
-                                title: "不承認にする",
-                                onPress: () {},
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ))
                   ],
                 ),
                 AppSize.spaceHeight16,
                 divider(),
+                AppSize.spaceHeight30,
+                buildTab(),
+                AppSize.spaceHeight30,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "任意のワーカーを選んでまとめて",
+                      style: normalTextStyle.copyWith(fontSize: 13),
+                    ),
+                    AppSize.spaceWidth16,
+                    SizedBox(
+                      width: 130,
+                      child: ButtonWidget(
+                        radius: 25,
+                        color: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.whiteColor,
+                        title: "確定する",
+                        onPress: () {},
+                      ),
+                    ),
+                    AppSize.spaceWidth8,
+                    SizedBox(
+                      width: 150,
+                      child: ButtonWidget(
+                        radius: 25,
+                        color: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.whiteColor,
+                        title: "不承認にする",
+                        onPress: () {},
+                      ),
+                    )
+                  ],
+                ),
                 AppSize.spaceHeight30,
                 Row(
                   children: [
@@ -169,7 +202,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                               style: normalTextStyle.copyWith(fontSize: 13),
                             ),
                           )),
-                      flex: 2,
+                      flex: 3,
                     ),
                     Expanded(
                       child: Center(
@@ -199,20 +232,25 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                       child: Center(
                         child: Text("状態", style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
-                      flex: 3,
+                      flex: 4,
                     ),
                   ],
                 ),
                 AppSize.spaceHeight16,
-                ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: applicantList.length,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      var job = applicantList[index];
-                      var dateList = job.shiftList!.map((e) => e.date).toList();
-                      return job.myUser == null || !dateList.contains(widget.date) ? const SizedBox() : buildUserApplyList(job, index);
-                    })
+                if (selectedTab == menuTab[0])
+                  ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: applicantList.length,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        var job = applicantList[index];
+                        var dateList = job.shiftList!.map((e) => e.date).toList();
+                        return job.myUser == null || !dateList.contains(widget.date) ? const SizedBox() : buildUserApplyList(job, index);
+                      })
+                else
+                  const Center(
+                    child: EmptyDataWidget(),
+                  )
               ],
             ),
           )
@@ -303,7 +341,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                             )
                           ],
                         ),
-                        flex: 2,
+                        flex: 3,
                       ),
                       Expanded(
                         child: Padding(
@@ -372,7 +410,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                   },
                                 ),
                               ),
-                              AppSize.spaceWidth32,
+                              AppSize.spaceWidth8,
                               SizedBox(
                                 width: 150,
                                 child: ButtonWidget(
@@ -394,7 +432,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                               )
                             ],
                           ),
-                          flex: 3),
+                          flex: 4),
                     ],
                   ),
                 );

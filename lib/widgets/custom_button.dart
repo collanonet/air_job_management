@@ -10,12 +10,7 @@ class ButtonWidget extends StatelessWidget {
   final double radius;
   final double height;
   const ButtonWidget(
-      {super.key,
-      this.height = 40,
-      required this.title,
-      this.color = const Color(0xfff38301),
-      this.radius = 4,
-      required this.onPress});
+      {super.key, this.height = 40, required this.title, this.color = const Color(0xfff38301), this.radius = 4, required this.onPress});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +18,7 @@ class ButtonWidget extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius),
-          color: color,
+          color: color == AppColor.seaColor ? Colors.white : color,
           border: Border.all(
               width: radius == 4 ? 1 : 3,
               color: color == Colors.white
@@ -38,8 +33,11 @@ class ButtonWidget extends StatelessWidget {
           style: normalTextStyle.copyWith(
               fontFamily: "Bold",
               fontSize: 13,
-              color:
-                  color == Colors.white ? AppColor.primaryColor : Colors.white),
+              color: color == Colors.white
+                  ? AppColor.primaryColor
+                  : color == AppColor.seaColor
+                      ? color
+                      : Colors.white),
         ),
         onPressed: () => onPress(),
       ),
