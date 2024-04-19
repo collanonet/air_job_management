@@ -249,7 +249,7 @@ class JobPostingForCompanyProvider with ChangeNotifier {
     jobPosting = JobPosting(location: Location());
   }
 
-  onInitForJobPostingDetail(String? id) async {
+  onInitForJobPostingDetail(String? id, {JobPosting? jobP}) async {
     startWorkDate = DateTime.now();
     endWorkDate = DateTime.now();
     startWorkingTime = DateTime(now.year, now.month, now.day, 8, 0, 0);
@@ -257,7 +257,7 @@ class JobPostingForCompanyProvider with ChangeNotifier {
     startBreakTime = DateTime(now.year, now.month, now.day, 12, 0, 0);
     endBreakTime = DateTime(now.year, now.month, now.day, 13, 0, 0);
     jobPosterProfile = [null];
-    jobPosting = await JobPostingApiService().getAJobPosting(id.toString());
+    jobPosting = jobP ?? await JobPostingApiService().getAJobPosting(id.toString());
     if (jobPosting != null) {
       initialTags = jobPosting?.limitGroupEmail ?? [];
       print("Tag is $initialTags");

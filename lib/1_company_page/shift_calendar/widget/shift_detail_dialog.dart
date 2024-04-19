@@ -392,7 +392,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SizedBox(
-                                width: 150,
+                                width: 140,
                                 child: ButtonWidget(
                                   radius: 25,
                                   color: shift.status == "completed"
@@ -412,7 +412,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                               ),
                               AppSize.spaceWidth8,
                               SizedBox(
-                                width: 150,
+                                width: 145,
                                 child: ButtonWidget(
                                   radius: 25,
                                   color: shift.status == "completed"

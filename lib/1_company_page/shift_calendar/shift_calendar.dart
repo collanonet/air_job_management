@@ -1,13 +1,14 @@
 import 'dart:ui';
 
 import 'package:air_job_management/1_company_page/shift_calendar/widget/copy_paste.dart';
+import 'package:air_job_management/1_company_page/shift_calendar/widget/edit_shift_for_calendar.dart';
 import 'package:air_job_management/1_company_page/shift_calendar/widget/job_card_display.dart';
 import 'package:air_job_management/1_company_page/shift_calendar/widget/shift_detail_dialog.dart';
-import 'package:air_job_management/models/worker_model/shift.dart';
+import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/providers/company/shift_calendar.dart';
 import 'package:air_job_management/utils/app_color.dart';
-import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/style.dart';
+import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -22,12 +23,16 @@ import '../../models/calendar.dart';
 import '../../models/company.dart';
 import '../../models/job_posting.dart';
 import '../../providers/auth.dart';
+import '../../providers/company/job_posting.dart';
 import '../../utils/app_size.dart';
 import '../../utils/my_route.dart';
 import '../../utils/toast_message_util.dart';
 import '../../widgets/custom_loading_overlay.dart';
 import '../job_posting/create_or_edit_job_posting.dart';
 import '../job_posting/widget/matching_worker.dart';
+import 'data_source/shift_calendar.dart';
+import 'data_source/shift_calendar_by_job_post.dart';
+import 'data_source/shift_calendar_for_job.dart';
 
 class ShiftCalendarPage extends StatefulWidget {
   const ShiftCalendarPage({super.key});
@@ -43,9 +48,12 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
   late ShiftCalendarDataSource shiftCalendarDataSource;
   late ShiftCalendarDataSourceForJob shiftCalendarDataSourceForJob;
   late ShiftCalendarDataSourceByJobPosting shiftCalendarDataSourceByJobPosting;
+  late JobPostingForCompanyProvider p;
+  // JobPosting? selectedJob;
 
   @override
   void initState() {
+    Provider.of<JobPostingForCompanyProvider>(context, listen: false).setAllController = [];
     var provider = Provider.of<ShiftCalendarProvider>(context, listen: false);
     shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
     shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
@@ -59,6 +67,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
   Widget build(BuildContext context) {
     authProvider = Provider.of<AuthProvider>(context);
     provider = Provider.of<ShiftCalendarProvider>(context);
+    p = Provider.of<JobPostingForCompanyProvider>(context);
     return CustomLoadingOverlay(
         isLoading: provider.isLoading,
         child: Container(
@@ -84,7 +93,9 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                         buildTab(provider.displayList[2]),
                         Expanded(
                             child: CopyPasteShiftCalendarWidget(onMatching: () {
-                          if (provider.jobPosting == null || provider.selectDisplay == provider.displayList[0]) {
+                          if (provider.jobPosting == null ||
+                              provider.selectDisplay == provider.displayList[1] ||
+                              provider.selectDisplay == provider.displayList[1]) {
                             toastMessageError("最初にコピーしたいジョブを選択してください。", context);
                           } else {
                             showMatching();
@@ -452,6 +463,9 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
           );
   }
 
+  List<String> menuTab = ["日付を選んでシフト枠作成", "曜日と時間帯を選んでシフト枠作成"];
+  String selectedTab = "日付を選んでシフト枠作成";
+
   buildCalendarWidget() {
     return Container(
       width: AppSize.getDeviceWidth(context),
@@ -597,7 +611,13 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                                               child: Material(
                                                 color: Colors.transparent,
                                                 child: InkWell(
-                                                  onTap: () => showJobApplyDialog(shift.date!, shift.jobId!),
+                                                  onTap: () async {
+                                                    var job = await JobPostingApiService().getAJobPosting(shift.myJob?.uid ?? "");
+                                                    p.onInitForJobPostingDetail(shift.myJob?.uid ?? "", jobP: job);
+                                                    provider.jobPosting = job;
+                                                    setState(() {});
+                                                  },
+                                                  onDoubleTap: () => showJobApplyDialog(shift.date!, shift.jobId!),
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 5),
                                                     child: Row(
@@ -645,9 +665,76 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                           }
                         }),
                   ),
-          )
+          ),
+          AppSize.spaceHeight30,
+          buildTabForCreateShift(),
+          AppSize.spaceHeight30,
+          if (provider.jobPosting == null)
+            const Center(
+              child: EmptyDataWidget(),
+            )
+          else
+            buildEditJobPosting()
         ],
       ),
+    );
+  }
+
+  buildEditJobPosting() {
+    return EditShiftForCalendarPage();
+  }
+
+  buildTabForCreateShift() {
+    return Row(
+      children: [
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                selectedTab = menuTab[0];
+              });
+            },
+            child: Container(
+              // width: AppSize.getDeviceWidth(context) * 0.41,
+              height: 39,
+              alignment: Alignment.center,
+              child: Text(
+                menuTab[0],
+                style: normalTextStyle.copyWith(
+                    fontSize: 16, fontFamily: "Bold", color: selectedTab == menuTab[0] ? Colors.white : AppColor.primaryColor),
+              ),
+              decoration: BoxDecoration(
+                  color: selectedTab == menuTab[0] ? AppColor.primaryColor : Colors.white,
+                  border: Border.all(width: 2, color: AppColor.primaryColor),
+                  borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16))),
+            ),
+          ),
+        ),
+        AppSize.spaceWidth16,
+        Expanded(
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                selectedTab = menuTab[1];
+              });
+            },
+            child: Container(
+              // width: AppSize.getDeviceWidth(context) * 0.41,
+              height: 39,
+              alignment: Alignment.center,
+              child: Text(
+                menuTab[1],
+                style: normalTextStyle.copyWith(
+                    fontSize: 16, fontFamily: "Bold", color: selectedTab == menuTab[1] ? Colors.white : AppColor.primaryColor),
+              ),
+              decoration: BoxDecoration(
+                  color: selectedTab == menuTab[1] ? AppColor.primaryColor : Colors.white,
+                  border: Border.all(width: 2, color: AppColor.primaryColor),
+                  borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16))),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -840,18 +927,6 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                 ),
                 flex: 2,
               ),
-              // Expanded(
-              //   child: Center(
-              //     child: Text("募集人数", style: normalTextStyle.copyWith(fontSize: 13)),
-              //   ),
-              //   flex: 1,
-              // ),
-              // Expanded(
-              //   child: Center(
-              //     child: Text("応募人数", style: normalTextStyle.copyWith(fontSize: 13)),
-              //   ),
-              //   flex: 1,
-              // ),
               SizedBox(
                   width: 100,
                   child: Center(
@@ -941,166 +1016,5 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
       await provider.getApplicantList(authProvider.myCompany?.uid ?? "");
       provider.onChangeLoading(false);
     }
-  }
-}
-
-class ShiftCalendarDataSource extends DataGridSource {
-  // ignore: non_constant_identifier_names
-  /// Creates the employee data source class with required details.
-  ShiftCalendarDataSource({required ShiftCalendarProvider provider}) {
-    for (var job in provider.jobApplyPerDay) {
-      _employeeData.add(DataGridRow(
-          cells: provider.rangeDateList
-              .map((e) => DataGridCell<GroupedCalendarModel>(
-                  columnName: e.date.toString(),
-                  value: GroupedCalendarModel(
-                      applyName: job.myUser?.nameKanJi ?? "Empty", allShiftModels: job.shiftList, calendarModels: [], status: job.status)))
-              .toList()));
-    }
-  }
-
-  List<DataGridRow> _employeeData = [];
-
-  @override
-  List<DataGridRow> get rows => _employeeData;
-
-  @override
-  DataGridRowAdapter buildRow(DataGridRow row) {
-    return DataGridRowAdapter(
-        cells: row.getCells().map<Widget>((e) {
-      GroupedCalendarModel calendarModel = e.value;
-      ShiftModel? shiftModel;
-      for (var shift in calendarModel.allShiftModels!) {
-        if (CommonUtils.isTheSameDate(shift.date, DateTime.parse(e.columnName))) {
-          shiftModel = shift;
-        }
-      }
-      return shiftModel == null
-          ? Container(
-              margin: const EdgeInsets.all(1),
-              color: const Color(0xffF0F3F5),
-            )
-          : Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.all(1),
-              decoration: BoxDecoration(
-                  color: calendarModel.status == "approved" ? AppColor.primaryColor : Colors.orange.withOpacity(0.2),
-                  border: Border.all(
-                      width: calendarModel.status == "approved" ? 0 : 2,
-                      color: calendarModel.status == "approved" ? Colors.white : AppColor.primaryColor)),
-              child: Text(
-                "${shiftModel.startWorkTime}\n~\n${shiftModel.endWorkTime}",
-                textAlign: TextAlign.center,
-                style: kNormalText.copyWith(fontSize: 11, color: calendarModel.status == "approved" ? Colors.white : Colors.black, height: 1),
-              ),
-            );
-    }).toList());
-  }
-}
-
-class ShiftCalendarDataSourceForJob extends DataGridSource {
-  // ignore: non_constant_identifier_names
-  /// Creates the employee data source class with required details.
-  ShiftCalendarDataSourceForJob({required ShiftCalendarProvider provider}) {
-    for (var job in provider.jobApplyPerDay) {
-      _employeeData.add(DataGridRow(
-          cells: provider.rangeDateList
-              .map((e) => DataGridCell<GroupedCalendarModel>(
-                  columnName: e.date.toString(),
-                  value: GroupedCalendarModel(
-                      applyName: job.myUser?.nameKanJi ?? "Empty", allShiftModels: job.shiftList, calendarModels: [], status: job.status)))
-              .toList()));
-    }
-  }
-
-  List<DataGridRow> _employeeData = [];
-
-  @override
-  List<DataGridRow> get rows => _employeeData;
-
-  @override
-  DataGridRowAdapter buildRow(DataGridRow row) {
-    return DataGridRowAdapter(
-        cells: row.getCells().map<Widget>((e) {
-      GroupedCalendarModel calendarModel = e.value;
-      ShiftModel? shiftModel;
-      for (var shift in calendarModel.allShiftModels!) {
-        if (CommonUtils.isTheSameDate(shift.date, DateTime.parse(e.columnName))) {
-          shiftModel = shift;
-        }
-      }
-      return shiftModel == null
-          ? Container(
-              margin: const EdgeInsets.all(1),
-              color: const Color(0xffF0F3F5),
-            )
-          : Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.all(1),
-              decoration: BoxDecoration(
-                  color: calendarModel.status == "approved" ? AppColor.primaryColor : Colors.orange.withOpacity(0.2),
-                  border: Border.all(
-                      width: calendarModel.status == "approved" ? 0 : 2,
-                      color: calendarModel.status == "approved" ? Colors.white : AppColor.primaryColor)),
-              child: Text(
-                "${shiftModel.startWorkTime}\n~\n${shiftModel.endWorkTime}",
-                textAlign: TextAlign.center,
-                style: kNormalText.copyWith(fontSize: 11, color: calendarModel.status == "approved" ? Colors.white : Colors.black, height: 1),
-              ),
-            );
-    }).toList());
-  }
-}
-
-class ShiftCalendarDataSourceByJobPosting extends DataGridSource {
-  // ignore: non_constant_identifier_names
-  /// Creates the employee data source class with required details.
-  ShiftCalendarDataSourceByJobPosting({required ShiftCalendarProvider provider, required this.onTap}) {
-    for (var job in provider.jobPostingDataTableList) {
-      _employeeData.add(DataGridRow(
-          cells: job.countByDate.map((e) {
-        return DataGridCell<CountByDate?>(columnName: e.date.toString(), value: e);
-      }).toList()));
-    }
-  }
-  final Function onTap;
-  List<DataGridRow> _employeeData = [];
-
-  @override
-  List<DataGridRow> get rows => _employeeData;
-
-  @override
-  DataGridRowAdapter buildRow(DataGridRow row) {
-    return DataGridRowAdapter(
-        cells: row.getCells().map<Widget>((e) {
-      CountByDate job = e.value;
-      if (job.recruitNumber == null || job.recruitNumber == "") {
-        job.recruitNumber = "5";
-      }
-      // print("Job ${job.date} ${job.count}/${job.recruitNumber}");
-      return job.count == 0
-          ? Container(
-              margin: const EdgeInsets.all(1),
-              color: const Color(0xffF0F3F5),
-            )
-          : InkWell(
-              onTap: () => onTap(job),
-              child: Container(
-                alignment: Alignment.center,
-                margin: const EdgeInsets.all(1),
-                decoration: BoxDecoration(
-                    color: int.parse(job.recruitNumber) <= job.count ? Colors.green : Colors.orange.withOpacity(0.2),
-                    border: Border.all(
-                        width: int.parse(job.recruitNumber) <= job.count ? 0 : 2,
-                        color: int.parse(job.recruitNumber) <= job.count ? Colors.green : AppColor.secondaryColor)),
-                child: Text(
-                  "${job.count}/${job.recruitNumber}",
-                  textAlign: TextAlign.center,
-                  style:
-                      kNormalText.copyWith(fontSize: 11, color: int.parse(job.recruitNumber) <= job.count ? Colors.white : Colors.black, height: 1),
-                ),
-              ),
-            );
-    }).toList());
   }
 }

@@ -23,11 +23,11 @@ class CopyPasteShiftCalendarWidget extends StatelessWidget {
               width: 160,
               child: ButtonWidget(radius: 25, title: "手動マッチング", color: AppColor.primaryColor, onPress: () => onMatching()),
             ),
-            AppSize.spaceWidth16,
-            SizedBox(
-              width: 160,
-              child: ButtonWidget(radius: 25, title: "コピーして作成", color: AppColor.primaryColor, onPress: () => onCopyPaste()),
-            ),
+            // AppSize.spaceWidth16,
+            // SizedBox(
+            //   width: 160,
+            //   child: ButtonWidget(radius: 25, title: "コピーして作成", color: AppColor.primaryColor, onPress: () => onCopyPaste()),
+            // ),
           ],
         ),
       ),

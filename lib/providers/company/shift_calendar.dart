@@ -5,6 +5,7 @@ import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/calendar.dart';
 import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/models/item_select.dart';
+import 'package:air_job_management/models/worker_model/search_job.dart';
 import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/extension.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -185,6 +186,7 @@ class ShiftCalendarProvider with ChangeNotifier {
               if (job.jobId == j.uid) {
                 major = j.occupationType ?? "";
                 shift.recruitmentCount = j.numberOfRecruit ?? "0";
+                shift.myJob = SearchJob(uid: j.uid);
                 break;
               }
             }
