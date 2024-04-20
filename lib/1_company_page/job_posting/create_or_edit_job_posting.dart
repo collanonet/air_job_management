@@ -142,6 +142,8 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
           if (urlPosterList.isNotEmpty) {
             provider.jobPosting?.image = urlPosterList[0];
           }
+          provider.jobPosting?.isAllowSmokingInArea = provider.isAllowSmokingInArea;
+          provider.jobPosting?.selectSmokingInDoor = provider.selectSmokingInDoor;
           provider.jobPosting?.limitGroupEmail = initialTags;
           provider.jobPosting?.employmentType ??= JapaneseText.partTimeJob;
           provider.jobPosting?.company = authProvider.myCompany?.companyName;

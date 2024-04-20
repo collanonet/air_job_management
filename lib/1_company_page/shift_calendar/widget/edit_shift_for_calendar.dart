@@ -21,7 +21,9 @@ import '../../../widgets/title.dart';
 import '../../job_posting/job_posting_detail/job_posting_shift.dart';
 
 class EditShiftForCalendarPage extends StatefulWidget {
-  const EditShiftForCalendarPage({super.key});
+  final String title;
+  final Function onUpdate;
+  const EditShiftForCalendarPage({super.key, required this.onUpdate, required this.title});
 
   @override
   State<EditShiftForCalendarPage> createState() => _EditShiftForCalendarPageState();
@@ -29,6 +31,9 @@ class EditShiftForCalendarPage extends StatefulWidget {
 
 class _EditShiftForCalendarPageState extends State<EditShiftForCalendarPage> {
   late JobPostingForCompanyProvider provider;
+
+  List<String> date = ["月", "火", "水", "木", "金", "土", "日"];
+  List<String> selectedDate = ["月", "火", "水", "木", "金", "土", "日"];
 
   @override
   Widget build(BuildContext context) {
@@ -97,45 +102,155 @@ class _EditShiftForCalendarPageState extends State<EditShiftForCalendarPage> {
             color: AppColor.thirdColor.withOpacity(0.3),
           ),
           AppSize.spaceHeight16,
-          Row(
-            children: [
-              ButtonWidget(
-                title: "カレンダーから選ぶ",
-                onPress: () async {
-                  showDateRangePicker(
-                          context: context,
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(3000),
-                          initialDateRange: DateTimeRange(start: provider.startWorkDate, end: provider.endWorkDate))
-                      .then((value) {
-                    if (value != null) {
-                      setState(() {
-                        provider.startWorkDate = value.start;
-                        provider.endWorkDate = value.end;
-                      });
-                    }
-                  });
-                },
-                color: AppColor.primaryColor,
-                radius: 25,
-              ),
-              AppSize.spaceWidth16,
-              Expanded(
-                  child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "選択された日付",
-                    style: kNormalText,
-                  ),
-                  Text(
-                    "${CommonUtils.getDateRange(provider.startWorkDate, provider.endWorkDate).map((e) => "${e.month}/${e.day}")}",
-                    style: kNormalText,
-                  )
-                ],
-              ))
-            ],
-          ),
+          if (widget.title == "日付を選んでシフト枠作成")
+            Row(
+              children: [
+                ButtonWidget(
+                  title: "カレンダーから選ぶ",
+                  onPress: () async {
+                    showDateRangePicker(
+                            context: context,
+                            builder: (context, child) {
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: ColorScheme.light(
+                                    primary: AppColor.primaryColor, // header background color
+                                    onPrimary: AppColor.whiteColor, // header text color
+                                    onSurface: Colors.black, // body text color
+                                  ),
+                                  textButtonTheme: TextButtonThemeData(
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: AppColor.primaryColor, // button text color
+                                    ),
+                                  ),
+                                ),
+                                child: child!,
+                              );
+                            },
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(3000),
+                            initialDateRange: DateTimeRange(start: provider.startWorkDate, end: provider.endWorkDate))
+                        .then((value) {
+                      if (value != null) {
+                        setState(() {
+                          provider.startWorkDate = value.start;
+                          provider.endWorkDate = value.end;
+                        });
+                      }
+                    });
+                  },
+                  color: AppColor.primaryColor,
+                  radius: 25,
+                ),
+                AppSize.spaceWidth16,
+                Expanded(
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "選択された日付",
+                      style: kNormalText,
+                    ),
+                    Text(
+                      "${CommonUtils.getDateRange(provider.startWorkDate, provider.endWorkDate).map((e) => "${e.month}/${e.day}")}",
+                      style: kNormalText,
+                    )
+                  ],
+                ))
+              ],
+            )
+          else
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 48,
+                  child: ListView.builder(
+                      itemCount: date.length,
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        String item = date[index];
+                        return InkWell(
+                          onTap: () {
+                            setState(() {
+                              if (selectedDate.contains(item)) {
+                                selectedDate[index] = "";
+                              } else {
+                                selectedDate[index] = item;
+                              }
+                            });
+                          },
+                          child: Container(
+                            height: 48,
+                            width: 48,
+                            margin: const EdgeInsets.only(right: 12),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(width: 1, color: AppColor.primaryColor),
+                                color: selectedDate.contains(item) ? AppColor.primaryColor : AppColor.primaryColor.withOpacity(0.2)),
+                            child: Center(
+                              child: Text(
+                                item,
+                                style: kNormalText.copyWith(
+                                    color: selectedDate.contains(item) ? AppColor.whiteColor : AppColor.primaryColor, fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                ),
+                AppSize.spaceWidth32,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CustomChooseDateOrTimeWidget(
+                      width: 200,
+                      title: "シフト枠期間（開始）",
+                      onTap: () async {
+                        var date = await showDatePicker(
+                            context: context, initialDate: provider.startWorkDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
+                        if (date != null) {
+                          setState(() {
+                            provider.startWorkDate = date;
+                            if (provider.startWorkDate.isAfter(provider.endWorkDate)) {
+                              provider.endWorkDate = date;
+                            }
+                          });
+                        }
+                      },
+                      val: toJapanDateWithoutWeekDay(provider.startWorkDate),
+                      isHaveIcon: true,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+                      child: Text(
+                        " 〜 ",
+                        style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
+                      ),
+                    ),
+                    CustomChooseDateOrTimeWidget(
+                      width: 200,
+                      title: "シフト枠期間（終了）",
+                      onTap: () async {
+                        var date = await showDatePicker(
+                            context: context, initialDate: provider.endWorkDate, firstDate: provider.startWorkDate, lastDate: DateTime(2100));
+                        if (date != null) {
+                          setState(() {
+                            provider.endWorkDate = date;
+                          });
+                        }
+                      },
+                      val: toJapanDateWithoutWeekDay(provider.endWorkDate),
+                      isHaveIcon: true,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           AppSize.spaceHeight20,
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -453,6 +568,15 @@ class _EditShiftForCalendarPageState extends State<EditShiftForCalendarPage> {
                     onChange: (v) => provider.onChangeAllowSmokingInArea(v)),
               )
             ],
+          ),
+          AppSize.spaceHeight20,
+          Center(
+            child: ButtonWidget(
+              title: "シフト枠を作成する",
+              onPress: () => widget.onUpdate(selectedDate),
+              color: AppColor.primaryColor,
+              radius: 25,
+            ),
           ),
           AppSize.spaceHeight50,
         ],

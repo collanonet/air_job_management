@@ -233,8 +233,13 @@ class JobPosting {
   int? passedInterviewCount;
   List<ShiftFrame>? shiftFrameList;
 
+  bool? isAllowSmokingInArea;
+  String? selectSmokingInDoor;
+
   JobPosting(
-      {this.status,
+      {this.isAllowSmokingInArea,
+      this.selectSmokingInDoor,
+      this.status,
       this.limitGroupEmail,
       this.shiftFrameList,
       this.applyCount = 0,
@@ -607,10 +612,14 @@ class JobPosting {
       belongings: json["belongings"] ?? "",
       notes: json["notes"] ?? "",
       jobLocation: json["jobLocation"] ?? "",
+      isAllowSmokingInArea: json["smoking_allow"] ?? false,
+      selectSmokingInDoor: json["smoking_options"],
       startBreakTimeHour: json["start_break_time_hour"],
       endBreakTimeHour: json["end_break_time_hour"]);
 
   Map<String, dynamic> toJson() => {
+        "smoking_allow": isAllowSmokingInArea,
+        "smoking_options": selectSmokingInDoor,
         "limit_group_email": limitGroupEmail != null ? limitGroupEmail!.map((e) => e).toList() : [],
         "shiftFrameList": shiftFrameList != null ? shiftFrameList!.map((e) => e.toJson()).toList() : [],
         "jobLocation": jobLocation,

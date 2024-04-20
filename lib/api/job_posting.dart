@@ -126,4 +126,47 @@ class JobPostingApiService {
       return "$e";
     }
   }
+
+  Future<String?> updateShift(
+      {required String jobPostingId,
+      required String startDate,
+      required String endDate,
+      required String startWorkTime,
+      required String endWorkTime,
+      required String startBreakTime,
+      required String endBreakTime,
+      required String recruit,
+      required String dateline,
+      required String privacy,
+      required String hourlyWage,
+      required String transportExp,
+      required String telephone,
+      required String selectSmokingInDoor,
+      required bool isAllowSmokingInArea,
+      required List<String> selectedDate}) async {
+    print("updateShift $jobPostingId");
+    try {
+      await jobPostingRef.doc(jobPostingId).update({
+        "selectedDate": selectedDate.map((e) => e).toList(),
+        "applicationDateline": dateline,
+        "selectedPublicSetting": privacy,
+        "transportExpenseFee": transportExp,
+        "emergencyContact": telephone,
+        "hourlyWag": hourlyWage,
+        "start_break_time_hour": startBreakTime,
+        "end_break_time_hour": endBreakTime,
+        "start_date": startDate,
+        "end_date": endDate,
+        "smoking_allow": isAllowSmokingInArea,
+        "smoking_options": selectSmokingInDoor,
+        "start_time_hour": startWorkTime,
+        "end_time_hour": endWorkTime,
+        "number_of_recruit": recruit,
+      });
+      return ConstValue.success;
+    } catch (e) {
+      debugPrint("Error updateShift =>> ${e.toString()}");
+      return "$e";
+    }
+  }
 }

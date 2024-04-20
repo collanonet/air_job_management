@@ -284,6 +284,10 @@ class JobPostingForCompanyProvider with ChangeNotifier {
       motorCycleCarCommutingPossible = jobPosting?.motorCycleCarCommutingPossible ?? false;
       bicycleCommutingPossible = jobPosting?.bicycleCommutingPossible ?? false;
       selectedPublicSetting = jobPosting?.selectedPublicSetting ?? JapaneseText.openToPublic;
+      print("SSSSS ${jobPosting?.selectSmokingInDoor} x ${jobPosting?.isAllowSmokingInArea}");
+      selectSmokingInDoor = jobPosting?.selectSmokingInDoor ?? allowSmokingInDoor[0];
+      isAllowSmokingInArea = jobPosting?.isAllowSmokingInArea ?? false;
+      print("AAAAAA $selectSmokingInDoor x $isAllowSmokingInArea");
       if (occupationType.contains(jobPosting?.occupationType)) {
         selectedOccupationType = jobPosting?.occupationType;
       }

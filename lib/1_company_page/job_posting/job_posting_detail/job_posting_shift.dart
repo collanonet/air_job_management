@@ -804,6 +804,8 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
   }
 
   updateShiftFrameJob() async {
+    provider.jobPosting?.isAllowSmokingInArea = provider.isAllowSmokingInArea;
+    provider.jobPosting?.selectSmokingInDoor = provider.selectSmokingInDoor;
     provider.jobPosting?.motorCycleCarCommutingPossible = provider.motorCycleCarCommutingPossible;
     provider.jobPosting?.bicycleCommutingPossible = provider.bicycleCommutingPossible;
     provider.jobPosting?.selectedPublicSetting = provider.selectedPublicSetting;

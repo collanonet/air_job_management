@@ -5,8 +5,11 @@ import 'package:air_job_management/1_company_page/shift_calendar/widget/edit_shi
 import 'package:air_job_management/1_company_page/shift_calendar/widget/job_card_display.dart';
 import 'package:air_job_management/1_company_page/shift_calendar/widget/shift_detail_dialog.dart';
 import 'package:air_job_management/api/job_posting.dart';
+import 'package:air_job_management/const/const.dart';
+import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/providers/company/shift_calendar.dart';
 import 'package:air_job_management/utils/app_color.dart';
+import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:air_job_management/widgets/title.dart';
@@ -681,7 +684,44 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
   }
 
   buildEditJobPosting() {
-    return EditShiftForCalendarPage();
+    return EditShiftForCalendarPage(
+      title: selectedTab,
+      onUpdate: (List<String> v) => onUpdateShift(v),
+    );
+  }
+
+  onUpdateShift(List<String> v) async {
+    provider.onChangeLoading(true);
+    String? success = await JobPostingApiService().updateShift(
+        selectedDate: v,
+        jobPostingId: provider.jobPosting?.uid ?? "",
+        startDate: DateToAPIHelper.convertDateToString(p.startWorkDate),
+        endDate: DateToAPIHelper.convertDateToString(p.endWorkDate),
+        startWorkTime: dateTimeToHourAndMinute(p.startWorkingTime),
+        endWorkTime: dateTimeToHourAndMinute(p.endWorkingTime),
+        startBreakTime: dateTimeToHourAndMinute(p.startWorkingTime),
+        endBreakTime: dateTimeToHourAndMinute(p.endBreakTime),
+        recruit: p.numberOfRecruitPeople.text,
+        dateline: p.selectedDeadline.toString(),
+        privacy: p.selectedPublicSetting,
+        hourlyWage: p.hourlyWag.text,
+        transportExp: p.transportExp.text,
+        telephone: p.emergencyContact.text,
+        selectSmokingInDoor: p.selectSmokingInDoor,
+        isAllowSmokingInArea: p.isAllowSmokingInArea);
+    if (success == ConstValue.success) {
+      await getData();
+      shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
+      shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
+      await provider.findJobByOccupation();
+      shiftCalendarDataSourceByJobPosting =
+          ShiftCalendarDataSourceByJobPosting(provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId));
+      provider.onChangeLoading(false);
+      toastMessageSuccess(JapaneseText.successUpdate, context);
+    } else {
+      provider.onChangeLoading(false);
+      toastMessageError(JapaneseText.failUpdate, context);
+    }
   }
 
   buildTabForCreateShift() {
