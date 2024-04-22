@@ -43,6 +43,11 @@ class ShiftCalendarProvider with ChangeNotifier {
     this.companyId = companyId;
   }
 
+  initSelectDisplay() {
+    jobPosting = null;
+    selectDisplay = JapaneseText.perWorker;
+  }
+
   initData() async {
     // selectDisplay = JapaneseText.calendarDisplay;
     jobTitleList = [ItemSelectModel(title: JapaneseText.all, id: "")];

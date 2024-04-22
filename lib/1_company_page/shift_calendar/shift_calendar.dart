@@ -56,8 +56,9 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
 
   @override
   void initState() {
-    Provider.of<JobPostingForCompanyProvider>(context, listen: false).setAllController = [];
     var provider = Provider.of<ShiftCalendarProvider>(context, listen: false);
+    provider.initSelectDisplay();
+    Provider.of<JobPostingForCompanyProvider>(context, listen: false).setAllController = [];
     shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
     shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
     shiftCalendarDataSourceByJobPosting =

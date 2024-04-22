@@ -235,9 +235,11 @@ class JobPosting {
 
   bool? isAllowSmokingInArea;
   String? selectSmokingInDoor;
+  List<String>? selectedDate;
 
   JobPosting(
       {this.isAllowSmokingInArea,
+      this.selectedDate,
       this.selectSmokingInDoor,
       this.status,
       this.limitGroupEmail,
@@ -432,6 +434,7 @@ class JobPosting {
       identical(this, other) || other is JobPosting && runtimeType == other.runtimeType && uid == other.uid && title == other.title;
 
   factory JobPosting.fromJson(Map<String, dynamic> json) => JobPosting(
+      selectedDate: json["selectedDate"] != null ? List<String>.from(json["selectedDate"].map((e) => e)) : [],
       limitGroupEmail: json["limit_group_email"] != null ? List<String>.from(json["limit_group_email"].map((e) => e)) : [],
       shiftFrameList: json["shiftFrameList"] == null ? [] : List<ShiftFrame>.from(json["shiftFrameList"]!.map((x) => ShiftFrame.fromJson(x))),
       coverList: json["cover_list"] != null ? List<String>.from(json["cover_list"].map((e) => e)) : [],
@@ -618,6 +621,7 @@ class JobPosting {
       endBreakTimeHour: json["end_break_time_hour"]);
 
   Map<String, dynamic> toJson() => {
+        "selectedDate": selectedDate != null ? selectedDate!.map((e) => e).toList() : [],
         "smoking_allow": isAllowSmokingInArea,
         "smoking_options": selectSmokingInDoor,
         "limit_group_email": limitGroupEmail != null ? limitGroupEmail!.map((e) => e).toList() : [],

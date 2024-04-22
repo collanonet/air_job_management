@@ -36,6 +36,14 @@ class _EditShiftForCalendarPageState extends State<EditShiftForCalendarPage> {
   List<String> selectedDate = ["月", "火", "水", "木", "金", "土", "日"];
 
   @override
+  void initState() {
+    if (Provider.of<JobPostingForCompanyProvider>(context, listen: false).jobPosting!.selectedDate!.isNotEmpty) {
+      selectedDate = Provider.of<JobPostingForCompanyProvider>(context, listen: false).jobPosting?.selectedDate ?? [];
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     provider = Provider.of<JobPostingForCompanyProvider>(context);
     return Container(
