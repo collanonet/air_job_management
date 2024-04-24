@@ -1,6 +1,8 @@
+import 'package:air_job_management/api/company/request.dart';
 import 'package:air_job_management/api/company/worker_managment.dart';
 import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/helper/japan_date_time.dart';
+import 'package:air_job_management/models/company/request.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/utils/app_color.dart';
@@ -35,6 +37,7 @@ class ShiftDetailDialogWidget extends StatefulWidget {
 class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with AfterBuildMixin {
   bool isLoading = true;
   List<WorkerManagement> applicantList = [];
+  List<Request> requestList = [];
   WorkerManagement? workerManagement;
   JobPosting? jobPosting;
   DateTime now = DateTime.now();
@@ -172,7 +175,8 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                       width: 130,
                       child: ButtonWidget(
                         radius: 25,
-                        color: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.whiteColor,
+                        borderColor: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.primaryColor,
+                        color: AppColor.whiteColor,
                         title: "確定する",
                         onPress: () {},
                       ),
@@ -182,7 +186,8 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                       width: 150,
                       child: ButtonWidget(
                         radius: 25,
-                        color: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.whiteColor,
+                        borderColor: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.primaryColor,
+                        color: AppColor.whiteColor,
                         title: "不承認にする",
                         onPress: () {},
                       ),
@@ -218,21 +223,21 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                     ),
                     Expanded(
                       child: Center(
-                        child: Text("Good率", style: normalTextStyle.copyWith(fontSize: 13)),
+                        child: Text(selectedTab == menuTab[0] ? "Good率" : "申請カテゴリ", style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
-                      flex: 1,
+                      flex: selectedTab == menuTab[0] ? 1 : 2,
                     ),
                     Expanded(
                       child: Center(
-                        child: Text("稼働回数", style: normalTextStyle.copyWith(fontSize: 13)),
+                        child: Text(selectedTab == menuTab[0] ? "稼働回数" : "詳細", style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
-                      flex: 1,
+                      flex: selectedTab == menuTab[0] ? 1 : 2,
                     ),
                     Expanded(
                       child: Center(
                         child: Text("状態", style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
-                      flex: 4,
+                      flex: selectedTab == menuTab[0] ? 4 : 5,
                     ),
                   ],
                 ),
@@ -247,16 +252,206 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                         var dateList = job.shiftList!.map((e) => e.date).toList();
                         return job.myUser == null || !dateList.contains(widget.date) ? const SizedBox() : buildUserApplyList(job, index);
                       })
-                else
+                else if (requestList.isEmpty)
                   const Center(
                     child: EmptyDataWidget(),
                   )
+                else
+                  buildRequestList()
               ],
             ),
           )
         ],
       ),
     );
+  }
+
+  buildRequestList() {
+    return ListView.builder(
+        shrinkWrap: true,
+        itemCount: requestList.length,
+        itemBuilder: (context, index) {
+          var request = requestList[index];
+          return Container(
+            width: AppSize.getDeviceWidth(context),
+            padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
+            margin: const EdgeInsets.only(bottom: 8, left: 0, right: 0),
+            decoration: BoxDecoration(
+                color: Colors.transparent, borderRadius: BorderRadius.circular(16), border: Border.all(width: 1, color: AppColor.primaryColor)),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(25),
+                        child: CachedNetworkImage(
+                          width: 48,
+                          height: 48,
+                          imageUrl: request.myUser?.profileImage ?? "",
+                          fit: BoxFit.cover,
+                          errorWidget: (_, __, ___) => Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
+                            child: Center(
+                              child: Icon(
+                                Icons.person,
+                                color: AppColor.whiteColor,
+                                size: 35,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      AppSize.spaceWidth16,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    request.username ?? "",
+                                    style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                                    overflow: TextOverflow.fade,
+                                  ),
+                                ),
+                                AppSize.spaceWidth16,
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  flex: 3,
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 32),
+                    child: Center(
+                      child: Text(
+                        calculateAge(DateToAPIHelper.fromApiToLocal(request.myUser!.dob!.replaceAll("-", "/").toString())) +
+                            "   ${request.myUser?.gender}",
+                        style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                        overflow: TextOverflow.fade,
+                      ),
+                    ),
+                  ),
+                  flex: 2,
+                ),
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      "${request.myUser?.phone}",
+                      style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                      overflow: TextOverflow.fade,
+                    ),
+                  ),
+                  flex: 2,
+                ),
+                Expanded(
+                  child: Center(child: CommonUtils.displayRequestType(request)),
+                  flex: 2,
+                ),
+                Expanded(
+                  child: request.isHoliday == true
+                      ? Center(
+                          child: Text(
+                            request.date.toString(),
+                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                            overflow: TextOverflow.fade,
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              request.isUpdateShift == true ? "${request.shiftModel?.startWorkTime}" : "${request.shiftModel?.endWorkTime}",
+                              style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 3, right: 3, top: 3),
+                              child: Icon(
+                                Icons.arrow_forward_ios_sharp,
+                                color: AppColor.seaColor,
+                                size: 17,
+                              ),
+                            ),
+                            Text(
+                              request.isUpdateShift == true ? "${request.fromTime}" : "${request.toTime}",
+                              style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                            ),
+                          ],
+                        ),
+                  flex: 2,
+                ),
+                Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 140,
+                          child: ButtonWidget(
+                            radius: 25,
+                            borderColor: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.primaryColor,
+                            color: request.status == "approved" ? AppColor.seaColor : AppColor.whiteColor,
+                            title: "確定する",
+                            onPress: () => updateRequestStatus("確定する", request),
+                          ),
+                        ),
+                        AppSize.spaceWidth8,
+                        SizedBox(
+                          width: 145,
+                          child: ButtonWidget(
+                            radius: 25,
+                            borderColor: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.primaryColor,
+                            color: request.status == "rejected" ? AppColor.seaColor : AppColor.whiteColor,
+                            title: "不承認にする",
+                            onPress: () => updateRequestStatus("キャンセル", request),
+                          ),
+                        )
+                      ],
+                    ),
+                    flex: 5),
+              ],
+            ),
+          );
+        });
+  }
+
+  updateRequestStatus(String action, Request request) {
+    String status = action == "確定する" ? "approved" : "rejected";
+    CustomDialog.confirmDialog(
+        context: context,
+        onApprove: () async {
+          Navigator.pop(context);
+          setState(() {
+            isLoading = true;
+          });
+          bool isSuccess = await RequestApiService().updateRequestStatus(request, status);
+          if (isSuccess) {
+            await getData();
+            setState(() {
+              isLoading = false;
+            });
+            toastMessageSuccess(JapaneseText.successUpdate, context);
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+            toastMessageError(JapaneseText.failUpdate, context);
+          }
+        },
+        title: "本当に確定しますか？",
+        titleText: action);
   }
 
   buildUserApplyList(WorkerManagement job, int i) {
@@ -510,6 +705,18 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
     workerManagement = await WorkerManagementApiService().getAJob(widget.jobId);
     jobPosting = await JobPostingApiService().getAJobPosting(workerManagement!.jobId!);
     applicantList = await WorkerManagementApiService().getAllApplicantByJobId(workerManagement!.jobId!);
+    requestList = await RequestApiService().getRequestByDate(DateToAPIHelper.convertDateToString(widget.date), workerManagement!.jobId!);
+    // var data = await Future.wait([
+    //   WorkerManagementApiService().getAJob(widget.jobId),
+    //   JobPostingApiService().getAJobPosting(workerManagement!.jobId!),
+    //   WorkerManagementApiService().getAllApplicantByJobId(workerManagement!.jobId!),
+    //   RequestApiService().getRequestByDate(DateToAPIHelper.convertDateToString(widget.date), widget.jobId)
+    // ]);
+    // workerManagement = data[0] as WorkerManagement;
+    // jobPosting = data[1] as JobPosting;
+    // applicantList = data[2] as List<WorkerManagement>;
+    // requestList = data[3] as List<Request>;
+    print("Request Length ${requestList.length}");
     for (var job in applicantList) {
       var dateList = job.shiftList!.map((e) => e.date).toList();
       if (job.myUser != null && dateList.contains(widget.date)) {

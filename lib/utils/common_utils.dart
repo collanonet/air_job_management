@@ -1,3 +1,4 @@
+import 'package:air_job_management/models/company/request.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
@@ -76,6 +77,30 @@ class CommonUtils {
       return true;
     }
     return false;
+  }
+
+  static displayRequestType(Request request) {
+    String title = "";
+    if (request.isHoliday == true) {
+      title = "早退申請";
+    } else if (request.isLeaveEarly == true) {
+      title = "休日申請";
+    } else {
+      title = "就業開始時間変更";
+    }
+    return Container(
+      height: 30,
+      decoration: BoxDecoration(
+        color: request.isHoliday == true ? const Color(0xff98A6B5) : AppColor.seaColor,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Center(
+        child: Text(
+          title,
+          style: kNormalText.copyWith(color: Colors.white),
+        ),
+      ),
+    );
   }
 
   static Widget displayStatusForSeeker(String status) {

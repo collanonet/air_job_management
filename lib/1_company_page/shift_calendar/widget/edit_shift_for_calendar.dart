@@ -53,6 +53,10 @@ class _EditShiftForCalendarPageState extends State<EditShiftForCalendarPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            provider.jobPosting?.title ?? "",
+            style: kTitleText.copyWith(color: AppColor.primaryColor),
+          ),
           AppSize.spaceHeight16,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

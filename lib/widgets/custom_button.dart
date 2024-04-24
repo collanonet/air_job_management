@@ -9,8 +9,15 @@ class ButtonWidget extends StatelessWidget {
   final Function onPress;
   final double radius;
   final double height;
+  final Color? borderColor;
   const ButtonWidget(
-      {super.key, this.height = 40, required this.title, this.color = const Color(0xfff38301), this.radius = 4, required this.onPress});
+      {super.key,
+      this.borderColor,
+      this.height = 40,
+      required this.title,
+      this.color = const Color(0xfff38301),
+      this.radius = 4,
+      required this.onPress});
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +25,16 @@ class ButtonWidget extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius),
-          color: color == AppColor.seaColor ? Colors.white : color,
+          color: color,
           border: Border.all(
               width: radius == 4 ? 1 : 3,
-              color: color == Colors.white
-                  ? radius == 25
-                      ? AppColor.primaryColor
-                      : AppColor.secondaryColor
-                  : color)),
+              color: borderColor != null
+                  ? borderColor!
+                  : color == Colors.white
+                      ? radius == 25
+                          ? AppColor.primaryColor
+                          : AppColor.secondaryColor
+                      : color)),
       child: CupertinoButton(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 0),
         child: Text(
@@ -33,11 +42,13 @@ class ButtonWidget extends StatelessWidget {
           style: normalTextStyle.copyWith(
               fontFamily: "Bold",
               fontSize: 13,
-              color: color == Colors.white
-                  ? AppColor.primaryColor
-                  : color == AppColor.seaColor
-                      ? color
-                      : Colors.white),
+              color: color == AppColor.seaColor
+                  ? Colors.white
+                  : borderColor != null
+                      ? borderColor!
+                      : color == Colors.white
+                          ? AppColor.primaryColor
+                          : Colors.white),
         ),
         onPressed: () => onPress(),
       ),
