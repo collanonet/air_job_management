@@ -9,6 +9,7 @@ import 'package:air_job_management/const/const.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/providers/company/shift_calendar.dart';
 import 'package:air_job_management/utils/app_color.dart';
+import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
@@ -469,6 +470,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
 
   List<String> menuTab = ["日付を選んでシフト枠作成", "曜日と時間帯を選んでシフト枠作成"];
   String selectedTab = "日付を選んでシフト枠作成";
+  DateTime? selectedDate;
 
   buildCalendarWidget() {
     return Container(
@@ -605,12 +607,23 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                                           itemCount: date.shiftModelList!.length,
                                           itemBuilder: (context, ind) {
                                             var shift = date.shiftModelList![ind];
+                                            JobPosting? jobPosting = provider.jobPosting;
+                                            List<DateTime> dateList = jobPosting != null
+                                                ? CommonUtils.getDateRange(DateToAPIHelper.fromApiToLocal(jobPosting.startDate!),
+                                                    DateToAPIHelper.fromApiToLocal(jobPosting.endDate!))
+                                                : [];
+                                            bool isHaveBorder = (provider.jobPosting?.uid == shift.myJob?.uid &&
+                                                    CommonUtils.isArrayOfDateContainDate(dateList, shift.date!)) &&
+                                                selectedDate == shift.date;
+
                                             return Container(
                                               margin: const EdgeInsets.only(left: 5, right: 5, bottom: 4),
                                               width: 400,
-                                              color: shift.applicantCount.toString() == shift.recruitmentCount.toString()
-                                                  ? const Color(0xff7DC338)
-                                                  : AppColor.primaryColor,
+                                              decoration: BoxDecoration(
+                                                  color: shift.applicantCount.toString() == shift.recruitmentCount.toString()
+                                                      ? const Color(0xff7DC338)
+                                                      : AppColor.primaryColor,
+                                                  border: isHaveBorder ? Border.all(width: 2, color: Colors.green) : null),
                                               height: 20,
                                               child: Material(
                                                 color: Colors.transparent,
@@ -619,6 +632,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                                                     var job = await JobPostingApiService().getAJobPosting(shift.myJob?.uid ?? "");
                                                     p.onInitForJobPostingDetail(shift.myJob?.uid ?? "", jobP: job);
                                                     provider.jobPosting = job;
+                                                    selectedDate = shift.date;
                                                     setState(() {});
                                                   },
                                                   onDoubleTap: () => showJobApplyDialog(shift.date!, shift.jobId!),
@@ -1004,7 +1018,12 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
         builder: (_) => AlertDialog(
               content: MatchingWorkerPage(
                 jobPosting: provider.jobPosting!,
-                shiftFrame: provider.jobPosting!.shiftFrameList!.first,
+                shiftFrame: ShiftFrame(
+                    startWorkTime: provider.jobPosting!.startTimeHour,
+                    endWorkTime: provider.jobPosting!.endTimeHour,
+                    hourlyWag: provider.jobPosting!.hourlyWag,
+                    startBreakTime: provider.jobPosting!.startBreakTimeHour,
+                    endBreakTime: provider.jobPosting!.endBreakTimeHour),
                 onSuccess: () {
                   //Refresh data
                 },
