@@ -204,7 +204,16 @@ class AuthProvider with ChangeNotifier {
     try {
       UserCredential authResult = await firebaseAuth.createUserWithEmailAndPassword(email: email.trim(), password: password);
       User? user = authResult.user;
-      Company company = c ?? Company(companyUserId: user!.uid, email: email.trim(), companyName: '', companyProfile: ConstValue.defaultBgImage);
+      Company company = c ??
+          Company(companyUserId: user!.uid, email: email.trim(), companyName: '', companyProfile: ConstValue.defaultBgImage, branchList: [
+            Branch(
+                id: DateTime.now().millisecondsSinceEpoch.toString(),
+                createdAt: DateTime.now(),
+                name: "主枝",
+                postalCode: "",
+                location: "",
+                contactNumber: "")
+          ]);
       if (c != null) {
         c.companyUserId = user!.uid;
       }

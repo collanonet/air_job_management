@@ -48,7 +48,7 @@ class _MatchingWorkerPageState extends State<MatchingWorkerPage> with AfterBuild
 
   getData() async {
     workerManagementProvider.setCompanyId = authProvider.myCompany?.uid ?? "";
-    await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "", isForMatchPage: true);
+    await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "", isForMatchPage: true);
     workerManagementProvider.onChangeLoading(false);
   }
 

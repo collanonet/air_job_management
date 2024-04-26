@@ -176,9 +176,15 @@ class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
         });
         String companyId = authProvider.myCompany?.uid ?? "";
         List<Branch> branchList = authProvider.myCompany?.branchList ?? [];
-        var branch =
-            Branch(contactNumber: contactNumber.text, location: location.text, postalCode: postalCode.text, createdAt: date, name: name.text);
+        var branch = Branch(
+            contactNumber: contactNumber.text,
+            location: location.text,
+            postalCode: postalCode.text,
+            createdAt: date,
+            name: name.text,
+            id: DateTime.now().millisecondsSinceEpoch.toString());
         if (widget.branch != null) {
+          branch.id = widget.branch?.id ?? widget.branch!.createdAt!.millisecondsSinceEpoch.toString();
           branchList[widget.index!] = branch;
         } else {
           branchList.add(branch);

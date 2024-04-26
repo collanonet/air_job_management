@@ -1,3 +1,4 @@
+import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/shift_calendar.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/style.dart';
@@ -16,6 +17,7 @@ class ShiftCalendarFilterDataWidgetForCompany extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<ShiftCalendarProvider>(context);
+    var auth = Provider.of<AuthProvider>(context);
     return Container(
       width: AppSize.getDeviceWidth(context),
       decoration: boxDecoration,
@@ -46,7 +48,7 @@ class ShiftCalendarFilterDataWidgetForCompany extends StatelessWidget {
                       width: AppSize.getDeviceWidth(context) * 0.3,
                       selectItem: provider.selectedJobTitle,
                       list: provider.jobTitleList,
-                      onChange: (v) => provider.onChangeTitle(v))
+                      onChange: (v) => provider.onChangeTitle(v, auth.branch?.id ?? ""))
                 ],
               ),
               AppSize.spaceWidth32,
@@ -64,7 +66,7 @@ class ShiftCalendarFilterDataWidgetForCompany extends StatelessWidget {
                           firstDate: DateTime(2000, 1, 1),
                           lastDate: DateTime(2100));
                       if (date != null) {
-                        provider.onChangeStartDate(date);
+                        provider.onChangeStartDate(date, auth.branch?.id ?? "");
                       }
                     },
                     val: provider.startWorkDate != null ? toJapanDateWithoutWeekDay(provider.startWorkDate!) : "",
@@ -87,7 +89,7 @@ class ShiftCalendarFilterDataWidgetForCompany extends StatelessWidget {
                           firstDate: DateTime(2000, 1, 1),
                           lastDate: DateTime(2100));
                       if (date != null) {
-                        provider.onChangeEndDate(date);
+                        provider.onChangeEndDate(date, auth.branch?.id ?? "");
                       }
                     },
                     val: provider.endWorkDate != null ? toJapanDateWithoutWeekDay(provider.endWorkDate!) : "",
@@ -96,7 +98,9 @@ class ShiftCalendarFilterDataWidgetForCompany extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              Padding(padding: EdgeInsets.only(top: 25), child: IconButton(onPressed: () => provider.refreshData(), icon: const Icon(Icons.refresh)))
+              Padding(
+                  padding: EdgeInsets.only(top: 25),
+                  child: IconButton(onPressed: () => provider.refreshData(auth.branch?.id ?? ""), icon: const Icon(Icons.refresh)))
             ],
           ),
         ],

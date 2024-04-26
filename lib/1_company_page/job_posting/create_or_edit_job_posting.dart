@@ -142,6 +142,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
           if (urlPosterList.isNotEmpty) {
             provider.jobPosting?.image = urlPosterList[0];
           }
+          provider.jobPosting?.branchId = authProvider.branch?.id ?? "";
           provider.jobPosting?.isAllowSmokingInArea = provider.isAllowSmokingInArea;
           provider.jobPosting?.selectSmokingInDoor = provider.selectSmokingInDoor;
           provider.jobPosting?.limitGroupEmail = initialTags;
@@ -194,7 +195,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
           if (success == ConstValue.success) {
             MessageWidget.show(
                 provider.jobPosting?.uid != null && widget.isCopyPaste == null ? JapaneseText.successUpdate : JapaneseText.successCreate);
-            await provider.getAllJobPost(authProvider.myCompany?.uid ?? "");
+            await provider.getAllJobPost(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
             if (widget.isCopyPaste == true) {
               Navigator.pop(context);
             } else {

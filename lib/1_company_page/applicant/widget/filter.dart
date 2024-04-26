@@ -1,3 +1,4 @@
+import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/style.dart';
@@ -18,6 +19,7 @@ class ApplicantFilterDataWidgetForCompany extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<WorkerManagementProvider>(context);
+    var auth = Provider.of<AuthProvider>(context);
     return Container(
       width: AppSize.getDeviceWidth(context),
       decoration: boxDecoration,
@@ -47,7 +49,7 @@ class ApplicantFilterDataWidgetForCompany extends StatelessWidget {
                       width: 180,
                       selectItem: provider.selectedJobStatus,
                       list: provider.jobStatus,
-                      onChange: (v) => provider.onChangeJobStatus(v))
+                      onChange: (v) => provider.onChangeJobStatus(v, auth.branch?.id ?? ""))
                 ],
               ),
               AppSize.spaceWidth32,
@@ -64,7 +66,7 @@ class ApplicantFilterDataWidgetForCompany extends StatelessWidget {
                       width: AppSize.getDeviceWidth(context) * 0.3,
                       selectItem: provider.selectedJobTitle,
                       list: provider.jobTitleList,
-                      onChange: (v) => provider.onChangeTitle(v))
+                      onChange: (v) => provider.onChangeTitle(v, auth.branch?.id ?? ""))
                 ],
               ),
               AppSize.spaceWidth32,
@@ -82,7 +84,7 @@ class ApplicantFilterDataWidgetForCompany extends StatelessWidget {
                           firstDate: DateTime(2000, 1, 1),
                           lastDate: DateTime(2100));
                       if (date != null) {
-                        provider.onChangeStartDate(date);
+                        provider.onChangeStartDate(date, auth.branch?.id ?? "");
                       }
                     },
                     val: provider.startWorkDate != null ? toJapanDateWithoutWeekDay(provider.startWorkDate!) : "",
@@ -105,7 +107,7 @@ class ApplicantFilterDataWidgetForCompany extends StatelessWidget {
                           firstDate: DateTime(2000, 1, 1),
                           lastDate: DateTime(2100));
                       if (date != null) {
-                        provider.onChangeEndDate(date);
+                        provider.onChangeEndDate(date, auth.branch?.id ?? "");
                       }
                     },
                     val: provider.endWorkDate != null ? toJapanDateWithoutWeekDay(provider.endWorkDate!) : "",

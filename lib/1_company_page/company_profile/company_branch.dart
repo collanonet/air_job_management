@@ -1,4 +1,5 @@
 import 'package:air_job_management/1_company_page/company_profile/widget/create_or_edit_branch.dart';
+import 'package:air_job_management/api/company/worker_managment.dart';
 import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/app_size.dart';
@@ -38,6 +39,7 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const TitleWidget(title: "店舗情報"),
+                // IconButton(onPressed: () => WorkerManagementApiService().updateAllSearchJob(), icon: const Icon(Icons.update)),
                 SizedBox(
                   width: 230,
                   child: ButtonWidget(radius: 25, title: "ブランチの作成", color: AppColor.primaryColor, onPress: () => showCreateBranchDialog()),

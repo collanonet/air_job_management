@@ -12,6 +12,7 @@ String errorMessage = "";
 class SearchJobApi {
   var jobcollection = FirebaseFirestore.instance.collection('job');
   var search = FirebaseFirestore.instance.collection('search_job');
+
   Future<SearchJob?> getASearchJob(String id) async {
     try {
       var doc = await search.doc(id).get();
@@ -71,16 +72,19 @@ class SearchJobApi {
     }
   }
 
-  Future<bool> createJobRequestForOutsideUser(String? docId, SearchJob job, MyUser myUser, List<ShiftModel> shiftList, List<String> urlFile) async {
+  Future<bool> createJobRequestForOutsideUser(
+      String? branchId, String? docId, SearchJob job, MyUser myUser, List<ShiftModel> shiftList, List<String> urlFile) async {
     try {
       if (docId == null) {
         var doc = await jobcollection
             .where("job_id", isEqualTo: job.uid)
             .where("username", isEqualTo: "${myUser.nameKanJi} ${myUser.nameFu}")
             .where("status", isEqualTo: "pending")
+            .where("branch_id", isEqualTo: branchId)
             .get();
         if (doc.size == 0) {
           await jobcollection.add({
+            "branch_id": branchId,
             "job_id": "",
             "company_id": job.companyId,
             "job_title": "${myUser.affiliation}/${myUser.qualificationFields}",
@@ -109,6 +113,7 @@ class SearchJobApi {
         }
       } else {
         await jobcollection.doc(docId).update({
+          "branch_id": branchId,
           "job_id": "",
           "company_id": job.companyId,
           "job_title": "${myUser.affiliation}/${myUser.qualificationFields}",

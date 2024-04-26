@@ -37,7 +37,7 @@ class JobPostingFilterFilterDataWidgetForCompany extends StatelessWidget {
               hint: "タイトルを入れます",
               isRequired: false,
               onChange: (v) {
-                provider.filterData(auth.myCompany?.uid ?? "");
+                provider.filterData(auth.myCompany?.uid ?? "", auth.branch?.id ?? "");
               },
             ),
           )

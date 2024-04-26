@@ -1,8 +1,10 @@
 import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/providers/auth.dart';
+import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
@@ -90,6 +92,7 @@ class _ChooseBranchWidgetState extends State<ChooseBranchWidget> with AfterBuild
                   onPress: () {
                     authProvider.onChangeBranch(selectedBranch);
                     Navigator.pop(context);
+                    context.go(MyRoute.companyDashboard);
                   }),
             ),
           ]),

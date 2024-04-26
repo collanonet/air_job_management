@@ -182,9 +182,9 @@ class JobPostingForCompanyProvider with ChangeNotifier {
   DateTime startBreakTime = DateTime(now.year, now.month, now.day, 12, 0, 0);
   DateTime endBreakTime = DateTime(now.year, now.month, now.day, 13, 0, 0);
 
-  filterData(String id) async {
+  filterData(String id, String branchId) async {
     String text = searchController.text;
-    await getAllJobPost(id);
+    await getAllJobPost(id, branchId);
     if (text.isNotEmpty) {
       List<JobPosting> jobPostingFilterList = [];
       for (var job in jobPostingList) {
@@ -199,9 +199,9 @@ class JobPostingForCompanyProvider with ChangeNotifier {
     }
   }
 
-  getAllJobPost(String id) async {
-    jobPostingList = await JobPostingApiService().getAllJobPostByCompany(id);
-    jobApplyList = await WorkerManagementApiService().getAllJobApply(id);
+  getAllJobPost(String id, String branchId) async {
+    jobPostingList = await JobPostingApiService().getAllJobPostByCompany(id, branchId);
+    jobApplyList = await WorkerManagementApiService().getAllJobApply(id, branchId);
     for (var job in jobPostingList) {
       for (var jobApply in jobApplyList) {
         if (jobApply.jobId == job.uid) {
@@ -260,7 +260,6 @@ class JobPostingForCompanyProvider with ChangeNotifier {
     jobPosting = jobP ?? await JobPostingApiService().getAJobPosting(id.toString());
     if (jobPosting != null) {
       initialTags = jobPosting?.limitGroupEmail ?? [];
-      print("Tag is $initialTags");
       jobPosterProfile.addAll(jobPosting!.coverList!);
       title.text = jobPosting?.title ?? "";
       jobDescription.text = jobPosting?.description ?? "";
@@ -284,10 +283,8 @@ class JobPostingForCompanyProvider with ChangeNotifier {
       motorCycleCarCommutingPossible = jobPosting?.motorCycleCarCommutingPossible ?? false;
       bicycleCommutingPossible = jobPosting?.bicycleCommutingPossible ?? false;
       selectedPublicSetting = jobPosting?.selectedPublicSetting ?? JapaneseText.openToPublic;
-      print("SSSSS ${jobPosting?.selectSmokingInDoor} x ${jobPosting?.isAllowSmokingInArea}");
       selectSmokingInDoor = jobPosting?.selectSmokingInDoor ?? allowSmokingInDoor[0];
       isAllowSmokingInArea = jobPosting?.isAllowSmokingInArea ?? false;
-      print("AAAAAA $selectSmokingInDoor x $isAllowSmokingInArea");
       if (occupationType.contains(jobPosting?.occupationType)) {
         selectedOccupationType = jobPosting?.occupationType;
       }

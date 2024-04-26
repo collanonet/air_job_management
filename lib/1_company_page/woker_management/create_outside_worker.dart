@@ -703,6 +703,7 @@ class _CreateOutsideStaffPageState extends State<CreateOutsideStaffPage> with Af
         company: authProvider.myCompany?.companyName ?? "",
       );
       bool isSuccess = await SearchJobApi().createJobRequestForOutsideUser(
+          authProvider.branch?.id ?? "",
           widget.uid,
           info,
           user,
@@ -715,7 +716,7 @@ class _CreateOutsideStaffPageState extends State<CreateOutsideStaffPage> with Af
       });
       if (isSuccess) {
         toastMessageSuccess(widget.uid != null ? JapaneseText.successUpdate : JapaneseText.successCreate, context);
-        await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "");
+        await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
         context.go(MyRoute.companyWorker);
       } else {
         toastMessageError(errorMessage, context);

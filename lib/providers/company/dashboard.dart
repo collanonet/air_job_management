@@ -12,21 +12,21 @@ class DashboardForCompanyProvider with ChangeNotifier {
   List<NotificationModel> notificationList = [];
   String workerCount = "";
 
-  onInit(String companyId) async {
+  onInit(String companyId, String branchId) async {
     jobPostingList = [];
     applicantList = [];
     notificationList = [];
-    await getData(companyId);
+    await getData(companyId, branchId);
   }
 
   set setLoading(bool isLoading) {
     this.isLoading = isLoading;
   }
 
-  getData(String companyId) async {
+  getData(String companyId, String branchId) async {
     var data = await Future.wait([
-      JobPostingApiService().getAllJobPostByCompany(companyId),
-      WorkerManagementApiService().getAllJobApply(companyId),
+      JobPostingApiService().getAllJobPostByCompany(companyId, branchId),
+      WorkerManagementApiService().getAllJobApply(companyId, branchId),
       JobPostingApiService().getAllNotification(companyId),
     ]);
     jobPostingList = data[0] as List<JobPosting>;

@@ -125,15 +125,17 @@ class Company {
 }
 
 class Branch {
+  String? id;
   String? name;
   String? postalCode;
   String? location;
   String? contactNumber;
   DateTime? createdAt;
 
-  Branch({this.name, this.postalCode, this.location, this.createdAt, this.contactNumber});
+  Branch({this.name, this.postalCode, this.location, this.createdAt, this.contactNumber, this.id});
 
   factory Branch.fromJson(Map<String, dynamic> json) => Branch(
+      id: json["id"],
       name: json["name"],
       postalCode: json["postalCode"],
       location: json["location"],
@@ -141,6 +143,7 @@ class Branch {
       createdAt: json["createdAt"].toDate());
 
   Map<String, dynamic> toJson() => {
+        "id": id,
         "name": name,
         "postalCode": postalCode,
         "location": location,

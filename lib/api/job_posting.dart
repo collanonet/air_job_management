@@ -13,6 +13,29 @@ class JobPostingApiService {
   final CollectionReference jobPostingRef = FirebaseFirestore.instance.collection('search_job');
   final CollectionReference notificationRef = FirebaseFirestore.instance.collection('notification');
 
+  Future<bool> updateAllJobPosting() async {
+    List<String> idList = [
+      "2vvw0DVxrTwgFlHlrcBA",
+      "56JV5kYAya41IwObyTBx",
+      "58ly9QJH6iCRXjBNnbYv",
+      "5dRZ7RsqKlFIDgVkmMTN",
+      "7cyTqlOX2xGq8k7p5nDv",
+      "9j9JQDKPIYXlQfJe87qd",
+      "DxS92898ljbEYQbNAIRX",
+      "MUgAiMB7IKAEIKE6mYsg",
+      "QLdQt8mgGfX6cpJb9FeC",
+      "TCsdZxtdo97FQocxmwoZ",
+      "crXD1FOy1h0xtr66s00y",
+      "isJ0OeU7dBmCPlWXUM80",
+      "pc0yka60FF9UV3Br4RPL",
+      "qtlty2iTz2ATqwVWfDm4",
+      "yboXYWJaiEXzUkBsohxj",
+      "yyknsz0kHr083k1xUAlO",
+    ];
+    await Future.wait(idList.map((e) => jobPostingRef.doc(e).update({"branch_id": "1714112463487"})));
+    return true;
+  }
+
   Future<List<NotificationModel>> getAllNotification(String companyId) async {
     try {
       var doc = await notificationRef.get();
@@ -33,9 +56,9 @@ class JobPostingApiService {
     }
   }
 
-  Future<List<JobPosting>> getAllJobPostByCompany(String companyId) async {
+  Future<List<JobPosting>> getAllJobPostByCompany(String companyId, String branchId) async {
     try {
-      var doc = await jobPostingRef.where("company_id", isEqualTo: companyId).get();
+      var doc = await jobPostingRef.where("company_id", isEqualTo: companyId).where("branch_id", isEqualTo: branchId).get();
       if (doc.docs.isNotEmpty) {
         List<JobPosting> list = [];
         for (int i = 0; i < doc.docs.length; i++) {

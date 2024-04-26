@@ -50,14 +50,14 @@ class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterB
         Company? company = await UserApiServices().getProfileCompany(user.uid);
         authProvider.onChangeCompany(company);
         workerManagementProvider.setCompanyId = authProvider.myCompany?.uid ?? "";
-        await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "");
+        await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
         workerManagementProvider.onChangeLoading(false);
       } else {
         context.go(MyRoute.companyLogin);
       }
     } else {
       workerManagementProvider.setCompanyId = authProvider.myCompany?.uid ?? "";
-      await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "");
+      await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
       workerManagementProvider.onChangeLoading(false);
     }
   }
@@ -142,7 +142,10 @@ class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterB
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(FontAwesome.arrow_circle_down, color: AppColor.primaryColor,),
+                                  Icon(
+                                    FontAwesome.arrow_circle_down,
+                                    color: AppColor.primaryColor,
+                                  ),
                                   AppSize.spaceWidth5,
                                   Text("Good率", style: normalTextStyle.copyWith(fontSize: 13)),
                                 ],
@@ -153,7 +156,10 @@ class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterB
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(FontAwesome.arrow_circle_down, color: AppColor.primaryColor,),
+                                  Icon(
+                                    FontAwesome.arrow_circle_down,
+                                    color: AppColor.primaryColor,
+                                  ),
                                   AppSize.spaceWidth5,
                                   Text("最終稼働日", style: normalTextStyle.copyWith(fontSize: 13)),
                                 ],
@@ -164,7 +170,10 @@ class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterB
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(FontAwesome.arrow_circle_down, color: AppColor.primaryColor,),
+                                  Icon(
+                                    FontAwesome.arrow_circle_down,
+                                    color: AppColor.primaryColor,
+                                  ),
                                   AppSize.spaceWidth5,
                                   Text("稼働回数", style: normalTextStyle.copyWith(fontSize: 13)),
                                 ],

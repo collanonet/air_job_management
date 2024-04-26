@@ -51,13 +51,13 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> wit
       if (user != null) {
         Company? company = await UserApiServices().getProfileCompany(user.uid);
         authProvider.onChangeCompany(company);
-        await jobPostingProvider.getAllJobPost(authProvider.myCompany?.uid ?? "");
+        await jobPostingProvider.getAllJobPost(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
         jobPostingProvider.onChangeLoading(false);
       } else {
         context.go(MyRoute.companyLogin);
       }
     } else {
-      await jobPostingProvider.getAllJobPost(authProvider.myCompany?.uid ?? "");
+      await jobPostingProvider.getAllJobPost(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
       jobPostingProvider.onChangeLoading(false);
     }
   }

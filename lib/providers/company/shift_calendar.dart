@@ -56,9 +56,9 @@ class ShiftCalendarProvider with ChangeNotifier {
     endWorkDate = null;
   }
 
-  refreshData() {
+  refreshData(String branchId) {
     initData();
-    filterApplicantList();
+    filterApplicantList(branchId);
   }
 
   initializeRangeDate() async {
@@ -92,26 +92,26 @@ class ShiftCalendarProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  onChangeTitle(ItemSelectModel? val) {
+  onChangeTitle(ItemSelectModel? val, String branchId) {
     selectedJobTitle = val;
-    filterApplicantList();
+    filterApplicantList(branchId);
     notifyListeners();
   }
 
-  onChangeStartDate(DateTime? startDate) {
+  onChangeStartDate(DateTime? startDate, String branchId) {
     startWorkDate = startDate;
-    filterApplicantList();
+    filterApplicantList(branchId);
     notifyListeners();
   }
 
-  onChangeEndDate(DateTime? endDate) {
+  onChangeEndDate(DateTime? endDate, String branchId) {
     endWorkDate = endDate;
-    filterApplicantList();
+    filterApplicantList(branchId);
     notifyListeners();
   }
 
-  filterApplicantList() async {
-    await getApplicantList(companyId);
+  filterApplicantList(String branchId) async {
+    await getApplicantList(companyId, branchId);
 
     ///Filter application by job title
     List<WorkerManagement> afterFilterSelectJobTitle = [];
@@ -148,8 +148,8 @@ class ShiftCalendarProvider with ChangeNotifier {
 
   List<WorkerManagement> jobApplyList = [];
 
-  getApplicantList(String companyId) async {
-    jobApplyList = await WorkerManagementApiService().getAllJobApply(companyId);
+  getApplicantList(String companyId, String branchId) async {
+    jobApplyList = await WorkerManagementApiService().getAllJobApply(companyId, branchId);
     await initializeJobPosting();
     jobTitleList = [ItemSelectModel(title: JapaneseText.all, id: "")];
     for (var job in jobApplyList) {
@@ -253,11 +253,11 @@ class ShiftCalendarProvider with ChangeNotifier {
     // }
   }
 
-  findJobByOccupation() async {
+  findJobByOccupation(String branchId) async {
     jobPostingDataTableList = [];
     String id = FirebaseAuth.instance.currentUser?.uid ?? "";
     Company? company = await UserApiServices().getProfileCompany(id);
-    var jobPostingList = await JobPostingApiService().getAllJobPostByCompany(company?.uid ?? "");
+    var jobPostingList = await JobPostingApiService().getAllJobPostByCompany(company?.uid ?? "", branchId);
     for (var j in jobPostingList) {
       var startDate = DateToAPIHelper.fromApiToLocal(j.startDate ?? "");
       var endDate = DateToAPIHelper.fromApiToLocal(j.endDate ?? "");

@@ -1,3 +1,4 @@
+import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/style.dart';
@@ -13,6 +14,7 @@ class WorkerManagementFilterDataWidgetForCompany extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<WorkerManagementProvider>(context);
+    var auth = Provider.of<AuthProvider>(context);
     return Container(
       width: AppSize.getDeviceWidth(context),
       decoration: boxDecoration,
@@ -65,7 +67,7 @@ class WorkerManagementFilterDataWidgetForCompany extends StatelessWidget {
                           isRequired: false,
                           onChange: (val) async {
                             await Future.delayed(const Duration(milliseconds: 500));
-                            provider.filterWorkerManagement(val);
+                            provider.filterWorkerManagement(val, auth.branch?.id ?? "");
                           },
                         ),
                       )

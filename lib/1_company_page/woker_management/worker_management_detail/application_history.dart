@@ -301,7 +301,8 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
 
   getData() async {
     shiftList = [];
-    jobList = await WorkerManagementApiService().getAllJobApplyForAUSer(authProvider.myCompany?.uid ?? "", widget.myUser?.uid ?? "");
+    jobList = await WorkerManagementApiService()
+        .getAllJobApplyForAUSer(authProvider.myCompany?.uid ?? "", widget.myUser?.uid ?? "", authProvider.branch?.id ?? "");
     var data = await Future.wait([for (var job in jobList) SearchJobApi().getASearchJob(job.jobId.toString())]);
     for (var d in jobList) {
       SearchJob? job = data[jobList.indexOf(d)];

@@ -12,9 +12,98 @@ class WorkerManagementApiService {
   final db = FirebaseFirestore.instance;
   final CollectionReference jobRef = FirebaseFirestore.instance.collection('job');
 
-  Future<List<WorkerManagement>> getAllJobApplyForAUSer(String companyId, String userId) async {
+  Future<bool> updateAllSearchJob() async {
+    List<String> idList = [
+      "0FJSfIqGrcKqnZbKxAw6",
+      "0SZJJBdO6CNgnPSOUuu0",
+      "1l0S2oqx9Q3RPqGpXpH8",
+      "1ziqNLVvFrOLmtMQ8Rwh",
+      "23kgD5Ex9ouRw0xrjrRC",
+      "2rHY4xVPnsDqt4z4OeKM",
+      "34i8VLK3kHa6pbMzbV5Y",
+      "3NLbwWnhoObucwGD08fM",
+      "462OhCf8kN0KYBqGCaFJ",
+      "4RjhbfVgW5CkruQ845kn",
+      "4SFmf2d0PoAt4GzbNgyD",
+      "7MD9WSZ5wpuVayjsiLXY",
+      "7MiX3eTS8fGcg6BJMO3n",
+      "7V3KZ7k3UKa8PZAQA5Tc",
+      "7b32JkLrjWMnBTaqSF6k",
+      "8M8UL5iFobMjEOhnTdXI",
+      "8YzcHjgN8c3axUXWndPw",
+      "966R8Ixq7i0lByxGUYS0",
+      "ABzPT11GU7kaQ40cqrdk",
+      "BEJpTJKVtXtNfaK5Eh1p",
+      "BQQjEjvN0FHdUzmZ2q6V",
+      "ChsrPdeS4PpyJ7qK2x5Y",
+      "DQQiYUsH4sD53yigSfnD",
+      "EgGDTon7BsTKQF69BPqM",
+      "F74UfOvKV9kxyVx0Fk6I",
+      "GGwOoCw74yQHT9au87DM",
+      "H3JKbAtXyboXv5NFZH2a",
+      "HrXbjag4CAVBv1586mw2",
+      "IYDXCxafuwMRLuy06BI9",
+      "JyERnw9V1bQVJXlrUOL7",
+      "K8ttw5XAjYBtRExqtZvQ",
+      "NwDhnR1cVLzPEtAU3i4M",
+      "OhXl0bzTm9lRFwIgHTnM",
+      "Oj4KzuZ4f9RDB3p6KHY5",
+      "PC0KtRLjG5PLb77Ky2PV",
+      "PSgYXm75qzuas2EqmO9h",
+      "PpXnF4Bz72i9UEgDAl5d",
+      "QcYbQsSQ7siGsX9eFIEl",
+      "QtcqF7Z3BGhWvWcMjJ53",
+      "SHc3cYWdwjcCWh4z3E0W",
+      "SNy0MtoqVT9VvuG2aLG5",
+      "SYtd5ii0xs8QD5m3pUOJ",
+      "UCggyrYz3LtskEsDUJQ6",
+      "UYKDlACCBQDnJCiCyh3o",
+      "UZf3ejN0dNO5SrObLZxA",
+      "V2XX8ZwbTZI7sMX77xWM",
+      "WXAqNKEgVAANdk2SAbxk",
+      "WYeLJuNRkuW9mOIDd0RZ",
+      "Wzkhqdo1SPd0RRhdQVrM",
+      "XcaYhYugg3qDoAQkO7MD",
+      "YgDW7XxBMyDkOV3vq1oH",
+      "Yr8esqvV0illWH5rhOOX",
+      "ZJltbrjdXQhYkbYDUqyC",
+      "ZgAnf0wEBJYCsw6QJs8p",
+      "a5R6ZpRI1nUWAcsaUpop",
+      "aZBo0jpwkBMLjQKhcnox",
+      "chLn2jkCQayCcF7ZV41F",
+      "cvR0LCd0EHs3FqcjX02T",
+      "cySAapzGoyAB89XYoevY",
+      "eGyaYHjahOTC4FmlR32U",
+      "fBdhKzfjVpcvHGsLymuq",
+      "fwYpsjMoI5hZCW2d5FX3",
+      "gYgEUIdNg3s3EE4AFztE",
+      "hGfbBeDlEbq9bC6klJ3x",
+      "is1gze46q0r209m5eeeJ",
+      "mIPMrpokFcpBmRNclj3P",
+      "naAREe2GD8v9vbhMkza1",
+      "reX7Ripg1tcB0FadAvKJ",
+      "s0X0ZAZIah63ODFW4xHF",
+      "s1gIw6yRkwCtLrjjVvq7",
+      "tsGUyV27oAUh0i2hMBS1",
+      "uD9wQaRiCBu49U77lwem",
+      "vIJ78jKDZdtkNU1NEyEj",
+      "vzmjK4a5vAHAgAQU1MA0",
+      "vzmq9GMjPsbrUbJScUHk",
+      "w98xGUpP3Q62O7yTyptn",
+      "wMMi6nT9MolIfz6P9v8m",
+      "wamgNdfrnMYRolOLV6YZ",
+      "yEODGJTxwCnmqTtMmI6s",
+      "zm8FBlVRKbOGd27tDmVH",
+      "zvHx8DdjFEdkE9Gf5cB0",
+    ];
+    await Future.wait(idList.map((e) => jobRef.doc(e).update({"branch_id": "1714112463487"})));
+    return true;
+  }
+
+  Future<List<WorkerManagement>> getAllJobApplyForAUSer(String companyId, String userId, String branchId) async {
     try {
-      var doc = await jobRef.where("company_id", isEqualTo: companyId).where("user_id", isEqualTo: userId).get();
+      var doc =
+          await jobRef.where("company_id", isEqualTo: companyId).where("user_id", isEqualTo: userId).where("branch_id", isEqualTo: branchId).get();
       if (doc.docs.isNotEmpty) {
         List<WorkerManagement> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
@@ -35,9 +124,13 @@ class WorkerManagementApiService {
     }
   }
 
-  Future<List<WorkerManagement>> getAllJobApply(String companyId) async {
+  Future<List<WorkerManagement>> getAllJobApply(String companyId, String branchId) async {
     try {
-      var doc = await jobRef.where("company_id", isEqualTo: companyId).orderBy("created_at", descending: true).get();
+      var doc = await jobRef
+          .where("company_id", isEqualTo: companyId)
+          .where("branch_id", isEqualTo: branchId)
+          .orderBy("created_at", descending: true)
+          .get();
       if (doc.docs.isNotEmpty) {
         List<WorkerManagement> list = [];
         for (int i = 0; i < doc.docs.length; i++) {

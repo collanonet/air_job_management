@@ -51,13 +51,13 @@ class _ChatPageAtDashboardState extends State<ChatPageAtDashboard> with AfterBui
         Company? company = await UserApiServices().getProfileCompany(user.uid);
         authProvider.onChangeCompany(company);
         workerManagementProvider.setCompanyId = authProvider.myCompany?.uid ?? "";
-        await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "");
+        await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
         getAllUserId();
         workerManagementProvider.onChangeLoading(false);
       }
     } else {
       workerManagementProvider.setCompanyId = authProvider.myCompany?.uid ?? "";
-      await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "");
+      await workerManagementProvider.getWorkerApply(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
       getAllUserId();
       workerManagementProvider.onChangeLoading(false);
     }

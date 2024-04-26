@@ -33,15 +33,15 @@ class WorkerManagementProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  onChangeStartDate(DateTime? startDate) {
+  onChangeStartDate(DateTime? startDate, String branchId) {
     startWorkDate = startDate;
-    filterApplicantList();
+    filterApplicantList(branchId);
     notifyListeners();
   }
 
-  onChangeEndDate(DateTime? endDate) {
+  onChangeEndDate(DateTime? endDate, String branchId) {
     endWorkDate = endDate;
-    filterApplicantList();
+    filterApplicantList(branchId);
     notifyListeners();
   }
 
@@ -68,8 +68,8 @@ class WorkerManagementProvider with ChangeNotifier {
     selectedJob = null;
   }
 
-  filterApplicantList() async {
-    await getApplicantList(companyId);
+  filterApplicantList(String branchId) async {
+    await getApplicantList(companyId, branchId);
 
     ///Filter application by job title
     List<WorkerManagement> afterFilterSelectJobTitle = [];
@@ -114,8 +114,8 @@ class WorkerManagementProvider with ChangeNotifier {
     return start1.isAfterOrEqualTo(start2) && end1.isBeforeOrEqualTo(end2);
   }
 
-  filterWorkerManagement(String val) async {
-    await getWorkerApply(companyId);
+  filterWorkerManagement(String val, String branchId) async {
+    await getWorkerApply(companyId, branchId);
     List<WorkerManagement> searchFilter = [];
     if (val.isNotEmpty) {
       for (var job in workManagementList) {
@@ -135,15 +135,15 @@ class WorkerManagementProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  onChangeJobStatus(String? val) {
+  onChangeJobStatus(String? val, String branchId) {
     selectedJobStatus = val;
-    filterApplicantList();
+    filterApplicantList(branchId);
     notifyListeners();
   }
 
-  onChangeTitle(String? val) {
+  onChangeTitle(String? val, String branchId) {
     selectedJobTitle = val;
-    filterApplicantList();
+    filterApplicantList(branchId);
     notifyListeners();
   }
 
@@ -152,8 +152,8 @@ class WorkerManagementProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  getWorkerApply(String companyId, {bool isForMatchPage = false}) async {
-    workManagementList = await WorkerManagementApiService().getAllJobApply(companyId);
+  getWorkerApply(String companyId, String branchId, {bool isForMatchPage = false}) async {
+    workManagementList = await WorkerManagementApiService().getAllJobApply(companyId, branchId);
     if (isForMatchPage == true) {
       List<WorkerManagement> workerWithoutJob = [];
       for (var job in workManagementList) {
@@ -166,8 +166,8 @@ class WorkerManagementProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  getApplicantList(String companyId) async {
-    applicantList = await WorkerManagementApiService().getAllJobApply(companyId);
+  getApplicantList(String companyId, String branchId) async {
+    applicantList = await WorkerManagementApiService().getAllJobApply(companyId, branchId);
     jobTitleList = [JapaneseText.all];
     for (var job in applicantList) {
       jobTitleList.add(job.jobTitle.toString());

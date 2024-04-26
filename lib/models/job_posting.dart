@@ -21,6 +21,7 @@ class CountByDate {
 class JobPosting {
   List<String>? limitGroupEmail;
   String? uid;
+  String? branchId;
   DateTime? createdAt;
   String? status;
   List<String>? coverList;
@@ -239,6 +240,7 @@ class JobPosting {
 
   JobPosting(
       {this.isAllowSmokingInArea,
+      this.branchId,
       this.selectedDate,
       this.selectSmokingInDoor,
       this.status,
@@ -434,6 +436,7 @@ class JobPosting {
       identical(this, other) || other is JobPosting && runtimeType == other.runtimeType && uid == other.uid && title == other.title;
 
   factory JobPosting.fromJson(Map<String, dynamic> json) => JobPosting(
+      branchId: json["branch_id"],
       selectedDate: json["selectedDate"] != null ? List<String>.from(json["selectedDate"].map((e) => e)) : [],
       limitGroupEmail: json["limit_group_email"] != null ? List<String>.from(json["limit_group_email"].map((e) => e)) : [],
       shiftFrameList: json["shiftFrameList"] == null ? [] : List<ShiftFrame>.from(json["shiftFrameList"]!.map((x) => ShiftFrame.fromJson(x))),
@@ -621,6 +624,7 @@ class JobPosting {
       endBreakTimeHour: json["end_break_time_hour"]);
 
   Map<String, dynamic> toJson() => {
+        "branch_id": branchId,
         "selectedDate": selectedDate != null ? selectedDate!.map((e) => e).toList() : [],
         "smoking_allow": isAllowSmokingInArea,
         "smoking_options": selectSmokingInDoor,

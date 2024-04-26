@@ -728,7 +728,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
       await getData();
       shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
       shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
-      await provider.findJobByOccupation();
+      await provider.findJobByOccupation(authProvider.branch?.id ?? "");
       shiftCalendarDataSourceByJobPosting =
           ShiftCalendarDataSourceByJobPosting(provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId));
       provider.onChangeLoading(false);
@@ -826,7 +826,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                     onPressed: () async {
                       provider.onChangeMonth(DateTime(provider.month.year, provider.month.month - 1, provider.month.day));
                       await getData();
-                      await provider.findJobByOccupation();
+                      await provider.findJobByOccupation(authProvider.branch?.id ?? "");
                       shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
                       shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
                       shiftCalendarDataSourceByJobPosting = ShiftCalendarDataSourceByJobPosting(
@@ -845,7 +845,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                     onPressed: () async {
                       provider.onChangeMonth(DateTime(provider.month.year, provider.month.month + 1, provider.month.day));
                       await getData();
-                      await provider.findJobByOccupation();
+                      await provider.findJobByOccupation(authProvider.branch?.id ?? "");
                       shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
                       shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
                       shiftCalendarDataSourceByJobPosting = ShiftCalendarDataSourceByJobPosting(
@@ -1054,7 +1054,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
     await getData();
     shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
     shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
-    await provider.findJobByOccupation();
+    await provider.findJobByOccupation(authProvider.branch?.id ?? "");
     shiftCalendarDataSourceByJobPosting =
         ShiftCalendarDataSourceByJobPosting(provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId));
   }
@@ -1066,14 +1066,14 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
         Company? company = await UserApiServices().getProfileCompany(user.uid);
         authProvider.onChangeCompany(company);
         provider.setCompanyId = authProvider.myCompany?.uid ?? "";
-        await provider.getApplicantList(authProvider.myCompany?.uid ?? "");
+        await provider.getApplicantList(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
         provider.onChangeLoading(false);
       } else {
         context.go(MyRoute.companyLogin);
       }
     } else {
       provider.setCompanyId = authProvider.myCompany?.uid ?? "";
-      await provider.getApplicantList(authProvider.myCompany?.uid ?? "");
+      await provider.getApplicantList(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
       provider.onChangeLoading(false);
     }
   }
