@@ -624,6 +624,7 @@ class JobPosting {
       endBreakTimeHour: json["end_break_time_hour"]);
 
   Map<String, dynamic> toJson() => {
+        "is_delete": false,
         "branch_id": branchId,
         "selectedDate": selectedDate != null ? selectedDate!.map((e) => e).toList() : [],
         "smoking_allow": isAllowSmokingInArea,

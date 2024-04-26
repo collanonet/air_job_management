@@ -32,8 +32,28 @@ class JobPostingApiService {
       "yboXYWJaiEXzUkBsohxj",
       "yyknsz0kHr083k1xUAlO",
     ];
-    await Future.wait(idList.map((e) => jobPostingRef.doc(e).update({"branch_id": "1714112463487"})));
+    await Future.wait(idList.map((e) => jobPostingRef.doc(e).update({"is_delete": false})));
     return true;
+  }
+
+  Future<bool> restorePosting(String uid) async {
+    try {
+      await jobPostingRef.doc(uid).update({"is_delete": false});
+      return true;
+    } catch (e) {
+      debugPrint("Error restorePosting =>> ${e.toString()}");
+      return false;
+    }
+  }
+
+  Future<bool> deleteJobPosting(String uid) async {
+    try {
+      await jobPostingRef.doc(uid).update({"is_delete": true});
+      return true;
+    } catch (e) {
+      debugPrint("Error deleteJobPosting =>> ${e.toString()}");
+      return false;
+    }
   }
 
   Future<List<NotificationModel>> getAllNotification(String companyId) async {
@@ -58,7 +78,35 @@ class JobPostingApiService {
 
   Future<List<JobPosting>> getAllJobPostByCompany(String companyId, String branchId) async {
     try {
-      var doc = await jobPostingRef.where("company_id", isEqualTo: companyId).where("branch_id", isEqualTo: branchId).get();
+      var doc = await jobPostingRef
+          .where("company_id", isEqualTo: companyId)
+          .where("branch_id", isEqualTo: branchId)
+          .where("is_delete", isEqualTo: false)
+          .get();
+      if (doc.docs.isNotEmpty) {
+        List<JobPosting> list = [];
+        for (int i = 0; i < doc.docs.length; i++) {
+          JobPosting jobPosting = JobPosting.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          jobPosting.uid = doc.docs[i].id;
+          list.add(jobPosting);
+        }
+        return list;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      debugPrint("Error getAllJobPost =>> ${e.toString()}");
+      return [];
+    }
+  }
+
+  Future<List<JobPosting>> getAllDeletedJobPostByCompany(String companyId, String branchId) async {
+    try {
+      var doc = await jobPostingRef
+          .where("company_id", isEqualTo: companyId)
+          .where("branch_id", isEqualTo: branchId)
+          .where("is_delete", isEqualTo: true)
+          .get();
       if (doc.docs.isNotEmpty) {
         List<JobPosting> list = [];
         for (int i = 0; i < doc.docs.length; i++) {

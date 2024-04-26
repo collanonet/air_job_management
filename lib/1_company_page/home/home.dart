@@ -93,6 +93,7 @@ class _HomePageForCompanyState extends State<HomePageForCompany> with AfterBuild
                       context: context,
                       onApprove: () async {
                         Navigator.pop(context);
+                        authProvider.onChangeBranch(null);
                         await FirebaseAuth.instance.signOut();
                         context.go(MyRoute.companyLogin);
                       });

@@ -308,12 +308,18 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
         Company? company = await UserApiServices().getProfileCompany(user.uid);
         authProvider.onChangeCompany(company);
         await provider.onInit(company?.uid ?? "", authProvider.branch?.id ?? "");
+        if (authProvider.branch == null) {
+          authProvider.onChangeBranch(authProvider.myCompany!.branchList!.first);
+        }
         provider.onChangeLoading(false);
       } else {
         context.go(MyRoute.companyLogin);
       }
     } else {
       await provider.onInit(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
+      if (authProvider.branch == null) {
+        authProvider.onChangeBranch(authProvider.myCompany!.branchList!.first);
+      }
       provider.onChangeLoading(false);
     }
   }

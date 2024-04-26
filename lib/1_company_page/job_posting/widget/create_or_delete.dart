@@ -10,7 +10,8 @@ import '../../../widgets/custom_button.dart';
 
 class CreateOrDeleteJobPostingForCompany extends StatelessWidget {
   final Function onCopyPaste;
-  const CreateOrDeleteJobPostingForCompany({super.key, required this.onCopyPaste});
+  final Function onDelete;
+  const CreateOrDeleteJobPostingForCompany({super.key, required this.onCopyPaste, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,14 @@ class CreateOrDeleteJobPostingForCompany extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             const Spacer(),
+            SizedBox(width: 130, child: ButtonWidget(radius: 25, title: "消去", color: Colors.red, onPress: () => onDelete())),
+            AppSize.spaceWidth16,
+            Container(
+              width: 2,
+              color: AppColor.darkGrey,
+              height: 39,
+            ),
+            AppSize.spaceWidth16,
             SizedBox(
                 width: 130,
                 child: ButtonWidget(

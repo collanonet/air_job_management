@@ -197,6 +197,7 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
       }
       if (user != null) {
         authProvider.setCompany = user;
+        authProvider.onChangeBranch(user.branchList!.first);
         context.go(MyRoute.companyDashboard);
       } else {
         toastMessageError("${authProvider.errorMessage}", context);

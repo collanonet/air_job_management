@@ -2,9 +2,11 @@ import 'package:air_job_management/1_company_page/job_posting/create_or_edit_job
 import 'package:air_job_management/1_company_page/job_posting/widget/create_or_delete.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/filter.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/job_posting_card_for_company.dart';
+import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/job_posting.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
+import 'package:air_job_management/widgets/custom_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -80,9 +82,22 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> wit
               children: [
                 JobPostingFilterFilterDataWidgetForCompany(),
                 CreateOrDeleteJobPostingForCompany(
+                  onDelete: () {
+                    if (selectedJobPosting == null) {
+                      toastMessageError("最初に求人情報を選択してください。", context);
+                    } else {
+                      CustomDialog.confirmDelete(
+                          context: context,
+                          onDelete: () async {
+                            Navigator.pop(context);
+                            await JobPostingApiService().deleteJobPosting(selectedJobPosting!.uid!);
+                            getData();
+                          });
+                    }
+                  },
                   onCopyPaste: () {
                     if (selectedJobPosting == null) {
-                      toastMessageError("最初にコピーしたいジョブを選択してください。", context);
+                      toastMessageError("最初に求人情報を選択してください。", context);
                     } else {
                       showCopyAndPaste();
                     }
