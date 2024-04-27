@@ -1,4 +1,5 @@
 import 'package:air_job_management/1_company_page/job_posting/create_or_edit_job_posting.dart';
+import 'package:air_job_management/1_company_page/job_posting/restore_delete_job_posting.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/create_or_delete.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/filter.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/job_posting_card_for_company.dart';
@@ -80,7 +81,16 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> wit
             controller: scrollController,
             child: Column(
               children: [
-                JobPostingFilterFilterDataWidgetForCompany(),
+                JobPostingFilterFilterDataWidgetForCompany(
+                  onRecycleTap: () {
+                    showDialog(context: context, builder: (context) => const RestoreDeleteJobPostingPage()).then((value) {
+                      if (value == true) {
+                        jobPostingProvider.onChangeLoading(true);
+                        getData();
+                      }
+                    });
+                  },
+                ),
                 CreateOrDeleteJobPostingForCompany(
                   onDelete: () {
                     if (selectedJobPosting == null) {

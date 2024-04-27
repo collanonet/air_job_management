@@ -38,6 +38,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with 
     if (_formKey.currentState!.validate()) {
       provider.onChangeLoadingForDetail(true);
       Company c = Company(
+          branchList: provider.company?.branchList ?? [],
           area: provider.area.text,
           industry: provider.industry.text,
           uid: widget.id,
@@ -59,6 +60,17 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with 
           manager: provider.managerList.map((e) => RePresentative(kanji: e["kanji"]?.text.trim(), kana: e["kana"]?.text.trim())).toList());
       String? val;
       if (widget.id != null) {
+        if (c.branchList!.isEmpty) {
+          c.branchList = [
+            Branch(
+                id: DateTime.now().millisecondsSinceEpoch.toString(),
+                createdAt: DateTime.now(),
+                name: "主枝",
+                postalCode: "",
+                location: "",
+                contactNumber: "")
+          ];
+        }
         val = await CompanyApiServices().updateCompanyInfo(c);
       } else {
         Company? com = await authProvider.createCompanyAccount(provider.email.text.trim(), provider.password.text, c: c);

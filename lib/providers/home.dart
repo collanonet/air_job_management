@@ -1,6 +1,7 @@
 import 'package:air_job_management/1_company_page/applicant/applicant.dart';
 import 'package:air_job_management/1_company_page/dashboard/dashboard.dart';
 import 'package:air_job_management/1_company_page/entry_exit_history/entry_exit_history.dart';
+import 'package:air_job_management/1_company_page/entry_exit_history_list/entry_exit_history_list.dart';
 import 'package:air_job_management/1_company_page/job_posting/job_posting.dart';
 import 'package:air_job_management/1_company_page/shift_calendar/shift_calendar.dart';
 import 'package:air_job_management/1_company_page/woker_management/worker_management.dart';
@@ -15,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 
 import '../1_company_page/company_profile/root_company_profile.dart';
-import '../1_company_page/usage_detail/usage_detail.dart';
 import '../pages/job_posting/job_posting.dart';
 
 class HomeProvider with ChangeNotifier {
@@ -65,7 +65,7 @@ class HomeProvider with ChangeNotifier {
     ApplicantListPage(),
     WorkerManagementPage(),
     EntryExitHistoryPage(),
-    UsageDetailPage(),
+    EntryExitHistoryListPage(),
     RootCompanyPage()
   ];
   String selectedItem = JapaneseText.analysis;

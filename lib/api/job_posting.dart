@@ -36,9 +36,9 @@ class JobPostingApiService {
     return true;
   }
 
-  Future<bool> restorePosting(String uid) async {
+  Future<bool> restorePosting(List<String> restoreId) async {
     try {
-      await jobPostingRef.doc(uid).update({"is_delete": false});
+      await Future.wait(restoreId.map((e) => jobPostingRef.doc(e).update({"is_delete": false})));
       return true;
     } catch (e) {
       debugPrint("Error restorePosting =>> ${e.toString()}");

@@ -53,6 +53,7 @@ class AuthProvider with ChangeNotifier {
     if (branch != null) {
       this.branch = branch;
     }
+    print("GG ${branch?.name}");
     notifyListeners();
   }
 

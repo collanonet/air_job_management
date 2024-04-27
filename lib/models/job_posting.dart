@@ -19,6 +19,7 @@ class CountByDate {
 }
 
 class JobPosting {
+  bool? isSelect;
   List<String>? limitGroupEmail;
   String? uid;
   String? branchId;
@@ -240,6 +241,7 @@ class JobPosting {
 
   JobPosting(
       {this.isAllowSmokingInArea,
+      this.isSelect = false,
       this.branchId,
       this.selectedDate,
       this.selectSmokingInDoor,
