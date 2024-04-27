@@ -14,21 +14,27 @@ import '../../api/user_api.dart';
 import '../../models/company.dart';
 import '../../providers/company/entry_exit_history.dart';
 import '../../utils/my_route.dart';
+import 'data_source/entry_list_data_source.dart';
 
 class EntryExitHistoryListPage extends StatefulWidget {
   const EntryExitHistoryListPage({super.key});
 
   @override
-  State<EntryExitHistoryListPage> createState() => _EntryExitHistoryListPageState();
+  State<EntryExitHistoryListPage> createState() =>
+      _EntryExitHistoryListPageState();
 }
 
-class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> with AfterBuildMixin {
+class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage>
+    with AfterBuildMixin {
   late EntryExitHistoryProvider provider;
   late AuthProvider authProvider;
+  int _currentPage = 1;
+  int _pageSize = 10;
 
   @override
   void initState() {
-    Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading = true;
+    Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading =
+        true;
     Provider.of<EntryExitHistoryProvider>(context, listen: false).initData();
     super.initState();
   }
@@ -64,117 +70,126 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> wit
         padding: const EdgeInsets.all(32.0),
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                    flex: 1,
-                    child: Text(
+            AppSize.spaceHeight16,
+            Expanded(
+              child: SizedBox(
+                width: AppSize.getDeviceWidth(context),
+                child: PaginatedDataTable(
+                  header: Text(
+                    'Entry Exit History',
+                    style: kTitleText,
+                  ),
+                  rowsPerPage: _pageSize,
+                  availableRowsPerPage: const [10, 25, 50],
+                  onRowsPerPageChanged: (value) {
+                    setState(() {
+                      _pageSize = value!;
+                    });
+                  },
+                  columns: [
+                    DataColumn(
+                        label: Text(
                       "日付",
                       style: kNormalText.copyWith(fontFamily: "Bold"),
                     )),
-                Expanded(
-                    flex: 2,
-                    child: Text(
+                    DataColumn(
+                        label: Text(
                       "役職",
                       style: kNormalText.copyWith(fontFamily: "Bold"),
                     )),
-                Expanded(
-                    flex: 1,
-                    child: Text(
+                    DataColumn(
+                        label: Text(
                       "勤務開始時間",
                       style: kNormalText.copyWith(fontFamily: "Bold"),
                     )),
-                Expanded(
-                    flex: 1,
-                    child: Text(
+                    DataColumn(
+                        label: Text(
                       "勤務終了時間",
                       style: kNormalText.copyWith(fontFamily: "Bold"),
                     )),
-                Expanded(
-                    flex: 1,
-                    child: Text(
+                    DataColumn(
+                        label: Text(
                       "遅い",
                       style: kNormalText.copyWith(fontFamily: "Bold"),
                     )),
-                Expanded(
-                    flex: 1,
-                    child: Text(
+                    DataColumn(
+                        label: Text(
                       "シフト開始勤務時間",
                       style: kNormalText.copyWith(fontFamily: "Bold"),
                     )),
-                Expanded(
-                    flex: 1,
-                    child: Text(
+                    DataColumn(
+                        label: Text(
                       "シフト終了勤務時間",
                       style: kNormalText.copyWith(fontFamily: "Bold"),
                     )),
-                Expanded(
-                    flex: 1,
-                    child: Text(
+                    DataColumn(
+                        label: Text(
                       "状態",
                       style: kNormalText.copyWith(fontFamily: "Bold"),
                     )),
-              ],
+                  ],
+                  source: EntryListDataSource(data: provider.entryList),
+                ),
+              ),
             ),
-            AppSize.spaceHeight16,
-            ListView.builder(
-                shrinkWrap: true,
-                itemCount: provider.entryList.length,
-                itemBuilder: (context, index) {
-                  var entry = provider.entryList[index];
-                  return Row(
-                    children: [
-                      Expanded(
-                          flex: 1,
-                          child: Text(
-                            "${entry.workDate}",
-                            style: kNormalText,
-                          )),
-                      Expanded(
-                          flex: 2,
-                          child: Text(
-                            "${entry.jobTitle}",
-                            style: kNormalText,
-                          )),
-                      Expanded(
-                          flex: 1,
-                          child: Text(
-                            "${entry.startWorkingTime}",
-                            style: kNormalText,
-                          )),
-                      Expanded(
-                          flex: 1,
-                          child: Text(
-                            "${entry.endWorkingTime}",
-                            style: kNormalText,
-                          )),
-                      Expanded(
-                          flex: 1,
-                          child: Text(
-                            entry.isLate == true ? "Late" : "No",
-                            style: kNormalText,
-                          )),
-                      Expanded(
-                          flex: 1,
-                          child: Text(
-                            "${entry.scheduleStartWorkingTime}",
-                            style: kNormalText,
-                          )),
-                      Expanded(
-                          flex: 1,
-                          child: Text(
-                            "${entry.scheduleEndWorkingTime}",
-                            style: kNormalText,
-                          )),
-                      Expanded(
-                          flex: 1,
-                          child: Text(
-                            "",
-                            style: kNormalText,
-                          )),
-                    ],
-                  );
-                }),
+            // ListView.builder(
+            //     shrinkWrap: true,
+            //     itemCount: provider.entryList.length,
+            //     itemBuilder: (context, index) {
+            //       var entry = provider.entryList[index];
+            //       return Row(
+            //         children: [
+            //           Expanded(
+            //               flex: 1,
+            //               child: Text(
+            //                 "${entry.workDate}",
+            //                 style: kNormalText,
+            //               )),
+            //           Expanded(
+            //               flex: 2,
+            //               child: Text(
+            //                 "${entry.jobTitle}",
+            //                 style: kNormalText,
+            //               )),
+            //           Expanded(
+            //               flex: 1,
+            //               child: Text(
+            //                 "${entry.startWorkingTime}",
+            //                 style: kNormalText,
+            //               )),
+            //           Expanded(
+            //               flex: 1,
+            //               child: Text(
+            //                 "${entry.endWorkingTime}",
+            //                 style: kNormalText,
+            //               )),
+            //           Expanded(
+            //               flex: 1,
+            //               child: Text(
+            //                 entry.isLate == true ? "Late" : "No",
+            //                 style: kNormalText,
+            //               )),
+            //           Expanded(
+            //               flex: 1,
+            //               child: Text(
+            //                 "${entry.scheduleStartWorkingTime}",
+            //                 style: kNormalText,
+            //               )),
+            //           Expanded(
+            //               flex: 1,
+            //               child: Text(
+            //                 "${entry.scheduleEndWorkingTime}",
+            //                 style: kNormalText,
+            //               )),
+            //           Expanded(
+            //               flex: 1,
+            //               child: Text(
+            //                 "",
+            //                 style: kNormalText,
+            //               )),
+            //         ],
+            //       );
+            //     }),
           ],
         ),
       );
