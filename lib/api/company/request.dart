@@ -38,8 +38,8 @@ class RequestApiService {
       if (workerManagement != null) {
         for (var shift in workerManagement.shiftList!) {
           bool isDateEqual = DateToAPIHelper.convertDateToString(shift.date!) == request.date;
-          bool isStartTimeEqual = shift.startWorkTime == request.shiftModel!.startWorkTime;
-          bool isEndTimeEqual = shift.endWorkTime == request.shiftModel!.endWorkTime;
+          bool isStartTimeEqual = (shift.startWorkTime == request.shiftModel!.startWorkTime || shift.startWorkTime == request.fromTime);
+          bool isEndTimeEqual = (shift.endWorkTime == request.shiftModel!.endWorkTime || shift.endWorkTime == request.toTime);
           if (isDateEqual && isStartTimeEqual && isEndTimeEqual) {
             if (status == "approved") {
               shift.startWorkTime = request.fromTime.toString();
