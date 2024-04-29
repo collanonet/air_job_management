@@ -257,7 +257,7 @@ class ShiftCalendarProvider with ChangeNotifier {
     jobPostingDataTableList = [];
     String id = FirebaseAuth.instance.currentUser?.uid ?? "";
     Company? company = await UserApiServices().getProfileCompany(id);
-    var jobPostingList = await JobPostingApiService().getAllJobPostByCompany(company?.uid ?? "", branchId);
+    var jobPostingList = await JobPostingApiService().getAllJobPostByCompany(company?.uid ?? "", "");
     for (var j in jobPostingList) {
       var startDate = DateToAPIHelper.fromApiToLocal(j.startDate ?? "");
       var endDate = DateToAPIHelper.fromApiToLocal(j.endDate ?? "");

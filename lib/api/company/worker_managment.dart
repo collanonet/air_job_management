@@ -102,8 +102,10 @@ class WorkerManagementApiService {
 
   Future<List<WorkerManagement>> getAllJobApplyForAUSer(String companyId, String userId, String branchId) async {
     try {
+      // var doc =
+      // await jobRef.where("company_id", isEqualTo: companyId).where("user_id", isEqualTo: userId).where("branch_id", isEqualTo: branchId).get();
       var doc =
-          await jobRef.where("company_id", isEqualTo: companyId).where("user_id", isEqualTo: userId).where("branch_id", isEqualTo: branchId).get();
+          await jobRef.where("company_id", isEqualTo: companyId).where("user_id", isEqualTo: userId).get();
       if (doc.docs.isNotEmpty) {
         List<WorkerManagement> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
@@ -126,9 +128,14 @@ class WorkerManagementApiService {
 
   Future<List<WorkerManagement>> getAllJobApply(String companyId, String branchId) async {
     try {
+      // var doc = await jobRef
+      //     .where("company_id", isEqualTo: companyId)
+      //     .where("branch_id", isEqualTo: branchId)
+      //     .orderBy("created_at", descending: true)
+      //     .get();
       var doc = await jobRef
           .where("company_id", isEqualTo: companyId)
-          .where("branch_id", isEqualTo: branchId)
+          // .where("branch_id", isEqualTo: branchId)ç
           .orderBy("created_at", descending: true)
           .get();
       if (doc.docs.isNotEmpty) {

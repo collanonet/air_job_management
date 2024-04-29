@@ -81,9 +81,9 @@ class CommonUtils {
 
   static displayRequestType(Request request) {
     String title = "";
-    if (request.isHoliday == true) {
+    if (request.isLeaveEarly == true) {
       title = "早退申請";
-    } else if (request.isLeaveEarly == true) {
+    } else if (request.isHoliday == true) {
       title = "休日申請";
     } else {
       title = "就業開始時間変更";
