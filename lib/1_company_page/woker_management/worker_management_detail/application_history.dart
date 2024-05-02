@@ -250,7 +250,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                               title: "確定する",
                               onPress: () {
                                 if (shift.status != "completed") {
-                                  updateJobStatus(index, shift, "確定する");
+                                  updateJobStatus(index, shift, "確定する", widget.myUser!);
                                 } else {
                                   toastMessageError("この仕事は完了しました。", context);
                                 }
@@ -270,7 +270,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                               title: "不承認にする",
                               onPress: () {
                                 if (shift.status != "completed") {
-                                  updateJobStatus(index, shift, "キャンセル");
+                                  updateJobStatus(index, shift, "キャンセル", widget.myUser!);
                                 } else {
                                   toastMessageError("この仕事は完了しました。", context);
                                 }
@@ -317,7 +317,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
     });
   }
 
-  updateJobStatus(int index, ShiftModel shiftModel, String action) {
+  updateJobStatus(int index, ShiftModel shiftModel, String action, MyUser myUser) {
     shiftModel.status = action == "確定する" ? "approved" : "rejected";
     shiftList[index] = shiftModel;
     CustomDialog.confirmDialog(
@@ -327,7 +327,8 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
           setState(() {
             isLoading = true;
           });
-          bool isSuccess = await WorkerManagementApiService().updateShiftStatus(shiftList, shiftList[index].jobId!);
+          bool isSuccess = await WorkerManagementApiService()
+              .updateShiftStatus(shiftList, shiftList[index].jobId!, shiftModel: shiftModel, company: authProvider.myCompany!, myUser: myUser);
           if (isSuccess) {
             await getData();
             MessageWidget.show(JapaneseText.successUpdate);

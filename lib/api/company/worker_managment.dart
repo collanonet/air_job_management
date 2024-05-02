@@ -1,11 +1,14 @@
 import 'package:air_job_management/api/user_api.dart';
+import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
+import 'package:air_job_management/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import '../../helper/date_to_api.dart';
 import '../../models/worker_model/shift.dart';
+import '../../services/send_email.dart';
 
 class WorkerManagementApiService {
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -102,10 +105,10 @@ class WorkerManagementApiService {
 
   Future<List<WorkerManagement>> getAllJobApplyForAUSer(String companyId, String userId, String branchId) async {
     try {
-      // var doc =
-      // await jobRef.where("company_id", isEqualTo: companyId).where("user_id", isEqualTo: userId).where("branch_id", isEqualTo: branchId).get();
       var doc =
-          await jobRef.where("company_id", isEqualTo: companyId).where("user_id", isEqualTo: userId).get();
+          await jobRef.where("company_id", isEqualTo: companyId).where("user_id", isEqualTo: userId).where("branch_id", isEqualTo: branchId).get();
+      // var doc =
+      //     await jobRef.where("company_id", isEqualTo: companyId).where("user_id", isEqualTo: userId).get();
       if (doc.docs.isNotEmpty) {
         List<WorkerManagement> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
@@ -128,16 +131,16 @@ class WorkerManagementApiService {
 
   Future<List<WorkerManagement>> getAllJobApply(String companyId, String branchId) async {
     try {
-      // var doc = await jobRef
-      //     .where("company_id", isEqualTo: companyId)
-      //     .where("branch_id", isEqualTo: branchId)
-      //     .orderBy("created_at", descending: true)
-      //     .get();
       var doc = await jobRef
           .where("company_id", isEqualTo: companyId)
-          // .where("branch_id", isEqualTo: branchId)ç
+          .where("branch_id", isEqualTo: branchId)
           .orderBy("created_at", descending: true)
           .get();
+      // var doc = await jobRef
+      //     .where("company_id", isEqualTo: companyId)
+      //     // .where("branch_id", isEqualTo: branchId)ç
+      //     .orderBy("created_at", descending: true)
+      //     .get();
       if (doc.docs.isNotEmpty) {
         List<WorkerManagement> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
@@ -184,12 +187,13 @@ class WorkerManagementApiService {
   }
 
   Future<WorkerManagement?> getAJob(String uid) async {
+    print("Job id $uid");
     try {
       DocumentSnapshot doc = await jobRef.doc(uid).get();
       if (doc.exists) {
-        WorkerManagement company = WorkerManagement.fromJson(doc.data() as Map<String, dynamic>);
-        company.uid = doc.id;
-        return company;
+        WorkerManagement workerManagement = WorkerManagement.fromJson(doc.data() as Map<String, dynamic>);
+        workerManagement.uid = doc.id;
+        return workerManagement;
       } else {
         return null;
       }
@@ -199,11 +203,22 @@ class WorkerManagementApiService {
     }
   }
 
-  Future<bool> updateShiftStatus(List<ShiftModel> shiftList, String jobId) async {
+  Future<bool> updateShiftStatus(List<ShiftModel> shiftList, String jobId, {Company? company, ShiftModel? shiftModel, MyUser? myUser}) async {
     try {
       shiftList = shiftList.toSet().toList();
-      print(shiftList.map((e) => e.status));
       await jobRef.doc(jobId).update({"shift": shiftList.map((e) => e.toJson())});
+      if (company != null && myUser != null) {
+        await NotificationService.sendEmailApplyShift(
+            email: myUser.email ?? "",
+            msg: "Your Shift Apply",
+            name: myUser.nameKanJi ?? "",
+            userId: myUser.uid ?? "",
+            companyId: company.uid ?? "",
+            companyName: company.companyName ?? "",
+            branchId: "",
+            status: shiftModel!.status!,
+            date: DateToAPIHelper.convertDateToString(shiftModel.date!));
+      }
       return true;
     } catch (e) {
       debugPrint("Error updateJobStatus =>> ${e.toString()}");

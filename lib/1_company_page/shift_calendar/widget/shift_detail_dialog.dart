@@ -5,6 +5,7 @@ import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/models/company/request.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/models/job_posting.dart';
+import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
@@ -16,9 +17,11 @@ import 'package:air_job_management/widgets/loading.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../helper/date_to_api.dart';
+import '../../../models/user.dart';
 import '../../../models/worker_model/shift.dart';
 import '../../../utils/common_utils.dart';
 import '../../../widgets/custom_dialog.dart';
@@ -44,9 +47,11 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
   int countApplyPeople = 0;
   List<String> menuTab = ["新規応募", "変更申請"];
   String selectedTab = "新規応募";
+  late AuthProvider authProvider;
 
   @override
   Widget build(BuildContext context) {
+    authProvider = Provider.of<AuthProvider>(context);
     return AlertDialog(
       insetPadding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -436,7 +441,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
           setState(() {
             isLoading = true;
           });
-          bool isSuccess = await RequestApiService().updateRequestStatus(request, status);
+          bool isSuccess = await RequestApiService().updateRequestStatus(request, status, authProvider.myCompany!);
           if (isSuccess) {
             await getData();
             setState(() {
@@ -598,7 +603,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                   title: "確定する",
                                   onPress: () {
                                     if (shift.status != "completed") {
-                                      updateJobStatus(job.shiftList!, shift, "確定する", index, job.uid!);
+                                      updateJobStatus(job.shiftList!, shift, "確定する", index, job.uid!, job.myUser!);
                                     } else {
                                       toastMessageError("この仕事は完了しました。", context);
                                     }
@@ -618,7 +623,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                   title: "不承認にする",
                                   onPress: () {
                                     if (shift.status != "completed") {
-                                      updateJobStatus(job.shiftList!, shift, "キャンセル", index, job.uid!);
+                                      updateJobStatus(job.shiftList!, shift, "キャンセル", index, job.uid!, job.myUser!);
                                     } else {
                                       toastMessageError("この仕事は完了しました。", context);
                                     }
@@ -634,7 +639,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
         });
   }
 
-  updateJobStatus(List<ShiftModel> shiftList, ShiftModel shiftModel, String action, int index, String jobId) {
+  updateJobStatus(List<ShiftModel> shiftList, ShiftModel shiftModel, String action, int index, String jobId, MyUser myUser) {
     shiftModel.status = action == "確定する" ? "approved" : "rejected";
     shiftList[index] = shiftModel;
     CustomDialog.confirmDialog(
@@ -644,7 +649,8 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
           setState(() {
             isLoading = true;
           });
-          bool isSuccess = await WorkerManagementApiService().updateShiftStatus(shiftList, jobId);
+          bool isSuccess = await WorkerManagementApiService()
+              .updateShiftStatus(shiftList, jobId, myUser: myUser, company: authProvider.myCompany!, shiftModel: shiftModel);
           if (isSuccess) {
             await getData();
             setState(() {

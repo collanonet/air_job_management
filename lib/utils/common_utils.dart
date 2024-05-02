@@ -79,6 +79,18 @@ class CommonUtils {
     return false;
   }
 
+  static getStatusOfRequest(Request request) {
+    String title = "";
+    if (request.isLeaveEarly == true) {
+      title = "早退申請";
+    } else if (request.isHoliday == true) {
+      title = "休日申請";
+    } else {
+      title = "就業開始時間変更";
+    }
+    return title;
+  }
+
   static displayRequestType(Request request) {
     String title = "";
     if (request.isLeaveEarly == true) {

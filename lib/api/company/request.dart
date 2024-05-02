@@ -1,10 +1,13 @@
 import 'package:air_job_management/api/company/worker_managment.dart';
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
+import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../models/company/request.dart';
+import '../../services/send_email.dart';
+import '../../utils/common_utils.dart';
 import '../../utils/log.dart';
 
 class RequestApiService {
@@ -32,7 +35,7 @@ class RequestApiService {
     }
   }
 
-  Future<bool> updateRequestStatus(Request request, String status) async {
+  Future<bool> updateRequestStatus(Request request, String status, Company company) async {
     try {
       WorkerManagement? workerManagement = await WorkerManagementApiService().getAJob(request.applyJobId!);
       if (workerManagement != null) {
@@ -51,8 +54,23 @@ class RequestApiService {
             break;
           }
         }
-        await WorkerManagementApiService().updateShiftStatus(workerManagement.shiftList!, request.applyJobId!);
+        await WorkerManagementApiService().updateShiftStatus(
+          workerManagement.shiftList!,
+          request.applyJobId!,
+        );
         await requestRef.doc(request.uid).update({"status": status});
+        String requestName = CommonUtils.getStatusOfRequest(request);
+        await NotificationService.sendEmail(
+            email: request.myUser?.email ?? "",
+            msg: "Application Request",
+            name: request.myUser?.nameKanJi ?? "",
+            userId: request.myUser?.uid ?? "",
+            companyId: company.uid ?? "",
+            companyName: company.companyName ?? "",
+            branchId: "",
+            status: status,
+            date: request.date ?? "",
+            request: requestName);
         return true;
       } else {
         return false;
