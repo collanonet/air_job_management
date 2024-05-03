@@ -131,10 +131,14 @@ class Branch {
   String? location;
   String? contactNumber;
   DateTime? createdAt;
+  String? lat;
+  String? lng;
 
-  Branch({this.name, this.postalCode, this.location, this.createdAt, this.contactNumber, this.id});
+  Branch({this.name, this.postalCode, this.location, this.createdAt, this.contactNumber, this.id, this.lat, this.lng});
 
   factory Branch.fromJson(Map<String, dynamic> json) => Branch(
+      lat: json["lat"],
+      lng: json["lng"],
       id: json["id"],
       name: json["name"],
       postalCode: json["postalCode"],
@@ -143,6 +147,8 @@ class Branch {
       createdAt: json["createdAt"].toDate());
 
   Map<String, dynamic> toJson() => {
+        "lat": lat,
+        "lng": lng,
         "id": id,
         "name": name,
         "postalCode": postalCode,

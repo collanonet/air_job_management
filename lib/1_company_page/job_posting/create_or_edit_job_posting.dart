@@ -373,16 +373,16 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
       if (user != null) {
         Company? company = await UserApiServices().getProfileCompany(user.uid);
         authProvider.onChangeCompany(company);
-        await provider.onInitForJobPostingDetail(widget.jobPosting);
+        await provider.onInitForJobPostingDetail(widget.jobPosting, authProvider: authProvider);
       } else {
         context.go(MyRoute.companyLogin);
       }
     } else {
       if (widget.jobPosting != null) {
-        await provider.onInitForJobPostingDetail(widget.jobPosting);
+        await provider.onInitForJobPostingDetail(widget.jobPosting, authProvider: authProvider);
       } else {
         provider.initialData();
-        await provider.onInitForJobPostingDetail(widget.jobPosting);
+        await provider.onInitForJobPostingDetail(widget.jobPosting, authProvider: authProvider);
       }
     }
   }

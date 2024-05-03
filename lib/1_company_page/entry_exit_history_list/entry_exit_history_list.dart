@@ -20,12 +20,10 @@ class EntryExitHistoryListPage extends StatefulWidget {
   const EntryExitHistoryListPage({super.key});
 
   @override
-  State<EntryExitHistoryListPage> createState() =>
-      _EntryExitHistoryListPageState();
+  State<EntryExitHistoryListPage> createState() => _EntryExitHistoryListPageState();
 }
 
-class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage>
-    with AfterBuildMixin {
+class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> with AfterBuildMixin {
   late EntryExitHistoryProvider provider;
   late AuthProvider authProvider;
   int _currentPage = 1;
@@ -33,8 +31,7 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage>
 
   @override
   void initState() {
-    Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading =
-        true;
+    Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading = true;
     Provider.of<EntryExitHistoryProvider>(context, listen: false).initData();
     super.initState();
   }
@@ -202,7 +199,6 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage>
   }
 
   onGetData() async {
-    print("Get data");
     if (authProvider.myCompany == null) {
       var user = FirebaseAuth.instance.currentUser;
       if (user != null) {

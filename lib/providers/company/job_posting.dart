@@ -3,6 +3,7 @@ import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/models/job_posting.dart';
+import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -249,7 +250,7 @@ class JobPostingForCompanyProvider with ChangeNotifier {
     jobPosting = JobPosting(location: Location());
   }
 
-  onInitForJobPostingDetail(String? id, {JobPosting? jobP}) async {
+  onInitForJobPostingDetail(String? id, {JobPosting? jobP, AuthProvider? authProvider}) async {
     startWorkDate = DateTime.now();
     endWorkDate = DateTime.now();
     startWorkingTime = DateTime(now.year, now.month, now.day, 8, 0, 0);
@@ -257,6 +258,14 @@ class JobPostingForCompanyProvider with ChangeNotifier {
     startBreakTime = DateTime(now.year, now.month, now.day, 12, 0, 0);
     endBreakTime = DateTime(now.year, now.month, now.day, 13, 0, 0);
     jobPosterProfile = [null];
+    if (authProvider != null) {
+      print("LatLng ${authProvider.branch?.lat}, ${authProvider.branch?.lng}");
+      if (authProvider.branch != null) {
+        if (authProvider.branch?.lat != null && authProvider.branch?.lat != null) {
+          latLong.text = "${authProvider.branch?.lat}, ${authProvider.branch?.lng}";
+        }
+      }
+    }
     jobPosting = jobP ?? await JobPostingApiService().getAJobPosting(id.toString());
     if (jobPosting != null) {
       initialTags = jobPosting?.limitGroupEmail ?? [];

@@ -29,6 +29,7 @@ class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
   TextEditingController postalCode = TextEditingController(text: "");
   TextEditingController location = TextEditingController(text: "");
   TextEditingController contactNumber = TextEditingController(text: "");
+  TextEditingController latlng = TextEditingController(text: "");
   DateTime date = DateTime.now();
   late AuthProvider authProvider;
   bool isLoading = false;
@@ -40,6 +41,7 @@ class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
     postalCode.dispose();
     location.dispose();
     contactNumber.dispose();
+    latlng.dispose();
     super.dispose();
   }
 
@@ -50,6 +52,9 @@ class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
       postalCode.text = widget.branch?.postalCode ?? "";
       location.text = widget.branch?.location ?? "";
       contactNumber.text = widget.branch?.contactNumber ?? "";
+      if (widget.branch?.lat != null && widget.branch?.lng != null) {
+        latlng.text = "${widget.branch?.lat}, ${widget.branch?.lng}";
+      }
     }
     super.initState();
   }
@@ -138,6 +143,21 @@ class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
                     ),
                   ],
                 ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Latitude and Longitude (Ex: 34.xxxxxxxx, 135.xxxxxxxx)", style: kNormalText.copyWith(fontSize: 12)),
+                    AppSize.spaceHeight5,
+                    SizedBox(
+                      width: AppSize.getDeviceWidth(context) * 0.8,
+                      child: PrimaryTextField(
+                        hint: "",
+                        controller: latlng,
+                        isRequired: false,
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
@@ -171,35 +191,42 @@ class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
   onSaveData() async {
     if (_formKey.currentState!.validate()) {
       try {
-        setState(() {
-          isLoading = true;
-        });
-        String companyId = authProvider.myCompany?.uid ?? "";
-        List<Branch> branchList = authProvider.myCompany?.branchList ?? [];
-        var branch = Branch(
-            contactNumber: contactNumber.text,
-            location: location.text,
-            postalCode: postalCode.text,
-            createdAt: date,
-            name: name.text,
-            id: DateTime.now().millisecondsSinceEpoch.toString());
-        if (widget.branch != null) {
-          branch.id = widget.branch?.id ?? widget.branch!.createdAt!.millisecondsSinceEpoch.toString();
-          branchList[widget.index!] = branch;
+        bool isInvalid = (latlng.text.isNotEmpty && !latlng.text.contains(", "));
+        if (isInvalid) {
+          toastMessageError("無効な緯度と経度 (形式は \"34.xxxxxxxx、135.xxxxxxxx\" である必要があります)", context);
         } else {
-          branchList.add(branch);
-        }
-        String? isSuccess = await CompanyApiServices().updateCompanyBranchInfo(companyId, branchList);
-        setState(() {
-          isLoading = false;
-        });
-        if (isSuccess == ConstValue.success) {
-          Company? company = await CompanyApiServices().getACompany(companyId);
-          authProvider.onChangeCompany(company, branch: widget.branch != null ? branch : null);
-          toastMessageSuccess(widget.branch != null ? JapaneseText.successUpdate : JapaneseText.successCreate, context);
-          Navigator.pop(context, true);
-        } else {
-          toastMessageSuccess(widget.branch != null ? JapaneseText.failUpdate : JapaneseText.failCreate, context);
+          setState(() {
+            isLoading = true;
+          });
+          String companyId = authProvider.myCompany?.uid ?? "";
+          List<Branch> branchList = authProvider.myCompany?.branchList ?? [];
+          var branch = Branch(
+              contactNumber: contactNumber.text,
+              location: location.text,
+              postalCode: postalCode.text,
+              createdAt: date,
+              name: name.text,
+              lat: latlng.text.isEmpty ? null : latlng.text.split(", ")[0],
+              lng: latlng.text.isEmpty ? null : latlng.text.split(", ")[1],
+              id: DateTime.now().millisecondsSinceEpoch.toString());
+          if (widget.branch != null) {
+            branch.id = widget.branch?.id ?? widget.branch!.createdAt!.millisecondsSinceEpoch.toString();
+            branchList[widget.index!] = branch;
+          } else {
+            branchList.add(branch);
+          }
+          String? isSuccess = await CompanyApiServices().updateCompanyBranchInfo(companyId, branchList);
+          setState(() {
+            isLoading = false;
+          });
+          if (isSuccess == ConstValue.success) {
+            Company? company = await CompanyApiServices().getACompany(companyId);
+            authProvider.onChangeCompany(company, branch: widget.branch != null ? branch : null);
+            toastMessageSuccess(widget.branch != null ? JapaneseText.successUpdate : JapaneseText.successCreate, context);
+            Navigator.pop(context, true);
+          } else {
+            toastMessageSuccess(widget.branch != null ? JapaneseText.failUpdate : JapaneseText.failCreate, context);
+          }
         }
       } catch (e) {
         setState(() {

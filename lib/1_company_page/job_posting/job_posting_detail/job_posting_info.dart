@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:air_job_management/providers/company/job_posting.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
@@ -544,28 +546,34 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
 
   String selectedLatLng = "";
 
-  onChangeCamera(String v) {
+  onChangeCamera(String v) async {
     if (v.toString().contains(", ")) {
       setState(() {
         scanScroll = true;
       });
+      final GoogleMapController controller = await _controller1.future;
       LatLng latLng = LatLng(double.parse(v.split(", ")[0]), double.parse(v.split(", ")[1]));
-      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: latLng, zoom: 16)));
+      controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: latLng, zoom: 16)));
       setState(() {
         scanScroll = false;
       });
     }
   }
 
-  late GoogleMapController mapController;
-  late GoogleMapController mapController2;
+  // late GoogleMapController mapController;
+  // late GoogleMapController mapController2;
+  final Completer<GoogleMapController> _controller1 = Completer<GoogleMapController>();
+  final Completer<GoogleMapController> _controller2 = Completer<GoogleMapController>();
   bool scanScroll = false;
   buildMap(bool isScroll) {
-    var latLng = LatLng(35.6779346605152, 139.7681053353878);
+    var latLng;
     if (provider.latLong.text.isNotEmpty) {
       var v = provider.latLong.text;
       latLng = LatLng(double.parse(v.split(", ")[0]), double.parse(v.split(", ")[1]));
+    } else {
+      latLng = LatLng(35.6779346605152, 139.7681053353878);
     }
+    print("LatLng is $latLng");
     return Stack(
       children: [
         SizedBox(
@@ -576,10 +584,11 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
             mapType: MapType.terrain,
             initialCameraPosition: CameraPosition(target: latLng, zoom: 15),
             onMapCreated: (controller) {
+              print("On map created");
               if (isScroll) {
-                mapController2 = controller;
+                _controller2.complete(controller);
               } else {
-                mapController = controller;
+                _controller1.complete(controller);
               }
             },
             onCameraMove: (pos) {

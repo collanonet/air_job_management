@@ -34,7 +34,7 @@ class EntryListDataSource extends DataTableSource {
         style: kNormalText,
       )),
       DataCell(Text(
-        entry.isLate == true ? "Late" : "No",
+        entry.isLate == true ? "遅い" : "良い",
         style: kNormalText,
       )),
       DataCell(Text(
@@ -46,7 +46,11 @@ class EntryListDataSource extends DataTableSource {
         style: kNormalText,
       )),
       DataCell(Text(
-        "${entry.endWorkingTime!.isEmpty ? "Working" : "Completed"}",
+        entry.startWorkingTime.toString().isNotEmpty && entry.endWorkingTime.toString().isEmpty
+            ? "仕事"
+            : entry.startWorkingTime.toString().isEmpty
+                ? "不在"
+                : "勤務外",
         style: kNormalText,
       )),
     ]);
