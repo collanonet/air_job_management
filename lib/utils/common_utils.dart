@@ -13,15 +13,25 @@ class CommonUtils {
     List<DateTime> dateRange = [];
 
     // Iterate through the dates between start and end dates
-    for (var i = startDate; i.isBefore(endDate) || i.isAtSameMomentAs(endDate); i = i.add(Duration(days: 1))) {
+    for (var i = startDate;
+        i.isBefore(endDate) || i.isAtSameMomentAs(endDate);
+        i = i.add(Duration(days: 1))) {
       dateRange.add(i);
     }
 
     return dateRange;
   }
 
-  static bool isDateInRange(DateTime date, DateTime startDate, DateTime endDate) {
-    return date.isAfter(startDate) && date.isBefore(endDate);
+  // static bool isDateInRange(
+  //     DateTime date, DateTime startDate, DateTime endDate) {
+  //   return date.isAfter(startDate) && date.isBefore(endDate);
+  // }
+
+  static bool isDateInRange(
+      DateTime date, DateTime startDate, DateTime endDate) {
+    return date.isAfter(startDate) && date.isBefore(endDate) ||
+        date.isAtSameMomentAs(startDate) ||
+        date.isAtSameMomentAs(endDate);
   }
 
   static isTheSameDate(DateTime? d, DateTime? d2) {
@@ -103,7 +113,9 @@ class CommonUtils {
     return Container(
       height: 30,
       decoration: BoxDecoration(
-        color: request.isHoliday == true ? const Color(0xff98A6B5) : AppColor.seaColor,
+        color: request.isHoliday == true
+            ? const Color(0xff98A6B5)
+            : AppColor.seaColor,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Center(
@@ -120,7 +132,9 @@ class CommonUtils {
       return Container(
         height: 25,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-        decoration: BoxDecoration(color: backgroundColorStatusFromApiToLocal(status), border: Border.all(width: 1, color: const Color(0xff98A6B5))),
+        decoration: BoxDecoration(
+            color: backgroundColorStatusFromApiToLocal(status),
+            border: Border.all(width: 1, color: const Color(0xff98A6B5))),
         child: Center(
           child: displayStatusText(status),
         ),
@@ -129,7 +143,8 @@ class CommonUtils {
       return Container(
         height: 25,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-        decoration: BoxDecoration(color: backgroundColorStatusFromApiToLocal(status)),
+        decoration:
+            BoxDecoration(color: backgroundColorStatusFromApiToLocal(status)),
         child: Center(
           child: displayStatusText(status),
         ),
@@ -141,7 +156,8 @@ class CommonUtils {
     if (status == "canceled" || status == "rejected") {
       return Text(
         statusFromApiToLocal(status),
-        style: kNormalText.copyWith(fontSize: 12, color: const Color(0xff98A6B5)),
+        style:
+            kNormalText.copyWith(fontSize: 12, color: const Color(0xff98A6B5)),
       );
     } else {
       return Text(

@@ -35,7 +35,8 @@ class EntryListDataSource extends DataTableSource {
       )),
       DataCell(Text(
         entry.isLate == true ? "遅い" : "良い",
-        style: kNormalText,
+        style: kNormalText.copyWith(
+            color: entry.isLate == true ? Colors.red : Colors.green),
       )),
       DataCell(Text(
         "${entry.scheduleStartWorkingTime}",
@@ -46,12 +47,19 @@ class EntryListDataSource extends DataTableSource {
         style: kNormalText,
       )),
       DataCell(Text(
-        entry.startWorkingTime.toString().isNotEmpty && entry.endWorkingTime.toString().isEmpty
+        entry.startWorkingTime.toString().isNotEmpty &&
+                entry.endWorkingTime.toString().isEmpty
             ? "仕事"
             : entry.startWorkingTime.toString().isEmpty
                 ? "不在"
                 : "勤務外",
-        style: kNormalText,
+        style: kNormalText.copyWith(
+            color: entry.startWorkingTime.toString().isNotEmpty &&
+                    entry.endWorkingTime.toString().isEmpty
+                ? Colors.orangeAccent
+                : entry.startWorkingTime.toString().isEmpty
+                    ? Colors.red
+                    : Colors.green),
       )),
     ]);
   }

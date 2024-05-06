@@ -20,10 +20,12 @@ class EntryExitHistoryListPage extends StatefulWidget {
   const EntryExitHistoryListPage({super.key});
 
   @override
-  State<EntryExitHistoryListPage> createState() => _EntryExitHistoryListPageState();
+  State<EntryExitHistoryListPage> createState() =>
+      _EntryExitHistoryListPageState();
 }
 
-class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> with AfterBuildMixin {
+class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage>
+    with AfterBuildMixin {
   late EntryExitHistoryProvider provider;
   late AuthProvider authProvider;
   int _currentPage = 1;
@@ -31,7 +33,8 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> wit
 
   @override
   void initState() {
-    Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading = true;
+    Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading =
+        true;
     Provider.of<EntryExitHistoryProvider>(context, listen: false).initData();
     super.initState();
   }
@@ -64,7 +67,7 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> wit
       );
     } else {
       return Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Column(
           children: [
             AppSize.spaceHeight16,
@@ -72,10 +75,6 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> wit
               child: SizedBox(
                 width: AppSize.getDeviceWidth(context),
                 child: PaginatedDataTable(
-                  header: Text(
-                    'Entry Exit History',
-                    style: kTitleText,
-                  ),
                   rowsPerPage: _pageSize,
                   availableRowsPerPage: const [10, 25, 50],
                   onRowsPerPageChanged: (value) {
@@ -129,64 +128,6 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> wit
                 ),
               ),
             ),
-            // ListView.builder(
-            //     shrinkWrap: true,
-            //     itemCount: provider.entryList.length,
-            //     itemBuilder: (context, index) {
-            //       var entry = provider.entryList[index];
-            //       return Row(
-            //         children: [
-            //           Expanded(
-            //               flex: 1,
-            //               child: Text(
-            //                 "${entry.workDate}",
-            //                 style: kNormalText,
-            //               )),
-            //           Expanded(
-            //               flex: 2,
-            //               child: Text(
-            //                 "${entry.jobTitle}",
-            //                 style: kNormalText,
-            //               )),
-            //           Expanded(
-            //               flex: 1,
-            //               child: Text(
-            //                 "${entry.startWorkingTime}",
-            //                 style: kNormalText,
-            //               )),
-            //           Expanded(
-            //               flex: 1,
-            //               child: Text(
-            //                 "${entry.endWorkingTime}",
-            //                 style: kNormalText,
-            //               )),
-            //           Expanded(
-            //               flex: 1,
-            //               child: Text(
-            //                 entry.isLate == true ? "Late" : "No",
-            //                 style: kNormalText,
-            //               )),
-            //           Expanded(
-            //               flex: 1,
-            //               child: Text(
-            //                 "${entry.scheduleStartWorkingTime}",
-            //                 style: kNormalText,
-            //               )),
-            //           Expanded(
-            //               flex: 1,
-            //               child: Text(
-            //                 "${entry.scheduleEndWorkingTime}",
-            //                 style: kNormalText,
-            //               )),
-            //           Expanded(
-            //               flex: 1,
-            //               child: Text(
-            //                 "",
-            //                 style: kNormalText,
-            //               )),
-            //         ],
-            //       );
-            //     }),
           ],
         ),
       );
