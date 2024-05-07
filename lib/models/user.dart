@@ -1,5 +1,7 @@
 import 'package:air_job_management/utils/japanese_text.dart';
 
+import 'job_posting.dart';
+
 class MyUser {
   String? balance;
   String? rating;
@@ -51,9 +53,11 @@ class MyUser {
   String? passport_url;
   String? resident_record_url;
   String? number_card_url;
+  List<Review>? reviews;
 
   MyUser(
       {this.affiliation,
+      this.reviews,
       this.qualificationFields,
       this.jobStatus,
       this.messageList,
@@ -142,6 +146,7 @@ class MyUser {
       jobDetail: json["job_detail"] ?? "",
       jobId: json["job_id"] ?? "",
       jobTitle: json["job_title"] ?? "",
+      reviews: json["review"] != null ? List<Review>.from(json["review"].map((e) => Review.fromJson(e))) : [],
       messageList: json["message_list"] != null ? List<String>.from(json["message_list"].map((e) => e)) : [],
       hash_password: json["hash_password"],
       interviewDate: json["interviewDate"] ?? "",
@@ -156,6 +161,7 @@ class MyUser {
   }
 
   Map<String, dynamic> toJson() => {
+        "review": reviews != null ? reviews!.map((e) => e.toJson()) : [],
         "address": address,
         "driver_license_url": driver_license_url,
         "resident_record_url": resident_record_url,

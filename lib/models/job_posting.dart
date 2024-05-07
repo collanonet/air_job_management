@@ -929,20 +929,20 @@ class Review {
   String? id;
   String? name;
   String? rate;
-
   Review({
     this.comment,
     this.id,
     this.name,
     this.rate,
   });
-
-  factory Review.fromJson(Map<String, dynamic> json) => Review(
-        comment: json["comment"],
-        id: json["id"],
-        name: json["name"],
-        rate: json["rate"],
-      );
+  factory Review.fromJson(Map<String, dynamic> json) {
+    return Review(
+      comment: json["comment"].toString(),
+      id: json["id"].toString(),
+      name: json["name"].toString(),
+      rate: json["rate"].toString(),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "comment": comment,

@@ -1,3 +1,7 @@
+import 'package:air_job_management/models/user.dart';
+
+import 'job_posting.dart';
+
 class EntryExitHistory {
   String? workingMinuteuid;
   String? startWorkingTime;
@@ -24,9 +28,13 @@ class EntryExitHistory {
   int? leaveEarlyMinute;
   int? leaveEarlyHour;
   String? breakTime;
+  Review? review;
+  MyUser? myUser;
 
   EntryExitHistory(
       {this.uid,
+      this.myUser,
+      this.review,
       this.companyId,
       this.userId,
       this.createdAt,
@@ -52,6 +60,7 @@ class EntryExitHistory {
       this.breakTime});
 
   factory EntryExitHistory.fromJson(Map<String, dynamic> json) => EntryExitHistory(
+        review: json["review"] != null ? Review.fromJson(json["review"]) : null,
         breakTime: json["breakTime"] ?? "",
         leaveEarlyHour: json["leaveEarlyHour"],
         leaveEarlyMinute: json["leaveEarlyMinute"],
@@ -78,6 +87,7 @@ class EntryExitHistory {
       );
 
   Map<String, dynamic> toJson() => {
+        "review": review != null ? review!.toJson() : null,
         "breakTime": breakTime,
         "leaveEarlyHour": leaveEarlyHour,
         "leaveEarlyMinute": leaveEarlyMinute,

@@ -557,6 +557,8 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (_) => EntryExitHistoryProvider()),
           ],
           child: MaterialApp.router(
+            scrollBehavior: MyCustomScrollBehavior(), // <== add here
+
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
