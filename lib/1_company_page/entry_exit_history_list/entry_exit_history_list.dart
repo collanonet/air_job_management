@@ -24,10 +24,12 @@ class EntryExitHistoryListPage extends StatefulWidget {
   const EntryExitHistoryListPage({super.key});
 
   @override
-  State<EntryExitHistoryListPage> createState() => _EntryExitHistoryListPageState();
+  State<EntryExitHistoryListPage> createState() =>
+      _EntryExitHistoryListPageState();
 }
 
-class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> with AfterBuildMixin {
+class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage>
+    with AfterBuildMixin {
   late EntryExitHistoryProvider provider;
   late AuthProvider authProvider;
   int _currentPage = 1;
@@ -36,7 +38,8 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> wit
 
   @override
   void initState() {
-    Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading = true;
+    Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading =
+        true;
     Provider.of<EntryExitHistoryProvider>(context, listen: false).initData();
     super.initState();
   }
@@ -52,9 +55,11 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> wit
           const FilterEntryExitList(),
           AppSize.spaceHeight16,
           Expanded(
-            child: Container(
-              decoration: boxDecoration,
-              child: buildList(),
+            child: SingleChildScrollView(
+              child: Container(
+                decoration: boxDecoration,
+                child: buildList(),
+              ),
             ),
           )
         ],
@@ -70,82 +75,78 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> wit
     } else {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
-        child: Column(
-          children: [
-            AppSize.spaceHeight16,
-            Expanded(
-              child: Scrollbar(
-                controller: scrollController,
-                isAlwaysShown: true,
-                child: SizedBox(
-                  width: AppSize.getDeviceWidth(context),
-                  child: PaginatedDataTable(
-                    controller: scrollController,
-                    rowsPerPage: _pageSize,
-                    availableRowsPerPage: const [10, 25, 50],
-                    onRowsPerPageChanged: (value) {
-                      setState(() {
-                        _pageSize = value!;
-                      });
-                    },
-                    columns: [
-                      DataColumn(
-                          label: Text(
-                        "日付",
-                        style: kNormalText.copyWith(fontFamily: "Bold"),
-                      )),
-                      DataColumn(
-                          label: Text(
-                        "役職",
-                        style: kNormalText.copyWith(fontFamily: "Bold"),
-                      )),
-                      DataColumn(
-                          label: Text(
-                        "勤務開始時間",
-                        style: kNormalText.copyWith(fontFamily: "Bold"),
-                      )),
-                      DataColumn(
-                          label: Text(
-                        "勤務終了時間",
-                        style: kNormalText.copyWith(fontFamily: "Bold"),
-                      )),
-                      DataColumn(
-                          label: Text(
-                        "遅い",
-                        style: kNormalText.copyWith(fontFamily: "Bold"),
-                      )),
-                      DataColumn(
-                          label: Text(
-                        "シフト開始勤務時間",
-                        style: kNormalText.copyWith(fontFamily: "Bold"),
-                      )),
-                      DataColumn(
-                          label: Text(
-                        "シフト終了勤務時間",
-                        style: kNormalText.copyWith(fontFamily: "Bold"),
-                      )),
-                      DataColumn(
-                          label: Text(
-                        "状態",
-                        style: kNormalText.copyWith(fontFamily: "Bold"),
-                      )),
-                      DataColumn(
-                          label: Text(
-                        "評価",
-                        style: kNormalText.copyWith(fontFamily: "Bold"),
-                      )),
-                      DataColumn(
-                          label: Text(
-                        "フィードバック",
-                        style: kNormalText.copyWith(fontFamily: "Bold"),
-                      )),
-                    ],
-                    source: EntryListDataSource(data: provider.entryList, ratting: (entry) => showRatingDialog(entry)),
-                  ),
-                ),
-              ),
+        child: Scrollbar(
+          controller: scrollController,
+          isAlwaysShown: true,
+          child: SizedBox(
+            width: AppSize.getDeviceWidth(context),
+            height: AppSize.getDeviceHeight(context) * 0.9,
+            child: PaginatedDataTable(
+              controller: scrollController,
+              rowsPerPage: _pageSize,
+              availableRowsPerPage: const [10, 25, 50],
+              onRowsPerPageChanged: (value) {
+                setState(() {
+                  _pageSize = value!;
+                });
+              },
+              columns: [
+                DataColumn(
+                    label: Text(
+                  "日付",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "役職",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "勤務開始時間",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "勤務終了時間",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "遅い",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "シフト開始勤務時間",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "シフト終了勤務時間",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "状態",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "評価",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "フィードバック",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+              ],
+              source: EntryListDataSource(
+                  data: provider.entryList,
+                  ratting: (entry) => showRatingDialog(entry)),
             ),
-          ],
+          ),
         ),
       );
     }
@@ -159,8 +160,13 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> wit
               entryExitHistory: entryExitHistory,
               onRate: (rate, comment) async {
                 Navigator.pop(context);
-                Review review = Review(rate: rate.toString(), comment: comment, id: entryExitHistory.companyId, name: entryExitHistory.companyName);
-                await EntryExitApiService().updateReview(entryExitHistory.uid!, entryExitHistory.userId ?? "", review);
+                Review review = Review(
+                    rate: rate.toString(),
+                    comment: comment,
+                    id: entryExitHistory.companyId,
+                    name: entryExitHistory.companyName);
+                await EntryExitApiService().updateReview(entryExitHistory.uid!,
+                    entryExitHistory.userId ?? "", review);
                 onGetData();
               });
         });
