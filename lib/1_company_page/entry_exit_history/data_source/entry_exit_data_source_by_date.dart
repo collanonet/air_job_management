@@ -1,5 +1,6 @@
 import 'package:air_job_management/models/entry_calendar_by_user.dart';
 import 'package:air_job_management/providers/company/entry_exit_history.dart';
+import 'package:air_job_management/utils/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -8,11 +9,15 @@ import '../../../utils/style.dart';
 class EntryExitHistoryDataSourceByDate extends DataGridSource {
   // ignore: non_constant_identifier_names
   /// Creates the employee data source class with required details.
-  EntryExitHistoryDataSourceByDate({required EntryExitHistoryProvider provider, required this.onTap}) {
-    _employeeData.add(DataGridRow(
-        cells: provider.entryCalendarList.map((e) {
-      return DataGridCell<EntryCalendarByUserList>(columnName: e.date.toString(), value: e);
-    }).toList()));
+  EntryExitHistoryDataSourceByDate(
+      {required EntryExitHistoryProvider provider, required this.onTap}) {
+    for (var entry in provider.entryExitCalendarByUser) {
+      _employeeData.add(DataGridRow(
+          cells: entry.list.map((e) {
+        return DataGridCell<Entry>(
+            columnName: e.date.toString(), value: e.entry);
+      }).toList()));
+    }
   }
   final Function onTap;
   List<DataGridRow> _employeeData = [];
@@ -24,30 +29,41 @@ class EntryExitHistoryDataSourceByDate extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((e) {
-      EntryCalendarByUserList list = e.value as EntryCalendarByUserList;
-      var entryByDate = list.list!.length > 0 ? list.list![0] : null;
-      return entryByDate == null
-          ? SizedBox()
-          : Column(
+      Entry? entryByDate = e.value;
+      return entryByDate != null
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                displayDateWidget(
                   "${entryByDate.totalOvertime}",
-                  style: kNormalText,
                 ),
-                Text(
+                displayDateWidget(
                   "${entryByDate.nonStatutoryOvertime}",
-                  style: kNormalText,
                 ),
-                Text(
+                displayDateWidget(
                   "${entryByDate.withinLegal}",
-                  style: kNormalText,
                 ),
-                Text(
+                displayDateWidget(
                   "${entryByDate.holidayWork}",
-                  style: kNormalText,
                 ),
               ],
-            );
+            )
+          : const SizedBox();
     }).toList());
   }
+}
+
+displayDateWidget(String data, {double? width, double? height}) {
+  return Container(
+    width: width ?? 46,
+    height: height ?? 30,
+    decoration: BoxDecoration(
+        border: Border.all(width: 0.5, color: AppColor.greyColor)),
+    child: Center(
+      child: Text(
+        data,
+        style: kNormalText.copyWith(fontSize: 12),
+      ),
+    ),
+  );
 }

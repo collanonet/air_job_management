@@ -1,14 +1,19 @@
 import 'package:air_job_management/models/user.dart';
 
-class EntryCalendarByUserList {
-  DateTime date;
-  List<EntryCalendarByUser>? list;
-
-  EntryCalendarByUserList({required this.date, this.list});
+class EntryExitCalendarByUser {
+  String? userName;
+  List<EntryCalendarByUserDate> list;
+  EntryExitCalendarByUser({required this.userName, required this.list});
 }
 
-class EntryCalendarByUser {
+class EntryCalendarByUserDate {
   DateTime date;
+  Entry? entry;
+
+  EntryCalendarByUserDate({required this.date, this.entry});
+}
+
+class Entry {
   String? userName;
   String? nonStatutoryOvertime;
   String? totalOvertime;
@@ -18,9 +23,8 @@ class EntryCalendarByUser {
   MyUser? myUser;
   String? entryId;
 
-  EntryCalendarByUser(
-      {required this.date,
-      this.userName = "",
+  Entry(
+      {this.userName = "",
       this.myUser,
       this.entryId,
       this.nonStatutoryOvertime = "",
