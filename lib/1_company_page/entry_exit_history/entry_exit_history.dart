@@ -1,3 +1,4 @@
+import 'package:air_job_management/1_company_page/entry_exit_history/data_source/entry_exit_data_source_by_date.dart';
 import 'package:air_job_management/1_company_page/entry_exit_history/widget/filter.dart';
 import 'package:air_job_management/models/entry_exit_history.dart';
 import 'package:air_job_management/providers/auth.dart';
@@ -27,7 +28,7 @@ class EntryExitHistoryPage extends StatefulWidget {
 class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterBuildMixin {
   late EntryExitHistoryProvider provider;
   late EntryExitHistoryDataSource entryExitHistoryDataSource;
-  late EntryExitHistoryDataSourceByDay entryExitHistoryDataSourceByDay;
+  late EntryExitHistoryDataSourceByDate entryExitHistoryDataSourceByDate;
   late AuthProvider authProvider;
   Branch? branch;
 
@@ -35,6 +36,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
   void initState() {
     Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading = true;
     Provider.of<EntryExitHistoryProvider>(context, listen: false).initData();
+    entryExitHistoryDataSourceByDate =
+        EntryExitHistoryDataSourceByDate(provider: Provider.of<EntryExitHistoryProvider>(context, listen: false), onTap: () {});
     super.initState();
   }
 
@@ -93,7 +96,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
               topRight: Radius.circular(provider.selectDisplay == provider.displayList[1] ? 6 : 0)),
           onTap: () {
             entryExitHistoryDataSource = EntryExitHistoryDataSource(employeeData: provider.entryList);
-            entryExitHistoryDataSourceByDay = EntryExitHistoryDataSourceByDay(provider: provider);
+            entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
             provider.onChangeDisplay(title);
           },
           child: Center(
@@ -226,20 +229,40 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
         ),
         AppSize.spaceHeight16,
         SfDataGrid(
-            source: entryExitHistoryDataSourceByDay,
+            source: entryExitHistoryDataSourceByDate,
             columnWidthMode: ColumnWidthMode.fill,
             isScrollbarAlwaysShown: false,
             rowHeight: 45,
-            headerRowHeight: 45,
+            headerRowHeight: 65,
             shrinkWrapRows: true,
             shrinkWrapColumns: true,
-            gridLinesVisibility: GridLinesVisibility.both,
-            headerGridLinesVisibility: GridLinesVisibility.both,
-            // horizontalScrollController: scrollController1,
-            horizontalScrollPhysics: AlwaysScrollableScrollPhysics(),
-            verticalScrollPhysics: AlwaysScrollableScrollPhysics(),
-            columns:
-                provider.dateList.map((e) => GridColumn(width: 45, label: Center(child: Text("${e.day.toString()}")), columnName: '$e')).toList())
+            gridLinesVisibility: GridLinesVisibility.none,
+            headerGridLinesVisibility: GridLinesVisibility.none,
+            // horizontalScrollController: scrollControllerForShiftPerDay,
+            horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+            verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+            columns: provider.entryCalendarList.map((e) {
+              return GridColumn(
+                  width: 80,
+                  label: Center(
+                      child: Column(
+                    children: [
+                      Text(e.date.day.toString()),
+                      Container(
+                        width: 78,
+                        height: 23,
+                        margin: const EdgeInsets.symmetric(vertical: 5),
+                        color: (e.date.weekday == 6 || e.date.weekday == 7) ? Colors.redAccent.withOpacity(0.1) : Colors.blue.withOpacity(0.1),
+                        alignment: Alignment.center,
+                        child: Text(
+                          toJapanWeekDayWithInt(e.date.weekday),
+                          style: kNormalText.copyWith(fontSize: 10),
+                        ),
+                      ),
+                    ],
+                  )),
+                  columnName: e.date.toString());
+            }).toList())
       ],
     );
   }
@@ -417,7 +440,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
         authProvider.onChangeCompany(company);
         await provider.getEntryData(company!.uid!);
         entryExitHistoryDataSource = EntryExitHistoryDataSource(employeeData: provider.entryList);
-        entryExitHistoryDataSourceByDay = EntryExitHistoryDataSourceByDay(provider: provider);
+        entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
         if (authProvider.myCompany?.branchList != []) {
           branch = authProvider.myCompany?.branchList!.first;
         }
@@ -428,7 +451,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
       String id = authProvider.myCompany?.uid ?? "";
       await provider.getEntryData(id);
       entryExitHistoryDataSource = EntryExitHistoryDataSource(employeeData: provider.entryList);
-      entryExitHistoryDataSourceByDay = EntryExitHistoryDataSourceByDay(provider: provider);
+      entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
       if (authProvider.myCompany?.branchList != []) {
         branch = authProvider.myCompany?.branchList!.first;
       }
@@ -473,43 +496,6 @@ class EntryExitHistoryDataSource extends DataGridSource {
         alignment: Alignment.center,
         padding: const EdgeInsets.all(8.0),
         child: Text(e.value.toString()),
-      );
-    }).toList());
-  }
-}
-
-class EntryExitHistoryDataSourceByDay extends DataGridSource {
-  // ignore: non_constant_identifier_names
-  /// Creates the employee data source class with required details.
-  EntryExitHistoryDataSourceByDay({required EntryExitHistoryProvider provider}) {
-    _employeeData = [
-      DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
-      DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
-      DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
-      DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
-      DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
-      DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
-      DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
-      DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
-      DataGridRow(cells: provider.dateList.map((e) => DataGridCell<String>(columnName: '$e', value: "07:00")).toList()),
-    ];
-  }
-
-  List<DataGridRow> _employeeData = [];
-
-  @override
-  List<DataGridRow> get rows => _employeeData;
-
-  @override
-  DataGridRowAdapter buildRow(DataGridRow row) {
-    return DataGridRowAdapter(
-        cells: row.getCells().map<Widget>((e) {
-      return Container(
-        alignment: Alignment.center,
-        child: Text(
-          e.value.toString(),
-          style: kNormalText.copyWith(fontSize: 11),
-        ),
       );
     }).toList());
   }

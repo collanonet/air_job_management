@@ -18,6 +18,11 @@ class EntryExitHistory {
   String? companyName;
   String? userId;
   String? amount;
+  String? overtime;
+  String? nonStatutoryOvertime;
+  String? overtimeWithinLegalLimit;
+  String? holidayWork;
+  bool? isHolidayWork;
   String? uid;
   int? workingHour;
   int? workingMinute;
@@ -57,9 +62,20 @@ class EntryExitHistory {
       this.latHour,
       this.leaveEarlyHour,
       this.leaveEarlyMinute,
-      this.breakTime});
+      this.breakTime,
+      this.holidayWork,
+      this.isHolidayWork,
+      this.overtime,
+      this.overtimeWithinLegalLimit,
+      this.workingMinuteuid,
+      this.nonStatutoryOvertime});
 
   factory EntryExitHistory.fromJson(Map<String, dynamic> json) => EntryExitHistory(
+        nonStatutoryOvertime: json["nonStatutoryOvertime"] ?? "00:00",
+        holidayWork: json["holidayWork"] ?? "00:00",
+        overtime: json["overtime"] ?? "00:00",
+        overtimeWithinLegalLimit: json["overtimeWithinLegalLimit"] ?? "00:00",
+        isHolidayWork: json["isHolidayWork"] ?? false,
         review: json["review"] != null ? Review.fromJson(json["review"]) : null,
         breakTime: json["breakTime"] ?? "",
         leaveEarlyHour: json["leaveEarlyHour"],
@@ -87,6 +103,11 @@ class EntryExitHistory {
       );
 
   Map<String, dynamic> toJson() => {
+        "overtime": overtime,
+        "nonStatutoryOvertime": nonStatutoryOvertime,
+        "overtimeWithinLegalLimit": overtimeWithinLegalLimit,
+        "holidayWork": holidayWork,
+        "isHolidayWork": isHolidayWork,
         "review": review != null ? review!.toJson() : null,
         "breakTime": breakTime,
         "leaveEarlyHour": leaveEarlyHour,

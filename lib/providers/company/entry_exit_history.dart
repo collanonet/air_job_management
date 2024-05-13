@@ -1,8 +1,10 @@
 import 'package:air_job_management/api/entry_exit.dart';
+import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/utils/common_utils.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../models/entry_calendar_by_user.dart';
 import '../../models/entry_exit_history.dart';
 import '../../utils/japanese_text.dart';
 
@@ -14,6 +16,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
   DateTime startDay = DateTime.now();
   DateTime endDay = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
   List<DateTime> dateList = [];
+  List<EntryCalendarByUserList> entryCalendarList = [];
 
   String? selectedJobTitle;
   List<String> jobTitleList = [JapaneseText.all];
@@ -35,8 +38,11 @@ class EntryExitHistoryProvider with ChangeNotifier {
     dateList = [];
     startDay = DateTime.now();
     endDay = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
+    entryCalendarList.clear();
     for (int i = 1; i < endDay.day + 1; i++) {
-      dateList.add(DateTime(endDay.year, endDay.month, i));
+      var date = DateTime(endDay.year, endDay.month, i);
+      dateList.add(date);
+      entryCalendarList.add(EntryCalendarByUserList(date: date));
     }
   }
 
@@ -78,8 +84,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
     if (startWorkDate != null && endWorkDate != null) {
       for (var job in afterFilterSelectJobTitle) {
         DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
-        bool isWithin =
-            CommonUtils.isDateInRange(workDate, startWorkDate!, endWorkDate!);
+        bool isWithin = CommonUtils.isDateInRange(workDate, startWorkDate!, endWorkDate!);
         if (isWithin) {
           afterFilterRangeDate.add(job);
         }
@@ -111,11 +116,41 @@ class EntryExitHistoryProvider with ChangeNotifier {
   getEntryData(String id) async {
     companyId = id;
     entryList = await EntryExitApiService().getAllEntryList(id);
+    List<String> userIdList = entryList.map((e) => e.userId!).toList().toSet().toList();
+    var userData = await Future.wait([for (var id in userIdList) UserApiServices().getProfileUser(id)]);
+    for (var entry in entryList) {
+      for (var user in userData) {
+        if (user!.uid == entry.userId) {
+          entry.myUser = user;
+          break;
+        }
+      }
+    }
     jobTitleList = [JapaneseText.all];
     for (var job in entryList) {
       jobTitleList.add(job.jobTitle.toString());
     }
     jobTitleList = jobTitleList.toSet().toList();
     onChangeLoading(false);
+  }
+
+  mapDataForCalendarByUser() {
+    for (var calendar in entryCalendarList) {
+      for (var entry in entryList) {
+        var workDate = DateToAPIHelper.fromApiToLocal(entry.workDate!);
+        if (CommonUtils.isTheSameDate(workDate, calendar.date)) {
+          calendar.list!.add(EntryCalendarByUser(
+              date: workDate,
+              myUser: entry.myUser,
+              workingHour: "${entry.workingHour}:${entry.workingMinute}",
+              entryId: entry.uid,
+              holidayWork: "${entry.holidayWork}",
+              nonStatutoryOvertime: "${entry.nonStatutoryOvertime}",
+              totalOvertime: "${entry.overtime}",
+              userName: "${entry.myUser?.nameKanJi}",
+              withinLegal: "${entry.overtimeWithinLegalLimit}"));
+        }
+      }
+    }
   }
 }
