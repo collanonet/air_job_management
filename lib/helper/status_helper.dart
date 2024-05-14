@@ -4,7 +4,7 @@ import 'package:air_job_management/utils/style.dart';
 import 'package:flutter/material.dart';
 
 class StatusHelper {
-  displayStatus(String? status) {
+  displayStatus(String status) {
     return Container(
       height: 40,
       width: 110,
@@ -21,22 +21,22 @@ class StatusHelper {
     );
   }
 
-  static checkRequestColor(String? status) {
-    if (status == "approved") {
+  static checkRequestColor(String status) {
+    if (status.contains("approved")) {
       return const Color(0xff6DC9E5);
-    } else if (status == "canceled" || status == "rejected") {
+    } else if (status.contains("canceled") || status.contains("rejected")) {
       return Colors.redAccent;
     } else {
       return AppColor.primaryColor;
     }
   }
 
-  static englishToJapan(String? status) {
-    if (status == "approved") {
+  static englishToJapan(String status) {
+    if (status.contains("approved")) {
       return JapaneseText.hired;
-    } else if (status == "canceled") {
+    } else if (status.contains("canceled") || status.contains("rejected")) {
       return JapaneseText.canceled;
-    } else if (status == "pending") {
+    } else if (status.contains("pending")) {
       return JapaneseText.pending;
     } else {
       return JapaneseText.pending;

@@ -17,6 +17,23 @@ class EntryExitHistoryProvider with ChangeNotifier {
   DateTime endDay = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
   List<DateTime> dateList = [];
   List<EntryExitCalendarByUser> entryExitCalendarByUser = [];
+  List<String> rowHeaderTable = [
+ "日付",
+     "曜日",
+     "シフト",
+     "出勤",
+ "退勤",
+    "有休",
+    "遅刻",
+    "早退",
+    "実働",
+    "法定内",
+    "法定外",
+    "休日出勤",
+    "所労外",
+    "所労外累計",
+    "総勤務時間",
+  ];
 
   String? selectedJobTitle;
   List<String> jobTitleList = [JapaneseText.all];
@@ -64,8 +81,6 @@ class EntryExitHistoryProvider with ChangeNotifier {
 
   filterEntryExitHistory(String branchId) async {
     await getEntryData(companyId);
-    print("Entry data $companyId ${entryList.length}");
-
     ///Filter application by job title
     List<EntryExitHistory> afterFilterSelectJobTitle = [];
     if (selectedJobTitle != null && selectedJobTitle != JapaneseText.all) {
@@ -77,7 +92,6 @@ class EntryExitHistoryProvider with ChangeNotifier {
     } else {
       afterFilterSelectJobTitle = entryList;
     }
-    print("afterFilterSelectJobTitle ${afterFilterSelectJobTitle.length}");
     List<EntryExitHistory> afterFilterRangeDate = [];
     if (startWorkDate != null && endWorkDate != null) {
       for (var job in afterFilterSelectJobTitle) {
@@ -91,7 +105,6 @@ class EntryExitHistoryProvider with ChangeNotifier {
     } else {
       afterFilterRangeDate = afterFilterSelectJobTitle;
     }
-    print("afterFilterRangeDate ${afterFilterRangeDate.length}");
     entryList = afterFilterRangeDate;
     notifyListeners();
   }
@@ -142,9 +155,22 @@ class EntryExitHistoryProvider with ChangeNotifier {
   }
 
   mapDataForCalendarByUser() {
+    List<EntryExitHistory> afterFilterRangeDate = [];
+    if (startDay != null && endDay != null) {
+      for (var job in entryList) {
+        DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
+        bool isWithin =
+        CommonUtils.isDateInRange(workDate, startDay, endDay);
+        if (isWithin) {
+          afterFilterRangeDate.add(job);
+        }
+      }
+    } else {
+      afterFilterRangeDate = entryList;
+    }
     entryExitCalendarByUser.clear();
     List<String> nameList = [];
-    for (var entry in entryList) {
+    for (var entry in afterFilterRangeDate) {
       nameList.add(entry.myUser!.nameKanJi!);
     }
     nameList = nameList.toSet().toList();
@@ -157,7 +183,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
     }
     //Map data
     for (var entryByUser in entryExitCalendarByUser) {
-      for (var entry in entryList) {
+      for (var entry in afterFilterRangeDate) {
         if (entry.myUser!.nameKanJi == entryByUser.userName) {
           var workDate = DateToAPIHelper.fromApiToLocal(entry.workDate!);
           for (var entryDate in entryByUser.list) {
@@ -176,24 +202,5 @@ class EntryExitHistoryProvider with ChangeNotifier {
         }
       }
     }
-    // for (var calendar in entryCalendarList) {
-    //   for (var entry in entryList) {
-    //     var workDate = DateToAPIHelper.fromApiToLocal(entry.workDate!);
-    //     print("Date $workDate, ${calendar.date}");
-    //     if (CommonUtils.isTheSameDate(workDate, calendar.date)) {
-    //       calendar.list!.add(EntryCalendarByUser(
-    //           date: workDate,
-    //           myUser: entry.myUser,
-    //           workingHour: "${entry.workingHour}:${entry.workingMinute}",
-    //           entryId: entry.uid,
-    //           holidayWork: "${entry.holidayWork}",
-    //           nonStatutoryOvertime: "${entry.nonStatutoryOvertime}",
-    //           totalOvertime: "${entry.overtime}",
-    //           userName: "${entry.myUser?.nameKanJi}",
-    //           withinLegal: "${entry.overtimeWithinLegalLimit}"));
-    //     }
-    //   }
-    // }
-    // print("Entry calendar length ${entryCalendarList.length}");
   }
 }

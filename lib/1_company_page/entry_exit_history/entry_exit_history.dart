@@ -265,10 +265,10 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
         Row(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 60),
+              padding: const EdgeInsets.only(top: 65),
               child: SizedBox(
                 width: 180,
-                height: provider.entryExitCalendarByUser.length * 120,
+                height: provider.entryExitCalendarByUser.length * 125,
                 child: ListView.builder(
                     itemCount: provider.entryExitCalendarByUser.length,
                     shrinkWrap: true,
@@ -276,7 +276,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                     itemBuilder: (context, index) {
                       return Container(
                         padding: const EdgeInsets.only(bottom: 5),
-                        height: 120,
+                        height: 125,
                         width: 180,
                         child: Row(
                           children: [
@@ -295,13 +295,13 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                             Column(
                               children: [
                                 displayDateWidget("所定外",
-                                    width: 60, height: 28.5),
+                                    width: 60),
                                 displayDateWidget("法定外",
-                                    width: 60, height: 28.5),
+                                    width: 60),
                                 displayDateWidget("法定内",
-                                    width: 60, height: 28.5),
+                                    width: 60),
                                 displayDateWidget("休日出勤",
-                                    width: 60, height: 28.5)
+                                    width: 60)
                               ],
                             )
                           ],
@@ -391,155 +391,30 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
             columnWidthMode: ColumnWidthMode.fill,
             shrinkWrapRows: true,
             shrinkWrapColumns: true,
+            headerRowHeight: 30,
+            rowHeight: 35,
             gridLinesVisibility: GridLinesVisibility.both,
             headerGridLinesVisibility: GridLinesVisibility.both,
             horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
             verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
-            columns: <GridColumn>[
-              GridColumn(
-                  columnName: 'index',
-                  label: Container(
-                      padding: EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        overflow: TextOverflow.ellipsis,
-                        '日付',
-                        style: kNormalText,
-                      ))),
-              GridColumn(
-                  columnName: 'date',
-                  label: Container(
-                      padding: EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '曜日',
-                        style: kNormalText,
-                      ))),
-              GridColumn(
-                  columnName: 'start_work_time',
-                  label: Container(
-                      padding: EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        'シフト',
-                        style: kNormalText,
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'end_working_time',
-                  label: Container(
-                      padding: EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '出勤',
-                        style: kNormalText,
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'salary',
-                  label: Container(
-                      padding: EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '退勤',
-                        style: kNormalText,
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'index',
-                  label: Container(
-                      padding: EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '有休',
-                        style: kNormalText,
-                      ))),
-              GridColumn(
-                  columnName: 'date',
-                  label: Container(
-                      padding: EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '遅刻',
-                        style: kNormalText,
-                      ))),
-              GridColumn(
-                  columnName: 'start_work_time',
-                  label: Container(
-                      padding: EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '早退',
-                        style: kNormalText,
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'end_working_time',
-                  label: Container(
-                      padding: EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '実働',
-                        style: kNormalText,
-                      ))),
-              GridColumn(
-                  columnName: 'salary',
-                  label: Container(
-                      padding: EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '法定内',
-                        style: kNormalText,
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'index',
-                  label: Container(
-                      padding: EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '法定外',
-                        style: kNormalText,
-                      ))),
-              GridColumn(
-                  columnName: 'date',
-                  label: Container(
-                      padding: EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '休日出勤',
-                        style: kNormalText,
-                      ))),
-              GridColumn(
-                  columnName: 'start_work_time',
-                  label: Container(
-                      padding: EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '所労外',
-                        style: kNormalText,
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'end_working_time',
-                  label: Container(
-                      padding: EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '所労外累計',
-                        style: kNormalText,
-                      ))),
-              GridColumn(
-                  columnName: 'salary',
-                  label: Container(
-                      padding: EdgeInsets.all(8.0),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '総勤務時間',
-                        style: kNormalText,
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-            ],
+            columns: provider.rowHeaderTable.map((e) {
+      return GridColumn(
+          width: 100,
+          label: Container(
+            width: 100,
+            height: 30,
+            margin:
+            const EdgeInsets.symmetric(vertical: 1),
+            color: const Color(0xffF0F3F5),
+            alignment: Alignment.center,
+            child: Text(
+              e,
+              style: kNormalText.copyWith(
+                  fontSize: 12, fontFamily: "Bold"),
+            ),
+          ),
+          columnName: e.toString());
+    }).toList()
           );
   }
 

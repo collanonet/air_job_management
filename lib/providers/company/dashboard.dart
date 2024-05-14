@@ -34,7 +34,7 @@ class DashboardForCompanyProvider with ChangeNotifier {
     notificationList = data[2] as List<NotificationModel>;
     int count = 0;
     for (var worker in applicantList) {
-      if (worker.status == "approved") {
+      if (worker.shiftList!.map((e) => e.status).toString().contains("approved")) {
         count++;
       }
     }

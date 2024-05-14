@@ -48,17 +48,33 @@ class EntryExitHistoryDataSourceByDate extends DataGridSource {
                 ),
               ],
             )
-          : const SizedBox();
+          : Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          displayDateWidget(
+            "",
+          ),
+          displayDateWidget(
+            "",
+          ),
+          displayDateWidget(
+            "",
+          ),
+          displayDateWidget(
+            "",
+          ),
+        ],
+      );
     }).toList());
   }
 }
 
 displayDateWidget(String data, {double? width, double? height}) {
   return Container(
-    width: width ?? 46,
+    width: width ?? 48,
     height: height ?? 30,
     decoration: BoxDecoration(
-        border: Border.all(width: 0.5, color: AppColor.greyColor)),
+        border: Border.all(width: 1, color: const Color(0xffF0F3F5))),
     child: Center(
       child: Text(
         data,
