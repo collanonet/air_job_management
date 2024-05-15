@@ -1,3 +1,4 @@
+import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/user.dart';
 
 import 'job_posting.dart';
@@ -11,6 +12,7 @@ class EntryExitHistory {
   String? scheduleStartBreakTime;
   String? scheduleEndBreakTime;
   String? workDate;
+  DateTime? workDateToDateTime;
   DateTime? createdAt;
   bool? isLeaveEarly;
   bool? isLate;
@@ -41,6 +43,7 @@ class EntryExitHistory {
   EntryExitHistory(
       {this.uid,
       this.myUser,
+      this.workDateToDateTime,
       this.review,
       this.companyId,
       this.userId,
@@ -75,6 +78,7 @@ class EntryExitHistory {
       this.scheduleEndBreakTime});
 
   factory EntryExitHistory.fromJson(Map<String, dynamic> json) => EntryExitHistory(
+        workDateToDateTime: DateToAPIHelper.fromApiToLocal(json["workDate"]),
         scheduleEndBreakTime: json["scheduleEndBreakTime"] ?? "13:00",
         scheduleStartBreakTime: json["scheduleStartBreakTime"] ?? "12:00",
         nonStatutoryOvertime: json["nonStatutoryOvertime"] ?? "00:00",

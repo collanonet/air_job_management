@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:air_job_management/1_company_page/entry_exit_history/data_source/entry_exit_data_source_by_date.dart';
 import 'package:air_job_management/1_company_page/entry_exit_history/widget/filter.dart';
-import 'package:air_job_management/api/entry_exit.dart';
+import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/entry_exit_history.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/entry_exit_history.dart';
@@ -30,7 +30,6 @@ class EntryExitHistoryPage extends StatefulWidget {
 
 class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterBuildMixin {
   late EntryExitHistoryProvider provider;
-  late EntryExitHistoryDataSource entryExitHistoryDataSource;
   late EntryExitHistoryDataSourceByDate entryExitHistoryDataSourceByDate;
   late AuthProvider authProvider;
   Branch? branch;
@@ -53,32 +52,34 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
         height: AppSize.getDeviceHeight(context),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              const EntryFilterWidget(),
-              AppSize.spaceHeight16,
-              IconButton(
-                  onPressed: () {
-                    EntryExitApiService().insertDataForTesting(provider.entryList);
-                  },
-                  icon: const Icon(Icons.refresh)),
-              Container(
-                decoration: boxDecoration,
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        buildTab(provider.displayList[0]),
-                        buildTab(provider.displayList[1]),
-                      ],
-                    ),
-                    AppSize.spaceHeight16,
-                    if (provider.selectDisplay == provider.displayList[0]) buildDataTableByDay() else buildMonthDisplay(),
-                  ],
-                ),
-              )
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const EntryFilterWidget(),
+                AppSize.spaceHeight16,
+                // IconButton(
+                //     onPressed: () {
+                //       EntryExitApiService().insertDataForTesting(provider.entryList);
+                //     },
+                //     icon: const Icon(Icons.refresh)),
+                Container(
+                  decoration: boxDecoration,
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          buildTab(provider.displayList[0]),
+                          buildTab(provider.displayList[1]),
+                        ],
+                      ),
+                      AppSize.spaceHeight16,
+                      if (provider.selectDisplay == provider.displayList[0]) buildDataTableByDay() else buildMonthDisplay(),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ));
   }
@@ -103,7 +104,6 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
               bottomRight: Radius.circular(provider.selectDisplay == provider.displayList[1] ? 6 : 0),
               topRight: Radius.circular(provider.selectDisplay == provider.displayList[1] ? 6 : 0)),
           onTap: () {
-            entryExitHistoryDataSource = EntryExitHistoryDataSource(employeeData: provider.entryList);
             entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
             provider.onChangeDisplay(title);
           },
@@ -137,18 +137,34 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                      onPressed: () async {},
+                      onPressed: () async {
+                        int index = provider.userNameList.indexOf(provider.selectedUserName);
+                        if (index == 0) {
+                          index = provider.userNameList.length - 1;
+                        } else {
+                          index--;
+                        }
+                        provider.onChangeUserName(provider.userNameList[index]);
+                      },
                       icon: Icon(
                         Icons.arrow_back_ios_new_rounded,
                         size: 25,
                         color: AppColor.primaryColor,
                       )),
                   Text(
-                    "     ${branch?.name}     ",
+                    "     ${provider.selectedUserName}     ",
                     style: kTitleText.copyWith(color: AppColor.primaryColor),
                   ),
                   IconButton(
-                      onPressed: () async {},
+                      onPressed: () async {
+                        int index = provider.userNameList.indexOf(provider.selectedUserName);
+                        if (index + 1 == provider.userNameList.length) {
+                          index = 0;
+                        } else {
+                          index++;
+                        }
+                        provider.onChangeUserName(provider.userNameList[index]);
+                      },
                       icon: Icon(
                         color: AppColor.primaryColor,
                         Icons.arrow_forward_ios_rounded,
@@ -159,8 +175,71 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
             ),
           ),
           AppSize.spaceHeight16,
-          buildData()
+          // buildData()
+          Row(
+            children: [
+              ...provider.rowHeaderTable.map((e) => Expanded(
+                    flex: 1,
+                    child: Container(
+                      height: 30,
+                      margin: const EdgeInsets.symmetric(vertical: 1),
+                      color: const Color(0xffF0F3F5),
+                      alignment: Alignment.center,
+                      child: Text(
+                        e,
+                        style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                      ),
+                    ),
+                  ))
+            ],
+          ),
+          ListView.builder(
+              itemCount: provider.entryList.length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                EntryExitHistory e = provider.entryList[index];
+                return provider.selectedUserName == e.myUser?.nameKanJi
+                    ? Row(
+                        children: [
+                          tableWidget(e.workDate),
+                          tableWidget(toJapanWeekDayWithInt(DateToAPIHelper.fromApiToLocal(e.workDate!).weekday)),
+                          tableWidget("出勤"),
+                          tableWidget(e.startWorkingTime),
+                          tableWidget(e.endWorkingTime),
+                          tableWidget("00:00"),
+                          tableWidget("00:00"),
+                          tableWidget(
+                              "${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyMinute.toString())}"),
+                          tableWidget(
+                              "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
+                          tableWidget(e.overtimeWithinLegalLimit),
+                          tableWidget(e.nonStatutoryOvertime),
+                          tableWidget(e.holidayWork),
+                          tableWidget("00:00"),
+                          tableWidget(e.overtime),
+                          tableWidget(
+                              "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
+                        ],
+                      )
+                    : const SizedBox();
+              })
         ],
+      ),
+    );
+  }
+
+  tableWidget(String? data) {
+    return Expanded(
+      flex: 1,
+      child: Container(
+        height: 30,
+        decoration: BoxDecoration(border: Border.all(width: 1, color: const Color(0xffF0F3F5))),
+        alignment: Alignment.center,
+        child: Text(
+          data ?? "",
+          style: kNormalText,
+        ),
       ),
     );
   }
@@ -349,38 +428,6 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
     );
   }
 
-  buildData() {
-    return provider.isLoading
-        ? const SizedBox()
-        : SfDataGrid(
-            source: entryExitHistoryDataSource,
-            columnWidthMode: ColumnWidthMode.fill,
-            shrinkWrapRows: true,
-            shrinkWrapColumns: true,
-            headerRowHeight: 30,
-            rowHeight: 35,
-            gridLinesVisibility: GridLinesVisibility.both,
-            headerGridLinesVisibility: GridLinesVisibility.both,
-            horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
-            verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
-            columns: provider.rowHeaderTable.map((e) {
-              return GridColumn(
-                  width: 100,
-                  label: Container(
-                    width: 100,
-                    height: 30,
-                    margin: const EdgeInsets.symmetric(vertical: 1),
-                    color: const Color(0xffF0F3F5),
-                    alignment: Alignment.center,
-                    child: Text(
-                      e,
-                      style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
-                    ),
-                  ),
-                  columnName: e.toString());
-            }).toList());
-  }
-
   @override
   void afterBuild(BuildContext context) async {
     onGetData();
@@ -393,7 +440,6 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
         Company? company = await UserApiServices().getProfileCompany(user.uid);
         authProvider.onChangeCompany(company);
         await provider.getEntryData(company!.uid!);
-        entryExitHistoryDataSource = EntryExitHistoryDataSource(employeeData: provider.entryList);
         entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
         if (authProvider.myCompany?.branchList != []) {
           branch = authProvider.myCompany?.branchList!.first;
@@ -404,53 +450,10 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
     } else {
       String id = authProvider.myCompany?.uid ?? "";
       await provider.getEntryData(id);
-      entryExitHistoryDataSource = EntryExitHistoryDataSource(employeeData: provider.entryList);
       entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
       if (authProvider.myCompany?.branchList != []) {
         branch = authProvider.myCompany?.branchList!.first;
       }
     }
-  }
-}
-
-class EntryExitHistoryDataSource extends DataGridSource {
-  /// Creates the employee data source class with required details.
-  EntryExitHistoryDataSource({required List<EntryExitHistory> employeeData}) {
-    _employeeData = employeeData
-        .map<DataGridRow>((e) => DataGridRow(cells: [
-              DataGridCell<int>(columnName: 'index', value: employeeData.indexOf(e) + 1),
-              DataGridCell<String>(columnName: 'date', value: e.workDate),
-              DataGridCell<String>(columnName: 'start_work_time', value: e.startWorkingTime),
-              DataGridCell<String>(columnName: 'end_working_time', value: e.endWorkingTime),
-              DataGridCell<String>(columnName: 'salary', value: e.amount.toString()),
-              DataGridCell<int>(columnName: 'index', value: employeeData.indexOf(e) + 1),
-              DataGridCell<String>(columnName: 'date', value: e.workDate),
-              DataGridCell<String>(columnName: 'start_work_time', value: e.startWorkingTime),
-              DataGridCell<String>(columnName: 'end_working_time', value: e.endWorkingTime),
-              DataGridCell<String>(columnName: 'salary', value: e.amount.toString()),
-              DataGridCell<int>(columnName: 'index', value: employeeData.indexOf(e) + 1),
-              DataGridCell<String>(columnName: 'date', value: e.workDate),
-              DataGridCell<String>(columnName: 'start_work_time', value: e.startWorkingTime),
-              DataGridCell<String>(columnName: 'end_working_time', value: e.endWorkingTime),
-              DataGridCell<String>(columnName: 'salary', value: e.amount.toString()),
-            ]))
-        .toList();
-  }
-
-  List<DataGridRow> _employeeData = [];
-
-  @override
-  List<DataGridRow> get rows => _employeeData;
-
-  @override
-  DataGridRowAdapter buildRow(DataGridRow row) {
-    return DataGridRowAdapter(
-        cells: row.getCells().map<Widget>((e) {
-      return Container(
-        alignment: Alignment.center,
-        padding: const EdgeInsets.all(8.0),
-        child: Text(e.value.toString()),
-      );
-    }).toList());
   }
 }

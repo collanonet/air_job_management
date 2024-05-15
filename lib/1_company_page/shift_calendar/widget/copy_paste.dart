@@ -7,7 +7,8 @@ import '../../../widgets/custom_button.dart';
 class CopyPasteShiftCalendarWidget extends StatelessWidget {
   final Function onCopyPaste;
   final Function onMatching;
-  const CopyPasteShiftCalendarWidget({super.key, required this.onCopyPaste, required this.onMatching});
+  final Function onRefresh;
+  const CopyPasteShiftCalendarWidget({super.key, required this.onCopyPaste, required this.onMatching, required this.onRefresh});
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +20,12 @@ class CopyPasteShiftCalendarWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             const Spacer(),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: InkWell(onTap: () => onRefresh(), child: const Center(child: Icon(Icons.refresh))),
+            ),
+            AppSize.spaceWidth16,
+            AppSize.spaceWidth16,
             SizedBox(
               width: 160,
               child: ButtonWidget(radius: 25, title: "手動マッチング", color: AppColor.primaryColor, onPress: () => onMatching()),

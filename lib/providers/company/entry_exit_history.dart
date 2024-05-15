@@ -17,12 +17,14 @@ class EntryExitHistoryProvider with ChangeNotifier {
   DateTime endDay = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
   List<DateTime> dateList = [];
   List<EntryExitCalendarByUser> entryExitCalendarByUser = [];
+  List<String> userNameList = [];
+  String selectedUserName = "";
   List<String> rowHeaderTable = [
- "日付",
-     "曜日",
-     "シフト",
-     "出勤",
- "退勤",
+    "日付",
+    "曜日",
+    "シフト",
+    "出勤",
+    "退勤",
     "有休",
     "遅刻",
     "早退",
@@ -73,6 +75,11 @@ class EntryExitHistoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  onChangeUserName(String name) {
+    selectedUserName = name;
+    notifyListeners();
+  }
+
   onChangeEndDate(DateTime? endDate, String branchId) {
     endWorkDate = endDate;
     filterEntryExitHistory(branchId);
@@ -81,6 +88,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
 
   filterEntryExitHistory(String branchId) async {
     await getEntryData(companyId);
+
     ///Filter application by job title
     List<EntryExitHistory> afterFilterSelectJobTitle = [];
     if (selectedJobTitle != null && selectedJobTitle != JapaneseText.all) {
@@ -96,8 +104,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
     if (startWorkDate != null && endWorkDate != null) {
       for (var job in afterFilterSelectJobTitle) {
         DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
-        bool isWithin =
-            CommonUtils.isDateInRange(workDate, startWorkDate!, endWorkDate!);
+        bool isWithin = CommonUtils.isDateInRange(workDate, startWorkDate!, endWorkDate!);
         if (isWithin) {
           afterFilterRangeDate.add(job);
         }
@@ -133,10 +140,8 @@ class EntryExitHistoryProvider with ChangeNotifier {
   getEntryData(String id) async {
     companyId = id;
     entryList = await EntryExitApiService().getAllEntryList(id);
-    List<String> userIdList =
-        entryList.map((e) => e.userId!).toList().toSet().toList();
-    var userData = await Future.wait(
-        [for (var id in userIdList) UserApiServices().getProfileUser(id)]);
+    List<String> userIdList = entryList.map((e) => e.userId!).toList().toSet().toList();
+    var userData = await Future.wait([for (var id in userIdList) UserApiServices().getProfileUser(id)]);
     for (var entry in entryList) {
       for (var user in userData) {
         if (user!.uid == entry.userId) {
@@ -145,6 +150,8 @@ class EntryExitHistoryProvider with ChangeNotifier {
         }
       }
     }
+    userNameList = entryList.map((e) => e.myUser?.nameKanJi ?? "").toList().toSet().toList();
+    selectedUserName = userNameList.first;
     mapDataForCalendarByUser();
     jobTitleList = [JapaneseText.all];
     for (var job in entryList) {
@@ -159,8 +166,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
     if (startDay != null && endDay != null) {
       for (var job in entryList) {
         DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
-        bool isWithin =
-        CommonUtils.isDateInRange(workDate, startDay, endDay);
+        bool isWithin = CommonUtils.isDateInRange(workDate, startDay, endDay);
         if (isWithin) {
           afterFilterRangeDate.add(job);
         }

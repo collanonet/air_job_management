@@ -19,6 +19,7 @@ class EntryExitApiService {
           entryExitHistory.uid = data.id;
           entryList.add(entryExitHistory);
         }
+        entryList.sort((a, b) => b.workDateToDateTime!.compareTo(a.workDateToDateTime!));
         return entryList;
       } else {
         return [];
@@ -59,7 +60,7 @@ class EntryExitApiService {
         bool isLeaveEarly = false;
         int leaveEarlyHour = 0;
         int leaveEarlyMinute = 0;
-        List<int> leaveData = calculateBreakTime(entry.scheduleEndWorkingTime, entry.endWorkingTime);
+        List<int> leaveData = calculateBreakTime(entry.endWorkingTime, entry.scheduleEndWorkingTime);
         leaveEarlyHour = leaveData[0];
         leaveEarlyMinute = leaveData[1];
         if (leaveEarlyMinute > 0 || leaveEarlyHour > 0) {
@@ -67,6 +68,7 @@ class EntryExitApiService {
         }
         entry.isLeaveEarly = isLeaveEarly;
         entry.leaveEarlyMinute = leaveEarlyMinute;
+        entry.leaveEarlyHour = leaveEarlyHour;
 
         ///Calculate Overtime
         List<int> overTimeData = calculateOvertime(entry.scheduleEndWorkingTime, entry.endWorkingTime, "00:00");

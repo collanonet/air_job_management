@@ -97,21 +97,24 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                         buildTab(provider.displayList[1]),
                         buildTab(provider.displayList[2]),
                         Expanded(
-                            child: CopyPasteShiftCalendarWidget(onMatching: () {
-                          if (provider.jobPosting == null ||
-                              provider.selectDisplay == provider.displayList[1] ||
-                              provider.selectDisplay == provider.displayList[1]) {
-                            toastMessageError("最初にコピーしたいジョブを選択してください。", context);
-                          } else {
-                            showMatching();
-                          }
-                        }, onCopyPaste: () {
-                          if (provider.jobPosting == null || provider.selectDisplay == provider.displayList[0]) {
-                            toastMessageError("最初にコピーしたいジョブを選択してください。", context);
-                          } else {
-                            showCopyAndPaste();
-                          }
-                        }))
+                            child: CopyPasteShiftCalendarWidget(
+                                onRefresh: () => getData(),
+                                onMatching: () {
+                                  if (provider.jobPosting == null ||
+                                      provider.selectDisplay == provider.displayList[1] ||
+                                      provider.selectDisplay == provider.displayList[1]) {
+                                    toastMessageError("最初にコピーしたいジョブを選択してください。", context);
+                                  } else {
+                                    showMatching();
+                                  }
+                                },
+                                onCopyPaste: () {
+                                  if (provider.jobPosting == null || provider.selectDisplay == provider.displayList[0]) {
+                                    toastMessageError("最初にコピーしたいジョブを選択してください。", context);
+                                  } else {
+                                    showCopyAndPaste();
+                                  }
+                                }))
                       ],
                     ),
                     if (provider.selectDisplay == provider.displayList[0])
