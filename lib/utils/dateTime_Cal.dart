@@ -1,5 +1,7 @@
 import '../helper/date_to_api.dart';
 
+int overTimeLegalLimit = 8;
+
 List<int> calculateOvertime2(startWorkTime, userExitWork, breakTime) {
   if (userExitWork == null || userExitWork == "") {
     userExitWork = "00:00";
@@ -13,15 +15,11 @@ List<int> calculateOvertime2(startWorkTime, userExitWork, breakTime) {
   var breakHours = int.parse(breakTime.split(":")[0]);
 
   //Convert to 2 digits
-  String firstStartWorkTime =
-      DateToAPIHelper.formatTimeTwoDigits(startWorkTime.split(":").first);
-  String secondStartWorkTime =
-      DateToAPIHelper.formatTimeTwoDigits(startWorkTime.split(":").last);
+  String firstStartWorkTime = DateToAPIHelper.formatTimeTwoDigits(startWorkTime.split(":").first);
+  String secondStartWorkTime = DateToAPIHelper.formatTimeTwoDigits(startWorkTime.split(":").last);
   startWorkTime = "$firstStartWorkTime:$secondStartWorkTime";
-  String firstEndWorkTime =
-      DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").first);
-  String secondEndWorkTime =
-      DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").last);
+  String firstEndWorkTime = DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").first);
+  String secondEndWorkTime = DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").last);
   userExitWork = "$firstEndWorkTime:$secondEndWorkTime";
   // Convert the start and end work times to DateTime objects
   var startDateTime = DateTime.parse("2023-04-04 $startWorkTime");
@@ -127,9 +125,7 @@ List<int> calculateWorkingTime(startWork, exitWork, breakTime) {
 }
 
 List<int> calculateOvertime(scheduleEndWorkTime, userExitWork, breakTime) {
-  if (scheduleEndWorkTime == null ||
-      scheduleEndWorkTime == "" ||
-      scheduleEndWorkTime == "null") {
+  if (scheduleEndWorkTime == null || scheduleEndWorkTime == "" || scheduleEndWorkTime == "null") {
     scheduleEndWorkTime = "00:00";
   }
 
@@ -145,15 +141,11 @@ List<int> calculateOvertime(scheduleEndWorkTime, userExitWork, breakTime) {
   var breakHours = int.parse(breakTime.split(":")[0]);
 
   //Convert to 2 digits
-  String firstStartWorkTime =
-      DateToAPIHelper.formatTimeTwoDigits(scheduleEndWorkTime.split(":").first);
-  String secondStartWorkTime =
-      DateToAPIHelper.formatTimeTwoDigits(scheduleEndWorkTime.split(":").last);
+  String firstStartWorkTime = DateToAPIHelper.formatTimeTwoDigits(scheduleEndWorkTime.split(":").first);
+  String secondStartWorkTime = DateToAPIHelper.formatTimeTwoDigits(scheduleEndWorkTime.split(":").last);
   scheduleEndWorkTime = "$firstStartWorkTime:$secondStartWorkTime";
-  String firstEndWorkTime =
-      DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").first);
-  String secondEndWorkTime =
-      DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").last);
+  String firstEndWorkTime = DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").first);
+  String secondEndWorkTime = DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").last);
   userExitWork = "$firstEndWorkTime:$secondEndWorkTime";
   // Convert the start and end work times to DateTime objects
   var startDateTime = DateTime.parse("2023-04-04 $scheduleEndWorkTime");
@@ -199,10 +191,7 @@ List<int> calculateOvertime(scheduleEndWorkTime, userExitWork, breakTime) {
 }
 
 List<int> calculateBreakTime(now, startBreakTime) {
-  if (startBreakTime == null ||
-      startBreakTime == "" ||
-      startBreakTime == "null" ||
-      startBreakTime == ":") {
+  if (startBreakTime == null || startBreakTime == "" || startBreakTime == "null" || startBreakTime == ":") {
     startBreakTime = "00:00";
   }
 
@@ -230,4 +219,36 @@ List<int> calculateBreakTime(now, startBreakTime) {
     }
   }
   return [breakTimeHour, breakTimeMinute];
+}
+
+List<int> calculateLateTime(scheduleStartWorkTime, now) {
+  int lateHrs = 0;
+  int lateMinute = 0;
+  int currentHour = int.parse(now.split(':')[0]);
+  int currentMinute = int.parse(now.split(':')[1]);
+  int userStartWorkHr = int.parse(scheduleStartWorkTime.split(':')[0]);
+  int userStartWorkMinute = int.parse(scheduleStartWorkTime.split(':')[1]);
+  if (scheduleStartWorkTime.toString().isNotEmpty) {
+    if (userStartWorkHr > currentHour) {
+      currentHour = currentHour + 24;
+    }
+    lateHrs = currentHour - userStartWorkHr;
+    if (lateHrs >= 0) {
+      if (currentMinute >= userStartWorkMinute) {
+        lateMinute = currentMinute - userStartWorkMinute;
+      } else {
+        if (lateHrs > 0) {
+          lateMinute = (currentMinute + 60) - userStartWorkMinute;
+          lateHrs = lateHrs - 1;
+        } else {
+          lateHrs = 0;
+          lateMinute = 0;
+        }
+      }
+    } else {
+      lateHrs = 0;
+      lateMinute = 0;
+    }
+  }
+  return [lateHrs, lateMinute];
 }
