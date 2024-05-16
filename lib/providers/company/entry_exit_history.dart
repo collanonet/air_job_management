@@ -13,6 +13,10 @@ class EntryExitHistoryProvider with ChangeNotifier {
   bool isLoading = false;
   List<String> displayList = [JapaneseText.byMonth, JapaneseText.perWorker];
   String selectDisplay = JapaneseText.byMonth;
+
+  List<String> tabMenu = ["勤怠", "シフト"];
+  String selectedMenu = "勤怠";
+
   DateTime startDay = DateTime.now();
   DateTime endDay = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
   List<DateTime> dateList = [];
@@ -72,6 +76,11 @@ class EntryExitHistoryProvider with ChangeNotifier {
   onChangeStartDate(DateTime? startDate, String branchId) {
     startWorkDate = startDate;
     filterEntryExitHistory(branchId);
+    notifyListeners();
+  }
+
+  onChangeSelectMenu(String menu) {
+    selectedMenu = menu;
     notifyListeners();
   }
 

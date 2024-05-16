@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:air_job_management/1_company_page/entry_exit_history/data_source/entry_exit_data_source_by_date.dart';
 import 'package:air_job_management/1_company_page/entry_exit_history/widget/filter.dart';
+import 'package:air_job_management/1_company_page/entry_exit_history/widget/tab_selection.dart';
+import 'package:air_job_management/1_company_page/entry_exit_history/widget/table_widget.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/entry_exit_history.dart';
 import 'package:air_job_management/providers/auth.dart';
@@ -62,6 +64,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                 //       EntryExitApiService().insertDataForTesting(provider.entryList);
                 //     },
                 //     icon: const Icon(Icons.refresh)),
+                const TabSelectionWidget(),
                 Container(
                   decoration: boxDecoration,
                   padding: const EdgeInsets.all(16),
@@ -202,45 +205,173 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                 return provider.selectedUserName == e.myUser?.nameKanJi
                     ? Row(
                         children: [
-                          tableWidget(e.workDate),
-                          tableWidget(toJapanWeekDayWithInt(DateToAPIHelper.fromApiToLocal(e.workDate!).weekday)),
-                          tableWidget("出勤"),
-                          tableWidget(e.startWorkingTime),
-                          tableWidget(e.endWorkingTime),
-                          tableWidget("00:00"),
-                          tableWidget("00:00"),
-                          tableWidget(
-                              "${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyMinute.toString())}"),
-                          tableWidget(
-                              "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
-                          tableWidget(e.overtimeWithinLegalLimit),
-                          tableWidget(e.nonStatutoryOvertime),
-                          tableWidget(e.holidayWork),
-                          tableWidget("00:00"),
-                          tableWidget(e.overtime),
-                          tableWidget(
-                              "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
+                          DataTableWidget(data: e.workDate),
+                          DataTableWidget(data: toJapanWeekDayWithInt(DateToAPIHelper.fromApiToLocal(e.workDate!).weekday)),
+                          DataTableWidget(data: "出勤"),
+                          DataTableWidget(data: e.startWorkingTime),
+                          DataTableWidget(data: e.endWorkingTime),
+                          DataTableWidget(data: "00:00"),
+                          DataTableWidget(data: "00:00"),
+                          DataTableWidget(
+                              data:
+                                  "${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyMinute.toString())}"),
+                          DataTableWidget(
+                              data:
+                                  "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
+                          DataTableWidget(data: e.overtimeWithinLegalLimit),
+                          DataTableWidget(data: e.nonStatutoryOvertime),
+                          DataTableWidget(data: e.holidayWork),
+                          DataTableWidget(data: "00:00"),
+                          DataTableWidget(data: e.overtime),
+                          DataTableWidget(
+                              data:
+                                  "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
                         ],
                       )
                     : const SizedBox();
-              })
+              }),
+          AppSize.spaceHeight30,
+          summaryWidget(),
+          AppSize.spaceHeight30,
         ],
       ),
     );
   }
 
-  tableWidget(String? data) {
-    return Expanded(
-      flex: 1,
-      child: Container(
-        height: 30,
-        decoration: BoxDecoration(border: Border.all(width: 1, color: const Color(0xffF0F3F5))),
-        alignment: Alignment.center,
-        child: Text(
-          data ?? "",
-          style: kNormalText,
+  summaryWidget() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            summaryCardWidget(title: "実出勤日数", data: "20.00"),
+            const SizedBox(
+              height: 3,
+            ),
+            summaryCardWidget(title: "総出勤日数", data: "20.00"),
+            const SizedBox(
+              height: 3,
+            ),
+            summaryCardWidget(title: "有休消化", data: "20.00"),
+            const SizedBox(
+              height: 3,
+            ),
+            summaryCardWidget(title: "有休残数", data: "20.00")
+          ],
         ),
-      ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            summaryCardWidget(title: "公休日数", data: "20.00"),
+            const SizedBox(
+              height: 3,
+            ),
+            summaryCardWidget(title: "特別休暇", data: "20.00"),
+            const SizedBox(
+              height: 3,
+            ),
+            summaryCardWidget(title: "振替日数", data: "20.00"),
+            const SizedBox(
+              height: 3,
+            ),
+            summaryCardWidget(title: "休出日数", data: "20.00")
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            summaryCardWidget(title: "欠勤日数", data: "20.00"),
+            const SizedBox(
+              height: 3,
+            ),
+            summaryCardWidget(title: "遅刻回数", data: "20.00"),
+            const SizedBox(
+              height: 3,
+            ),
+            summaryCardWidget(title: "早退回数", data: "20.00"),
+            const SizedBox(
+              height: 3,
+            ),
+            summaryCardWidget(title: "不労時間", data: "20.00")
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            summaryCardWidget(title: "法定内", data: "20.00"),
+            const SizedBox(
+              height: 3,
+            ),
+            summaryCardWidget(title: "法定外", data: "20.00"),
+            const SizedBox(
+              height: 3,
+            ),
+            summaryCardWidget(title: "基準残業", data: "20.00"),
+            const SizedBox(
+              height: 3,
+            ),
+            summaryCardWidget(title: "超過残業", data: "20.00")
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            summaryCardWidget(title: "深夜", data: "20.00"),
+            const SizedBox(
+              height: 3,
+            ),
+            summaryCardWidget(title: "休出時間", data: "20.00"),
+            const SizedBox(
+              height: 3,
+            ),
+            summaryCardWidget(title: "実勤務時間", data: "20.00"),
+            const SizedBox(
+              height: 3,
+            ),
+            summaryCardWidget(title: "総勤務時間", data: "20.00")
+          ],
+        ),
+        AppSize.spaceWidth32,
+        summaryCardWidget(title: "所定外計", data: "20.00"),
+      ],
+    );
+  }
+
+  summaryCardWidget({String? title, String? data}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          width: 100,
+          height: 30,
+          color: const Color(0xffF0F3F5),
+          child: Center(
+            child: Text(
+              title ?? "",
+              style: kNormalText,
+            ),
+          ),
+        ),
+        Container(
+          width: 100,
+          height: 30,
+          decoration: BoxDecoration(border: Border.all(width: 1, color: const Color(0xffF0F3F5))),
+          child: Center(
+            child: Text(
+              data ?? "",
+              style: kNormalText,
+            ),
+          ),
+        )
+      ],
     );
   }
 
