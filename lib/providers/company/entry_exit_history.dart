@@ -1,9 +1,12 @@
+import 'package:air_job_management/api/company/worker_managment.dart';
 import 'package:air_job_management/api/entry_exit.dart';
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
+import 'package:air_job_management/models/worker_model/shift.dart';
 import 'package:air_job_management/utils/common_utils.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../models/company/worker_management.dart';
 import '../../models/entry_calendar_by_user.dart';
 import '../../models/entry_exit_history.dart';
 import '../../utils/japanese_text.dart';
@@ -11,7 +14,7 @@ import '../../utils/japanese_text.dart';
 class EntryExitHistoryProvider with ChangeNotifier {
   List<EntryExitHistory> entryList = [];
   bool isLoading = false;
-  List<String> displayList = [JapaneseText.byMonth, JapaneseText.perWorker];
+  List<String> displayList = [JapaneseText.byMonth, JapaneseText.perWorker, "勤怠管理一覧", "所定労働時間外一覧"];
   String selectDisplay = JapaneseText.byMonth;
 
   List<String> tabMenu = ["勤怠", "シフト"];
@@ -40,6 +43,8 @@ class EntryExitHistoryProvider with ChangeNotifier {
     "所労外累計",
     "総勤務時間",
   ];
+
+  List<WorkerManagement> workManagementList = [];
 
   String? selectedJobTitle;
   List<String> jobTitleList = [JapaneseText.all];
@@ -86,6 +91,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
 
   onChangeUserName(String name) {
     selectedUserName = name;
+    getUserShift(companyId, "");
     notifyListeners();
   }
 
@@ -167,6 +173,9 @@ class EntryExitHistoryProvider with ChangeNotifier {
       jobTitleList.add(job.jobTitle.toString());
     }
     jobTitleList = jobTitleList.toSet().toList();
+
+    getUserShift(companyId, "");
+
     onChangeLoading(false);
   }
 
@@ -217,5 +226,30 @@ class EntryExitHistoryProvider with ChangeNotifier {
         }
       }
     }
+  }
+
+  List<ShiftModel> shiftList = [];
+
+  getUserShift(String companyId, String branchId) async {
+    String userId = "";
+    shiftList = [];
+
+    for (var entry in entryList) {
+      if (entry.myUser?.nameKanJi == selectedUserName) {
+        userId = entry.myUser?.uid ?? "";
+        break;
+      }
+    }
+
+    workManagementList = await WorkerManagementApiService().getAllJobApplyForAUSerWithoutBranch(companyId, userId);
+    for (var apply in workManagementList) {
+      for (var shift in apply.shiftList!) {
+        if (shift.status == "approved") {
+          shiftList.add(shift);
+        }
+      }
+    }
+
+    notifyListeners();
   }
 }

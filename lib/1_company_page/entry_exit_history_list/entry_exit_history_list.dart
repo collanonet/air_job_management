@@ -24,22 +24,19 @@ class EntryExitHistoryListPage extends StatefulWidget {
   const EntryExitHistoryListPage({super.key});
 
   @override
-  State<EntryExitHistoryListPage> createState() =>
-      _EntryExitHistoryListPageState();
+  State<EntryExitHistoryListPage> createState() => _EntryExitHistoryListPageState();
 }
 
-class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage>
-    with AfterBuildMixin {
+class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> with AfterBuildMixin {
   late EntryExitHistoryProvider provider;
   late AuthProvider authProvider;
+  ScrollController scrollController = ScrollController();
   int _currentPage = 1;
   int _pageSize = 10;
-  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
-    Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading =
-        true;
+    Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading = true;
     Provider.of<EntryExitHistoryProvider>(context, listen: false).initData();
     super.initState();
   }
@@ -142,9 +139,7 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage>
                   style: kNormalText.copyWith(fontFamily: "Bold"),
                 )),
               ],
-              source: EntryListDataSource(
-                  data: provider.entryList,
-                  ratting: (entry) => showRatingDialog(entry)),
+              source: EntryListDataSource(data: provider.entryList, ratting: (entry) => showRatingDialog(entry)),
             ),
           ),
         ),
@@ -160,13 +155,8 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage>
               entryExitHistory: entryExitHistory,
               onRate: (rate, comment) async {
                 Navigator.pop(context);
-                Review review = Review(
-                    rate: rate.toString(),
-                    comment: comment,
-                    id: entryExitHistory.companyId,
-                    name: entryExitHistory.companyName);
-                await EntryExitApiService().updateReview(entryExitHistory.uid!,
-                    entryExitHistory.userId ?? "", review);
+                Review review = Review(rate: rate.toString(), comment: comment, id: entryExitHistory.companyId, name: entryExitHistory.companyName);
+                await EntryExitApiService().updateReview(entryExitHistory.uid!, entryExitHistory.userId ?? "", review);
                 onGetData();
               });
         });

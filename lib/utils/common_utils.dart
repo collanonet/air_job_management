@@ -4,6 +4,10 @@ import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:flutter/material.dart';
 
+import '../helper/date_to_api.dart';
+import '../models/entry_exit_history.dart';
+import '../models/worker_model/shift.dart';
+
 class CommonUtils {
   static Future<void> waiting([int mili = 1000]) async {
     await Future.delayed(Duration(milliseconds: mili));
@@ -13,9 +17,7 @@ class CommonUtils {
     List<DateTime> dateRange = [];
 
     // Iterate through the dates between start and end dates
-    for (var i = startDate;
-        i.isBefore(endDate) || i.isAtSameMomentAs(endDate);
-        i = i.add(Duration(days: 1))) {
+    for (var i = startDate; i.isBefore(endDate) || i.isAtSameMomentAs(endDate); i = i.add(Duration(days: 1))) {
       dateRange.add(i);
     }
 
@@ -27,11 +29,8 @@ class CommonUtils {
   //   return date.isAfter(startDate) && date.isBefore(endDate);
   // }
 
-  static bool isDateInRange(
-      DateTime date, DateTime startDate, DateTime endDate) {
-    return date.isAfter(startDate) && date.isBefore(endDate) ||
-        date.isAtSameMomentAs(startDate) ||
-        date.isAtSameMomentAs(endDate);
+  static bool isDateInRange(DateTime date, DateTime startDate, DateTime endDate) {
+    return date.isAfter(startDate) && date.isBefore(endDate) || date.isAtSameMomentAs(startDate) || date.isAtSameMomentAs(endDate);
   }
 
   static isTheSameDate(DateTime? d, DateTime? d2) {
@@ -113,9 +112,7 @@ class CommonUtils {
     return Container(
       height: 30,
       decoration: BoxDecoration(
-        color: request.isHoliday == true
-            ? const Color(0xff98A6B5)
-            : AppColor.seaColor,
+        color: request.isHoliday == true ? const Color(0xff98A6B5) : AppColor.seaColor,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Center(
@@ -132,9 +129,7 @@ class CommonUtils {
       return Container(
         height: 25,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-        decoration: BoxDecoration(
-            color: backgroundColorStatusFromApiToLocal(status),
-            border: Border.all(width: 1, color: const Color(0xff98A6B5))),
+        decoration: BoxDecoration(color: backgroundColorStatusFromApiToLocal(status), border: Border.all(width: 1, color: const Color(0xff98A6B5))),
         child: Center(
           child: displayStatusText(status),
         ),
@@ -143,8 +138,7 @@ class CommonUtils {
       return Container(
         height: 25,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-        decoration:
-            BoxDecoration(color: backgroundColorStatusFromApiToLocal(status)),
+        decoration: BoxDecoration(color: backgroundColorStatusFromApiToLocal(status)),
         child: Center(
           child: displayStatusText(status),
         ),
@@ -156,8 +150,7 @@ class CommonUtils {
     if (status == "canceled" || status == "rejected") {
       return Text(
         statusFromApiToLocal(status),
-        style:
-            kNormalText.copyWith(fontSize: 12, color: const Color(0xff98A6B5)),
+        style: kNormalText.copyWith(fontSize: 12, color: const Color(0xff98A6B5)),
       );
     } else {
       return Text(
@@ -191,5 +184,29 @@ class CommonUtils {
     } else {
       return JapaneseText.jobStatusSeekerCompleted;
     }
+  }
+
+  static totalWorkDay(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+    List<String> workDateList = [];
+    for (int i = 0; i < entryList.length; i++) {
+      DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
+      if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
+        workDateList.add(entryList[i].workDate!);
+      }
+    }
+    workDateList = workDateList.toSet().toList();
+    return workDateList.length.toString();
+  }
+
+  static totalActualWorkDay(List<ShiftModel> shiftList, List<DateTime> dateTimeList) {
+    List<String> workDateList = [];
+    for (int i = 0; i < shiftList.length; i++) {
+      DateTime d = shiftList[i].date!;
+      if (dateTimeList.contains(d)) {
+        workDateList.add(shiftList[i].date.toString());
+      }
+    }
+    workDateList = workDateList.toSet().toList();
+    return workDateList.length.toString();
   }
 }

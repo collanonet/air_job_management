@@ -8,6 +8,7 @@ import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/entry_exit_history.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/entry_exit_history.dart';
+import 'package:air_job_management/utils/common_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -15,13 +16,18 @@ import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../api/entry_exit.dart';
 import '../../api/user_api.dart';
 import '../../helper/japan_date_time.dart';
 import '../../models/company.dart';
+import '../../models/job_posting.dart';
 import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
 import '../../utils/my_route.dart';
 import '../../utils/style.dart';
+import '../entry_exit_history_list/data_source/entry_list_data_source.dart';
+import '../entry_exit_history_list/widget/filter.dart';
+import '../entry_exit_history_list/widget/ratting_dialog.dart';
 
 class EntryExitHistoryPage extends StatefulWidget {
   const EntryExitHistoryPage({super.key});
@@ -74,10 +80,13 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                         children: [
                           buildTab(provider.displayList[0]),
                           buildTab(provider.displayList[1]),
+                          buildTab(provider.displayList[2]),
+                          buildTab(provider.displayList[3]),
                         ],
                       ),
                       AppSize.spaceHeight16,
-                      if (provider.selectDisplay == provider.displayList[0]) buildDataTableByDay() else buildMonthDisplay(),
+                      // if (provider.selectDisplay == provider.displayList[0]) buildDataTableByDay() else buildMonthDisplay(),
+                      if (provider.selectDisplay == provider.displayList[0]) buildEntryExitList() else buildMonthDisplay(),
                     ],
                   ),
                 )
@@ -85,6 +94,103 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
             ),
           ),
         ));
+  }
+
+  ScrollController scrollController = ScrollController();
+  int _currentPage = 1;
+  int _pageSize = 10;
+
+  buildEntryExitList() {
+    return Column(
+      children: [
+        const FilterEntryExitList(),
+        SizedBox(
+          width: AppSize.getDeviceWidth(context),
+          height: AppSize.getDeviceHeight(context) * 0.7,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: PaginatedDataTable(
+              controller: scrollController,
+              rowsPerPage: _pageSize,
+              availableRowsPerPage: const [10, 25, 50],
+              onRowsPerPageChanged: (value) {
+                setState(() {
+                  _pageSize = value!;
+                });
+              },
+              columns: [
+                DataColumn(
+                    label: Text(
+                  "日付",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "役職",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "勤務開始時間",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "勤務終了時間",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "遅い",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "シフト開始勤務時間",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "シフト終了勤務時間",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "状態",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "評価",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+                DataColumn(
+                    label: Text(
+                  "フィードバック",
+                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                )),
+              ],
+              source: EntryListDataSource(data: provider.entryList, ratting: (entry) {}),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  showRatingDialog(EntryExitHistory entryExitHistory) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return RattingWidgetPage(
+              entryExitHistory: entryExitHistory,
+              onRate: (rate, comment) async {
+                Navigator.pop(context);
+                Review review = Review(rate: rate.toString(), comment: comment, id: entryExitHistory.companyId, name: entryExitHistory.companyName);
+                await EntryExitApiService().updateReview(entryExitHistory.uid!, entryExitHistory.userId ?? "", review);
+                onGetData();
+              });
+        });
   }
 
   buildTab(String title) {
@@ -128,53 +234,127 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
       child: Column(
         children: [
           Center(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(width: 1, color: AppColor.primaryColor),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                      onPressed: () async {
-                        int index = provider.userNameList.indexOf(provider.selectedUserName);
-                        if (index == 0) {
-                          index = provider.userNameList.length - 1;
-                        } else {
-                          index--;
-                        }
-                        provider.onChangeUserName(provider.userNameList[index]);
-                      },
-                      icon: Icon(
-                        Icons.arrow_back_ios_new_rounded,
-                        size: 25,
-                        color: AppColor.primaryColor,
-                      )),
-                  Text(
-                    "     ${provider.selectedUserName}     ",
-                    style: kTitleText.copyWith(color: AppColor.primaryColor),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(width: 1, color: AppColor.primaryColor),
                   ),
-                  IconButton(
-                      onPressed: () async {
-                        int index = provider.userNameList.indexOf(provider.selectedUserName);
-                        if (index + 1 == provider.userNameList.length) {
-                          index = 0;
-                        } else {
-                          index++;
-                        }
-                        provider.onChangeUserName(provider.userNameList[index]);
-                      },
-                      icon: Icon(
-                        color: AppColor.primaryColor,
-                        Icons.arrow_forward_ios_rounded,
-                        size: 25,
-                      )),
-                ],
-              ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                          onPressed: () async {
+                            provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month - 1, provider.startDay.day));
+                            onGetData();
+                          },
+                          icon: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            size: 25,
+                            color: AppColor.primaryColor,
+                          )),
+                      Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${provider.startDay.year}年",
+                                style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 10),
+                              ),
+                              Text(
+                                "${toJapanMonthDayWeekday(provider.startDay)}",
+                                style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 28),
+                                child: Text(
+                                  "${provider.startDay.year}年",
+                                  style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 10),
+                                ),
+                              ),
+                              Text(
+                                "〜　${toJapanMonthDayWeekday(provider.endDay)}",
+                                style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      IconButton(
+                          onPressed: () async {
+                            provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month + 1, provider.startDay.day));
+                            onGetData();
+                          },
+                          icon: Icon(
+                            color: AppColor.primaryColor,
+                            Icons.arrow_forward_ios_rounded,
+                            size: 25,
+                          )),
+                    ],
+                  ),
+                ),
+                AppSize.spaceWidth32,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(width: 1, color: AppColor.primaryColor),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                          onPressed: () async {
+                            int index = provider.userNameList.indexOf(provider.selectedUserName);
+                            if (index == 0) {
+                              index = provider.userNameList.length - 1;
+                            } else {
+                              index--;
+                            }
+                            provider.onChangeUserName(provider.userNameList[index]);
+                          },
+                          icon: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            size: 25,
+                            color: AppColor.primaryColor,
+                          )),
+                      Text(
+                        "     ${provider.selectedUserName}     ",
+                        style: kTitleText.copyWith(color: AppColor.primaryColor),
+                      ),
+                      IconButton(
+                          onPressed: () async {
+                            int index = provider.userNameList.indexOf(provider.selectedUserName);
+                            if (index + 1 == provider.userNameList.length) {
+                              index = 0;
+                            } else {
+                              index++;
+                            }
+                            provider.onChangeUserName(provider.userNameList[index]);
+                          },
+                          icon: Icon(
+                            color: AppColor.primaryColor,
+                            Icons.arrow_forward_ios_rounded,
+                            size: 25,
+                          )),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
           AppSize.spaceHeight16,
@@ -202,7 +382,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 EntryExitHistory e = provider.entryList[index];
-                return provider.selectedUserName == e.myUser?.nameKanJi
+                return provider.selectedUserName == e.myUser?.nameKanJi && provider.dateList.contains(e.workDateToDateTime)
                     ? Row(
                         children: [
                           DataTableWidget(data: e.workDate),
@@ -217,7 +397,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                                   "${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyMinute.toString())}"),
                           DataTableWidget(
                               data:
-                                  "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
+                                  "${DateToAPIHelper.formatTimeTwoDigits(e.actualWorkingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.actualWorkingMinute.toString())}"),
                           DataTableWidget(data: e.overtimeWithinLegalLimit),
                           DataTableWidget(data: e.nonStatutoryOvertime),
                           DataTableWidget(data: e.holidayWork),
@@ -247,11 +427,11 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            summaryCardWidget(title: "実出勤日数", data: "20.00"),
+            summaryCardWidget(title: "実出勤日数", data: "${CommonUtils.totalActualWorkDay(provider.shiftList, provider.dateList)}"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "総出勤日数", data: "20.00"),
+            summaryCardWidget(title: "総出勤日数", data: "${CommonUtils.totalWorkDay(provider.entryList, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
@@ -377,6 +557,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
 
   ScrollController horizontalScroll1 = ScrollController();
 
+  //Hide K1 page
   buildDataTableByDay() {
     return Column(
       children: [
@@ -571,6 +752,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
         Company? company = await UserApiServices().getProfileCompany(user.uid);
         authProvider.onChangeCompany(company);
         await provider.getEntryData(company!.uid!);
+        // provider.getUserShift(company.uid!, authProvider.branch!.id!);
         entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
         if (authProvider.myCompany?.branchList != []) {
           branch = authProvider.myCompany?.branchList!.first;
@@ -582,6 +764,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
       String id = authProvider.myCompany?.uid ?? "";
       await provider.getEntryData(id);
       entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
+      // provider.getUserShift(id, authProvider.branch!.id!);
       if (authProvider.myCompany?.branchList != []) {
         branch = authProvider.myCompany?.branchList!.first;
       }

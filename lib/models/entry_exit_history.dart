@@ -30,6 +30,8 @@ class EntryExitHistory {
   String? uid;
   int? workingHour;
   int? workingMinute;
+  int? actualWorkingHour;
+  int? actualWorkingMinute;
   int? breakingTimeHour;
   int? breakingTimeMinute;
   int? lateMinute;
@@ -75,9 +77,13 @@ class EntryExitHistory {
       this.workingMinuteuid,
       this.nonStatutoryOvertime,
       this.scheduleStartBreakTime,
-      this.scheduleEndBreakTime});
+      this.scheduleEndBreakTime,
+      this.actualWorkingMinute,
+      this.actualWorkingHour});
 
   factory EntryExitHistory.fromJson(Map<String, dynamic> json) => EntryExitHistory(
+        actualWorkingHour: json["actualWorkingHour"],
+        actualWorkingMinute: json["actualWorkingMinute"],
         workDateToDateTime: DateToAPIHelper.fromApiToLocal(json["workDate"]),
         scheduleEndBreakTime: json["scheduleEndBreakTime"] ?? "13:00",
         scheduleStartBreakTime: json["scheduleStartBreakTime"] ?? "12:00",
@@ -113,6 +119,8 @@ class EntryExitHistory {
       );
 
   Map<String, dynamic> toJson() => {
+        "actualWorkingHour": actualWorkingHour,
+        "actualWorkingMinute": actualWorkingMinute,
         "overtime": overtime,
         "nonStatutoryOvertime": nonStatutoryOvertime,
         "overtimeWithinLegalLimit": overtimeWithinLegalLimit,
