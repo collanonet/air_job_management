@@ -1,3 +1,4 @@
+import 'package:air_job_management/api/company/request.dart';
 import 'package:air_job_management/api/company/worker_managment.dart';
 import 'package:air_job_management/api/entry_exit.dart';
 import 'package:air_job_management/api/user_api.dart';
@@ -166,7 +167,9 @@ class EntryExitHistoryProvider with ChangeNotifier {
       }
     }
     userNameList = entryList.map((e) => e.myUser?.nameKanJi ?? "").toList().toSet().toList();
-    selectedUserName = userNameList.first;
+    if (selectedUserName == "" || selectedUserName == null) {
+      selectedUserName = userNameList.first;
+    }
     mapDataForCalendarByUser();
     jobTitleList = [JapaneseText.all];
     for (var job in entryList) {
@@ -229,6 +232,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
   }
 
   List<ShiftModel> shiftList = [];
+  int countDayOff = 0;
 
   getUserShift(String companyId, String branchId) async {
     String userId = "";
@@ -240,8 +244,13 @@ class EntryExitHistoryProvider with ChangeNotifier {
         break;
       }
     }
-
-    workManagementList = await WorkerManagementApiService().getAllJobApplyForAUSerWithoutBranch(companyId, userId);
+    var getData = await Future.wait([
+      RequestApiService()
+          .getTotalHolidayLeaveRequest(userId, DateToAPIHelper.convertDateToString(startDay), DateToAPIHelper.convertDateToString(endDay)),
+      WorkerManagementApiService().getAllJobApplyForAUSerWithoutBranch(companyId, userId)
+    ]);
+    countDayOff = getData[0] as int;
+    workManagementList = getData[1] as List<WorkerManagement>;
     for (var apply in workManagementList) {
       for (var shift in apply.shiftList!) {
         if (shift.status == "approved") {

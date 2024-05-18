@@ -82,8 +82,8 @@ class EntryExitHistory {
       this.actualWorkingHour});
 
   factory EntryExitHistory.fromJson(Map<String, dynamic> json) => EntryExitHistory(
-        actualWorkingHour: json["actualWorkingHour"],
-        actualWorkingMinute: json["actualWorkingMinute"],
+        actualWorkingHour: json["actualWorkingHour"] ?? 0,
+        actualWorkingMinute: json["actualWorkingMinute"] ?? 0,
         workDateToDateTime: DateToAPIHelper.fromApiToLocal(json["workDate"]),
         scheduleEndBreakTime: json["scheduleEndBreakTime"] ?? "13:00",
         scheduleStartBreakTime: json["scheduleStartBreakTime"] ?? "12:00",
@@ -94,8 +94,8 @@ class EntryExitHistory {
         isHolidayWork: json["isHolidayWork"] ?? false,
         review: json["review"] != null ? Review.fromJson(json["review"]) : null,
         breakTime: json["breakTime"] ?? "",
-        leaveEarlyHour: json["leaveEarlyHour"],
-        leaveEarlyMinute: json["leaveEarlyMinute"],
+        leaveEarlyHour: json["leaveEarlyHour"] ?? 0,
+        leaveEarlyMinute: json["leaveEarlyMinute"] ?? 0,
         lateMinute: json["lateMinute"],
         latHour: json["latHour"],
         companyId: json["companyId"],
@@ -112,10 +112,10 @@ class EntryExitHistory {
         scheduleEndWorkingTime: json["scheduleEndWorkingTime"],
         scheduleStartWorkingTime: json["scheduleStartWorkingTime"],
         workDate: json["workDate"],
-        breakingTimeHour: json["breakingTimeHour"],
-        breakingTimeMinute: json["breakingTimeMinute"],
-        workingHour: json["workingHour"],
-        workingMinute: json["workingMinute"],
+        breakingTimeHour: json["breakingTimeHour"] ?? 0,
+        breakingTimeMinute: json["breakingTimeMinute"] ?? 0,
+        workingHour: json["workingHour"] ?? 0,
+        workingMinute: json["workingMinute"] ?? 0,
       );
 
   Map<String, dynamic> toJson() => {
@@ -146,6 +146,8 @@ class EntryExitHistory {
         "jobID": jobID,
         "scheduleEndWorkingTime": scheduleEndWorkingTime,
         "scheduleStartWorkingTime": scheduleStartWorkingTime,
+        "scheduleStartBreakTime": scheduleStartBreakTime,
+        "scheduleEndBreakTime": scheduleEndBreakTime,
         "workDate": workDate,
         "breakingTimeHour": breakingTimeHour,
         "breakingTimeMinute": breakingTimeMinute,

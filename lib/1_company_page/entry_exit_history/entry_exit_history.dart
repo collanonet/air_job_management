@@ -65,11 +65,11 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
               children: [
                 const EntryFilterWidget(),
                 AppSize.spaceHeight16,
-                // IconButton(
-                //     onPressed: () {
-                //       EntryExitApiService().insertDataForTesting(provider.entryList);
-                //     },
-                //     icon: const Icon(Icons.refresh)),
+                IconButton(
+                    onPressed: () {
+                      EntryExitApiService().insertDataForTesting(provider.entryList);
+                    },
+                    icon: const Icon(Icons.refresh)),
                 const TabSelectionWidget(),
                 Container(
                   decoration: boxDecoration,
@@ -427,38 +427,39 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            summaryCardWidget(title: "実出勤日数", data: "${CommonUtils.totalActualWorkDay(provider.shiftList, provider.dateList)}"),
+            summaryCardWidget(title: "実出勤日数", data: "${CommonUtils.totalActualWorkDay(provider.shiftList, provider.dateList)}.00"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "総出勤日数", data: "${CommonUtils.totalWorkDay(provider.entryList, provider.dateList, provider.selectedUserName)}"),
+            summaryCardWidget(
+                title: "総出勤日数", data: "${CommonUtils.totalWorkDay(provider.entryList, provider.dateList, provider.selectedUserName)}.00"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "有休消化", data: "20.00"),
+            summaryCardWidget(title: "有休消化", data: "00.00"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "有休残数", data: "20.00")
+            summaryCardWidget(title: "有休残数", data: "00.00")
           ],
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            summaryCardWidget(title: "公休日数", data: "20.00"),
+            summaryCardWidget(title: "公休日数", data: "00.00"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "特別休暇", data: "20.00"),
+            summaryCardWidget(title: "特別休暇", data: "00.00"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "振替日数", data: "20.00"),
+            summaryCardWidget(title: "振替日数", data: "00.00"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "休出日数", data: "20.00")
+            summaryCardWidget(title: "休出日数", data: "${DateToAPIHelper.formatTimeTwoDigits(provider.countDayOff.toString())}.00")
           ],
         ),
         Column(
@@ -469,11 +470,13 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "遅刻回数", data: "20.00"),
+            summaryCardWidget(
+                title: "遅刻回数", data: "${CommonUtils.totalLateTime(provider.entryList, provider.dateList, provider.selectedUserName)}.00"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "早退回数", data: "20.00"),
+            summaryCardWidget(
+                title: "早退回数", data: "${CommonUtils.totalLeaveEarly(provider.entryList, provider.dateList, provider.selectedUserName)}.00"),
             const SizedBox(
               height: 3,
             ),
@@ -484,42 +487,47 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            summaryCardWidget(title: "法定内", data: "20.00"),
+            summaryCardWidget(
+                title: "法定内", data: "${CommonUtils.totalOvertimeWithinLaw(provider.entryList, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "法定外", data: "20.00"),
+            summaryCardWidget(
+                title: "法定外", data: "${CommonUtils.totalOvertimeNonStatutory(provider.entryList, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "基準残業", data: "20.00"),
+            summaryCardWidget(
+                title: "基準残業", data: "${CommonUtils.totalOvertimeWithinLaw(provider.entryList, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "超過残業", data: "20.00")
+            summaryCardWidget(title: "超過残業", data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, provider.selectedUserName)}")
           ],
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            summaryCardWidget(title: "深夜", data: "20.00"),
+            summaryCardWidget(title: "深夜", data: "00:00"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "休出時間", data: "20.00"),
+            summaryCardWidget(title: "休出時間", data: "${CommonUtils.totalBreakTime(provider.entryList, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "実勤務時間", data: "20.00"),
+            summaryCardWidget(
+                title: "実勤務時間", data: "${CommonUtils.totalActualWorkingTime(provider.entryList, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "総勤務時間", data: "20.00")
+            summaryCardWidget(
+                title: "総勤務時間", data: "${CommonUtils.totalWorkingTime(provider.entryList, provider.dateList, provider.selectedUserName)}")
           ],
         ),
         AppSize.spaceWidth32,
-        summaryCardWidget(title: "所定外計", data: "20.00"),
+        summaryCardWidget(title: "所定外計", data: "00:00"),
       ],
     );
   }

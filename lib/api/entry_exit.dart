@@ -48,6 +48,10 @@ class EntryExitApiService {
         entry.actualWorkingHour = actualWorkData[0];
         entry.actualWorkingMinute = actualWorkData[1];
 
+        var breakTimeData = calculateBreakTime(entry.scheduleEndBreakTime, entry.scheduleStartBreakTime);
+        entry.breakingTimeHour = breakTimeData[0];
+        entry.breakingTimeMinute = breakTimeData[1];
+
         ///Calculate late data
         bool isLate = false;
         List<int> lateData = calculateLateTime(entry.scheduleStartWorkingTime, entry.startWorkingTime);

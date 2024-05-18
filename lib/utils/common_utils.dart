@@ -1,5 +1,6 @@
 import 'package:air_job_management/models/company/request.dart';
 import 'package:air_job_management/utils/app_color.dart';
+import 'package:air_job_management/utils/dateTime_Cal.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:flutter/material.dart';
@@ -195,7 +196,7 @@ class CommonUtils {
       }
     }
     workDateList = workDateList.toSet().toList();
-    return workDateList.length.toString();
+    return DateToAPIHelper.formatTimeTwoDigits(workDateList.length.toString());
   }
 
   static totalActualWorkDay(List<ShiftModel> shiftList, List<DateTime> dateTimeList) {
@@ -207,6 +208,121 @@ class CommonUtils {
       }
     }
     workDateList = workDateList.toSet().toList();
-    return workDateList.length.toString();
+    return DateToAPIHelper.formatTimeTwoDigits(workDateList.length.toString());
+  }
+
+  static totalLeaveEarly(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+    List<String> workDateList = [];
+    for (int i = 0; i < entryList.length; i++) {
+      DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
+      if (dateTimeList.contains(d) && entryList[i].isLeaveEarly == true && entryList[i].myUser!.nameKanJi == name) {
+        workDateList.add(entryList[i].workDate!);
+      }
+    }
+    workDateList = workDateList.toSet().toList();
+    return DateToAPIHelper.formatTimeTwoDigits(workDateList.length.toString());
+  }
+
+  static totalLateTime(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+    List<String> workDateList = [];
+    for (int i = 0; i < entryList.length; i++) {
+      DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
+      if (dateTimeList.contains(d) && entryList[i].isLate == true && entryList[i].myUser!.nameKanJi == name) {
+        workDateList.add(entryList[i].workDate!);
+      }
+    }
+    workDateList = workDateList.toSet().toList();
+    return DateToAPIHelper.formatTimeTwoDigits(workDateList.length.toString());
+  }
+
+  static totalOvertime(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+    int hour = 0;
+    int minute = 0;
+    for (int i = 0; i < entryList.length; i++) {
+      DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
+      if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
+        List<int> overTimeData = calculateOvertime(entryList[i].scheduleEndWorkingTime, entryList[i].endWorkingTime, "00:00");
+        hour += overTimeData[0];
+        minute += overTimeData[1];
+      }
+    }
+    int totalHour = hour + (minute ~/ 60);
+    int totalMinute = minute % 60;
+    return "${DateToAPIHelper.formatTimeTwoDigits(totalHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(totalMinute.toString())}";
+  }
+
+  static totalOvertimeWithinLaw(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+    int hour = 0;
+    int minute = 0;
+    for (int i = 0; i < entryList.length; i++) {
+      DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
+      if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
+        hour += int.parse(entryList[i].overtimeWithinLegalLimit!.split(":")[0]);
+        minute += int.parse(entryList[i].overtimeWithinLegalLimit!.split(":")[1]);
+      }
+    }
+    int totalHour = hour + (minute ~/ 60);
+    int totalMinute = minute % 60;
+    return "${DateToAPIHelper.formatTimeTwoDigits(totalHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(totalMinute.toString())}";
+  }
+
+  static totalOvertimeNonStatutory(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+    int hour = 0;
+    int minute = 0;
+    for (int i = 0; i < entryList.length; i++) {
+      DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
+      if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
+        hour += int.parse(entryList[i].nonStatutoryOvertime!.split(":")[0]);
+        minute += int.parse(entryList[i].nonStatutoryOvertime!.split(":")[1]);
+      }
+    }
+    int totalHour = hour + (minute ~/ 60);
+    int totalMinute = minute % 60;
+    return "${DateToAPIHelper.formatTimeTwoDigits(totalHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(totalMinute.toString())}";
+  }
+
+  static totalActualWorkingTime(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+    int hour = 0;
+    int minute = 0;
+    for (int i = 0; i < entryList.length; i++) {
+      DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
+      if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
+        hour += entryList[i].actualWorkingHour!;
+        minute += entryList[i].actualWorkingMinute!;
+      }
+    }
+    int totalHour = hour + (minute ~/ 60);
+    int totalMinute = minute % 60;
+    return "${DateToAPIHelper.formatTimeTwoDigits(totalHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(totalMinute.toString())}";
+  }
+
+  static totalWorkingTime(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+    int hour = 0;
+    int minute = 0;
+    for (int i = 0; i < entryList.length; i++) {
+      DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
+      if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
+        hour += entryList[i].workingHour!;
+        minute += entryList[i].workingMinute!;
+      }
+    }
+    int totalHour = hour + (minute ~/ 60);
+    int totalMinute = minute % 60;
+    return "${DateToAPIHelper.formatTimeTwoDigits(totalHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(totalMinute.toString())}";
+  }
+
+  static totalBreakTime(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+    int hour = 0;
+    int minute = 0;
+    for (int i = 0; i < entryList.length; i++) {
+      DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
+      if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
+        hour += entryList[i].breakingTimeHour!;
+        minute += entryList[i].breakingTimeMinute!;
+      }
+    }
+    int totalHour = hour + (minute ~/ 60);
+    int totalMinute = minute % 60;
+    return "${DateToAPIHelper.formatTimeTwoDigits(totalHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(totalMinute.toString())}";
   }
 }

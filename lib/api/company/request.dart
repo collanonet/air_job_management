@@ -13,6 +13,25 @@ import '../../utils/log.dart';
 class RequestApiService {
   final CollectionReference requestRef = FirebaseFirestore.instance.collection('request');
 
+  Future<int> getTotalHolidayLeaveRequest(String userId, String startDate, String endDate) async {
+    try {
+      var doc = await requestRef
+          .where("date", isGreaterThanOrEqualTo: startDate)
+          .where("date", isLessThanOrEqualTo: endDate)
+          .where("userId", isEqualTo: userId)
+          .where("is_holiday", isEqualTo: true)
+          .get();
+      if (doc.docs.isEmpty) {
+        return 0;
+      } else {
+        return doc.size;
+      }
+    } catch (e) {
+      print("Error $e");
+      return 0;
+    }
+  }
+
   Future<List<Request>> getRequestByDate(String date, String jobPostingId) async {
     try {
       print("getRequestByDate $date, $jobPostingId");
