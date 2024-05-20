@@ -3,6 +3,7 @@ import 'package:air_job_management/api/company/worker_managment.dart';
 import 'package:air_job_management/api/entry_exit.dart';
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
+import 'package:air_job_management/models/shift_and_work_time.dart';
 import 'package:air_job_management/models/worker_model/shift.dart';
 import 'package:air_job_management/utils/common_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -25,6 +26,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
   DateTime endDay = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
   List<DateTime> dateList = [];
   List<EntryExitCalendarByUser> entryExitCalendarByUser = [];
+  List<ShiftAndWorkTimeByUser> shiftAndWorkTimeByUserList = [];
   List<String> userNameList = [];
   String selectedUserName = "";
   List<String> rowHeaderTable = [
@@ -231,6 +233,84 @@ class EntryExitHistoryProvider with ChangeNotifier {
       }
     }
   }
+
+  mapDataForShiftAndWorkTime() {
+    List<EntryExitHistory> afterFilterEntryRangeDate = [];
+    if (startDay != null && endDay != null) {
+      for (var job in entryList) {
+        DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
+        bool isWithin = CommonUtils.isDateInRange(workDate, startDay, endDay);
+        if (isWithin) {
+          afterFilterEntryRangeDate.add(job);
+        }
+      }
+    } else {
+      afterFilterEntryRangeDate = entryList;
+    }
+
+    List<WorkerManagement> afterFilterRangeDate = [];
+    if (startDay != null && endDay != null) {
+      for (var job in workManagementList) {
+        List<DateTime> dateList = job.shiftList!.map((e) => e.date!).toList();
+        bool isWithin = CommonUtils.containsAnyDate(dateList, dateList);
+        if (isWithin) {
+          afterFilterRangeDate.add(job);
+        }
+      }
+    } else {
+      afterFilterRangeDate = afterFilterRangeDate;
+    }
+    shiftAndWorkTimeByUserList.clear();
+    List<String> nameList = [];
+    for (var entry in afterFilterRangeDate) {
+      nameList.add(entry.myUser!.nameKanJi!);
+    }
+    nameList = nameList.toSet().toList();
+    for (var name in nameList) {
+      var entryByUser = ShiftAndWorkTimeByUser(userName: name, list: []);
+      for (var date in dateList) {
+        entryByUser.list.add(ShiftAndWorkTimeByUserByDate(date: date));
+      }
+      shiftAndWorkTimeByUserList.add(entryByUser);
+    }
+    //Map data
+    for (var entryByUser in shiftAndWorkTimeByUserList) {
+      for (var entry in afterFilterRangeDate) {
+        if (entry.myUser!.nameKanJi == entryByUser.userName) {
+          for (var shift in entry.shiftList!) {
+            for (var entryDate in entryByUser.list) {
+              if (CommonUtils.isTheSameDate(shift.date, entryDate.date)) {
+                entryDate.shiftAndWorkTime = ShiftAndWorkTime(
+                    myUser: entry.myUser,
+                    userName: entryByUser.userName,
+                    endWorkTime: "",
+                    startWorkTime: "",
+                    paidHoliday: false,
+                    scheduleEndWorkTime: "",
+                    scheduleStartWorkTime: "",
+                    workingTime: "");
+                for (var entryExit in afterFilterEntryRangeDate) {
+                  DateTime workDate = DateToAPIHelper.fromApiToLocal(entryExit.workDate!);
+                  if (entryByUser.userName == entryExit.myUser?.nameKanJi && entryDate.date == workDate) {
+                    entryDate.shiftAndWorkTime!.startWorkTime = entryExit.startWorkingTime ?? "09:00";
+                    entryDate.shiftAndWorkTime!.endWorkTime = entryExit.endWorkingTime ?? "18:00";
+                    entryDate.shiftAndWorkTime!.scheduleStartWorkTime = entryExit.scheduleStartWorkingTime ?? "09:00";
+                    entryDate.shiftAndWorkTime!.scheduleEndWorkTime = entryExit.scheduleEndWorkingTime ?? "18:00";
+                    entryDate.shiftAndWorkTime!.workingTime =
+                        "${DateToAPIHelper.formatTimeTwoDigits(entryExit.actualWorkingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(entryExit.actualWorkingMinute.toString())}";
+                    break;
+                  }
+                }
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  calculateWorkingTime() {}
 
   List<ShiftModel> shiftList = [];
   int countDayOff = 0;
