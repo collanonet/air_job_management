@@ -87,6 +87,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
 
   onChangeSelectMenu(String menu) {
     selectedMenu = menu;
+    selectDisplay = displayList[0];
     notifyListeners();
   }
 

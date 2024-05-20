@@ -1,6 +1,5 @@
 import 'package:air_job_management/models/entry_calendar_by_user.dart';
 import 'package:air_job_management/providers/company/entry_exit_history.dart';
-import 'package:air_job_management/utils/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
@@ -9,13 +8,11 @@ import '../../../utils/style.dart';
 class EntryExitHistoryDataSourceByDate extends DataGridSource {
   // ignore: non_constant_identifier_names
   /// Creates the employee data source class with required details.
-  EntryExitHistoryDataSourceByDate(
-      {required EntryExitHistoryProvider provider, required this.onTap}) {
+  EntryExitHistoryDataSourceByDate({required EntryExitHistoryProvider provider, required this.onTap}) {
     for (var entry in provider.entryExitCalendarByUser) {
       _employeeData.add(DataGridRow(
           cells: entry.list.map((e) {
-        return DataGridCell<Entry>(
-            columnName: e.date.toString(), value: e.entry);
+        return DataGridCell<Entry>(columnName: e.date.toString(), value: e.entry);
       }).toList()));
     }
   }
@@ -49,22 +46,22 @@ class EntryExitHistoryDataSourceByDate extends DataGridSource {
               ],
             )
           : Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          displayDateWidget(
-            "",
-          ),
-          displayDateWidget(
-            "",
-          ),
-          displayDateWidget(
-            "",
-          ),
-          displayDateWidget(
-            "",
-          ),
-        ],
-      );
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                displayDateWidget(
+                  "00:00",
+                ),
+                displayDateWidget(
+                  "00:00",
+                ),
+                displayDateWidget(
+                  "00:00",
+                ),
+                displayDateWidget(
+                  "00:00",
+                ),
+              ],
+            );
     }).toList());
   }
 }
@@ -73,8 +70,7 @@ displayDateWidget(String data, {double? width, double? height}) {
   return Container(
     width: width ?? 48,
     height: height ?? 30,
-    decoration: BoxDecoration(
-        border: Border.all(width: 1, color: const Color(0xffF0F3F5))),
+    decoration: BoxDecoration(border: Border.all(width: 1, color: const Color(0xffF0F3F5))),
     child: Center(
       child: Text(
         data,

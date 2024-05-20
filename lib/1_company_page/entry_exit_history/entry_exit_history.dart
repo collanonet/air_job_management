@@ -65,31 +65,59 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
               children: [
                 const EntryFilterWidget(),
                 AppSize.spaceHeight16,
-                IconButton(
-                    onPressed: () {
-                      EntryExitApiService().insertDataForTesting(provider.entryList);
-                    },
-                    icon: const Icon(Icons.refresh)),
+                // IconButton(
+                //     onPressed: () {
+                //       EntryExitApiService().insertDataForTesting(provider.entryList);
+                //     },
+                //     icon: const Icon(Icons.refresh)),
                 const TabSelectionWidget(),
-                Container(
-                  decoration: boxDecoration,
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          buildTab(provider.displayList[0]),
-                          buildTab(provider.displayList[1]),
-                          buildTab(provider.displayList[2]),
-                          buildTab(provider.displayList[3]),
-                        ],
-                      ),
-                      AppSize.spaceHeight16,
-                      // if (provider.selectDisplay == provider.displayList[0]) buildDataTableByDay() else buildMonthDisplay(),
-                      if (provider.selectDisplay == provider.displayList[0]) buildEntryExitList() else buildMonthDisplay(),
-                    ],
-                  ),
-                )
+                if (provider.selectedMenu == provider.tabMenu[0])
+                  Container(
+                    decoration: boxDecoration,
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            buildTab(provider.displayList[0]),
+                            buildTab(provider.displayList[1]),
+                            buildTab(provider.displayList[2]),
+                            buildTab(provider.displayList[3]),
+                          ],
+                        ),
+                        AppSize.spaceHeight16,
+                        // if (provider.selectDisplay == provider.displayList[0]) buildDataTableByDay() else buildMonthDisplay(),
+                        if (provider.selectDisplay == provider.displayList[0])
+                          buildEntryExitList()
+                        else if (provider.selectDisplay == provider.displayList[2])
+                          buildEntryExitList()
+                        else if (provider.selectDisplay == provider.displayList[3])
+                          buildDataTableOvertimeByDay()
+                        else
+                          buildMonthDisplay(),
+                      ],
+                    ),
+                  )
+                else
+                  Container(
+                    decoration: boxDecoration,
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            buildTab(provider.displayList[0]),
+                            buildTab(provider.displayList[1]),
+                            // buildTab(provider.displayList[2]),
+                            // buildTab(provider.displayList[3]),
+                          ],
+                        ),
+                        AppSize.spaceHeight16,
+                        // if (provider.selectDisplay == provider.displayList[0]) buildDataTableByDay() else buildMonthDisplay(),
+                        if (provider.selectDisplay == provider.displayList[0]) buildEntryExitList() else buildMonthDisplay(),
+                      ],
+                    ),
+                  )
               ],
             ),
           ),
@@ -466,7 +494,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            summaryCardWidget(title: "欠勤日数", data: "20.00"),
+            summaryCardWidget(title: "欠勤日数", data: "00.00"),
             const SizedBox(
               height: 3,
             ),
@@ -480,7 +508,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "不労時間", data: "20.00")
+            summaryCardWidget(title: "不労時間", data: "00.00")
           ],
         ),
         Column(
@@ -566,7 +594,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
   ScrollController horizontalScroll1 = ScrollController();
 
   //Hide K1 page
-  buildDataTableByDay() {
+  buildDataTableOvertimeByDay() {
     return Column(
       children: [
         Center(
