@@ -313,10 +313,6 @@ class EntryExitHistoryProvider with ChangeNotifier {
         }
       }
     }
-    //log data
-    for (var entryByUser in shiftAndWorkTimeByUserList) {
-      print("log entry by user ${entryByUser.userName} x ${entryByUser.list.length}");
-    }
   }
 
   calculateWorkingTime() {}

@@ -15,16 +15,23 @@ class RequestApiService {
 
   Future<int> getTotalHolidayLeaveRequest(String userId, String startDate, String endDate) async {
     try {
-      var doc = await requestRef
-          .where("date", isGreaterThanOrEqualTo: startDate)
-          .where("date", isLessThanOrEqualTo: endDate)
-          .where("userId", isEqualTo: userId)
-          .where("is_holiday", isEqualTo: true)
-          .get();
+      //.where("status", isEqualTo: "approved")
+      var doc = await requestRef.where("userId", isEqualTo: userId).where("isHoliday", isEqualTo: true).get();
       if (doc.docs.isEmpty) {
         return 0;
       } else {
-        return doc.size;
+        int size = 0;
+        for (var doc in doc.docs) {
+          var data = doc.data() as Map<String, dynamic>;
+          DateTime date = DateToAPIHelper.fromApiToLocal(data["date"]);
+          DateTime start = DateToAPIHelper.fromApiToLocal(startDate);
+          DateTime end = DateToAPIHelper.fromApiToLocal(endDate);
+          if (CommonUtils.isDateInRange(date, start, end)) {
+            size++;
+          }
+        }
+        print("getTotalHolidayLeaveRequest $size");
+        return size;
       }
     } catch (e) {
       print("Error getTotalHolidayLeaveRequest $e");
