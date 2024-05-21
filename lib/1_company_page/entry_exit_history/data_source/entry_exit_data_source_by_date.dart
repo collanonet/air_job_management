@@ -75,6 +75,7 @@ displayDateWidget(String data, {double? width, double? height}) {
       child: Text(
         data,
         style: kNormalText.copyWith(fontSize: 12),
+        textAlign: TextAlign.center,
       ),
     ),
   );

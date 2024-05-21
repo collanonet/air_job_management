@@ -27,7 +27,7 @@ class RequestApiService {
         return doc.size;
       }
     } catch (e) {
-      print("Error $e");
+      print("Error getTotalHolidayLeaveRequest $e");
       return 0;
     }
   }

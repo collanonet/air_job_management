@@ -28,6 +28,7 @@ import '../../utils/style.dart';
 import '../entry_exit_history_list/data_source/entry_list_data_source.dart';
 import '../entry_exit_history_list/widget/filter.dart';
 import '../entry_exit_history_list/widget/ratting_dialog.dart';
+import 'data_source/entry_exit_and_shift_data_source.dart';
 
 class EntryExitHistoryPage extends StatefulWidget {
   const EntryExitHistoryPage({super.key});
@@ -39,6 +40,7 @@ class EntryExitHistoryPage extends StatefulWidget {
 class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterBuildMixin {
   late EntryExitHistoryProvider provider;
   late EntryExitHistoryDataSourceByDate entryExitHistoryDataSourceByDate;
+  late EntryExitAndShiftDataByUser entryExitAndShiftDataByUser;
   late AuthProvider authProvider;
   Branch? branch;
 
@@ -46,6 +48,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
   void initState() {
     Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading = true;
     Provider.of<EntryExitHistoryProvider>(context, listen: false).initData();
+    entryExitAndShiftDataByUser = EntryExitAndShiftDataByUser(provider: Provider.of<EntryExitHistoryProvider>(context, listen: false), onTap: () {});
     entryExitHistoryDataSourceByDate =
         EntryExitHistoryDataSourceByDate(provider: Provider.of<EntryExitHistoryProvider>(context, listen: false), onTap: () {});
     super.initState();
@@ -113,8 +116,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                           ],
                         ),
                         AppSize.spaceHeight16,
-                        // if (provider.selectDisplay == provider.displayList[0]) buildDataTableByDay() else buildMonthDisplay(),
-                        if (provider.selectDisplay == provider.displayList[0]) buildEntryExitList() else buildMonthDisplay(),
+                        if (provider.selectDisplay == provider.displayList[0]) buildDataTableListOfShiftByUser() else buildMonthDisplay(),
                       ],
                     ),
                   )
@@ -242,6 +244,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
               topRight: Radius.circular(provider.selectDisplay == provider.displayList[1] ? 6 : 0)),
           onTap: () {
             entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
+            entryExitAndShiftDataByUser = EntryExitAndShiftDataByUser(provider: provider, onTap: () {});
             provider.onChangeDisplay(title);
           },
           child: Center(
@@ -776,6 +779,218 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
     );
   }
 
+  buildDataTableListOfShiftByUser() {
+    return Column(
+      children: [
+        Center(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(width: 1, color: AppColor.primaryColor),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                    onPressed: () async {
+                      provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month - 1, provider.startDay.day));
+                      onGetData();
+                    },
+                    icon: Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      size: 25,
+                      color: AppColor.primaryColor,
+                    )),
+                Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${provider.startDay.year}年",
+                          style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 10),
+                        ),
+                        Text(
+                          "${toJapanMonthDayWeekday(provider.startDay)}",
+                          style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 28),
+                          child: Text(
+                            "${provider.startDay.year}年",
+                            style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 10),
+                          ),
+                        ),
+                        Text(
+                          "〜　${toJapanMonthDayWeekday(provider.endDay)}",
+                          style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                IconButton(
+                    onPressed: () async {
+                      provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month + 1, provider.startDay.day));
+                      onGetData();
+                    },
+                    icon: Icon(
+                      color: AppColor.primaryColor,
+                      Icons.arrow_forward_ios_rounded,
+                      size: 25,
+                    )),
+              ],
+            ),
+          ),
+        ),
+        AppSize.spaceHeight16,
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 65),
+              child: SizedBox(
+                width: 180,
+                height: provider.shiftAndWorkTimeByUserList.length * 75,
+                child: ListView.builder(
+                    itemCount: provider.shiftAndWorkTimeByUserList.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        height: 75,
+                        width: 180,
+                        child: Row(
+                          children: [
+                            Container(
+                              height: 70,
+                              width: 115,
+                              color: const Color(0xffF0F3F5),
+                              alignment: Alignment.topCenter,
+                              child: Text(
+                                "${provider.shiftAndWorkTimeByUserList[index].userName}",
+                                style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 14),
+                              ),
+                            ),
+                            AppSize.spaceWidth5,
+                            Column(
+                              children: [
+                                displayDateWidget("予定", width: 60, height: 35),
+                                displayDateWidget("実績", width: 60, height: 35),
+                              ],
+                            )
+                          ],
+                        ),
+                      );
+                    }),
+              ),
+            ),
+            Expanded(
+              child: ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
+                  PointerDeviceKind.touch,
+                  PointerDeviceKind.mouse,
+                }),
+                child: Scrollbar(
+                  controller: horizontalScroll1,
+                  isAlwaysShown: true,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    controller: horizontalScroll1,
+                    child: SfDataGrid(
+                        source: entryExitAndShiftDataByUser,
+                        columnWidthMode: ColumnWidthMode.fill,
+                        isScrollbarAlwaysShown: false,
+                        rowHeight: 75,
+                        headerRowHeight: 65,
+                        shrinkWrapRows: true,
+                        shrinkWrapColumns: true,
+                        gridLinesVisibility: GridLinesVisibility.none,
+                        headerGridLinesVisibility: GridLinesVisibility.none,
+                        horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+                        verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+                        columns: provider.dateList.map((e) {
+                              return GridColumn(
+                                  width: 48,
+                                  label: Center(
+                                      child: Column(
+                                    children: [
+                                      Container(
+                                        width: 48,
+                                        height: 30,
+                                        margin: const EdgeInsets.symmetric(vertical: 1),
+                                        color: const Color(0xffF0F3F5),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          e.day.toString(),
+                                          style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                                        ),
+                                      ),
+                                      Container(
+                                        width: 48,
+                                        height: 30,
+                                        margin: const EdgeInsets.symmetric(vertical: 1),
+                                        color: const Color(0xffF0F3F5),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          toJapanWeekDayWithInt(e.weekday),
+                                          style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                                  columnName: e.toString());
+                            }).toList() +
+                            provider.moreMenuShiftAndWorkTimeByUserList
+                                .map((e) => GridColumn(
+                                    width: 48,
+                                    label: Center(
+                                        child: Column(
+                                      children: [
+                                        Container(
+                                          width: 48,
+                                          height: 30,
+                                          margin: const EdgeInsets.symmetric(vertical: 1),
+                                          color: Colors.transparent,
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            "",
+                                            style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: 48,
+                                          height: 30,
+                                          margin: const EdgeInsets.symmetric(vertical: 1),
+                                          color: const Color(0xffF0F3F5),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            e,
+                                            style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                                    columnName: e.toString()))
+                                .toList()),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        )
+      ],
+    );
+  }
+
   @override
   void afterBuild(BuildContext context) async {
     onGetData();
@@ -790,6 +1005,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
         await provider.getEntryData(company!.uid!);
         // provider.getUserShift(company.uid!, authProvider.branch!.id!);
         entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
+        entryExitAndShiftDataByUser = EntryExitAndShiftDataByUser(provider: provider, onTap: () {});
         if (authProvider.myCompany?.branchList != []) {
           branch = authProvider.myCompany?.branchList!.first;
         }
@@ -800,6 +1016,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
       String id = authProvider.myCompany?.uid ?? "";
       await provider.getEntryData(id);
       entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
+      entryExitAndShiftDataByUser = EntryExitAndShiftDataByUser(provider: provider, onTap: () {});
       // provider.getUserShift(id, authProvider.branch!.id!);
       if (authProvider.myCompany?.branchList != []) {
         branch = authProvider.myCompany?.branchList!.first;
