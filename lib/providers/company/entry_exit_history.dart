@@ -48,6 +48,32 @@ class EntryExitHistoryProvider with ChangeNotifier {
     "総勤務時間",
   ];
 
+  List<String> rowHeaderForAttendanceManagementList = [
+    "氏名", //Name
+    "職種", //Type Of Work
+    "実出勤日数", //Total of actual work day
+    "総出勤日数", //Total number of day worked
+    "有休消化", //indigestible
+    "有休残数", // Remaining number of paid holidays
+    "公休日数", // Public Holiday
+    "特別休暇", // special leave
+    "振替日数", // Number of days transferred
+    "休出日数", // Number of holiday work days (within statutory working hours）
+    "欠勤日数", // Number of days absent
+    "遅刻回数", //Number of tardiness
+    "早退回数", // Number of leaving work before finishing work
+    "不労時間", //Unworked hours
+    "法定内残業", // Within statutory working hours,
+    "法定外残業", // Excess statutory working hours,
+    "基準残業", // Standard overtime
+    "超過残業", // Excessive overtime
+    "深夜時間", // Midnight
+    "休出時間", // Number of holiday work times
+    "実勤務時間", // Actual work hours
+    "総勤務時間", // Total working hours
+    "所定外計", // Total of overtime working hours
+  ];
+
   List<WorkerManagement> workManagementList = [];
 
   String? selectedJobTitle;

@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:air_job_management/1_company_page/entry_exit_history/data_source/entry_exit_data_source_by_date.dart';
+import 'package:air_job_management/1_company_page/entry_exit_history/widget/data_table_widget_fixed_width.dart';
 import 'package:air_job_management/1_company_page/entry_exit_history/widget/filter.dart';
 import 'package:air_job_management/1_company_page/entry_exit_history/widget/tab_selection.dart';
 import 'package:air_job_management/1_company_page/entry_exit_history/widget/table_widget.dart';
@@ -92,7 +93,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                         if (provider.selectDisplay == provider.displayList[0])
                           buildEntryExitList()
                         else if (provider.selectDisplay == provider.displayList[2])
-                          buildEntryExitList()
+                          buildAttendanceListByMonth()
                         else if (provider.selectDisplay == provider.displayList[3])
                           buildDataTableOvertimeByDay()
                         else
@@ -442,6 +443,143 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
           summaryWidget(),
           AppSize.spaceHeight30,
         ],
+      ),
+    );
+  }
+
+  buildAttendanceListByMonth() {
+    return SizedBox(
+      width: AppSize.getDeviceWidth(context),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            Center(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(width: 1, color: AppColor.primaryColor),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                        onPressed: () async {
+                          provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month - 1, provider.startDay.day));
+                          onGetData();
+                        },
+                        icon: Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          size: 25,
+                          color: AppColor.primaryColor,
+                        )),
+                    Row(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "${provider.startDay.year}年",
+                              style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 10),
+                            ),
+                            Text(
+                              "${toJapanMonthDayWeekday(provider.startDay)}",
+                              style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 28),
+                              child: Text(
+                                "${provider.startDay.year}年",
+                                style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 10),
+                              ),
+                            ),
+                            Text(
+                              "〜　${toJapanMonthDayWeekday(provider.endDay)}",
+                              style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    IconButton(
+                        onPressed: () async {
+                          provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month + 1, provider.startDay.day));
+                          onGetData();
+                        },
+                        icon: Icon(
+                          color: AppColor.primaryColor,
+                          Icons.arrow_forward_ios_rounded,
+                          size: 25,
+                        )),
+                  ],
+                ),
+              ),
+            ),
+            AppSize.spaceHeight16,
+            // buildData()
+            Row(
+              children: [
+                ...provider.rowHeaderForAttendanceManagementList.map((e) => Container(
+                      height: 30,
+                      width: provider.rowHeaderForAttendanceManagementList.indexOf(e) == 0 ? 100 : 70,
+                      margin: const EdgeInsets.symmetric(vertical: 1),
+                      color: const Color(0xffF0F3F5),
+                      alignment: Alignment.center,
+                      child: Text(
+                        e,
+                        style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                      ),
+                    ))
+              ],
+            ),
+            ListView.builder(
+                itemCount: provider.shiftAndWorkTimeByUserList.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  var data = provider.shiftAndWorkTimeByUserList[index];
+                  return Row(
+                    children: [
+                      DataTableFixedWidthWidget(
+                        data: data.userName,
+                        width: 100,
+                      ),
+                      const DataTableFixedWidthWidget(data: "パート"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                      const DataTableFixedWidthWidget(data: "0"),
+                    ],
+                  );
+                }),
+            AppSize.spaceHeight30,
+          ],
+        ),
       ),
     );
   }
@@ -1019,5 +1157,47 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
         branch = authProvider.myCompany?.branchList!.first;
       }
     }
+  }
+}
+
+class TwoDimensionalScrollWidget extends StatelessWidget {
+  final Widget child;
+
+  final ScrollController _verticalController = ScrollController();
+  final ScrollController _horizontalController = ScrollController();
+
+  TwoDimensionalScrollWidget({
+    super.key,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scrollbar(
+      thickness: 12.0,
+      trackVisibility: true,
+      interactive: true,
+      controller: _verticalController,
+      scrollbarOrientation: ScrollbarOrientation.right,
+      thumbVisibility: true,
+      child: Scrollbar(
+        thickness: 12.0,
+        trackVisibility: true,
+        interactive: true,
+        controller: _horizontalController,
+        scrollbarOrientation: ScrollbarOrientation.bottom,
+        thumbVisibility: true,
+        notificationPredicate: (ScrollNotification notif) => notif.depth == 1,
+        child: SingleChildScrollView(
+          controller: _verticalController,
+          child: SingleChildScrollView(
+            primary: false,
+            controller: _horizontalController,
+            scrollDirection: Axis.horizontal,
+            child: child,
+          ),
+        ),
+      ),
+    );
   }
 }
