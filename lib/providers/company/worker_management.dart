@@ -86,7 +86,7 @@ class WorkerManagementProvider with ChangeNotifier {
     List<WorkerManagement> afterFilterStatus = [];
     if (selectedJobStatus != null && selectedJobStatus != JapaneseText.all) {
       for (var job in afterFilterSelectJobTitle) {
-        if (job.status.toString() == StatusHelper.japanToEnglish(selectedJobStatus)) {
+        if (job.shiftList!.map((e) => e.status).toString().contains(StatusHelper.japanToEnglish(selectedJobStatus))) {
           afterFilterStatus.add(job);
         }
       }

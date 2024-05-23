@@ -797,15 +797,19 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
   }
 
   showJobApplyDialog(DateTime date, String jobId) {
-    showDialog(
-        context: context,
-        builder: (context) => Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceHeight(context) * 0.1, vertical: 32),
-              child: ShiftDetailDialogWidget(
-                jobId: jobId,
-                date: date,
-              ),
-            ));
+    if (jobId == "" || jobId == null) {
+      toastMessageError("この求人には応募がありません。", context);
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) => Padding(
+                padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceHeight(context) * 0.1, vertical: 32),
+                child: ShiftDetailDialogWidget(
+                  jobId: jobId,
+                  date: date,
+                ),
+              ));
+    }
   }
 
   buildMonthDisplay(bool isShowStatus) {

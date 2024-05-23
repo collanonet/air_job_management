@@ -26,126 +26,107 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
   @override
   Widget build(BuildContext context) {
     authProvider = Provider.of<AuthProvider>(context);
-    return Expanded(
-      child: Container(
-        width: AppSize.getDeviceWidth(context),
-        padding: const EdgeInsets.all(32),
-        decoration: boxDecoration,
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const TitleWidget(title: "店舗情報"),
-                // IconButton(onPressed: () => JobPostingApiService().updateAllJobPosting(), icon: const Icon(Icons.update)),
-                SizedBox(
-                  width: 230,
-                  child: ButtonWidget(radius: 25, title: "ブランチの作成", color: AppColor.primaryColor, onPress: () => showCreateBranchDialog()),
-                ),
-              ],
-            ),
-            AppSize.spaceHeight16,
-            if (authProvider.myCompany == null)
-              const SizedBox(
-                child: Text(""),
-              )
-            else if (authProvider.myCompany!.branchList!.isEmpty)
-              const Padding(
-                padding: EdgeInsets.only(top: 30),
-                child: EmptyDataWidget(),
-              )
-            else
-              Expanded(
-                child: ListView.builder(
-                    itemCount: authProvider.myCompany!.branchList!.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      var branch = authProvider.myCompany!.branchList![index];
-                      Branch? selectedBranch = authProvider.branch;
-                      return Container(
-                        decoration: BoxDecoration(
-                            color: selectedBranch?.createdAt == branch.createdAt ? Colors.orange.withOpacity(0.1) : Colors.transparent,
-                            border: Border.all(
-                                color: selectedBranch?.createdAt == branch.createdAt ? AppColor.primaryColor : AppColor.darkGrey, width: 1),
-                            borderRadius: BorderRadius.circular(20)),
-                        padding: const EdgeInsets.all(32),
-                        margin: const EdgeInsets.only(bottom: 16),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
+    return Container(
+      width: AppSize.getDeviceWidth(context),
+      padding: const EdgeInsets.all(32),
+      decoration: boxDecoration,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const TitleWidget(title: "店舗情報"),
+              // IconButton(onPressed: () => JobPostingApiService().updateAllJobPosting(), icon: const Icon(Icons.update)),
+              SizedBox(
+                width: 230,
+                child: ButtonWidget(radius: 25, title: "ブランチの作成", color: AppColor.primaryColor, onPress: () => showCreateBranchDialog()),
+              ),
+            ],
+          ),
+          AppSize.spaceHeight16,
+          if (authProvider.myCompany == null)
+            const SizedBox(
+              child: Text(""),
+            )
+          else if (authProvider.myCompany!.branchList!.isEmpty)
+            const Padding(
+              padding: EdgeInsets.only(top: 30),
+              child: EmptyDataWidget(),
+            )
+          else
+            ListView.builder(
+                itemCount: authProvider.myCompany!.branchList!.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  var branch = authProvider.myCompany!.branchList![index];
+                  Branch? selectedBranch = authProvider.branch;
+                  return Container(
+                    decoration: BoxDecoration(
+                        color: selectedBranch?.createdAt == branch.createdAt ? Colors.orange.withOpacity(0.1) : Colors.transparent,
+                        border:
+                            Border.all(color: selectedBranch?.createdAt == branch.createdAt ? AppColor.primaryColor : AppColor.darkGrey, width: 1),
+                        borderRadius: BorderRadius.circular(20)),
+                    padding: const EdgeInsets.all(32),
+                    margin: const EdgeInsets.only(bottom: 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              TitleWidget(title: "店舗${index + 1}"),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  TitleWidget(title: "店舗${index + 1}"),
+                                  Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.name, style: kNormalText.copyWith(fontSize: 12))),
+                                  AppSize.spaceHeight5,
+                                  SizedBox(
+                                    width: AppSize.getDeviceHeight(context) * 0.8,
+                                    child: PrimaryTextField(
+                                      hint: "",
+                                      controller: TextEditingController(text: "${branch.name}"),
+                                      readOnly: true,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Align(
-                                          alignment: Alignment.centerLeft, child: Text(JapaneseText.name, style: kNormalText.copyWith(fontSize: 12))),
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(JapaneseText.postalCode, style: kNormalText.copyWith(fontSize: 12))),
                                       AppSize.spaceHeight5,
                                       SizedBox(
-                                        width: AppSize.getDeviceHeight(context) * 0.8,
+                                        width: 150,
                                         child: PrimaryTextField(
                                           hint: "",
-                                          controller: TextEditingController(text: "${branch.name}"),
+                                          controller: TextEditingController(text: "${branch.postalCode}"),
                                           readOnly: true,
                                         ),
                                       ),
                                     ],
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(JapaneseText.postalCode, style: kNormalText.copyWith(fontSize: 12))),
-                                          AppSize.spaceHeight5,
-                                          SizedBox(
-                                            width: 150,
-                                            child: PrimaryTextField(
-                                              hint: "",
-                                              controller: TextEditingController(text: "${branch.postalCode}"),
-                                              readOnly: true,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      AppSize.spaceWidth16,
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(JapaneseText.location, style: kNormalText.copyWith(fontSize: 12))),
-                                          AppSize.spaceHeight5,
-                                          SizedBox(
-                                            width: AppSize.getDeviceHeight(context) * 0.8 - 166,
-                                            child: PrimaryTextField(
-                                              hint: "",
-                                              controller: TextEditingController(text: "${branch.location}"),
-                                              readOnly: true,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                  AppSize.spaceWidth16,
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Align(alignment: Alignment.centerLeft, child: Text("TEL", style: kNormalText.copyWith(fontSize: 12))),
+                                      Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(JapaneseText.location, style: kNormalText.copyWith(fontSize: 12))),
                                       AppSize.spaceHeight5,
                                       SizedBox(
-                                        width: 200,
+                                        width: AppSize.getDeviceHeight(context) * 0.8 - 166,
                                         child: PrimaryTextField(
                                           hint: "",
-                                          controller: TextEditingController(text: "${branch.contactNumber}"),
+                                          controller: TextEditingController(text: "${branch.location}"),
                                           readOnly: true,
                                         ),
                                       ),
@@ -153,26 +134,41 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
                                   ),
                                 ],
                               ),
-                            ),
-                            SizedBox(
-                              width: 230,
-                              child: ButtonWidget(
-                                  radius: 25,
-                                  title: "編集",
-                                  color: AppColor.primaryColor,
-                                  onPress: () =>
-                                      showDialog(context: context, builder: (context) => CreateOrEditBranchWidget(branch: branch, index: index))
-                                          .then((value) {
-                                        if (value != null) {}
-                                      })),
-                            ),
-                          ],
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Align(alignment: Alignment.centerLeft, child: Text("TEL", style: kNormalText.copyWith(fontSize: 12))),
+                                  AppSize.spaceHeight5,
+                                  SizedBox(
+                                    width: 200,
+                                    child: PrimaryTextField(
+                                      hint: "",
+                                      controller: TextEditingController(text: "${branch.contactNumber}"),
+                                      readOnly: true,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      );
-                    }),
-              )
-          ],
-        ),
+                        SizedBox(
+                          width: 230,
+                          child: ButtonWidget(
+                              radius: 25,
+                              title: "編集",
+                              color: AppColor.primaryColor,
+                              onPress: () =>
+                                  showDialog(context: context, builder: (context) => CreateOrEditBranchWidget(branch: branch, index: index))
+                                      .then((value) {
+                                    if (value != null) {}
+                                  })),
+                        ),
+                      ],
+                    ),
+                  );
+                })
+        ],
       ),
     );
   }

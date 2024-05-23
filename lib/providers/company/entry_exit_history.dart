@@ -68,7 +68,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
 
   initData() {
     dateList = [];
-    startDay = DateTime.now();
+    startDay = DateTime(DateTime.now().year, DateTime.now().month, 1);
     endDay = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
     for (int i = 1; i < endDay.day + 1; i++) {
       var date = DateTime(endDay.year, endDay.month, i);

@@ -47,46 +47,42 @@ class _CompanyProfilePageState extends State<CompanyProfilePage> with AfterBuild
   Widget build(BuildContext context) {
     authProvider = Provider.of<AuthProvider>(context);
     provider = CompanyProvider.getProvider(context);
-    return Expanded(
-      child: SizedBox(
-        width: AppSize.getDeviceWidth(context),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              buildManager(),
-              AppSize.spaceHeight16,
-              Container(
-                padding: const EdgeInsets.all(32),
-                decoration: boxDecoration,
-                child: Column(
+    return SizedBox(
+      width: AppSize.getDeviceWidth(context),
+      child: Column(
+        children: [
+          buildManager(),
+          AppSize.spaceHeight16,
+          Container(
+            padding: const EdgeInsets.all(32),
+            decoration: boxDecoration,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //Basic Info
+                const TitleWidget(title: "基本情報"),
+                AppSize.spaceHeight16,
+                // Company Name, Public Date, Profile ...
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    //Basic Info
-                    const TitleWidget(title: "基本情報"),
-                    AppSize.spaceHeight16,
-                    // Company Name, Public Date, Profile ...
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Company Name, Public Date
-                        buildNamePostalLocationAndPublicDate(),
-                        // Profile Picture
-                        AppSize.spaceWidth16,
-                        buildChooseProfile()
-                      ],
-                    ),
-                    buildTelFaxAndEmail(),
-                    buildUrlAndAfficiate(),
-                    const Divider(),
-                    buildManagerAndContent(),
-                    AppSize.spaceHeight16,
-                    AppSize.spaceHeight30
+                    // Company Name, Public Date
+                    buildNamePostalLocationAndPublicDate(),
+                    // Profile Picture
+                    AppSize.spaceWidth16,
+                    buildChooseProfile()
                   ],
                 ),
-              ),
-            ],
+                buildTelFaxAndEmail(),
+                buildUrlAndAfficiate(),
+                const Divider(),
+                buildManagerAndContent(),
+                AppSize.spaceHeight16,
+                AppSize.spaceHeight30
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

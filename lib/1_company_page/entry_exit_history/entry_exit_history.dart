@@ -89,7 +89,6 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                           ],
                         ),
                         AppSize.spaceHeight16,
-                        // if (provider.selectDisplay == provider.displayList[0]) buildDataTableByDay() else buildMonthDisplay(),
                         if (provider.selectDisplay == provider.displayList[0])
                           buildEntryExitList()
                         else if (provider.selectDisplay == provider.displayList[2])
@@ -111,8 +110,6 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                           children: [
                             buildTab(provider.displayList[0]),
                             buildTab(provider.displayList[1]),
-                            // buildTab(provider.displayList[2]),
-                            // buildTab(provider.displayList[3]),
                           ],
                         ),
                         AppSize.spaceHeight16,
@@ -418,11 +415,11 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                         children: [
                           DataTableWidget(data: e.workDate),
                           DataTableWidget(data: toJapanWeekDayWithInt(DateToAPIHelper.fromApiToLocal(e.workDate!).weekday)),
-                          DataTableWidget(data: "出勤"),
+                          const DataTableWidget(data: "出勤"),
                           DataTableWidget(data: e.startWorkingTime),
                           DataTableWidget(data: e.endWorkingTime),
-                          DataTableWidget(data: "00:00"),
-                          DataTableWidget(data: "00:00"),
+                          const DataTableWidget(data: "00:00"),
+                          const DataTableWidget(data: "00:00"),
                           DataTableWidget(
                               data:
                                   "${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyMinute.toString())}"),
@@ -432,7 +429,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                           DataTableWidget(data: e.overtimeWithinLegalLimit),
                           DataTableWidget(data: e.nonStatutoryOvertime),
                           DataTableWidget(data: e.holidayWork),
-                          DataTableWidget(data: "00:00"),
+                          const DataTableWidget(data: "00:00"),
                           DataTableWidget(data: e.overtime),
                           DataTableWidget(
                               data:

@@ -65,43 +65,45 @@ class _RootCompanyPageState extends State<RootCompanyPage> with AfterBuildMixin 
   buildBody() {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          topBarWidget(),
-          AppSize.spaceHeight20,
-          tabSelection(),
-          AppSize.spaceHeight16,
-          Text(
-            "ホーム　＞　${authProvider.selectedMenu}",
-            style: kNormalText.copyWith(fontSize: 12, color: AppColor.primaryColor),
-          ),
-          AppSize.spaceHeight16,
-          if (authProvider.selectedMenu == authProvider.tabMenu[0]) CompanyProfilePage() else CompanyBranchPage(),
-          authProvider.selectedMenu == authProvider.tabMenu[1]
-              ? const SizedBox()
-              : Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
-                    SizedBox(
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            topBarWidget(),
+            AppSize.spaceHeight20,
+            tabSelection(),
+            AppSize.spaceHeight16,
+            Text(
+              "ホーム　＞　${authProvider.selectedMenu}",
+              style: kNormalText.copyWith(fontSize: 12, color: AppColor.primaryColor),
+            ),
+            AppSize.spaceHeight16,
+            if (authProvider.selectedMenu == authProvider.tabMenu[0]) CompanyProfilePage() else CompanyBranchPage(),
+            authProvider.selectedMenu == authProvider.tabMenu[1]
+                ? const SizedBox()
+                : Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                      SizedBox(
+                          width: 200,
+                          child: ButtonWidget(
+                            radius: 25,
+                            color: AppColor.whiteColor,
+                            title: "キャンセル",
+                            onPress: () {
+                              ///Implement cancel change
+                              companyProvider.onInitDataForDetail(authProvider.myCompany?.uid ?? "");
+                            },
+                          )),
+                      AppSize.spaceWidth16,
+                      SizedBox(
                         width: 200,
-                        child: ButtonWidget(
-                          radius: 25,
-                          color: AppColor.whiteColor,
-                          title: "キャンセル",
-                          onPress: () {
-                            ///Implement cancel change
-                            companyProvider.onInitDataForDetail(authProvider.myCompany?.uid ?? "");
-                          },
-                        )),
-                    AppSize.spaceWidth16,
-                    SizedBox(
-                      width: 200,
-                      child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () => onSaveCompanyData()),
-                    ),
-                  ]),
-                )
-        ],
+                        child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () => onSaveCompanyData()),
+                      ),
+                    ]),
+                  )
+          ],
+        ),
       ),
     );
   }
