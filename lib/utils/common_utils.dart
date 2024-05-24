@@ -187,6 +187,45 @@ class CommonUtils {
     }
   }
 
+  static totalPaidHoliday(List<Request> requestList, String userId, List<DateTime> dateList) {
+    int size = 0;
+    for (var request in requestList) {
+      DateTime date = DateToAPIHelper.fromApiToLocal(request.date!);
+      DateTime start = dateList.first;
+      DateTime end = dateList.last;
+      if (request.isHoliday == true && CommonUtils.isDateInRange(date, start, end) && request.userId == userId) {
+        size++;
+      }
+    }
+    return DateToAPIHelper.formatTimeTwoDigits(size.toString());
+  }
+
+  static remainingPaidHoliday(List<Request> requestList, String userId, List<DateTime> dateList, int paidHoliday) {
+    int size = 0;
+    for (var request in requestList) {
+      DateTime date = DateToAPIHelper.fromApiToLocal(request.date!);
+      DateTime start = dateList.first;
+      DateTime end = dateList.last;
+      if (request.isHoliday == true && CommonUtils.isDateInRange(date, start, end) && request.userId == userId) {
+        size++;
+      }
+    }
+    paidHoliday = paidHoliday - size;
+    return DateToAPIHelper.formatTimeTwoDigits(paidHoliday.toString());
+  }
+
+  static totalWorkOnHoliday(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+    List<String> workDateList = [];
+    for (int i = 0; i < entryList.length; i++) {
+      DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
+      if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name && (d.weekday == 6 || d.weekday == 7)) {
+        workDateList.add(entryList[i].workDate!);
+      }
+    }
+    workDateList = workDateList.toSet().toList();
+    return DateToAPIHelper.formatTimeTwoDigits(workDateList.length.toString());
+  }
+
   static totalWorkDay(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
     List<String> workDateList = [];
     for (int i = 0; i < entryList.length; i++) {

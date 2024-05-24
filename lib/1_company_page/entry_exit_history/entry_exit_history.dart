@@ -154,32 +154,27 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                 )),
                 DataColumn(
                     label: Text(
-                  "役職",
+                  "求人タイトル",
                   style: kNormalText.copyWith(fontFamily: "Bold"),
                 )),
                 DataColumn(
                     label: Text(
-                  "勤務開始時間",
+                  "スタッフ",
                   style: kNormalText.copyWith(fontFamily: "Bold"),
                 )),
                 DataColumn(
                     label: Text(
-                  "勤務終了時間",
+                  "シフト",
                   style: kNormalText.copyWith(fontFamily: "Bold"),
                 )),
                 DataColumn(
                     label: Text(
-                  "遅い",
+                  "出退勤(予定)",
                   style: kNormalText.copyWith(fontFamily: "Bold"),
                 )),
                 DataColumn(
                     label: Text(
-                  "シフト開始勤務時間",
-                  style: kNormalText.copyWith(fontFamily: "Bold"),
-                )),
-                DataColumn(
-                    label: Text(
-                  "シフト終了勤務時間",
+                  "出退勤(実績)",
                   style: kNormalText.copyWith(fontFamily: "Bold"),
                 )),
                 DataColumn(
@@ -198,7 +193,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                   style: kNormalText.copyWith(fontFamily: "Bold"),
                 )),
               ],
-              source: EntryListDataSource(data: provider.entryList, ratting: (entry) {}),
+              source: EntryListDataSource(data: provider.entryList, ratting: (entry) => showRatingDialog(entry)),
             ),
           ),
         ),
@@ -469,7 +464,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                     IconButton(
                         onPressed: () async {
                           provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month - 1, provider.startDay.day));
-                          onGetData();
+                          await provider.getEntryData(authProvider.myCompany?.uid ?? "");
+                          provider.mapDataForShiftAndWorkTime();
                         },
                         icon: Icon(
                           Icons.arrow_back_ios_new_rounded,
@@ -512,7 +508,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                     IconButton(
                         onPressed: () async {
                           provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month + 1, provider.startDay.day));
-                          onGetData();
+                          await provider.getEntryData(authProvider.myCompany?.uid ?? "");
+                          provider.mapDataForShiftAndWorkTime();
                         },
                         icon: Icon(
                           color: AppColor.primaryColor,
@@ -553,22 +550,25 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                         width: 100,
                       ),
                       const DataTableFixedWidthWidget(data: "パート"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
+                      DataTableFixedWidthWidget(data: "${CommonUtils.totalActualWorkDay(data.shiftList ?? [], provider.dateList)}"),
+                      DataTableFixedWidthWidget(data: "${CommonUtils.totalWorkDay(provider.entryList, provider.dateList, data.userName!)}"),
+                      DataTableFixedWidthWidget(data: "${CommonUtils.totalPaidHoliday(provider.request, data.myUser?.uid ?? "", provider.dateList)}"),
+                      DataTableFixedWidthWidget(
+                          data:
+                              "${CommonUtils.remainingPaidHoliday(provider.request, data.myUser?.uid ?? "", provider.dateList, data.myUser?.annualLeave ?? 18)}"),
+                      const DataTableFixedWidthWidget(data: "16"),
+                      const DataTableFixedWidthWidget(data: "00"),
+                      const DataTableFixedWidthWidget(data: "00"),
+                      DataTableFixedWidthWidget(data: "${CommonUtils.totalWorkOnHoliday(provider.entryList, provider.dateList, data.userName!)}"),
+                      const DataTableFixedWidthWidget(data: "00"),
+                      DataTableFixedWidthWidget(data: "${CommonUtils.totalLateTime(provider.entryList, provider.dateList, data.userName!)}"),
+                      DataTableFixedWidthWidget(data: "${CommonUtils.totalLeaveEarly(provider.entryList, provider.dateList, data.userName!)}"),
+                      const DataTableFixedWidthWidget(data: "00:00"),
+                      DataTableFixedWidthWidget(data: "${CommonUtils.totalOvertimeWithinLaw(provider.entryList, provider.dateList, data.userName!)}"),
+                      DataTableFixedWidthWidget(
+                          data: "${CommonUtils.totalOvertimeNonStatutory(provider.entryList, provider.dateList, data.userName!)}"),
+                      DataTableFixedWidthWidget(data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!)}"),
+                      DataTableFixedWidthWidget(data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!)}"),
                       const DataTableFixedWidthWidget(data: "0"),
                       const DataTableFixedWidthWidget(data: "0"),
                       const DataTableFixedWidthWidget(data: "0"),

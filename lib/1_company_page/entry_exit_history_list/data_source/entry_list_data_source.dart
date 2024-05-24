@@ -27,36 +27,29 @@ class EntryListDataSource extends DataTableSource {
         style: kNormalText,
       )),
       DataCell(Text(
-        "${entry.startWorkingTime}",
+        "${entry.myUser?.nameKanJi}",
         style: kNormalText,
       )),
       DataCell(Text(
-        "${entry.endWorkingTime}",
+        "パート",
         style: kNormalText,
       )),
       DataCell(Text(
-        entry.isLate == true ? "遅刻" : "良い",
-        style: kNormalText.copyWith(
-            color: entry.isLate == true ? Colors.red : Colors.green),
-      )),
-      DataCell(Text(
-        "${entry.scheduleStartWorkingTime}",
+        "${entry.scheduleStartWorkingTime} ~ ${entry.scheduleEndWorkingTime}",
         style: kNormalText,
       )),
       DataCell(Text(
-        "${entry.scheduleEndWorkingTime}",
+        "${entry.startWorkingTime} ~ ${entry.endWorkingTime}",
         style: kNormalText,
       )),
       DataCell(Text(
-        entry.startWorkingTime.toString().isNotEmpty &&
-                entry.endWorkingTime.toString().isEmpty
+        entry.startWorkingTime.toString().isNotEmpty && entry.endWorkingTime.toString().isEmpty
             ? "仕事"
             : entry.startWorkingTime.toString().isEmpty
                 ? "不在"
                 : "勤務外",
         style: kNormalText.copyWith(
-            color: entry.startWorkingTime.toString().isNotEmpty &&
-                    entry.endWorkingTime.toString().isEmpty
+            color: entry.startWorkingTime.toString().isNotEmpty && entry.endWorkingTime.toString().isEmpty
                 ? Colors.orangeAccent
                 : entry.startWorkingTime.toString().isEmpty
                     ? Colors.red
@@ -64,20 +57,16 @@ class EntryListDataSource extends DataTableSource {
       )),
       DataCell(InkWell(
         onTap: () => ratting(entry),
-        child: Center(
-          child: Text(
-            entry.review != null ? "${entry.review?.rate}🌟" : "今の評価",
-            style: kNormalText,
-          ),
+        child: Text(
+          entry.review != null ? "${entry.review?.rate}🌟" : "今の評価",
+          style: kNormalText,
         ),
       )),
       DataCell(InkWell(
         onTap: () => ratting(entry),
-        child: Center(
-          child: Text(
-            entry.review != null ? entry.review?.comment ?? "" : "",
-            style: kNormalText,
-          ),
+        child: Text(
+          entry.review != null ? entry.review?.comment ?? "" : "",
+          style: kNormalText,
         ),
       )),
     ]);

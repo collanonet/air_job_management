@@ -1,7 +1,9 @@
 import 'package:air_job_management/models/user.dart';
+import 'package:air_job_management/models/worker_model/shift.dart';
 
 class ShiftAndWorkTimeByUser {
   String? userName;
+  MyUser? myUser;
   int publicHoliday;
   int paidLeave;
   int absence;
@@ -9,17 +11,20 @@ class ShiftAndWorkTimeByUser {
   int lateArrival;
   int leaveEarly;
   int specialLeave;
+  List<ShiftModel>? shiftList;
   List<ShiftAndWorkTimeByUserByDate> list;
   ShiftAndWorkTimeByUser(
       {required this.userName,
       required this.list,
+      this.myUser,
       this.absence = 0,
       this.lateArrival = 0,
       this.leaveEarly = 0,
       this.leaveOfAbsence = 0,
       this.paidLeave = 0,
       this.publicHoliday = 0,
-      this.specialLeave = 0});
+      this.specialLeave = 0,
+      this.shiftList});
 }
 
 class ShiftAndWorkTimeByUserByDate {

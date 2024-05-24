@@ -39,6 +39,28 @@ class RequestApiService {
     }
   }
 
+  Future<List<Request>> getRequestBetweenDate(String startDate, String endDate) async {
+    try {
+      print("getRequestBetweenDate $startDate, $endDate");
+      var doc = await requestRef.where("date", isGreaterThanOrEqualTo: startDate).where("date", isLessThanOrEqualTo: endDate).get();
+      if (doc.docs.isEmpty) {
+        return [];
+      } else {
+        List<Request> requestList = [];
+        for (var data in doc.docs) {
+          Request request = Request.fromJson(data.data() as Map<String, dynamic>);
+          request.myUser = await UserApiServices().getProfileUser(request.userId!);
+          request.uid = data.id;
+          requestList.add(request);
+        }
+        return requestList;
+      }
+    } catch (e) {
+      Logger.printLog("Error requestLeave =>> ${e.toString()}");
+      return [];
+    }
+  }
+
   Future<List<Request>> getRequestByDate(String date, String jobPostingId) async {
     try {
       print("getRequestByDate $date, $jobPostingId");

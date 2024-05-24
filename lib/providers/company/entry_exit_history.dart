@@ -3,6 +3,7 @@ import 'package:air_job_management/api/company/worker_managment.dart';
 import 'package:air_job_management/api/entry_exit.dart';
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
+import 'package:air_job_management/models/company/request.dart';
 import 'package:air_job_management/models/shift_and_work_time.dart';
 import 'package:air_job_management/models/worker_model/shift.dart';
 import 'package:air_job_management/utils/common_utils.dart';
@@ -53,14 +54,14 @@ class EntryExitHistoryProvider with ChangeNotifier {
     "職種", //Type Of Work
     "実出勤日数", //Total of actual work day
     "総出勤日数", //Total number of day worked
-    "有休消化", //indigestible
+    "有休消化", //Paid Leave
     "有休残数", // Remaining number of paid holidays
     "公休日数", // Public Holiday
     "特別休暇", // special leave
     "振替日数", // Number of days transferred
     "休出日数", // Number of holiday work days (within statutory working hours）
     "欠勤日数", // Number of days absent
-    "遅刻回数", //Number of tardiness
+    "遅刻回数", //Number of late
     "早退回数", // Number of leaving work before finishing work
     "不労時間", //Unworked hours
     "法定内残業", // Within statutory working hours,
@@ -79,10 +80,15 @@ class EntryExitHistoryProvider with ChangeNotifier {
   String? selectedJobTitle;
   List<String> jobTitleList = [JapaneseText.all];
 
+  String? selectedUsernameForEntryExit;
+  List<String> usernameListForEntryExit = [JapaneseText.all];
+
   DateTime? startWorkDate;
   DateTime? endWorkDate;
 
   String companyId = "";
+
+  List<Request> request = [];
 
   set setCompanyId(String id) {
     companyId = id;
@@ -104,6 +110,12 @@ class EntryExitHistoryProvider with ChangeNotifier {
 
   onChangeTitle(String? val, String branchId) {
     selectedJobTitle = val;
+    filterEntryExitHistory(branchId);
+    notifyListeners();
+  }
+
+  onChangeUsernameForEntryExit(String? val, String branchId) {
+    selectedUsernameForEntryExit = val;
     filterEntryExitHistory(branchId);
     notifyListeners();
   }
@@ -146,6 +158,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
     } else {
       afterFilterSelectJobTitle = entryList;
     }
+
     List<EntryExitHistory> afterFilterRangeDate = [];
     if (startWorkDate != null && endWorkDate != null) {
       for (var job in afterFilterSelectJobTitle) {
@@ -158,7 +171,18 @@ class EntryExitHistoryProvider with ChangeNotifier {
     } else {
       afterFilterRangeDate = afterFilterSelectJobTitle;
     }
-    entryList = afterFilterRangeDate;
+
+    List<EntryExitHistory> afterFilterUsername = [];
+    if (selectedUsernameForEntryExit != null && selectedUsernameForEntryExit != JapaneseText.all) {
+      for (var job in afterFilterRangeDate) {
+        if (job.myUser!.nameKanJi.toString().contains(selectedUsernameForEntryExit.toString())) {
+          afterFilterUsername.add(job);
+        }
+      }
+    } else {
+      afterFilterUsername = afterFilterRangeDate;
+    }
+    entryList = afterFilterUsername;
     notifyListeners();
   }
 
@@ -203,10 +227,13 @@ class EntryExitHistoryProvider with ChangeNotifier {
     mapDataForCalendarByUser();
     await mapDataForShiftAndWorkTime();
     jobTitleList = [JapaneseText.all];
+    usernameListForEntryExit = [JapaneseText.all];
     for (var job in entryList) {
       jobTitleList.add(job.jobTitle.toString());
+      usernameListForEntryExit.add(job.myUser?.nameKanJi ?? "");
     }
     jobTitleList = jobTitleList.toSet().toList();
+    usernameListForEntryExit = usernameListForEntryExit.toSet().toList();
 
     getUserShift(companyId, "");
     onChangeLoading(false);
@@ -263,8 +290,14 @@ class EntryExitHistoryProvider with ChangeNotifier {
 
   mapDataForShiftAndWorkTime() async {
     shiftAndWorkTimeByUserList.clear();
-
-    List<WorkerManagement> workManagementList = await WorkerManagementApiService().getAllJobApplyWithoutBranch(companyId);
+    request.clear();
+    var data = await Future.wait([
+      WorkerManagementApiService().getAllJobApplyWithoutBranch(companyId),
+      RequestApiService().getRequestBetweenDate(DateToAPIHelper.convertDateToString(startDay), DateToAPIHelper.convertDateToString(endDay))
+    ]);
+    List<WorkerManagement> workManagementList = data[0] as List<WorkerManagement>;
+    request = data[1] as List<Request>;
+    print("Request between $startDay x $endDay ${request.length}");
     List<EntryExitHistory> afterFilterEntryRangeDate = [];
     if (startDay != null && endDay != null) {
       for (var job in entryList) {
@@ -300,7 +333,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
     }
     nameList = nameList.toSet().toList();
     for (var name in nameList) {
-      var entryByUser = ShiftAndWorkTimeByUser(userName: name, list: []);
+      var entryByUser = ShiftAndWorkTimeByUser(userName: name, list: [], shiftList: []);
       for (var date in dateList) {
         entryByUser.list.add(ShiftAndWorkTimeByUserByDate(date: date));
       }
@@ -308,6 +341,24 @@ class EntryExitHistoryProvider with ChangeNotifier {
     }
     //Map data
     for (var entryByUser in shiftAndWorkTimeByUserList) {
+      //Map data for add shift
+      for (var job in workManagementList) {
+        List<DateTime> dateList = job.shiftList!.map((e) => e.date!).toList();
+        bool isWithin = CommonUtils.containsAnyDate(dateList, dateList);
+        bool isTheSameUser = false;
+        if (job.myUser?.nameKanJi == entryByUser.userName) {
+          entryByUser.myUser = job.myUser;
+          isTheSameUser = true;
+        }
+        if (isWithin && isTheSameUser) {
+          for (var shift in shiftList) {
+            if (shift.status == "approved") {
+              entryByUser.shiftList!.add(shift);
+            }
+          }
+        }
+      }
+
       for (var entry in afterFilterRangeDate) {
         if (entry.myUser!.nameKanJi == entryByUser.userName) {
           for (var shift in entry.shiftList!) {
@@ -339,6 +390,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
         }
       }
     }
+    notifyListeners();
   }
 
   calculateWorkingTime() {}

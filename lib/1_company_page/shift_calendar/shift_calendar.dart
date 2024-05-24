@@ -807,6 +807,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                 child: ShiftDetailDialogWidget(
                   jobId: jobId,
                   date: date,
+                  onSuccess: () => getData(),
                 ),
               ));
     }
@@ -1059,11 +1060,6 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
   @override
   void afterBuild(BuildContext context) async {
     await getData();
-    shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
-    shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
-    await provider.findJobByOccupation(authProvider.branch?.id ?? "");
-    shiftCalendarDataSourceByJobPosting =
-        ShiftCalendarDataSourceByJobPosting(provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId));
   }
 
   getData() async {
@@ -1083,5 +1079,10 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
       await provider.getApplicantList(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
       provider.onChangeLoading(false);
     }
+    shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
+    shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
+    await provider.findJobByOccupation(authProvider.branch?.id ?? "");
+    shiftCalendarDataSourceByJobPosting =
+        ShiftCalendarDataSourceByJobPosting(provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId));
   }
 }

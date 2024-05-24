@@ -28,7 +28,7 @@ class FilterEntryExitList extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "作業者の入退出履歴",
+            "ワーカーの入退出履歴",
             style: titleStyle,
           ),
           AppSize.spaceHeight8,
@@ -41,8 +41,7 @@ class FilterEntryExitList extends StatelessWidget {
                 children: [
                   Text(
                     "求人タイトル",
-                    style: kNormalText.copyWith(
-                        fontSize: 12, fontFamily: "Normal"),
+                    style: kNormalText.copyWith(fontSize: 12, fontFamily: "Normal"),
                   ),
                   AppSize.spaceHeight5,
                   CustomDropDownWidget(
@@ -50,8 +49,24 @@ class FilterEntryExitList extends StatelessWidget {
                       width: AppSize.getDeviceWidth(context) * 0.3,
                       selectItem: provider.selectedJobTitle,
                       list: provider.jobTitleList,
-                      onChange: (v) =>
-                          provider.onChangeTitle(v, auth.branch?.id ?? ""))
+                      onChange: (v) => provider.onChangeTitle(v, auth.branch?.id ?? ""))
+                ],
+              ),
+              AppSize.spaceWidth32,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "スタッフ",
+                    style: kNormalText.copyWith(fontSize: 12, fontFamily: "Normal"),
+                  ),
+                  AppSize.spaceHeight5,
+                  CustomDropDownWidget(
+                      radius: 5,
+                      width: AppSize.getDeviceWidth(context) * 0.1,
+                      selectItem: provider.selectedUsernameForEntryExit,
+                      list: provider.usernameListForEntryExit,
+                      onChange: (v) => provider.onChangeUsernameForEntryExit(v, auth.branch?.id ?? ""))
                 ],
               ),
               AppSize.spaceWidth32,
@@ -72,19 +87,14 @@ class FilterEntryExitList extends StatelessWidget {
                         provider.onChangeStartDate(date, auth.branch?.id ?? "");
                       }
                     },
-                    val: provider.startWorkDate != null
-                        ? toJapanDateWithoutWeekDay(provider.startWorkDate!)
-                        : "",
+                    val: provider.startWorkDate != null ? toJapanDateWithoutWeekDay(provider.startWorkDate!) : "",
                     isHaveIcon: true,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
                     child: Text(
                       " 〜 ",
-                      style: kTitleText.copyWith(
-                          fontSize: 16,
-                          color: AppColor.thirdColor,
-                          fontFamily: "Normal"),
+                      style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
                     ),
                   ),
                   CustomChooseDateOrTimeWidget(
@@ -100,9 +110,7 @@ class FilterEntryExitList extends StatelessWidget {
                         provider.onChangeEndDate(date, auth.branch?.id ?? "");
                       }
                     },
-                    val: provider.endWorkDate != null
-                        ? toJapanDateWithoutWeekDay(provider.endWorkDate!)
-                        : "",
+                    val: provider.endWorkDate != null ? toJapanDateWithoutWeekDay(provider.endWorkDate!) : "",
                     isHaveIcon: true,
                   ),
                 ],

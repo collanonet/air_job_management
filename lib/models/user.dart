@@ -54,10 +54,12 @@ class MyUser {
   String? resident_record_url;
   String? number_card_url;
   List<Review>? reviews;
+  int? annualLeave;
 
   MyUser(
       {this.affiliation,
       this.reviews,
+      this.annualLeave,
       this.qualificationFields,
       this.jobStatus,
       this.messageList,
@@ -109,6 +111,7 @@ class MyUser {
 
   factory MyUser.fromJson(Map<String, dynamic> json) {
     return MyUser(
+      annualLeave: json["annualLeave"] ?? 18,
       uid: json["uid"],
       address: json["address"],
       basic_resident_register_url: json["basic_resident_register_url"],
@@ -161,6 +164,7 @@ class MyUser {
   }
 
   Map<String, dynamic> toJson() => {
+        "annualLeave": annualLeave,
         "review": reviews != null ? reviews!.map((e) => e.toJson()) : [],
         "address": address,
         "driver_license_url": driver_license_url,
