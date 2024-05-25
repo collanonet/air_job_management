@@ -16,8 +16,10 @@ class ShiftModel {
   int applicantCount;
   String recruitmentCount;
   List<String>? userNameList;
+  String? isAbsent;
   ShiftModel(
       {this.date,
+      this.isAbsent,
       this.status,
       this.price,
       this.endBreakTime,

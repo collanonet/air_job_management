@@ -25,6 +25,13 @@ class ShiftAndWorkTimeByUser {
       this.publicHoliday = 0,
       this.specialLeave = 0,
       this.shiftList});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is ShiftAndWorkTimeByUser && runtimeType == other.runtimeType && userName == other.userName;
+
+  @override
+  int get hashCode => userName.hashCode;
 }
 
 class ShiftAndWorkTimeByUserByDate {

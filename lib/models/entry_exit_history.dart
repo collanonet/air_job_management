@@ -12,6 +12,7 @@ class EntryExitHistory {
   String? scheduleStartBreakTime;
   String? scheduleEndBreakTime;
   String? workDate;
+  String? endWorkDate;
   DateTime? workDateToDateTime;
   DateTime? createdAt;
   bool? isLeaveEarly;
@@ -49,6 +50,7 @@ class EntryExitHistory {
       this.review,
       this.companyId,
       this.userId,
+      this.endWorkDate,
       this.createdAt,
       this.jobTitle,
       this.companyName,
@@ -90,6 +92,7 @@ class EntryExitHistory {
         nonStatutoryOvertime: json["nonStatutoryOvertime"] ?? "00:00",
         holidayWork: json["holidayWork"] ?? "00:00",
         overtime: json["overtime"] ?? "00:00",
+        endWorkDate: json["endWorkDate"] ?? json["workDate"],
         overtimeWithinLegalLimit: json["overtimeWithinLegalLimit"] ?? "00:00",
         isHolidayWork: json["isHolidayWork"] ?? false,
         review: json["review"] != null ? Review.fromJson(json["review"]) : null,
@@ -119,6 +122,7 @@ class EntryExitHistory {
       );
 
   Map<String, dynamic> toJson() => {
+        "endWorkDate": endWorkDate,
         "actualWorkingHour": actualWorkingHour,
         "actualWorkingMinute": actualWorkingMinute,
         "overtime": overtime,

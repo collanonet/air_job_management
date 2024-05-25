@@ -250,6 +250,46 @@ class CommonUtils {
     return DateToAPIHelper.formatTimeTwoDigits(workDateList.length.toString());
   }
 
+  static calculateTotalAbsent(List<ShiftModel> shiftList, List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+    List<ShiftModel> scheduleList = shiftList;
+    List<ShiftModel> scheduleList2 = [];
+    scheduleList2 = [];
+    for (var s in scheduleList) {
+      if (dateTimeList.contains(s.date)) {
+        scheduleList2.add(s);
+      }
+    }
+    for (int i = 0; i < scheduleList2.length; i++) {
+      DateTime scheduleDate = scheduleList2[i].date!;
+      bool isAbsent = true;
+      for (var entry in entryList) {
+        if (entry.workDate != null && name == entry.myUser?.nameKanJi) {
+          int year = int.parse(entry.workDate!.split("/")[0]);
+          int month = int.parse(entry.workDate!.split("/")[1]);
+          int day = int.parse(entry.workDate!.split("/")[2]);
+          DateTime workDate = DateTime(year, month, day, 0, 0, 0);
+          if (workDate == scheduleDate) {
+            isAbsent = false;
+            break;
+          }
+        }
+      }
+      if (isAbsent) {
+        scheduleList2[i].isAbsent = "TRUE";
+      } else {
+        scheduleList2[i].isAbsent = "FALSE";
+      }
+    }
+    scheduleList2 = scheduleList2.toSet().toList();
+    List<ShiftModel> returnSchedule = [];
+    for (var s in scheduleList2) {
+      if (s.isAbsent == "TRUE") {
+        returnSchedule.add(s);
+      }
+    }
+    return DateToAPIHelper.formatTimeTwoDigits(returnSchedule.length.toString());
+  }
+
   static totalLeaveEarly(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
     List<String> workDateList = [];
     for (int i = 0; i < entryList.length; i++) {
@@ -274,7 +314,7 @@ class CommonUtils {
     return DateToAPIHelper.formatTimeTwoDigits(workDateList.length.toString());
   }
 
-  static totalOvertime(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+  static totalOvertime(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name, {bool? isStandard}) {
     int hour = 0;
     int minute = 0;
     for (int i = 0; i < entryList.length; i++) {
@@ -287,6 +327,19 @@ class CommonUtils {
     }
     int totalHour = hour + (minute ~/ 60);
     int totalMinute = minute % 60;
+    if (isStandard == true) {
+      const int limitHours = 32;
+      const int limitMinutes = 25;
+      const Duration overtimeLimit = Duration(hours: limitHours, minutes: limitMinutes);
+      // Example overtime to check
+      Duration overtimeWorked = Duration(hours: totalHour, minutes: totalMinute); // You can change these values to test
+      var testVal = overTimeLegalLimit - overTimeLegalLimit;
+      // Check if the overtime exceeds the set limit
+      if (overtimeWorked > overtimeLimit) {
+        totalHour = 32;
+        totalMinute = 25;
+      }
+    }
     return "${DateToAPIHelper.formatTimeTwoDigits(totalHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(totalMinute.toString())}";
   }
 
@@ -363,5 +416,79 @@ class CommonUtils {
     int totalHour = hour + (minute ~/ 60);
     int totalMinute = minute % 60;
     return "${DateToAPIHelper.formatTimeTwoDigits(totalHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(totalMinute.toString())}";
+  }
+
+  static totalUnWorkHour(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+    int hour = 0;
+    int minute = 0;
+    for (int i = 0; i < entryList.length; i++) {
+      DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
+      if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
+        hour += entryList[i].latHour!;
+        minute += entryList[i].latHour!;
+        hour += entryList[i].leaveEarlyHour!;
+        minute += entryList[i].leaveEarlyMinute!;
+      }
+    }
+    int totalHour = hour + (minute ~/ 60);
+    int totalMinute = minute % 60;
+    return "${DateToAPIHelper.formatTimeTwoDigits(totalHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(totalMinute.toString())}";
+  }
+
+  static totalMidnightWork(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+    int hour = 0;
+    int minute = 0;
+    for (int i = 0; i < entryList.length; i++) {
+      DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
+      DateTime endWorkDate = DateToAPIHelper.fromApiToLocal(entryList[i].endWorkDate ?? entryList[i].workDate!);
+      int startWorkHour = int.parse(entryList[i].startWorkingTime!.split(":")[0]);
+      int startWorkMin = int.parse(entryList[i].startWorkingTime!.split(":")[1]);
+      int endWorkHour = 0;
+      int endWorkMinute = 0;
+      if (entryList[i].endWorkingTime != null && entryList[i].startWorkingTime != "") {
+        endWorkHour = int.parse(entryList[i].endWorkingTime!.split(":")[0]);
+        endWorkMinute = int.parse(entryList[i].endWorkingTime!.split(":")[1]);
+      }
+      if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
+        DateTime startDate = DateTime(d.year, d.month, d.day, startWorkHour, startWorkMin);
+        DateTime endDate = DateTime(endWorkDate.year, endWorkDate.month, endWorkDate.day, endWorkHour, endWorkMinute);
+        hour += calculateMidnightWork(startDate, endDate)[0] as int;
+        minute += calculateMidnightWork(startDate, endDate)[1] as int;
+      }
+    }
+    int totalHour = hour + (minute ~/ 60);
+    int totalMinute = minute % 60;
+    return "${DateToAPIHelper.formatTimeTwoDigits(totalHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(totalMinute.toString())}";
+  }
+
+  static calculateMidnightWork(DateTime workStart, DateTime workEnd) {
+    final DateTime midnightStart = DateTime(workStart.year, workStart.month, workStart.day, 22, 0); // 10 p.m.
+    final DateTime midnightEnd = DateTime(workStart.year, workStart.month, workEnd.day, 5, 0); // 5 a.m. (next day)
+
+    // Calculate the duration of midnight work
+    Duration midnightWorkDuration = calculateMidnightWorkAsDuration(workStart, workEnd, midnightStart, midnightEnd);
+
+    // Print the result
+    // print(
+    //     "$midnightStart $midnightEnd xxx Midnight work duration: ${midnightWorkDuration.inHours} hours and ${midnightWorkDuration.inMinutes % 60} minutes");
+    return [midnightWorkDuration.inHours, midnightWorkDuration.inMinutes % 60];
+  }
+
+  static Duration calculateMidnightWorkAsDuration(DateTime workStart, DateTime workEnd, DateTime midnightStart, DateTime midnightEnd) {
+    // Ensure the work period does not start after it ends
+    if (workEnd.isBefore(workStart)) {
+      throw ArgumentError("Work end time cannot be before work start time.");
+    }
+
+    // Calculate the overlap between work period and midnight period
+    final overlapStart = workStart.isAfter(midnightStart) ? workStart : midnightStart;
+    final overlapEnd = workEnd.isBefore(midnightEnd) ? workEnd : midnightEnd;
+
+    if (overlapStart.isBefore(overlapEnd)) {
+      return overlapEnd.difference(overlapStart);
+    } else {
+      // No overlap
+      return Duration.zero;
+    }
   }
 }

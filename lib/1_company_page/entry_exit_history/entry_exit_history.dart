@@ -526,7 +526,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
               children: [
                 ...provider.rowHeaderForAttendanceManagementList.map((e) => Container(
                       height: 30,
-                      width: provider.rowHeaderForAttendanceManagementList.indexOf(e) == 0 ? 100 : 70,
+                      width: provider.rowHeaderForAttendanceManagementList.indexOf(e) == 0 ? 130 : 70,
                       margin: const EdgeInsets.symmetric(vertical: 1),
                       color: const Color(0xffF0F3F5),
                       alignment: Alignment.center,
@@ -547,7 +547,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                     children: [
                       DataTableFixedWidthWidget(
                         data: data.userName,
-                        width: 100,
+                        width: 130,
                       ),
                       const DataTableFixedWidthWidget(data: "パート"),
                       DataTableFixedWidthWidget(data: "${CommonUtils.totalActualWorkDay(data.shiftList ?? [], provider.dateList)}"),
@@ -560,20 +560,22 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                       const DataTableFixedWidthWidget(data: "00"),
                       const DataTableFixedWidthWidget(data: "00"),
                       DataTableFixedWidthWidget(data: "${CommonUtils.totalWorkOnHoliday(provider.entryList, provider.dateList, data.userName!)}"),
-                      const DataTableFixedWidthWidget(data: "00"),
+                      DataTableFixedWidthWidget(
+                          data: "${CommonUtils.calculateTotalAbsent(data.shiftList ?? [], provider.entryList, provider.dateList, data.userName!)}"),
                       DataTableFixedWidthWidget(data: "${CommonUtils.totalLateTime(provider.entryList, provider.dateList, data.userName!)}"),
                       DataTableFixedWidthWidget(data: "${CommonUtils.totalLeaveEarly(provider.entryList, provider.dateList, data.userName!)}"),
-                      const DataTableFixedWidthWidget(data: "00:00"),
+                      DataTableFixedWidthWidget(data: "${CommonUtils.totalUnWorkHour(provider.entryList, provider.dateList, data.userName!)}"),
                       DataTableFixedWidthWidget(data: "${CommonUtils.totalOvertimeWithinLaw(provider.entryList, provider.dateList, data.userName!)}"),
                       DataTableFixedWidthWidget(
                           data: "${CommonUtils.totalOvertimeNonStatutory(provider.entryList, provider.dateList, data.userName!)}"),
+                      DataTableFixedWidthWidget(
+                          data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!, isStandard: true)}"),
                       DataTableFixedWidthWidget(data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!)}"),
+                      DataTableFixedWidthWidget(data: "${CommonUtils.totalMidnightWork(provider.entryList, provider.dateList, data.userName!)}"),
+                      DataTableFixedWidthWidget(data: "${CommonUtils.totalWorkOnHoliday(provider.entryList, provider.dateList, data.userName!)}"),
+                      DataTableFixedWidthWidget(data: "${CommonUtils.totalActualWorkingTime(provider.entryList, provider.dateList, data.userName!)}"),
+                      DataTableFixedWidthWidget(data: "${CommonUtils.totalWorkingTime(provider.entryList, provider.dateList, data.userName!)}"),
                       DataTableFixedWidthWidget(data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!)}"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
-                      const DataTableFixedWidthWidget(data: "0"),
                     ],
                   );
                 }),

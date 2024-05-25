@@ -240,19 +240,15 @@ class EntryExitHistoryProvider with ChangeNotifier {
   }
 
   mapDataForCalendarByUser() {
-    List<EntryExitHistory> afterFilterRangeDate = [];
-    if (startDay != null && endDay != null) {
-      for (var job in entryList) {
-        DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
-        bool isWithin = CommonUtils.isDateInRange(workDate, startDay, endDay);
-        if (isWithin) {
-          afterFilterRangeDate.add(job);
-        }
-      }
-    } else {
-      afterFilterRangeDate = entryList;
-    }
     entryExitCalendarByUser.clear();
+    List<EntryExitHistory> afterFilterRangeDate = [];
+    for (var job in entryList) {
+      DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
+      bool isWithin = CommonUtils.isDateInRange(workDate, startDay, endDay);
+      if (isWithin) {
+        afterFilterRangeDate.add(job);
+      }
+    }
     List<String> nameList = [];
     for (var entry in afterFilterRangeDate) {
       nameList.add(entry.myUser!.nameKanJi!);
@@ -286,6 +282,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
         }
       }
     }
+    entryExitCalendarByUser = entryExitCalendarByUser.toSet().toList();
   }
 
   mapDataForShiftAndWorkTime() async {
@@ -297,35 +294,27 @@ class EntryExitHistoryProvider with ChangeNotifier {
     ]);
     List<WorkerManagement> workManagementList = data[0] as List<WorkerManagement>;
     request = data[1] as List<Request>;
-    print("Request between $startDay x $endDay ${request.length}");
+    // print("Request between $startDay x $endDay ${request.length}");
     List<EntryExitHistory> afterFilterEntryRangeDate = [];
-    if (startDay != null && endDay != null) {
-      for (var job in entryList) {
-        DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
-        bool isWithin = CommonUtils.isDateInRange(workDate, startDay, endDay);
-        if (isWithin) {
-          afterFilterEntryRangeDate.add(job);
-        }
+    for (var job in entryList) {
+      DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
+      bool isWithin = CommonUtils.isDateInRange(workDate, startDay, endDay);
+      if (isWithin) {
+        afterFilterEntryRangeDate.add(job);
       }
-    } else {
-      afterFilterEntryRangeDate = entryList;
     }
 
     List<WorkerManagement> afterFilterRangeDate = [];
-    if (startDay != null && endDay != null) {
-      for (var job in workManagementList) {
-        List<DateTime> dateList = job.shiftList!.map((e) => e.date!).toList();
-        bool isWithin = CommonUtils.containsAnyDate(dateList, dateList);
-        bool approved = false;
-        if (job.shiftList!.map((e) => e.status).toList().toString().contains("approved")) {
-          approved = true;
-        }
-        if (isWithin && approved) {
-          afterFilterRangeDate.add(job);
-        }
+    for (var job in workManagementList) {
+      List<DateTime> dateList = job.shiftList!.map((e) => e.date!).toList();
+      bool isWithin = CommonUtils.containsAnyDate(dateList, dateList);
+      bool approved = false;
+      if (job.shiftList!.map((e) => e.status).toList().toString().contains("approved")) {
+        approved = true;
       }
-    } else {
-      afterFilterRangeDate = workManagementList;
+      if (isWithin && approved) {
+        afterFilterRangeDate.add(job);
+      }
     }
     List<String> nameList = [];
     for (var entry in afterFilterRangeDate) {
@@ -390,7 +379,16 @@ class EntryExitHistoryProvider with ChangeNotifier {
         }
       }
     }
+    shiftAndWorkTimeByUserList = shiftAndWorkTimeByUserList.toSet().toList();
     notifyListeners();
+  }
+
+  Iterable<T> removeDuplicates<T>(Iterable<T> iterable) sync* {
+    Set<T> items = {};
+    for (T item in iterable) {
+      if (!items.contains(item)) yield item;
+      items.add(item);
+    }
   }
 
   calculateWorkingTime() {}
