@@ -117,6 +117,8 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
                                 onPressed: () async {
                                   workerManagementProvider.onChangeLoading(true);
                                   workerManagementProvider.onInitForList();
+                                  workerManagementProvider.startWorkDate = null;
+                                  workerManagementProvider.endWorkDate = null;
                                   getData();
                                 },
                                 icon: const Icon(Icons.refresh))
