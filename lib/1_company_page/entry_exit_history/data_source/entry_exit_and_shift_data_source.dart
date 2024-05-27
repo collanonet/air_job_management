@@ -12,11 +12,12 @@ class EntryExitAndShiftDataByUser extends DataGridSource {
     for (var entry in provider.shiftAndWorkTimeByUserList) {
       _employeeData.add(DataGridRow(
           cells: entry.list.map((e) {
-                return DataGridCell<ShiftAndWorkTime>(columnName: e.date.toString(), value: e.shiftAndWorkTime);
-              }).toList() +
-              provider.moreMenuShiftAndWorkTimeByUserList
-                  .map((e) => DataGridCell<ShiftAndWorkTime>(columnName: e, value: ShiftAndWorkTime(scheduleStartWorkTime: null)))
-                  .toList()));
+        return DataGridCell<ShiftAndWorkTime>(columnName: e.date.toString(), value: e.shiftAndWorkTime);
+      }).toList()));
+      // +
+      //     provider.moreMenuShiftAndWorkTimeByUserList
+      //         .map((e) => DataGridCell<ShiftAndWorkTime>(columnName: e, value: ShiftAndWorkTime(scheduleStartWorkTime: null)))
+      //         .toList()
     }
   }
   final Function onTap;

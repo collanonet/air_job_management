@@ -57,13 +57,13 @@ class EntryExitHistoryProvider with ChangeNotifier {
     "有休消化", //Paid Leave
     "有休残数", // Remaining number of paid holidays
     "公休日数", // Public Holiday
-    "特別休暇", // special leave
-    "振替日数", // Number of days transferred
+    // "特別休暇 SL", // special leave
+    // "振替日数 NT", // Number of days transferred
     "休出日数", // Number of holiday work days (within statutory working hours）
     "欠勤日数", // Number of days absent
     "遅刻回数", //Number of late
-    "早退回数", // Number of leaving work before finishing work
-    "不労時間", //Unworked hours
+    // "早退回数", // Number of leaving work before finishing work
+    // "不労時間", //Unworked hours
     "法定内残業", // Within statutory working hours,
     "法定外残業", // Excess statutory working hours,
     "基準残業", // Standard overtime
@@ -392,7 +392,6 @@ class EntryExitHistoryProvider with ChangeNotifier {
   }
 
   calculateWorkingTime() {}
-
   List<ShiftModel> shiftList = [];
   int countDayOff = 0;
 
@@ -420,7 +419,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
         }
       }
     }
-
+    // print("Get shift list $userId ${shiftList.length}");
     notifyListeners();
   }
 }

@@ -187,26 +187,26 @@ class CommonUtils {
     }
   }
 
-  static totalPaidHoliday(List<Request> requestList, String userId, List<DateTime> dateList) {
+  static totalPaidHoliday(List<Request> requestList, String username, List<DateTime> dateList) {
     int size = 0;
     for (var request in requestList) {
       DateTime date = DateToAPIHelper.fromApiToLocal(request.date!);
       DateTime start = dateList.first;
       DateTime end = dateList.last;
-      if (request.isHoliday == true && CommonUtils.isDateInRange(date, start, end) && request.userId == userId) {
+      if (request.isHoliday == true && CommonUtils.isDateInRange(date, start, end) && request.username == username) {
         size++;
       }
     }
     return DateToAPIHelper.formatTimeTwoDigits(size.toString());
   }
 
-  static remainingPaidHoliday(List<Request> requestList, String userId, List<DateTime> dateList, int paidHoliday) {
+  static remainingPaidHoliday(List<Request> requestList, String username, List<DateTime> dateList, int paidHoliday) {
     int size = 0;
     for (var request in requestList) {
       DateTime date = DateToAPIHelper.fromApiToLocal(request.date!);
       DateTime start = dateList.first;
       DateTime end = dateList.last;
-      if (request.isHoliday == true && CommonUtils.isDateInRange(date, start, end) && request.userId == userId) {
+      if (request.isHoliday == true && CommonUtils.isDateInRange(date, start, end) && request.username == username) {
         size++;
       }
     }

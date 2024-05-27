@@ -16,6 +16,7 @@ class WorkerManagement {
   List<ShiftModel>? shiftList;
   int? applyCount;
   List<String>? userIdenList;
+  DateTime? createdDate;
   WorkerManagement(
       {this.applyCount,
       this.isSelect = false,
@@ -29,8 +30,10 @@ class WorkerManagement {
       this.userName,
       this.jobLocation,
       this.uid,
+      this.createdDate,
       this.userIdenList});
   factory WorkerManagement.fromJson(Map<String, dynamic> json) => WorkerManagement(
+      createdDate: json["created_at"].toDate(),
       userIdenList: json["user_identification_url"] != null ? List<String>.from(json["user_identification_url"]!.map((x) => x)) : [],
       shiftList: json["shift"] == null ? [] : List<ShiftModel>.from(json["shift"]!.map((x) => ShiftModel.fromJson(x))),
       companyId: json["company_id"],

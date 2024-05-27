@@ -42,10 +42,12 @@ class EntryExitHistory {
   String? breakTime;
   Review? review;
   MyUser? myUser;
+  bool? isPaidLeave;
 
   EntryExitHistory(
       {this.uid,
       this.myUser,
+      this.isPaidLeave,
       this.workDateToDateTime,
       this.review,
       this.companyId,
@@ -84,6 +86,7 @@ class EntryExitHistory {
       this.actualWorkingHour});
 
   factory EntryExitHistory.fromJson(Map<String, dynamic> json) => EntryExitHistory(
+        isPaidLeave: json["isPaidLeave"] ?? false,
         actualWorkingHour: json["actualWorkingHour"] ?? 0,
         actualWorkingMinute: json["actualWorkingMinute"] ?? 0,
         workDateToDateTime: DateToAPIHelper.fromApiToLocal(json["workDate"]),
@@ -122,6 +125,7 @@ class EntryExitHistory {
       );
 
   Map<String, dynamic> toJson() => {
+        "isPaidLeave": isPaidLeave,
         "endWorkDate": endWorkDate,
         "actualWorkingHour": actualWorkingHour,
         "actualWorkingMinute": actualWorkingMinute,

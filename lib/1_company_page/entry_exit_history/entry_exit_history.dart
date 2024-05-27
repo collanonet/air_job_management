@@ -10,6 +10,7 @@ import 'package:air_job_management/models/entry_exit_history.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/entry_exit_history.dart';
 import 'package:air_job_management/utils/common_utils.dart';
+import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -400,40 +401,48 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                   ))
             ],
           ),
-          ListView.builder(
-              itemCount: provider.entryList.length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                EntryExitHistory e = provider.entryList[index];
-                return provider.selectedUserName == e.myUser?.nameKanJi && provider.dateList.contains(e.workDateToDateTime)
-                    ? Row(
-                        children: [
-                          DataTableWidget(data: e.workDate),
-                          DataTableWidget(data: toJapanWeekDayWithInt(DateToAPIHelper.fromApiToLocal(e.workDate!).weekday)),
-                          const DataTableWidget(data: "出勤"),
-                          DataTableWidget(data: e.startWorkingTime),
-                          DataTableWidget(data: e.endWorkingTime),
-                          const DataTableWidget(data: "00:00"),
-                          const DataTableWidget(data: "00:00"),
-                          DataTableWidget(
-                              data:
-                                  "${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyMinute.toString())}"),
-                          DataTableWidget(
-                              data:
-                                  "${DateToAPIHelper.formatTimeTwoDigits(e.actualWorkingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.actualWorkingMinute.toString())}"),
-                          DataTableWidget(data: e.overtimeWithinLegalLimit),
-                          DataTableWidget(data: e.nonStatutoryOvertime),
-                          DataTableWidget(data: e.holidayWork),
-                          const DataTableWidget(data: "00:00"),
-                          DataTableWidget(data: e.overtime),
-                          DataTableWidget(
-                              data:
-                                  "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
-                        ],
-                      )
-                    : const SizedBox();
-              }),
+          if (provider.entryList.isEmpty)
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: EmptyDataWidget(),
+            )
+          else
+            ListView.builder(
+                itemCount: provider.entryList.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  EntryExitHistory e = provider.entryList[index];
+                  return provider.selectedUserName == e.myUser?.nameKanJi && provider.dateList.contains(e.workDateToDateTime)
+                      ? Row(
+                          children: [
+                            DataTableWidget(data: e.workDate),
+                            DataTableWidget(data: toJapanWeekDayWithInt(DateToAPIHelper.fromApiToLocal(e.workDate!).weekday)),
+                            const DataTableWidget(data: "出"),
+                            DataTableWidget(data: e.startWorkingTime),
+                            DataTableWidget(data: e.endWorkingTime),
+                            DataTableWidget(data: e.isPaidLeave == true ? "" : ""),
+                            DataTableWidget(
+                                data:
+                                    "${DateToAPIHelper.formatTimeTwoDigits(e.latHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.lateMinute.toString())}"),
+                            DataTableWidget(
+                                data:
+                                    "${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyMinute.toString())}"),
+                            DataTableWidget(
+                                data:
+                                    "${DateToAPIHelper.formatTimeTwoDigits(e.actualWorkingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.actualWorkingMinute.toString())}"),
+                            DataTableWidget(data: e.overtimeWithinLegalLimit),
+                            DataTableWidget(data: e.nonStatutoryOvertime),
+                            DataTableWidget(data: e.holidayWork),
+                            DataTableWidget(data: e.overtime),
+                            DataTableWidget(data: e.overtime),
+                            DataTableWidget(
+                                data:
+                                    "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
+                          ],
+                        )
+                      : const SizedBox();
+                }),
           AppSize.spaceHeight30,
           summaryWidget(),
           AppSize.spaceHeight30,
@@ -537,48 +546,64 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                     ))
               ],
             ),
-            ListView.builder(
-                itemCount: provider.shiftAndWorkTimeByUserList.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  var data = provider.shiftAndWorkTimeByUserList[index];
-                  return Row(
-                    children: [
-                      DataTableFixedWidthWidget(
-                        data: data.userName,
-                        width: 130,
-                      ),
-                      const DataTableFixedWidthWidget(data: "パート"),
-                      DataTableFixedWidthWidget(data: "${CommonUtils.totalActualWorkDay(data.shiftList ?? [], provider.dateList)}"),
-                      DataTableFixedWidthWidget(data: "${CommonUtils.totalWorkDay(provider.entryList, provider.dateList, data.userName!)}"),
-                      DataTableFixedWidthWidget(data: "${CommonUtils.totalPaidHoliday(provider.request, data.myUser?.uid ?? "", provider.dateList)}"),
-                      DataTableFixedWidthWidget(
-                          data:
-                              "${CommonUtils.remainingPaidHoliday(provider.request, data.myUser?.uid ?? "", provider.dateList, data.myUser?.annualLeave ?? 18)}"),
-                      const DataTableFixedWidthWidget(data: "16"),
-                      const DataTableFixedWidthWidget(data: "00"),
-                      const DataTableFixedWidthWidget(data: "00"),
-                      DataTableFixedWidthWidget(data: "${CommonUtils.totalWorkOnHoliday(provider.entryList, provider.dateList, data.userName!)}"),
-                      DataTableFixedWidthWidget(
-                          data: "${CommonUtils.calculateTotalAbsent(data.shiftList ?? [], provider.entryList, provider.dateList, data.userName!)}"),
-                      DataTableFixedWidthWidget(data: "${CommonUtils.totalLateTime(provider.entryList, provider.dateList, data.userName!)}"),
-                      DataTableFixedWidthWidget(data: "${CommonUtils.totalLeaveEarly(provider.entryList, provider.dateList, data.userName!)}"),
-                      DataTableFixedWidthWidget(data: "${CommonUtils.totalUnWorkHour(provider.entryList, provider.dateList, data.userName!)}"),
-                      DataTableFixedWidthWidget(data: "${CommonUtils.totalOvertimeWithinLaw(provider.entryList, provider.dateList, data.userName!)}"),
-                      DataTableFixedWidthWidget(
-                          data: "${CommonUtils.totalOvertimeNonStatutory(provider.entryList, provider.dateList, data.userName!)}"),
-                      DataTableFixedWidthWidget(
-                          data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!, isStandard: true)}"),
-                      DataTableFixedWidthWidget(data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!)}"),
-                      DataTableFixedWidthWidget(data: "${CommonUtils.totalMidnightWork(provider.entryList, provider.dateList, data.userName!)}"),
-                      DataTableFixedWidthWidget(data: "${CommonUtils.totalWorkOnHoliday(provider.entryList, provider.dateList, data.userName!)}"),
-                      DataTableFixedWidthWidget(data: "${CommonUtils.totalActualWorkingTime(provider.entryList, provider.dateList, data.userName!)}"),
-                      DataTableFixedWidthWidget(data: "${CommonUtils.totalWorkingTime(provider.entryList, provider.dateList, data.userName!)}"),
-                      DataTableFixedWidthWidget(data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!)}"),
-                    ],
-                  );
-                }),
+            if (provider.shiftAndWorkTimeByUserList.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: EmptyDataWidget(),
+              )
+            else
+              ListView.builder(
+                  itemCount: provider.shiftAndWorkTimeByUserList.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    var data = provider.shiftAndWorkTimeByUserList[index];
+                    return data.userName == ""
+                        ? const SizedBox()
+                        : Row(
+                            children: [
+                              DataTableFixedWidthWidget(
+                                data: data.userName,
+                                width: 130,
+                              ),
+                              const DataTableFixedWidthWidget(data: "パート"),
+                              DataTableFixedWidthWidget(data: "${CommonUtils.totalActualWorkDay(data.shiftList ?? [], provider.dateList)}"),
+                              DataTableFixedWidthWidget(data: "${CommonUtils.totalWorkDay(provider.entryList, provider.dateList, data.userName!)}"),
+                              DataTableFixedWidthWidget(
+                                  data: "${CommonUtils.totalPaidHoliday(provider.request, data.myUser?.nameKanJi ?? "", provider.dateList)}"),
+                              DataTableFixedWidthWidget(
+                                  data:
+                                      "${CommonUtils.remainingPaidHoliday(provider.request, data.myUser?.nameKanJi ?? "", provider.dateList, data.myUser?.annualLeave ?? 18)}"),
+                              const DataTableFixedWidthWidget(data: "16"),
+                              // const DataTableFixedWidthWidget(data: ""),
+                              // const DataTableFixedWidthWidget(data: ""),
+                              DataTableFixedWidthWidget(
+                                  data: "${CommonUtils.totalWorkOnHoliday(provider.entryList, provider.dateList, data.userName!)}"),
+                              DataTableFixedWidthWidget(
+                                  data:
+                                      "${CommonUtils.calculateTotalAbsent(data.shiftList ?? [], provider.entryList, provider.dateList, data.userName!)}"),
+                              DataTableFixedWidthWidget(data: "${CommonUtils.totalLateTime(provider.entryList, provider.dateList, data.userName!)}"),
+                              // DataTableFixedWidthWidget(data: "${CommonUtils.totalLeaveEarly(provider.entryList, provider.dateList, data.userName!)}"),
+                              // DataTableFixedWidthWidget(data: "${CommonUtils.totalUnWorkHour(provider.entryList, provider.dateList, data.userName!)}"),
+                              DataTableFixedWidthWidget(
+                                  data: "${CommonUtils.totalOvertimeWithinLaw(provider.entryList, provider.dateList, data.userName!)}"),
+                              DataTableFixedWidthWidget(
+                                  data: "${CommonUtils.totalOvertimeNonStatutory(provider.entryList, provider.dateList, data.userName!)}"),
+                              DataTableFixedWidthWidget(
+                                  data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!, isStandard: true)}"),
+                              DataTableFixedWidthWidget(data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!)}"),
+                              DataTableFixedWidthWidget(
+                                  data: "${CommonUtils.totalMidnightWork(provider.entryList, provider.dateList, data.userName!)}"),
+                              DataTableFixedWidthWidget(
+                                  data: "${CommonUtils.totalWorkOnHoliday(provider.entryList, provider.dateList, data.userName!)}"),
+                              DataTableFixedWidthWidget(
+                                  data: "${CommonUtils.totalActualWorkingTime(provider.entryList, provider.dateList, data.userName!)}"),
+                              DataTableFixedWidthWidget(
+                                  data: "${CommonUtils.totalWorkingTime(provider.entryList, provider.dateList, data.userName!)}"),
+                              DataTableFixedWidthWidget(data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!)}"),
+                            ],
+                          );
+                  }),
             AppSize.spaceHeight30,
           ],
         ),
@@ -604,37 +629,41 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "有休消化", data: "00.00"),
+            summaryCardWidget(
+                title: "有休消化", data: "${CommonUtils.totalPaidHoliday(provider.request, provider.selectedUserName, provider.dateList)}.00"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "有休残数", data: "00.00")
+            summaryCardWidget(
+                title: "有休残数", data: "${CommonUtils.remainingPaidHoliday(provider.request, provider.selectedUserName ?? "", provider.dateList, 18)}")
           ],
         ),
+        // Column(
+        //   crossAxisAlignment: CrossAxisAlignment.start,
+        //   mainAxisAlignment: MainAxisAlignment.start,
+        //   children: [
+        //     summaryCardWidget(title: "公休日数", data: "16.00"),
+        //     // const SizedBox(
+        //     //   height: 3,
+        //     // ),
+        //     // summaryCardWidget(title: "特別休暇", data: ""),
+        //     // const SizedBox(
+        //     //   height: 3,
+        //     // ),
+        //     // summaryCardWidget(title: "振替日数", data: ""),
+        //     // const SizedBox(
+        //     //   height: 3,
+        //     // ),
+        //     // summaryCardWidget(title: "休出日数", data: "${DateToAPIHelper.formatTimeTwoDigits(provider.countDayOff.toString())}.00")
+        //   ],
+        // ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            summaryCardWidget(title: "公休日数", data: "00.00"),
-            const SizedBox(
-              height: 3,
-            ),
-            summaryCardWidget(title: "特別休暇", data: "00.00"),
-            const SizedBox(
-              height: 3,
-            ),
-            summaryCardWidget(title: "振替日数", data: "00.00"),
-            const SizedBox(
-              height: 3,
-            ),
-            summaryCardWidget(title: "休出日数", data: "${DateToAPIHelper.formatTimeTwoDigits(provider.countDayOff.toString())}.00")
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            summaryCardWidget(title: "欠勤日数", data: "00.00"),
+            summaryCardWidget(
+                title: "欠勤日数",
+                data: "${CommonUtils.calculateTotalAbsent(provider.shiftList, provider.entryList, provider.dateList, provider.selectedUserName)}.00"),
             const SizedBox(
               height: 3,
             ),
@@ -648,7 +677,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "不労時間", data: "00.00")
+            summaryCardWidget(title: "休出日数", data: "${DateToAPIHelper.formatTimeTwoDigits(provider.countDayOff.toString())}.00")
+            // summaryCardWidget(title: "不労時間", data: "")
           ],
         ),
         Column(
@@ -677,7 +707,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            summaryCardWidget(title: "深夜", data: "00:00"),
+            summaryCardWidget(
+                title: "深夜", data: "${CommonUtils.totalMidnightWork(provider.entryList, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
@@ -695,7 +726,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
           ],
         ),
         AppSize.spaceWidth32,
-        summaryCardWidget(title: "所定外計", data: "00:00"),
+        summaryCardWidget(title: "公休日数", data: "16.00"),
+        // summaryCardWidget(title: "所定外計", data: ""),
       ],
     );
   }
@@ -719,7 +751,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
         Container(
           width: 100,
           height: 30,
-          decoration: BoxDecoration(border: Border.all(width: 1, color: const Color(0xffF0F3F5))),
+          decoration:
+              BoxDecoration(color: data == "" ? Colors.redAccent : Colors.transparent, border: Border.all(width: 1, color: const Color(0xffF0F3F5))),
           child: Center(
             child: Text(
               data ?? "",
@@ -851,64 +884,107 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
               ),
             ),
             Expanded(
-              child: ScrollConfiguration(
-                behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
-                  PointerDeviceKind.touch,
-                  PointerDeviceKind.mouse,
-                }),
-                child: Scrollbar(
-                  controller: horizontalScroll1,
-                  isAlwaysShown: true,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    controller: horizontalScroll1,
-                    child: SfDataGrid(
-                        source: entryExitHistoryDataSourceByDate,
-                        columnWidthMode: ColumnWidthMode.fill,
-                        isScrollbarAlwaysShown: false,
-                        rowHeight: 125,
-                        headerRowHeight: 65,
-                        shrinkWrapRows: true,
-                        shrinkWrapColumns: true,
-                        gridLinesVisibility: GridLinesVisibility.none,
-                        headerGridLinesVisibility: GridLinesVisibility.none,
-                        horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
-                        verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
-                        columns: provider.dateList.map((e) {
-                          return GridColumn(
-                              width: 48,
-                              label: Center(
-                                  child: Column(
-                                children: [
-                                  Container(
+              child: provider.entryExitCalendarByUser.isEmpty
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            ...provider.dateList.map((e) {
+                              return Container(
+                                  width: 48,
+                                  child: Center(
+                                      child: Column(
+                                    children: [
+                                      Container(
+                                        width: 48,
+                                        height: 30,
+                                        margin: const EdgeInsets.symmetric(vertical: 1),
+                                        color: const Color(0xffF0F3F5),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          e.day.toString(),
+                                          style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                                        ),
+                                      ),
+                                      Container(
+                                        width: 48,
+                                        height: 30,
+                                        margin: const EdgeInsets.symmetric(vertical: 1),
+                                        color: const Color(0xffF0F3F5),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          toJapanWeekDayWithInt(e.weekday),
+                                          style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                                        ),
+                                      ),
+                                    ],
+                                  )));
+                            }).toList(),
+                          ],
+                        ),
+                        AppSize.spaceHeight16,
+                        const EmptyDataWidget()
+                      ],
+                    )
+                  : ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
+                        PointerDeviceKind.touch,
+                        PointerDeviceKind.mouse,
+                      }),
+                      child: Scrollbar(
+                        controller: horizontalScroll1,
+                        isAlwaysShown: true,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          controller: horizontalScroll1,
+                          child: SfDataGrid(
+                              source: entryExitHistoryDataSourceByDate,
+                              columnWidthMode: ColumnWidthMode.fill,
+                              isScrollbarAlwaysShown: false,
+                              rowHeight: 125,
+                              headerRowHeight: 65,
+                              shrinkWrapRows: true,
+                              shrinkWrapColumns: true,
+                              gridLinesVisibility: GridLinesVisibility.none,
+                              headerGridLinesVisibility: GridLinesVisibility.none,
+                              horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+                              verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+                              columns: provider.dateList.map((e) {
+                                return GridColumn(
                                     width: 48,
-                                    height: 30,
-                                    margin: const EdgeInsets.symmetric(vertical: 1),
-                                    color: const Color(0xffF0F3F5),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      e.day.toString(),
-                                      style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: 48,
-                                    height: 30,
-                                    margin: const EdgeInsets.symmetric(vertical: 1),
-                                    color: const Color(0xffF0F3F5),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      toJapanWeekDayWithInt(e.weekday),
-                                      style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
-                                    ),
-                                  ),
-                                ],
-                              )),
-                              columnName: e.toString());
-                        }).toList()),
-                  ),
-                ),
-              ),
+                                    label: Center(
+                                        child: Column(
+                                      children: [
+                                        Container(
+                                          width: 48,
+                                          height: 30,
+                                          margin: const EdgeInsets.symmetric(vertical: 1),
+                                          color: const Color(0xffF0F3F5),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            e.day.toString(),
+                                            style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: 48,
+                                          height: 30,
+                                          margin: const EdgeInsets.symmetric(vertical: 1),
+                                          color: const Color(0xffF0F3F5),
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            toJapanWeekDayWithInt(e.weekday),
+                                            style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                                    columnName: e.toString());
+                              }).toList()),
+                        ),
+                      ),
+                    ),
             ),
           ],
         )
@@ -1055,69 +1131,71 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                         horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
                         verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
                         columns: provider.dateList.map((e) {
-                              return GridColumn(
-                                  width: 48,
-                                  label: Center(
-                                      child: Column(
-                                    children: [
-                                      Container(
-                                        width: 48,
-                                        height: 30,
-                                        margin: const EdgeInsets.symmetric(vertical: 1),
-                                        color: const Color(0xffF0F3F5),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          e.day.toString(),
-                                          style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 48,
-                                        height: 30,
-                                        margin: const EdgeInsets.symmetric(vertical: 1),
-                                        color: const Color(0xffF0F3F5),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          toJapanWeekDayWithInt(e.weekday),
-                                          style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                                  columnName: e.toString());
-                            }).toList() +
-                            provider.moreMenuShiftAndWorkTimeByUserList
-                                .map((e) => GridColumn(
+                          return GridColumn(
+                              width: 48,
+                              label: Center(
+                                  child: Column(
+                                children: [
+                                  Container(
                                     width: 48,
-                                    label: Center(
-                                        child: Column(
-                                      children: [
-                                        Container(
-                                          width: 48,
-                                          height: 30,
-                                          margin: const EdgeInsets.symmetric(vertical: 1),
-                                          color: Colors.transparent,
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            "",
-                                            style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: 48,
-                                          height: 30,
-                                          margin: const EdgeInsets.symmetric(vertical: 1),
-                                          color: const Color(0xffF0F3F5),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            e,
-                                            style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                                    columnName: e.toString()))
-                                .toList()),
+                                    height: 30,
+                                    margin: const EdgeInsets.symmetric(vertical: 1),
+                                    color: const Color(0xffF0F3F5),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      e.day.toString(),
+                                      style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 48,
+                                    height: 30,
+                                    margin: const EdgeInsets.symmetric(vertical: 1),
+                                    color: const Color(0xffF0F3F5),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      toJapanWeekDayWithInt(e.weekday),
+                                      style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                                    ),
+                                  ),
+                                ],
+                              )),
+                              columnName: e.toString());
+                        }).toList()
+                        // +
+                        // provider.moreMenuShiftAndWorkTimeByUserList
+                        //     .map((e) => GridColumn(
+                        //         width: 48,
+                        //         label: Center(
+                        //             child: Column(
+                        //           children: [
+                        //             Container(
+                        //               width: 48,
+                        //               height: 30,
+                        //               margin: const EdgeInsets.symmetric(vertical: 1),
+                        //               color: Colors.transparent,
+                        //               alignment: Alignment.center,
+                        //               child: Text(
+                        //                 "",
+                        //                 style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                        //               ),
+                        //             ),
+                        //             Container(
+                        //               width: 48,
+                        //               height: 30,
+                        //               margin: const EdgeInsets.symmetric(vertical: 1),
+                        //               color: const Color(0xffF0F3F5),
+                        //               alignment: Alignment.center,
+                        //               child: Text(
+                        //                 e,
+                        //                 style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                        //               ),
+                        //             ),
+                        //           ],
+                        //         )),
+                        //         columnName: e.toString()))
+                        //     .toList()
+                        ),
                   ),
                 ),
               ),

@@ -49,16 +49,16 @@ class EntryExitHistoryDataSourceByDate extends DataGridSource {
               mainAxisSize: MainAxisSize.min,
               children: [
                 displayDateWidget(
-                  "00:00",
+                  "~",
                 ),
                 displayDateWidget(
-                  "00:00",
+                  "~",
                 ),
                 displayDateWidget(
-                  "00:00",
+                  "~",
                 ),
                 displayDateWidget(
-                  "00:00",
+                  "~",
                 ),
               ],
             );

@@ -12,7 +12,8 @@ class DataTableFixedWidthWidget extends StatelessWidget {
     return Container(
       height: 30,
       width: width,
-      decoration: BoxDecoration(border: Border.all(width: 1, color: const Color(0xffF0F3F5))),
+      decoration:
+          BoxDecoration(color: data == "" ? Colors.redAccent : Colors.transparent, border: Border.all(width: 1, color: const Color(0xffF0F3F5))),
       alignment: Alignment.center,
       child: Text(
         data ?? "",

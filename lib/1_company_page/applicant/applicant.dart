@@ -157,15 +157,15 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(
-                                    FontAwesome.arrow_circle_down,
-                                    color: AppColor.primaryColor,
-                                  ),
-                                  AppSize.spaceWidth5,
-                                  Text("Good率", style: normalTextStyle.copyWith(fontSize: 13)),
+                                  // Icon(
+                                  //   FontAwesome.arrow_circle_down,
+                                  //   color: AppColor.primaryColor,
+                                  // ),
+                                  // AppSize.spaceWidth5,
+                                  Text("応募日", style: normalTextStyle.copyWith(fontSize: 13)),
                                 ],
                               ),
-                              flex: 1,
+                              flex: 2,
                             ),
                             Expanded(
                               child: Row(

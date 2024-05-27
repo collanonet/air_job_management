@@ -1,4 +1,5 @@
 import 'package:air_job_management/helper/date_to_api.dart';
+import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/helper/status_helper.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
@@ -66,6 +67,7 @@ class ApplicantCardWidget extends StatelessWidget {
                         if (job.userId != null) {
                           provider.setJob = job;
                           context.go("/company/worker-management/${job.uid}");
+                          // context.go("/company/applicant/${job.uid}");
                         } else {
                           context.go("/company/worker-management/outside-worker/${job.uid}");
                         }
@@ -137,12 +139,12 @@ class ApplicantCardWidget extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "  ${job.myUser?.rating ?? "95"}%",
+                  "  ${toJapanDateTime(job.createdDate ?? DateTime.now())}",
                   style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),
               ),
-              flex: 1,
+              flex: 2,
             ),
             Expanded(
               child: Align(

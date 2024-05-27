@@ -39,6 +39,7 @@ class DashboardForCompanyProvider with ChangeNotifier {
       }
     }
     workerCount = count.toString();
+    notifyListeners();
   }
 
   onChangeLoading(bool val) {
