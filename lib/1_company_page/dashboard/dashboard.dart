@@ -23,20 +23,17 @@ class DashboardPageForCompany extends StatefulWidget {
   const DashboardPageForCompany({Key? key}) : super(key: key);
 
   @override
-  State<DashboardPageForCompany> createState() =>
-      _DashboardPageForCompanyState();
+  State<DashboardPageForCompany> createState() => _DashboardPageForCompanyState();
 }
 
-class _DashboardPageForCompanyState extends State<DashboardPageForCompany>
-    with AfterBuildMixin {
+class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with AfterBuildMixin {
   late AuthProvider authProvider;
   late DashboardForCompanyProvider provider;
   late HomeProvider homeProvider;
 
   @override
   void initState() {
-    Provider.of<DashboardForCompanyProvider>(context, listen: false)
-        .setLoading = true;
+    Provider.of<DashboardForCompanyProvider>(context, listen: false).setLoading = true;
     super.initState();
   }
 
@@ -89,11 +86,8 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany>
             child: Container(
               width: 60,
               height: 60,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: AppColor.primaryColor),
-              child: authProvider.myCompany!.companyProfile != null &&
-                      authProvider.myCompany!.companyProfile != ""
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: AppColor.primaryColor),
+              child: authProvider.myCompany!.companyProfile != null && authProvider.myCompany!.companyProfile != ""
                   ? Image.network(
                       authProvider.myCompany!.companyProfile!,
                       fit: BoxFit.cover,
@@ -114,18 +108,12 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany>
             children: [
               Text(
                 "${authProvider.myCompany?.companyName}",
-                style: normalTextStyle.copyWith(
-                    fontSize: 20,
-                    color: AppColor.blackColor,
-                    fontFamily: "Bold"),
+                style: normalTextStyle.copyWith(fontSize: 20, color: AppColor.blackColor, fontFamily: "Bold"),
               ),
               AppSize.spaceHeight5,
               Text(
                 "${authProvider.myCompany?.location}",
-                style: normalTextStyle.copyWith(
-                    fontSize: 16,
-                    color: AppColor.blackColor,
-                    fontFamily: "Normal"),
+                style: normalTextStyle.copyWith(fontSize: 16, color: AppColor.blackColor, fontFamily: "Normal"),
               ),
             ],
           ),
@@ -134,8 +122,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany>
               icon: badges.Badge(
                 badgeContent: Text(
                   '${provider.notificationList.length}',
-                  style:
-                      kNormalText.copyWith(color: Colors.white, fontSize: 10),
+                  style: kNormalText.copyWith(color: Colors.white, fontSize: 10),
                 ),
                 child: const Icon(
                   Icons.notifications,
@@ -181,8 +168,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany>
         children: [
           InkWell(
             onTap: () {
-              homeProvider.onChangeSelectItemForCompany(
-                  homeProvider.menuListForCompany[3]);
+              homeProvider.onChangeSelectItemForCompany(homeProvider.menuListForCompany[3]);
               var route = homeProvider.checkRouteForCompany(homeProvider);
               context.go(route);
             },
@@ -194,10 +180,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany>
                 AppSize.spaceHeight8,
                 Text(
                   "${provider.applicantList.length}名",
-                  style: kNormalText.copyWith(
-                      fontSize: 20,
-                      fontFamily: "Bold",
-                      color: AppColor.primaryColor),
+                  style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor),
                 )
               ],
             ),
@@ -205,8 +188,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany>
           verticalDivider(),
           InkWell(
             onTap: () {
-              homeProvider.onChangeSelectItemForCompany(
-                  homeProvider.menuListForCompany[4]);
+              homeProvider.onChangeSelectItemForCompany(homeProvider.menuListForCompany[4]);
               var route = homeProvider.checkRouteForCompany(homeProvider);
               context.go(route);
             },
@@ -216,19 +198,14 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany>
               children: [
                 TitleWidget(title: "ワーカー"),
                 AppSize.spaceHeight8,
-                Text("${provider.workerCount}名",
-                    style: kNormalText.copyWith(
-                        fontSize: 20,
-                        fontFamily: "Bold",
-                        color: AppColor.primaryColor))
+                Text("${provider.workerCount}名", style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor))
               ],
             ),
           ),
           verticalDivider(),
           InkWell(
             onTap: () {
-              homeProvider.onChangeSelectItemForCompany(
-                  homeProvider.menuListForCompany[1]);
+              homeProvider.onChangeSelectItemForCompany(homeProvider.menuListForCompany[1]);
               var route = homeProvider.checkRouteForCompany(homeProvider);
               context.go(route);
             },
@@ -239,10 +216,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany>
                 TitleWidget(title: "掲載中のシフト枠"),
                 AppSize.spaceHeight8,
                 Text("${provider.jobPostingList.length}件",
-                    style: kNormalText.copyWith(
-                        fontSize: 20,
-                        fontFamily: "Bold",
-                        color: AppColor.primaryColor))
+                    style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor))
               ],
             ),
           ),
@@ -253,11 +227,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany>
             children: [
               TitleWidget(title: "ご利用明細発行"),
               AppSize.spaceHeight8,
-              Text("0件",
-                  style: kNormalText.copyWith(
-                      fontSize: 20,
-                      fontFamily: "Bold",
-                      color: AppColor.primaryColor))
+              Text("0件", style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor))
             ],
           )
         ],
@@ -281,10 +251,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany>
               AppSize.spaceHeight8,
               Text(
                 "${provider.applicantList.length}件",
-                style: kNormalText.copyWith(
-                    fontSize: 20,
-                    fontFamily: "Bold",
-                    color: AppColor.primaryColor),
+                style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor),
               )
             ],
           ),
@@ -296,10 +263,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany>
               TitleWidget(title: "ご利用明細発行"),
               AppSize.spaceHeight8,
               Text("${provider.notificationList.length}件",
-                  style: kNormalText.copyWith(
-                      fontSize: 20,
-                      fontFamily: "Bold",
-                      color: AppColor.primaryColor))
+                  style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor))
             ],
           ),
         ],
@@ -330,17 +294,14 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany>
                           child: Row(
                         children: [
                           Container(
-                            width: 150,
+                            width: 220,
                             height: 30,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                    width: 2, color: Color(0xff6DC9E5))),
+                            decoration:
+                                BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(width: 2, color: Color(0xff6DC9E5))),
                             child: Center(
                               child: Text(
                                 notification.title ?? "",
-                                style: kNormalText.copyWith(
-                                    color: Color(0xff6DC9E5), fontSize: 13),
+                                style: kNormalText.copyWith(color: Color(0xff6DC9E5), fontSize: 13),
                               ),
                             ),
                           ),
@@ -348,16 +309,13 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany>
                           Expanded(
                               child: Text(
                             notification.des ?? "",
-                            style: kNormalText.copyWith(
-                                color: AppColor.primaryColor, fontSize: 16),
+                            style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 16),
                             overflow: TextOverflow.fade,
                           ))
                         ],
                       )),
                       AppSize.spaceWidth32,
-                      Text(toJapanMonthAndYearDay(notification.date!),
-                          style: kNormalText.copyWith(
-                              color: AppColor.darkGrey, fontSize: 16))
+                      Text(toJapanMonthAndYearDay(notification.date!), style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16))
                     ],
                   ),
                 );
@@ -387,19 +345,16 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany>
       if (user != null) {
         Company? company = await UserApiServices().getProfileCompany(user.uid);
         authProvider.onChangeCompany(company);
-        await provider.onInit(
-            company?.uid ?? "", authProvider.branch?.id ?? "");
+        await provider.onInit(company?.uid ?? "", authProvider.branch?.id ?? "");
         if (authProvider.branch == null) {
-          authProvider
-              .onChangeBranch(authProvider.myCompany!.branchList!.first);
+          authProvider.onChangeBranch(authProvider.myCompany!.branchList!.first);
         }
         provider.onChangeLoading(false);
       } else {
         context.go(MyRoute.companyLogin);
       }
     } else {
-      await provider.onInit(
-          authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
+      await provider.onInit(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
       if (authProvider.branch == null) {
         authProvider.onChangeBranch(authProvider.myCompany!.branchList!.first);
       }

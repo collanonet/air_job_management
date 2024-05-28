@@ -72,7 +72,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                             Padding(
                               padding: const EdgeInsets.only(right: 75),
                               child: Text(
-                                "任意のワーカーを選んでまとめて",
+                                "求人タイトルを選んでまとめて",
                                 style: normalTextStyle.copyWith(fontSize: 13),
                               ),
                             ),
