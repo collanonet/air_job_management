@@ -118,8 +118,9 @@ class RequestApiService {
           isLeaveEarly: request.isLeaveEarly ?? false,
           managerName: managerName,
           branchName: branch?.name ?? "",
-          endTime: request.shiftModel?.startWorkTime ?? "",
-          startTime: request.shiftModel?.endWorkTime ?? "",
+          endTime: request.isLeaveEarly == true ? request.toTime ?? request.shiftModel?.endWorkTime ?? "" : request.shiftModel?.endWorkTime ?? "",
+          startTime:
+              request.isUpdateShift == true ? request.fromTime ?? request.shiftModel?.startWorkTime ?? "" : request.shiftModel?.startWorkTime ?? "",
           email: request.myUser?.email ?? "",
           msg: "Application Request",
           name: request.myUser?.nameKanJi ?? "",

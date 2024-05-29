@@ -93,7 +93,7 @@ class NotificationService {
         }
       }
 
-      //End Time
+      //LeaveEarly
       if (isLeaveEarly) {
         if (status == "approved") {
           text = """ 
