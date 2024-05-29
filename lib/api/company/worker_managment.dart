@@ -251,19 +251,28 @@ class WorkerManagementApiService {
     }
   }
 
-  Future<bool> updateShiftStatus(List<ShiftModel> shiftList, String jobId, {Company? company, ShiftModel? shiftModel, MyUser? myUser}) async {
+  Future<bool> updateShiftStatus(List<ShiftModel> shiftList, String jobId,
+      {Branch? branch, Company? company, ShiftModel? shiftModel, MyUser? myUser}) async {
     try {
       shiftList = shiftList.toSet().toList();
       await jobRef.doc(jobId).update({"shift": shiftList.map((e) => e.toJson())});
       if (company != null && myUser != null) {
+        String managerName = "";
+        if (company.manager!.isNotEmpty) {
+          managerName = company.manager!.first.kanji ?? "";
+        }
         await NotificationService.sendEmailApplyShift(
+            startTime: shiftList.first.startWorkTime ?? "",
+            endTime: shiftList.first.endWorkTime ?? "",
+            branchName: branch?.name ?? "",
+            managerName: managerName,
             email: myUser.email ?? "",
             msg: "Your Shift Apply",
             name: myUser.nameKanJi ?? "",
             userId: myUser.uid ?? "",
             companyId: company.uid ?? "",
             companyName: company.companyName ?? "",
-            branchId: "",
+            branchId: branch?.id ?? "",
             status: shiftModel!.status!,
             date: DateToAPIHelper.convertDateToString(shiftModel.date!));
       }

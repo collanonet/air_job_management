@@ -83,7 +83,7 @@ class RequestApiService {
     }
   }
 
-  Future<bool> updateRequestStatus(Request request, String status, Company company) async {
+  Future<bool> updateRequestStatus(Request request, String status, Company company, Branch? branch) async {
     try {
       WorkerManagement? workerManagement = await WorkerManagementApiService().getAJob(request.applyJobId!);
       if (workerManagement != null) {
@@ -108,17 +108,29 @@ class RequestApiService {
         );
         await requestRef.doc(request.uid).update({"status": status});
         String requestName = CommonUtils.getStatusOfRequest(request);
+        String managerName = "";
+        if (company.manager!.isNotEmpty) {
+          managerName = company.manager!.first.kanji ?? "";
+        }
         await NotificationService.sendEmail(
-            email: request.myUser?.email ?? "",
-            msg: "Application Request",
-            name: request.myUser?.nameKanJi ?? "",
-            userId: request.myUser?.uid ?? "",
-            companyId: company.uid ?? "",
-            companyName: company.companyName ?? "",
-            branchId: "",
-            status: status,
-            date: request.date ?? "",
-            request: requestName);
+          isEditStartTime: request.isUpdateShift ?? false,
+          isHoliday: request.isHoliday ?? false,
+          isLeaveEarly: request.isLeaveEarly ?? false,
+          managerName: managerName,
+          branchName: branch?.name ?? "",
+          endTime: request.shiftModel?.startWorkTime ?? "",
+          startTime: request.shiftModel?.endWorkTime ?? "",
+          email: request.myUser?.email ?? "",
+          msg: "Application Request",
+          name: request.myUser?.nameKanJi ?? "",
+          userId: request.myUser?.uid ?? "",
+          companyId: company.uid ?? "",
+          companyName: company.companyName ?? "",
+          branchId: branch?.id ?? "",
+          status: status,
+          date: request.date ?? "",
+          request: requestName,
+        );
         return true;
       } else {
         return false;

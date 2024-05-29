@@ -327,8 +327,13 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
           setState(() {
             isLoading = true;
           });
-          bool isSuccess = await WorkerManagementApiService()
-              .updateShiftStatus(shiftList, shiftList[index].jobId!, shiftModel: shiftModel, company: authProvider.myCompany!, myUser: myUser);
+          bool isSuccess = await WorkerManagementApiService().updateShiftStatus(
+              branch: authProvider.branch,
+              shiftList,
+              shiftList[index].jobId!,
+              shiftModel: shiftModel,
+              company: authProvider.myCompany!,
+              myUser: myUser);
           if (isSuccess) {
             await getData();
             MessageWidget.show(JapaneseText.successUpdate);

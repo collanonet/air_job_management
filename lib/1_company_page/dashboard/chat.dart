@@ -194,13 +194,17 @@ class _ChatPageAtDashboardState extends State<ChatPageAtDashboard> with AfterBui
                                             var date = DateTime.parse(d?["created_at"] ?? "2000-10-11");
                                             var now = DateTime.now();
                                             return Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                Text(
-                                                  snapshot.connectionState == ConnectionState.waiting
-                                                      ? "Loading..."
-                                                      : [message, "An Image", "A File", ""][type],
-                                                  style: kNormalText.copyWith(fontSize: 14),
+                                                Expanded(
+                                                  child: Text(
+                                                    snapshot.connectionState == ConnectionState.waiting
+                                                        ? "Loading..."
+                                                        : [message, "An Image", "A File", ""][type],
+                                                    maxLines: 1,
+                                                    style: kNormalText.copyWith(
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
                                                 ),
                                                 Text(
                                                   snapshot.connectionState == ConnectionState.waiting

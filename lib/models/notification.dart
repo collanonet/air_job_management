@@ -13,7 +13,8 @@ class NotificationModel {
           ? "ワーカーから変更申請"
           : json["message"]["text"].toString().contains("request")
               ? "ワーカーからの変更申請などは"
-              : json["message"]["text"].toString().contains("job applied")
+              : json["message"]["text"].toString().contains("job applied") ||
+                      json["message"]["text"].toString().contains("この度は掲載求人にご応募頂きまして、誠にありがとうございます。")
                   ? "応募者からの求人応募"
                   : "",
       des: json["message"]["text"],

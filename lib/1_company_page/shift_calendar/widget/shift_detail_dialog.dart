@@ -442,7 +442,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
           setState(() {
             isLoading = true;
           });
-          bool isSuccess = await RequestApiService().updateRequestStatus(request, status, authProvider.myCompany!);
+          bool isSuccess = await RequestApiService().updateRequestStatus(request, status, authProvider.myCompany!, authProvider?.branch);
           if (isSuccess) {
             await getData();
             setState(() {
@@ -651,8 +651,8 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
           setState(() {
             isLoading = true;
           });
-          bool isSuccess = await WorkerManagementApiService()
-              .updateShiftStatus(shiftList, jobId, myUser: myUser, company: authProvider.myCompany!, shiftModel: shiftModel);
+          bool isSuccess = await WorkerManagementApiService().updateShiftStatus(
+              branch: authProvider.branch, shiftList, jobId, myUser: myUser, company: authProvider.myCompany!, shiftModel: shiftModel);
           if (isSuccess) {
             await getData();
             setState(() {
