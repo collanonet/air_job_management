@@ -477,7 +477,8 @@ class CommonUtils {
   static Duration calculateMidnightWorkAsDuration(DateTime workStart, DateTime workEnd, DateTime midnightStart, DateTime midnightEnd) {
     // Ensure the work period does not start after it ends
     if (workEnd.isBefore(workStart)) {
-      throw ArgumentError("Work end time cannot be before work start time.");
+      workEnd = workStart;
+      // throw ArgumentError("Work end time cannot be before work start time.");
     }
 
     // Calculate the overlap between work period and midnight period

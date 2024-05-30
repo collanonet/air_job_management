@@ -34,6 +34,7 @@ import 'package:air_job_management/providers/job_posting_for_japanese.dart';
 import 'package:air_job_management/providers/job_seeker.dart';
 import 'package:air_job_management/providers/job_seeker_detail.dart';
 import 'package:air_job_management/providers/root_provider.dart';
+import 'package:air_job_management/providers/withdraw.dart';
 import 'package:air_job_management/providers/worker/filter.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/extension.dart';
@@ -555,6 +556,7 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (_) => ShiftCalendarProvider()),
             ChangeNotifierProvider(create: (_) => DashboardForCompanyProvider()),
             ChangeNotifierProvider(create: (_) => EntryExitHistoryProvider()),
+            ChangeNotifierProvider(create: (_) => WithdrawProvider()),
           ],
           child: MaterialApp.router(
             scrollBehavior: MyCustomScrollBehavior(), // <== add here

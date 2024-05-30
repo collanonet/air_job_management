@@ -11,19 +11,19 @@ class EntryExitApiService {
   var userRef = FirebaseFirestore.instance.collection("user");
   Future<List<EntryExitHistory>> getAllEntryList(String id) async {
     try {
-      var doc = await entryRef.where("companyId", isEqualTo: id).get();
-      List<EntryExitHistory> entryList = [];
-      if (doc.size > 0) {
-        for (var data in doc.docs) {
-          EntryExitHistory entryExitHistory = EntryExitHistory.fromJson(data.data());
-          entryExitHistory.uid = data.id;
-          entryList.add(entryExitHistory);
-        }
-        entryList.sort((a, b) => b.workDateToDateTime!.compareTo(a.workDateToDateTime!));
-        return entryList;
-      } else {
-        return [];
+    var doc = await entryRef.where("companyId", isEqualTo: id).get();
+    List<EntryExitHistory> entryList = [];
+    if (doc.size > 0) {
+      for (var data in doc.docs) {
+        EntryExitHistory entryExitHistory = EntryExitHistory.fromJson(data.data());
+        entryExitHistory.uid = data.id;
+        entryList.add(entryExitHistory);
       }
+      entryList.sort((a, b) => b.workDateToDateTime!.compareTo(a.workDateToDateTime!));
+      return entryList;
+    } else {
+      return [];
+    }
     } catch (e) {
       Logger.printLog("Error =>> ${e.toString()}");
       return [];

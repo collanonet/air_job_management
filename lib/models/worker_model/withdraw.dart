@@ -1,7 +1,7 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Withdraw{
+class Withdraw {
+  String? uid;
   String? amount;
   Timestamp? createAt;
   String? date;
@@ -11,16 +11,7 @@ class Withdraw{
   String? workerID;
   String? workerName;
 
-  Withdraw({
-    this.amount,
-    this.createAt,
-    this.date,
-    this.status,
-    this.time,
-    this.updatedAt,
-    this.workerID,
-    this.workerName
-  });
+  Withdraw({this.uid, this.amount, this.createAt, this.date, this.status, this.time, this.updatedAt, this.workerID, this.workerName});
   factory Withdraw.fromJson(Map<String, dynamic> json) {
     return Withdraw(
       amount: json["amount"] ?? "0",
