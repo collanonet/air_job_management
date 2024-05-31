@@ -3,7 +3,6 @@ import 'package:air_job_management/models/widthraw.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
 import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
-import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +13,9 @@ import '../../../widgets/custom_button.dart';
 
 class WithdrawCardWidget extends StatelessWidget {
   final WithdrawModel withdrawModel;
-  const WithdrawCardWidget({super.key, required this.withdrawModel});
+  final Function onApprove;
+  final Function onReject;
+  const WithdrawCardWidget({super.key, required this.withdrawModel, required this.onApprove, required this.onReject});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,7 @@ class WithdrawCardWidget extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      withdrawModel.workerName ?? JapaneseText.empty,
+                      withdrawModel.workerName == "" ? JapaneseText.empty : withdrawModel.workerName.toString(),
                       style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
                       overflow: TextOverflow.fade,
                     ),
@@ -55,7 +56,7 @@ class WithdrawCardWidget extends StatelessWidget {
                   overflow: TextOverflow.fade,
                 ),
               ),
-              flex: 2,
+              flex: 1,
             ),
             Expanded(
               child: Center(
@@ -75,6 +76,16 @@ class WithdrawCardWidget extends StatelessWidget {
                   overflow: TextOverflow.fade,
                 ),
               ),
+              flex: 1,
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
+                  withdrawModel.reason ?? "",
+                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                  overflow: TextOverflow.fade,
+                ),
+              ),
               flex: 2,
             ),
             Expanded(
@@ -85,15 +96,9 @@ class WithdrawCardWidget extends StatelessWidget {
                     width: 150,
                     child: ButtonWidget(
                       radius: 25,
-                      color: withdrawModel.status == "approved"
-                          ? AppColor.bgPageColor
-                          : withdrawModel.status == "rejected"
-                              ? AppColor.primaryColor
-                              : AppColor.whiteColor,
+                      color: withdrawModel.status == "approved" ? AppColor.primaryColor : AppColor.whiteColor,
                       title: "承認",
-                      onPress: () {
-                        toastMessageSuccess("Implement this function soon", context);
-                      },
+                      onPress: () => onApprove(),
                     ),
                   ),
                   AppSize.spaceWidth32,
@@ -101,15 +106,9 @@ class WithdrawCardWidget extends StatelessWidget {
                     width: 150,
                     child: ButtonWidget(
                       radius: 25,
-                      color: withdrawModel.status == "approved"
-                          ? AppColor.bgPageColor
-                          : withdrawModel.status == "rejected"
-                              ? AppColor.primaryColor
-                              : AppColor.whiteColor,
+                      color: withdrawModel.status == "rejected" ? AppColor.primaryColor : AppColor.whiteColor,
                       title: "拒否",
-                      onPress: () {
-                        toastMessageSuccess("Implement this function soon", context);
-                      },
+                      onPress: () => onReject(),
                     ),
                   )
                 ],

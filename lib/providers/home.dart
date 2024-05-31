@@ -2,7 +2,7 @@ import 'package:air_job_management/1_company_page/applicant/applicant.dart';
 import 'package:air_job_management/1_company_page/dashboard/dashboard.dart';
 import 'package:air_job_management/1_company_page/job_posting/job_posting.dart';
 import 'package:air_job_management/1_company_page/shift_calendar/shift_calendar.dart';
-import 'package:air_job_management/1_company_page/usage_detail/usage_detail.dart';
+import 'package:air_job_management/1_company_page/withdraw/withdraw.dart';
 import 'package:air_job_management/1_company_page/woker_management/worker_management.dart';
 import 'package:air_job_management/helper/route_handler.dart';
 import 'package:air_job_management/pages/company/company.dart';

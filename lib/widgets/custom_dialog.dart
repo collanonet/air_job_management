@@ -36,14 +36,14 @@ class CustomDialog {
               ),
               actions: [
                 TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text(
-                      "キャンセル",
-                    )),
-                TextButton(
                     onPressed: () => onSend(),
                     child: const Text(
                       "メッセージを送る",
+                    )),
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      "キャンセル",
                     )),
               ],
             ));
@@ -60,14 +60,14 @@ class CustomDialog {
               content: Text(title ?? "この求人に応募してもよろしいですか？"),
               actions: [
                 TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text(
-                      "いいえ",
-                    )),
-                TextButton(
                     onPressed: () => onApprove(),
                     child: const Text(
                       "はい",
+                    )),
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      "いいえ",
                     )),
               ],
             ));
@@ -84,14 +84,14 @@ class CustomDialog {
               content: const Text("このデータを削除してもよろしいですか？"),
               actions: [
                 TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text(
-                      "キャンセル",
-                    )),
-                TextButton(
                     onPressed: () => onDelete(),
                     child: const Text(
                       "はい",
+                    )),
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      "キャンセル",
                     )),
               ],
             ));
@@ -108,14 +108,14 @@ class CustomDialog {
               content: const Text("このリクエストを承認してもよろしいですか？"),
               actions: [
                 TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text(
-                      "キャンセル",
-                    )),
-                TextButton(
                     onPressed: () => onApprove(),
                     child: const Text(
                       "はい",
+                    )),
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      "キャンセル",
                     )),
               ],
             ));
@@ -132,14 +132,14 @@ class CustomDialog {
               content: const Text("このリクエストを拒否してもよろしいですか？"),
               actions: [
                 TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text(
-                      "キャンセル",
-                    )),
-                TextButton(
                     onPressed: () => onReject(),
                     child: const Text(
                       "はい",
+                    )),
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      "キャンセル",
                     )),
               ],
             ));

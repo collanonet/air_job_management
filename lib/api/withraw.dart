@@ -1,3 +1,4 @@
+import 'package:air_job_management/const/const.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -5,9 +6,10 @@ import '../models/widthraw.dart';
 
 class WithdrawApiService {
   var withdrawRef = FirebaseFirestore.instance.collection('withdraw_history');
+  var userRef = FirebaseFirestore.instance.collection('user');
 
   Future<List<WithdrawModel>> getAllWithdraw(String companyId) async {
-    // try {
+    try {
       var doc = await withdrawRef.get();
       if (doc.docs.isNotEmpty) {
         List<WithdrawModel> list = [];
@@ -21,9 +23,26 @@ class WithdrawApiService {
       } else {
         return [];
       }
-    // } catch (e) {
-    //   debugPrint("Error getAllWithdraw =>> ${e.toString()}");
-    //   return [];
-    // }
+    } catch (e) {
+      debugPrint("Error getAllWithdraw =>> ${e.toString()}");
+      return [];
+    }
+  }
+
+  Future<String?> approveOrRejectWithdraw(WithdrawModel withdrawModel) async {
+    try {
+      await withdrawRef
+          .doc(withdrawModel.uid)
+          .update({"status": withdrawModel.status, "reason": withdrawModel.reason, "transactionImageUrl": withdrawModel.transactionImageUrl});
+      if (withdrawModel.status == "approved") {
+        await userRef.doc(withdrawModel.workerID).update({"balance": "0"});
+      } else {
+        await userRef.doc(withdrawModel.workerID).update({"balance": "${withdrawModel.amount}"});
+      }
+      return ConstValue.success;
+    } catch (e) {
+      debugPrint("Error getAllWithdraw =>> ${e.toString()}");
+      return null;
+    }
   }
 }

@@ -1,8 +1,10 @@
-import 'package:air_job_management/1_company_page/usage_detail/widget/filter.dart';
-import 'package:air_job_management/1_company_page/usage_detail/widget/withdraw_card.dart';
+import 'package:air_job_management/1_company_page/withdraw/widget/approve_or_reject_dialog.dart';
+import 'package:air_job_management/1_company_page/withdraw/widget/filter.dart';
+import 'package:air_job_management/1_company_page/withdraw/widget/withdraw_card.dart';
 import 'package:air_job_management/models/widthraw.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/withdraw.dart';
+import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
@@ -102,7 +104,7 @@ class _UsageDetailPageState extends State<UsageDetailPage> with AfterBuildMixin 
                                       child: Center(
                                         child: Text("金額", style: normalTextStyle.copyWith(fontSize: 13)),
                                       ),
-                                      flex: 2,
+                                      flex: 1,
                                     ),
                                     Expanded(
                                       child: Center(
@@ -113,6 +115,12 @@ class _UsageDetailPageState extends State<UsageDetailPage> with AfterBuildMixin 
                                     Expanded(
                                       child: Center(
                                         child: Text("ステータス", style: normalTextStyle.copyWith(fontSize: 13)),
+                                      ),
+                                      flex: 1,
+                                    ),
+                                    Expanded(
+                                      child: Center(
+                                        child: Text(JapaneseText.remark, style: normalTextStyle.copyWith(fontSize: 13)),
                                       ),
                                       flex: 2,
                                     ),
@@ -149,7 +157,17 @@ class _UsageDetailPageState extends State<UsageDetailPage> with AfterBuildMixin 
                 Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == provider.withdrawList.length ? 20 : 0)),
             itemBuilder: (context, index) {
               WithdrawModel w = provider.withdrawList[index];
-              return WithdrawCardWidget(withdrawModel: w);
+              return WithdrawCardWidget(
+                withdrawModel: w,
+                onApprove: () => showDialog(
+                    context: context,
+                    builder: (context) => ApproveOrRejectWithdrawDialog(
+                        withdrawModel: w, status: "approved", onRefreshData: () => provider.onGetData(authProvider.myCompany?.uid ?? ""))),
+                onReject: () => showDialog(
+                    context: context,
+                    builder: (context) => ApproveOrRejectWithdrawDialog(
+                        withdrawModel: w, status: "rejected", onRefreshData: () => provider.onGetData(authProvider.myCompany?.uid ?? ""))),
+              );
             });
       } else {
         return const Center(

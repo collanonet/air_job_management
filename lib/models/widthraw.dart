@@ -9,19 +9,34 @@ class WithdrawModel {
   String? workerID;
   String? workerName;
   BankModel? bankModel;
+  String? reason;
+  String? transactionImageUrl;
   WithdrawModel(
-      {this.uid, this.bankModel, this.date, this.status, this.createdAt, this.time, this.amount, this.updatedAt, this.workerID, this.workerName});
+      {this.uid,
+      this.bankModel,
+      this.date,
+      this.status,
+      this.createdAt,
+      this.time,
+      this.amount,
+      this.updatedAt,
+      this.workerID,
+      this.workerName,
+      this.reason,
+      this.transactionImageUrl});
 
   factory WithdrawModel.fromJson(Map<String, dynamic> json) => WithdrawModel(
+        transactionImageUrl: json["transactionImageUrl"],
+        reason: json["reason"],
         createdAt: json["created_at"].toDate(),
         date: json["date"],
-        amount: json["amount"],
+        amount: json["amount"] ?? "0",
         bankModel: json["bank"] != null ? BankModel.fromJson(json["bank"]) : null,
         status: json["status"],
         time: json["time"],
         updatedAt: json["updated_at"].toDate(),
         workerID: json["worker_id"],
-        workerName: json["worker_name"],
+        workerName: json["worker_name"].toString().replaceAll(" ", ""),
       );
 }
 
