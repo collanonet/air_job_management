@@ -2,8 +2,11 @@ import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/worker_model/search_job.dart';
 
 class ShiftModel {
-  String? title;
-  String? image;
+  String? jobId; //For applicant download
+  String? fullName; //For applicant download
+  String? title; //For applicant download
+  String? jobTitle; //For applicant download
+  String? applyCount; //For applicant download
   DateTime? date;
   String? price;
   String? startWorkTime;
@@ -12,7 +15,7 @@ class ShiftModel {
   String? endBreakTime;
   SearchJob? myJob;
   String? status;
-  String? jobId;
+  String? image;
   int applicantCount;
   String recruitmentCount;
   List<String>? userNameList;
@@ -31,7 +34,10 @@ class ShiftModel {
       this.myJob,
       this.jobId,
       this.applicantCount = 0,
-      this.recruitmentCount = "0"});
+      this.recruitmentCount = "0",
+      this.fullName,
+      this.userNameList,
+      this.jobTitle});
 
   factory ShiftModel.fromJson(Map<String, dynamic> json) => ShiftModel(
       date: DateToAPIHelper.fromApiToLocal(json["date"].toString()),

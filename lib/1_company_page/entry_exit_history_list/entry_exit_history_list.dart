@@ -49,7 +49,9 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> wit
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          const FilterEntryExitList(),
+          FilterEntryExitList(
+            onRefreshData: () {},
+          ),
           AppSize.spaceHeight16,
           Expanded(
             child: SingleChildScrollView(

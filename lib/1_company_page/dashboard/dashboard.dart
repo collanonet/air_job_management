@@ -292,6 +292,8 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
                     children: [
                       Expanded(
                           child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Container(
                             width: 220,
@@ -311,7 +313,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
                             notification.des ?? "",
                             style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 16),
                             overflow: TextOverflow.fade,
-                            maxLines: 3,
+                            // maxLines: 3,
                           ))
                         ],
                       )),

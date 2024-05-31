@@ -12,7 +12,8 @@ import '../../../widgets/custom_choose_date_or_time.dart';
 import '../../../widgets/custom_dropdown_string.dart';
 
 class FilterEntryExitList extends StatelessWidget {
-  const FilterEntryExitList({super.key});
+  final Function onRefreshData;
+  const FilterEntryExitList({super.key, required this.onRefreshData});
 
   @override
   Widget build(BuildContext context) {
@@ -115,8 +116,10 @@ class FilterEntryExitList extends StatelessWidget {
                   ),
                 ],
               ),
+              AppSize.spaceWidth32,
+              Padding(padding: const EdgeInsets.only(top: 20), child: IconButton(onPressed: () => onRefreshData(), icon: const Icon(Icons.refresh)))
             ],
-          )
+          ),
         ],
       ),
     );

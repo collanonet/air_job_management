@@ -132,7 +132,17 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
   buildEntryExitList() {
     return Column(
       children: [
-        const FilterEntryExitList(),
+        FilterEntryExitList(
+          onRefreshData: () async {
+            setState(() {
+              provider.startWorkDate = null;
+              provider.endWorkDate = null;
+              provider.selectedUsernameForEntryExit = null;
+              provider.selectedJobTitle = null;
+            });
+            await onGetData();
+          },
+        ),
         SizedBox(
           width: AppSize.getDeviceWidth(context),
           height: AppSize.getDeviceHeight(context) * 0.7,

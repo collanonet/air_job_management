@@ -6,6 +6,7 @@ import 'package:air_job_management/1_company_page/applicant/widget/filter.dart';
 import 'package:air_job_management/1_company_page/applicant/widget/manual_and_download.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
+import 'package:air_job_management/models/worker_model/shift.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
 import 'package:csv/csv.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -246,20 +247,32 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
     //First add entire row header into our first row
     rows.add(rowHeader);
     //Now lets add 5 data rows
+    List<ShiftModel> shiftList = [];
     for (int i = 0; i < workerManagementProvider.applicantList.length; i++) {
       var job = workerManagementProvider.applicantList[i];
+
+      for (var shift in job.shiftList!) {
+        shift.jobId = job.uid.toString();
+        shift.jobTitle = job.jobTitle.toString();
+        shift.fullName = job.userName.toString().contains(" ") ? job.userName.toString().split(" ")[0] : "";
+        shift.applyCount = job.applyCount.toString();
+        shiftList.add(shift);
+      }
+    }
+    shiftList.sort((a, b) => b.date!.compareTo(a.date!));
+    for (var shift in shiftList) {
       List<dynamic> dataRow = [];
-      dataRow.add(job.uid);
-      dataRow.add(job.userName);
-      dataRow.add(job.status);
-      dataRow.add(job.jobTitle);
+      dataRow.add(shift.jobId.toString());
+      dataRow.add(shift.fullName.toString());
+      dataRow.add(shift.status);
+      dataRow.add(shift.jobTitle);
       dataRow.add("95%");
-      dataRow.add(job.applyCount);
-      dataRow.add(DateToAPIHelper.convertDateToString(job.shiftList!.first.date!));
+      dataRow.add(shift.applyCount);
+      dataRow.add(DateToAPIHelper.convertDateToString(shift.date!));
       rows.add(dataRow);
     }
     String url = "";
-    if (defaultTargetPlatform == TargetPlatform.macOS && kIsWeb) {
+    if (defaultTargetPlatform == TargetPlatform.macOS) {
       String csv = const ListToCsvConverter(fieldDelimiter: ';').convert(rows);
       List<int> excelCsvBytes = [0xEF, 0xBB, 0xBF]..addAll(utf8.encode(csv));
       String base64ExcelCsvBytes = base64Encode(excelCsvBytes);
