@@ -55,6 +55,7 @@ class MyUser {
   String? number_card_url;
   List<Review>? reviews;
   int? annualLeave;
+  String? fcmToken;
 
   MyUser(
       {this.affiliation,
@@ -107,10 +108,12 @@ class MyUser {
       this.number_card_url,
       this.passport_url,
       this.resident_record_url,
-      this.address});
+      this.address,
+      this.fcmToken});
 
   factory MyUser.fromJson(Map<String, dynamic> json) {
     return MyUser(
+      fcmToken: json["fcmToken"] ?? "",
       annualLeave: json["annualLeave"] ?? 18,
       uid: json["uid"],
       address: json["address"],
@@ -134,7 +137,10 @@ class MyUser {
       temporary: json["temporary"] ?? false,
       partTimeJob: json["partTimeJob"] ?? false,
       gender: json["gender"] ?? "",
-      workingStatus: (json["working_status"] != null && json["working_status"] != "") ? json["working_status"] : JapaneseText.noContact,
+      workingStatus:
+          (json["working_status"] != null && json["working_status"] != "")
+              ? json["working_status"]
+              : JapaneseText.noContact,
       profileImage: json["profile"] ?? "",
       firstName: json["first_name"] ?? "",
       lastName: json["last_name"] ?? "",
@@ -149,21 +155,34 @@ class MyUser {
       jobDetail: json["job_detail"] ?? "",
       jobId: json["job_id"] ?? "",
       jobTitle: json["job_title"] ?? "",
-      reviews: json["review"] != null ? List<Review>.from(json["review"].map((e) => Review.fromJson(e))) : [],
-      messageList: json["message_list"] != null ? List<String>.from(json["message_list"].map((e) => e)) : [],
+      reviews: json["review"] != null
+          ? List<Review>.from(json["review"].map((e) => Review.fromJson(e)))
+          : [],
+      messageList: json["message_list"] != null
+          ? List<String>.from(json["message_list"].map((e) => e))
+          : [],
       hash_password: json["hash_password"],
       interviewDate: json["interviewDate"] ?? "",
       finalEdu: json["finalEdu"] ?? "",
       graduationSchool: json["graduationSchool"] ?? "",
-      academicBgList: json["academicBgList"] != null ? List<String>.from(json["academicBgList"].map((e) => e)) : [],
-      workHistoryList: json["workHistoryList"] != null ? List<String>.from(json["workHistoryList"].map((e) => e)) : [],
+      academicBgList: json["academicBgList"] != null
+          ? List<String>.from(json["academicBgList"].map((e) => e))
+          : [],
+      workHistoryList: json["workHistoryList"] != null
+          ? List<String>.from(json["workHistoryList"].map((e) => e))
+          : [],
       ordinaryAutomaticLicence: json["ordinaryAutomaticLicence"] ?? "",
-      employmentHistoryList: json["employmentHistoryList"] != null ? List<String>.from(json["employmentHistoryList"].map((e) => e)) : [],
-      otherQualificationList: json["otherQualificationList"] != null ? List<String>.from(json["otherQualificationList"].map((e) => e)) : [],
+      employmentHistoryList: json["employmentHistoryList"] != null
+          ? List<String>.from(json["employmentHistoryList"].map((e) => e))
+          : [],
+      otherQualificationList: json["otherQualificationList"] != null
+          ? List<String>.from(json["otherQualificationList"].map((e) => e))
+          : [],
     );
   }
 
   Map<String, dynamic> toJson() => {
+        "fcmToken": fcmToken,
         "annualLeave": annualLeave,
         "review": reviews != null ? reviews!.map((e) => e.toJson()) : [],
         "address": address,
@@ -196,11 +215,17 @@ class MyUser {
         "interviewDate": interviewDate,
         "finalEdu": finalEdu,
         "graduationSchool": graduationSchool,
-        "academicBgList": academicBgList != null ? academicBgList!.map((e) => e) : [],
-        "workHistoryList": workHistoryList != null ? workHistoryList!.map((e) => e) : [],
+        "academicBgList":
+            academicBgList != null ? academicBgList!.map((e) => e) : [],
+        "workHistoryList":
+            workHistoryList != null ? workHistoryList!.map((e) => e) : [],
         "ordinaryAutomaticLicence": ordinaryAutomaticLicence,
-        "employmentHistoryList": employmentHistoryList != null ? employmentHistoryList!.map((e) => e) : [],
-        "otherQualificationList": otherQualificationList != null ? otherQualificationList!.map((e) => e) : [],
+        "employmentHistoryList": employmentHistoryList != null
+            ? employmentHistoryList!.map((e) => e)
+            : [],
+        "otherQualificationList": otherQualificationList != null
+            ? otherQualificationList!.map((e) => e)
+            : [],
         'verifyDoc': verifyDoc,
         'postalCode': postalCode,
         'province': province,
