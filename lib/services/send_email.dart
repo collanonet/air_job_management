@@ -39,7 +39,7 @@ class NotificationService {
         body: constructFCMPayload(
             msg: msg, companyName: companyName, token: token),
       );
-      print('FCM request for device sent!');
+      print('${response.body} FCM request for device sent!');
     } catch (e) {
       print("Error notification is $e");
     }
@@ -200,7 +200,7 @@ class NotificationService {
         sendPushMessage(
             token: token,
             companyName: "$companyName 会社 | $branchName 店 | 担当：$managerName",
-            msg: msg);
+            msg: text);
       }
       FirebaseFirestore.instance.collection("mail").add({
         "to": email,
@@ -287,12 +287,11 @@ class NotificationService {
           receiverId: userId,
           createdAt: DateTime.now());
       messageApi.messageRef.add(message.toJson());
-      print("Token is $token");
       if (token.isNotEmpty) {
         sendPushMessage(
             token: token,
             companyName: "$companyName 会社 | $branchName 店 | 担当：$managerName",
-            msg: msg);
+            msg: text);
       }
       FirebaseFirestore.instance.collection("mail").add({
         "to": email,
