@@ -9,9 +9,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:sura_flutter/sura_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../api/user_api.dart';
+import '../../../services/send_email.dart';
 import '../../../utils/app_color.dart';
 
 class CompanyChatPage extends StatefulWidget {
@@ -32,7 +34,7 @@ class CompanyChatPage extends StatefulWidget {
   State<CompanyChatPage> createState() => _CompanyChatPageState();
 }
 
-class _CompanyChatPageState extends State<CompanyChatPage> {
+class _CompanyChatPageState extends State<CompanyChatPage> with AfterBuildMixin {
   String get companyName {
     if (widget.companyName != null) {
       return widget.companyName!;
@@ -116,6 +118,9 @@ class _CompanyChatPageState extends State<CompanyChatPage> {
               Map<String, dynamic>? oldData;
               if (index > 0) {
                 oldData = snapshot.data!.docs[index - 1].data()! as Map<String, dynamic>;
+              }
+              if (!isMe && ((index + 1) == snapshot.data!.docs.length)) {
+                MessageApi(message.senderId, widget.companyID).updateSeen(snapshot.data!.docs[index].id);
               }
               return Column(
                 children: [
@@ -263,6 +268,7 @@ class _CompanyChatPageState extends State<CompanyChatPage> {
                 setState(() {
                   isSending = true;
                 });
+                bool isError = false;
                 final message =
                     MessageModel(message: messageCtr.text, senderId: widget.companyID, receiverId: widget.myUser.uid!, createdAt: DateTime.now());
                 messageCtr.clear();
@@ -272,12 +278,16 @@ class _CompanyChatPageState extends State<CompanyChatPage> {
                   });
                 }).catchError((e) {
                   setState(() {
+                    isError = true;
                     isSending = false;
                   });
                   messageCtr.text = message.message;
                   Fluttertoast.showToast(msg: e);
                 });
                 addChat();
+                if (!isError) {
+                  NotificationService.sendPushMessage(token: widget.myUser.fcmToken ?? "", companyName: companyName, msg: messageCtr.text);
+                }
               }
             },
             icon: const Icon(
@@ -339,16 +349,21 @@ class _CompanyChatPageState extends State<CompanyChatPage> {
                           type: isImage ? 1 : 2,
                           originalName: value1.files.first.name,
                         );
+                        bool isError = false;
                         messageApi.messageRef.add(message.toJson()).then((value) {
                           setState(() {
                             isSending = false;
                           });
                         }).catchError((e) {
                           setState(() {
+                            isError = true;
                             isSending = false;
                           });
                           Fluttertoast.showToast(msg: e);
                         });
+                        if (!isError) {
+                          NotificationService.sendPushMessage(token: widget.myUser.fcmToken ?? "", companyName: companyName, msg: "ファイルイメージをお送りします。");
+                        }
                       }).catchError((e) {
                         setState(() {
                           isSending = false;
@@ -382,6 +397,12 @@ class _CompanyChatPageState extends State<CompanyChatPage> {
     } else {
       return const SizedBox();
     }
+  }
+
+  @override
+  void afterBuild(BuildContext context) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    scrollController.animateTo(scrollController.position.maxScrollExtent, duration: const Duration(seconds: 1), curve: Curves.ease);
   }
 }
 

@@ -156,8 +156,17 @@ class MessageApi {
   late final CollectionReference messageRef;
 
   MessageApi(this._uid, this._companyID) {
-    print("chats/chat_${_uid}_$_companyID/messages");
+    debugPrint("chats/chat_${_uid}_$_companyID/messages");
     messageRef = FirebaseFirestore.instance.collection("chats/chat_${_uid}_$_companyID/messages");
+  }
+
+  updateSeen(String uid) {
+    try {
+      debugPrint("Update seen $uid");
+      messageRef.doc(uid).update({"isSeen": true});
+    } catch (e) {
+      debugPrint("Error updateSeen $messageRef x $uid x $e");
+    }
   }
 
   Stream<QuerySnapshot> get getConversationMessage {

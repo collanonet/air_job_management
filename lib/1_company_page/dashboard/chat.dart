@@ -84,6 +84,8 @@ class _ChatPageAtDashboardState extends State<ChatPageAtDashboard> with AfterBui
     }
   }
 
+  List<String> uidList = [];
+
   @override
   Widget build(BuildContext context) {
     authProvider = Provider.of<AuthProvider>(context);
@@ -148,6 +150,13 @@ class _ChatPageAtDashboardState extends State<ChatPageAtDashboard> with AfterBui
                                       },
                                       child: ListTile(
                                         onTap: () async {
+                                          //For seen or unseen
+                                          uidList = uidList.toSet().toList();
+                                          for (int i = 0; i < uidList.length; i++) {
+                                            if (uidList[i].isEmpty) {
+                                              uidList.removeAt(i);
+                                            }
+                                          }
                                           setState(() {
                                             selectIndex = null;
                                           });
@@ -155,6 +164,7 @@ class _ChatPageAtDashboardState extends State<ChatPageAtDashboard> with AfterBui
                                           setState(() {
                                             selectIndex = index;
                                           });
+                                          MessageApi(userIdList[index], authProvider.myCompany!.uid!).updateSeen(uidList[index]);
                                         },
                                         leading: ClipRRect(
                                           borderRadius: BorderRadius.circular(25),
@@ -189,10 +199,17 @@ class _ChatPageAtDashboardState extends State<ChatPageAtDashboard> with AfterBui
                                               .snapshots(),
                                           builder: (context, snapshot) {
                                             var d = snapshot.data?.docs.firstOrNull;
+                                            uidList.add(d?.id ?? "");
                                             String message = d?["message"] ?? "";
                                             int type = d?["type"] ?? 3;
                                             var date = DateTime.parse(d?["created_at"] ?? "2000-10-11");
+                                            Map<String, dynamic>? data = d?.data() as Map<String, dynamic>?;
+                                            bool isMe = d?["sender_id"] == authProvider.myCompany!.uid;
                                             var now = DateTime.now();
+                                            bool isSeen = isMe ? true : false;
+                                            if (data != null && data.containsKey("isSeen") && !isMe) {
+                                              isSeen = data["isSeen"];
+                                            }
                                             return Row(
                                               children: [
                                                 Expanded(
@@ -201,19 +218,26 @@ class _ChatPageAtDashboardState extends State<ChatPageAtDashboard> with AfterBui
                                                         ? "Loading..."
                                                         : [message, "An Image", "A File", ""][type],
                                                     maxLines: 1,
-                                                    style: kNormalText.copyWith(
-                                                      fontSize: 14,
-                                                    ),
+                                                    style: kNormalText.copyWith(fontSize: 14, color: isSeen ? Colors.grey : Colors.black),
                                                   ),
                                                 ),
-                                                Text(
-                                                  snapshot.connectionState == ConnectionState.waiting
-                                                      ? "Loading..."
-                                                      : CommonUtils.isTheSameDate(date, now)
-                                                          ? dateTimeToHourAndMinute(date)
-                                                          : toJapanDateTimeNoWeekDay(date),
-                                                  style: kNormalText.copyWith(fontSize: 12),
-                                                ),
+                                                snapshot.connectionState == ConnectionState.waiting
+                                                    ? const Text("Loading...")
+                                                    : Column(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.circle,
+                                                            size: 10,
+                                                            color: !isSeen ? Colors.red : Colors.transparent,
+                                                          ),
+                                                          Text(
+                                                            CommonUtils.isTheSameDate(date, now)
+                                                                ? dateTimeToHourAndMinute(date)
+                                                                : toJapanDateTimeNoWeekDay(date),
+                                                            style: kNormalText.copyWith(fontSize: 12),
+                                                          ),
+                                                        ],
+                                                      ),
                                               ],
                                             );
                                           },
