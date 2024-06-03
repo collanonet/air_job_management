@@ -93,7 +93,7 @@ class WithdrawCardWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    width: 150,
+                    width: 125,
                     child: ButtonWidget(
                       radius: 25,
                       color: withdrawModel.status == "approved" ? AppColor.primaryColor : AppColor.whiteColor,
@@ -101,9 +101,9 @@ class WithdrawCardWidget extends StatelessWidget {
                       onPress: () => onApprove(),
                     ),
                   ),
-                  AppSize.spaceWidth32,
+                  AppSize.spaceWidth16,
                   SizedBox(
-                    width: 150,
+                    width: 125,
                     child: ButtonWidget(
                       radius: 25,
                       color: withdrawModel.status == "rejected" ? AppColor.primaryColor : AppColor.whiteColor,
