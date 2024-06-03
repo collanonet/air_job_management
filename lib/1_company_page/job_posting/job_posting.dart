@@ -155,6 +155,12 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> wit
                             ),
                             Expanded(
                               child: Center(
+                                child: Text("稼働日開始 ~ 稼働日終了", style: normalTextStyle.copyWith(fontSize: 13)),
+                              ),
+                              flex: 2,
+                            ),
+                            Expanded(
+                              child: Center(
                                 child: Text("職種", style: normalTextStyle.copyWith(fontSize: 13)),
                               ),
                               flex: 2,

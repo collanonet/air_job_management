@@ -14,30 +14,20 @@ class NotificationService {
       "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC5LmsJO1x/M6IF\n+om40OpWgKY5yxgTKSx5wpha4VyA81uwlWuehnhGdEvD5/32FTfWhDMdYY85FKnM\nnVoJ7i/o9CiENG8pQvAKOSCYKURXK66evRWbudOreUqcK9T0COA36ld2wCE0BRHW\nDIKb4xK8K2Jq+EYJhUnrehPAddy/+mRhlxOiPnfGEe70vUyrXwacFh52iAyWGQfO\ns7/uf0/Qxp859m5IWsN+AYVrpgQKTHbReCYbpw6YZkxnBsKNzXAtoMYZ38l5xqS9\nrD4UfOk32BEZsgROp5Fm5hn/jImPvshRc3fY8n0uP/YMD0HoZrspNUkqU3Pd1caC\nGmRYvSiNAgMBAAECggEAB7v/1fif/iMYsRG8B1dYdkj0yGSqaoB1fldpmCAiBjPD\n4F35Svt4Ug8A7BuIMKtFtAS9Aszkl8B8cBKhZFlJsHvkJlNvUiSc1Hx610gf9dkZ\n98DTgnfSNq7/9gJhqFinjsZPpWLUcDEHA+7tVJf5HBleyLN6b2LdCcQFR6xUjkMT\nYSvbeiSiPydIp6MHOFeeTrnoQVYPGbrYaGMIFOkgSv4KR8NPcllWtFwgtHs09+yx\n/CGWDIoUx67VtaAkzy3zmhMuNtx4oahxaFpQwj9AvHYqw7FdtAopq+iVv90CrXe8\nXBrGig7c02RKATTWEwopHesN1b5uy5gW22AZTYlOUQKBgQD9UYRoT/HcFCYzSpQJ\nyDrCFgr6duH2RUI52U82+V1rYUEIn0dCsLWdoGaIY93aNWpVjaE8fHSIhDRjAMN2\nBGg8UVgu1RAgSHd4g4vdQV/+yuTx2NdBDwzOBqs7C7Zkp4P/hkyQYzAWag1bud6Y\nJdKzm6dy8KW+Sahu6E3TIr0l3QKBgQC7JECHdGzia2CKLJxbSTEo+McsZKA5dDhE\ngKgKDNhE/RY4y0777T14kcvNWJhmhEXz1Aw0aAdy/6HY5WZadwpFOu1mm9d+iImM\nn4hv7EsYU3krGOhJZRLaMHA2PTSfnQVH9IAi7wvmMXJraz8EKcK0/J8vcXbafr9W\nqzjgFhMacQKBgQCSdoNb3H02hd/gYApf7YkrlpsaXYogXcMAt4h5fIxq/XwghBcr\nlAgt7wPZcARhmei1NoI2+q5WEDpJ07MvlTS/Szj1OvNr9vo8j7JaZuYd5ymgO4OZ\ndh4tMOXn6cm3QLOtFfVGtlKjYwX+NuVgit3cQu76IfFyqBvepCn7HWbHcQKBgBg0\nxzf+IjtjQjh9LrhMDlTLYQ/n8CWeV8zci1/Ja4v45I/yFERX2nSm/yKPjB7uixHP\n4shAkH4afLfObF/VN/nedmioTcZrKMeMtxwrB0edPHYLobgkn7yjOVB6uDzRFabK\nBG0AWJys1qz4UU1bjXjVmE2Nsp7ueBdgzFmH4W6xAoGAfNeRUixnOkE3og0ihpn6\nDMShRwUGarRT9aYN9dD0H700iGg90bb/HcXuEk43944C1Y7S6yFmGjOzccSLX7cs\nPLikwq/I5aW8O5s6vwJUKmM3a0PZjQpA/hsf4MfwoBkkdcVxMVhLsMTQsjyLWYOo\nTI2kG7Nlu2bUV4JjM8tkcfk=\n-----END PRIVATE KEY-----\n";
 
   static getToken() async {
-    var accountCredential =
-        ServiceAccountCredentials(mail, ClientId(clientId), privateKey);
+    var accountCredential = ServiceAccountCredentials(mail, ClientId(clientId), privateKey);
     final scope = ["https://www.googleapis.com/auth/firebase.messaging"];
-    AuthClient authClient =
-        await clientViaServiceAccount(accountCredential, scope)
-          ..close();
+    AuthClient authClient = await clientViaServiceAccount(accountCredential, scope)
+      ..close();
     return authClient.credentials.accessToken.data;
   }
 
-  static Future<void> sendPushMessage(
-      {required String token,
-      required String companyName,
-      required String msg}) async {
+  static Future<void> sendPushMessage({required String token, required String companyName, required String msg}) async {
     try {
       var bearerToken = await getToken();
       var response = await http.post(
-        Uri.parse(
-            'https://fcm.googleapis.com/v1/projects/air-job/messages:send'),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-          "Authorization": "Bearer $bearerToken"
-        },
-        body: constructFCMPayload(
-            msg: msg, companyName: companyName, token: token),
+        Uri.parse('https://fcm.googleapis.com/v1/projects/air-job/messages:send'),
+        headers: <String, String>{'Content-Type': 'application/json', "Authorization": "Bearer $bearerToken"},
+        body: constructFCMPayload(msg: msg, companyName: companyName, token: token),
       );
       print('${response.body} FCM request for device sent!');
     } catch (e) {
@@ -45,10 +35,7 @@ class NotificationService {
     }
   }
 
-  static String constructFCMPayload(
-      {required String token,
-      required String msg,
-      required String companyName}) {
+  static String constructFCMPayload({required String token, required String msg, required String companyName}) {
     return jsonEncode({
       "message": {
         'token': token,
@@ -190,17 +177,10 @@ class NotificationService {
         }
       }
       var messageApi = MessageApi(userId, companyId);
-      final message = MessageModel(
-          message: text,
-          senderId: companyId,
-          receiverId: userId,
-          createdAt: DateTime.now());
+      final message = MessageModel(message: text, senderId: companyId, receiverId: userId, createdAt: DateTime.now());
       messageApi.messageRef.add(message.toJson());
       if (token.isNotEmpty) {
-        sendPushMessage(
-            token: token,
-            companyName: "$companyName 会社 | $branchName 店 | 担当：$managerName",
-            msg: text);
+        sendPushMessage(token: token, companyName: "$companyName 会社 | $branchName 店 | 担当：$managerName", msg: text);
       }
       FirebaseFirestore.instance.collection("mail").add({
         "to": email,
@@ -210,6 +190,8 @@ class NotificationService {
         "user_id": userId,
         "username": name,
         "date": DateTime.now(),
+        "isJobApply": false,
+        "isRequest": true,
         "message": {
           "subject": msg,
           "text": text,
@@ -281,17 +263,10 @@ class NotificationService {
                   """;
       }
       var messageApi = MessageApi(userId, companyId);
-      final message = MessageModel(
-          message: text,
-          senderId: companyId,
-          receiverId: userId,
-          createdAt: DateTime.now());
+      final message = MessageModel(message: text, senderId: companyId, receiverId: userId, createdAt: DateTime.now());
       messageApi.messageRef.add(message.toJson());
       if (token.isNotEmpty) {
-        sendPushMessage(
-            token: token,
-            companyName: "$companyName 会社 | $branchName 店 | 担当：$managerName",
-            msg: text);
+        sendPushMessage(token: token, companyName: "$companyName 会社 | $branchName 店 | 担当：$managerName", msg: text);
       }
       FirebaseFirestore.instance.collection("mail").add({
         "to": email,
@@ -300,6 +275,8 @@ class NotificationService {
         "company_branch": branchId,
         "user_id": userId,
         "username": name,
+        "isJobApply": true,
+        "isRequest": false,
         "date": DateTime.now(),
         "message": {
           "subject": msg,

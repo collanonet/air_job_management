@@ -13,7 +13,9 @@ import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../api/user_api.dart';
+import '../../api/withraw.dart';
 import '../../models/company.dart';
+import '../../models/widthraw.dart';
 import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
 import '../../utils/my_route.dart';
@@ -30,6 +32,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
   late AuthProvider authProvider;
   late DashboardForCompanyProvider provider;
   late HomeProvider homeProvider;
+  List<WithdrawModel> withdrawList = [];
 
   @override
   void initState() {
@@ -131,7 +134,8 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
               ),
               itemBuilder: (context) => provider.notificationList
                   .map((e) => PopupMenuItem(
-                          child: Column(
+                      onTap: () => context.go(MyRoute.companyShift),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AppSize.spaceHeight8,
@@ -196,7 +200,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                TitleWidget(title: "ワーカー"),
+                const TitleWidget(title: "ワーカー"),
                 AppSize.spaceHeight8,
                 Text("${provider.workerCount}名", style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor))
               ],
@@ -213,7 +217,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                TitleWidget(title: "掲載中のシフト枠"),
+                const TitleWidget(title: "掲載中のシフト枠"),
                 AppSize.spaceHeight8,
                 Text("${provider.jobPostingList.length}件",
                     style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor))
@@ -221,14 +225,17 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
             ),
           ),
           verticalDivider(),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              TitleWidget(title: "ご利用明細発行"),
-              AppSize.spaceHeight8,
-              Text("0件", style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor))
-            ],
+          InkWell(
+            onTap: () => context.go(MyRoute.companyUsageDetail),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const TitleWidget(title: "ご利用明細発行"),
+                AppSize.spaceHeight8,
+                Text("${withdrawList.length}件", style: kNormalText.copyWith(fontSize: 20, fontFamily: "Bold", color: AppColor.primaryColor))
+              ],
+            ),
           )
         ],
       ),
@@ -283,43 +290,46 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
           ListView.builder(
               itemCount: provider.notificationList.length,
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 var notification = provider.notificationList[index];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 220,
-                            height: 30,
-                            decoration:
-                                BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(width: 2, color: Color(0xff6DC9E5))),
-                            child: Center(
-                              child: Text(
-                                notification.title ?? "",
-                                style: kNormalText.copyWith(color: Color(0xff6DC9E5), fontSize: 13),
+                return InkWell(
+                  onTap: () => context.go(MyRoute.companyShift),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 220,
+                              height: 30,
+                              decoration:
+                                  BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(width: 2, color: Color(0xff6DC9E5))),
+                              child: Center(
+                                child: Text(
+                                  notification.title ?? "",
+                                  style: kNormalText.copyWith(color: Color(0xff6DC9E5), fontSize: 13),
+                                ),
                               ),
                             ),
-                          ),
-                          AppSize.spaceWidth32,
-                          Expanded(
-                              child: Text(
-                            notification.des ?? "",
-                            style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 16),
-                            overflow: TextOverflow.fade,
-                            // maxLines: 3,
-                          ))
-                        ],
-                      )),
-                      AppSize.spaceWidth32,
-                      Text(toJapanMonthAndYearDay(notification.date!), style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16))
-                    ],
+                            AppSize.spaceWidth32,
+                            Expanded(
+                                child: Text(
+                              notification.des ?? "",
+                              style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 16),
+                              overflow: TextOverflow.fade,
+                              // maxLines: 3,
+                            ))
+                          ],
+                        )),
+                        AppSize.spaceWidth32,
+                        Text(toJapanMonthAndYearDay(notification.date!), style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16))
+                      ],
+                    ),
                   ),
                 );
               }),
@@ -346,7 +356,10 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
     if (authProvider.myCompany == null) {
       var user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        Company? company = await UserApiServices().getProfileCompany(user.uid);
+        // Company? company = await UserApiServices().getProfileCompany(user.uid);
+        var data = await Future.wait([UserApiServices().getProfileCompany(user.uid), WithdrawApiService().getAllWithdraw("")]);
+        Company? company = data[0] as Company?;
+        withdrawList = data[1] as List<WithdrawModel>;
         authProvider.onChangeCompany(company);
         await provider.onInit(company?.uid ?? "", authProvider.branch?.id ?? "");
         if (authProvider.branch == null) {
@@ -358,6 +371,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
       }
     } else {
       await provider.onInit(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
+      withdrawList = await WithdrawApiService().getAllWithdraw("");
       if (authProvider.branch == null) {
         authProvider.onChangeBranch(authProvider.myCompany!.branchList!.first);
       }

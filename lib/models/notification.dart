@@ -8,8 +8,12 @@ class NotificationModel {
   String? userId;
   String? companyName;
   DateTime? date;
-  NotificationModel({this.title, this.date, this.des, this.uid, this.userId, this.companyId, this.companyName});
+  bool? isJobApply;
+  bool? isRequest;
+  NotificationModel({this.title, this.date, this.des, this.uid, this.userId, this.companyId, this.companyName, this.isJobApply, this.isRequest});
   factory NotificationModel.fromJson(Map<String, dynamic> json) => NotificationModel(
+      isJobApply: json["isJobApply"] ?? false,
+      isRequest: json["isRequest"] ?? false,
       userId: json["user_id"],
       title: json["message"]["text"].toString().contains("rejected") ||
               json["message"]["text"].toString().contains("approved") ||

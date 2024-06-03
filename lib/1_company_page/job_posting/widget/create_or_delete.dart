@@ -24,7 +24,7 @@ class CreateOrDeleteJobPostingForCompany extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             const Spacer(),
-            SizedBox(width: 130, child: ButtonWidget(radius: 25, title: "消去", color: Colors.red, onPress: () => onDelete())),
+            SizedBox(width: 130, child: ButtonWidget(radius: 25, title: "削除", color: Colors.red, onPress: () => onDelete())),
             AppSize.spaceWidth16,
             Container(
               width: 2,
