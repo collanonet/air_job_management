@@ -229,9 +229,9 @@ class ShiftCalendarProvider with ChangeNotifier {
       //Find Apply Count
       for (var shift in data.shiftModelList!) {
         shift.userNameList = [];
-        if (shift.recruitmentCount == "0") {
-          data.shiftModelList!.remove(shift);
-        }
+        // if (shift.recruitmentCount == "0") {
+        //   data.shiftModelList!.remove(shift);
+        // }
         for (var job in jobApplyList) {
           var dateList = job.shiftList!.map((e) => e.date!).toList();
           if (CommonUtils.isArrayOfDateContainDate(dateList, shift.date!) &&
@@ -246,12 +246,11 @@ class ShiftCalendarProvider with ChangeNotifier {
 
     for (var job in jobApplyList) {
       List<ShiftModel> shiftList = job.shiftList ?? [];
-      if (shiftList.isNotEmpty != null &&
-          CommonUtils.containsAnyDate(rangeDateList.map((e) => e.date).toList(), shiftList.map((e) => e.date!).toList())) {
+      if (CommonUtils.containsAnyDate(rangeDateList.map((e) => e.date).toList(), shiftList.map((e) => e.date!).toList())) {
         jobApplyPerDay.add(job);
       }
     }
-    // jobApplyPerDay = jobApplyPerDay.toSet().toList();
+    notifyListeners();
   }
 
   findJobByOccupation(String branchId) async {
@@ -266,14 +265,7 @@ class ShiftCalendarProvider with ChangeNotifier {
       if (company?.uid == j.companyId && CommonUtils.containsAnyDate(dateTimeList, dList)) {
         JobPostingDataTable jobPostingDataTable = JobPostingDataTable(
             countByDate: dateTimeList
-                .map((e) => CountByDate(
-                    date: e,
-                    count: 0,
-                    recruitNumber: j.numberOfRecruit.toString(),
-                    jobId: j.uid ?? "",
-                    jobApplyId: "",
-                    startTime: j.startTimeHour ?? "",
-                    endTime: j.endTimeHour ?? ""))
+                .map((e) => CountByDate(date: e, count: 0, recruitNumber: j.numberOfRecruit.toString(), jobId: j.uid ?? "", jobApplyId: ""))
                 .toList(),
             recruitNumber: j.numberOfRecruit.toString(),
             jobId: j.uid ?? "",
