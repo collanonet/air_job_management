@@ -30,9 +30,12 @@ import '../../woker_management/widget/job_card.dart';
 
 class ShiftDetailDialogWidget extends StatefulWidget {
   final String jobId;
+  final String startTime;
+  final String endTime;
   final DateTime date;
   final Function onSuccess;
-  const ShiftDetailDialogWidget({super.key, required this.jobId, required this.date, required this.onSuccess});
+  const ShiftDetailDialogWidget(
+      {super.key, required this.jobId, required this.date, required this.onSuccess, required this.endTime, required this.startTime});
 
   @override
   State<ShiftDetailDialogWidget> createState() => _ShiftDetailDialogWidgetState();

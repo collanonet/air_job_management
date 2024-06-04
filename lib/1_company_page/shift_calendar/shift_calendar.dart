@@ -62,8 +62,8 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
     Provider.of<JobPostingForCompanyProvider>(context, listen: false).setAllController = [];
     shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
     shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
-    shiftCalendarDataSourceByJobPosting =
-        ShiftCalendarDataSourceByJobPosting(provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId));
+    shiftCalendarDataSourceByJobPosting = ShiftCalendarDataSourceByJobPosting(
+        provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId, job.startTime, job.endTime));
     Provider.of<ShiftCalendarProvider>(context, listen: false).initializeRangeDate();
     super.initState();
   }
@@ -638,7 +638,8 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                                                     selectedDate = shift.date;
                                                     setState(() {});
                                                   },
-                                                  onDoubleTap: () => showJobApplyDialog(shift.date!, shift.jobId!),
+                                                  onDoubleTap: () => showJobApplyDialog(shift.date!, shift.jobId!,
+                                                      provider.jobPosting?.startTimeHour ?? "", provider.jobPosting?.endTimeHour ?? ""),
                                                   child: Padding(
                                                     padding: const EdgeInsets.only(left: 5),
                                                     child: Row(
@@ -734,8 +735,8 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
       shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
       shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
       await provider.findJobByOccupation(authProvider.branch?.id ?? "");
-      shiftCalendarDataSourceByJobPosting =
-          ShiftCalendarDataSourceByJobPosting(provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId));
+      shiftCalendarDataSourceByJobPosting = ShiftCalendarDataSourceByJobPosting(
+          provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId, job.startTime, job.endTime));
       provider.onChangeLoading(false);
       toastMessageSuccess(JapaneseText.successUpdate, context);
     } else {
@@ -798,7 +799,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
     );
   }
 
-  showJobApplyDialog(DateTime date, String jobId) {
+  showJobApplyDialog(DateTime date, String jobId, String startTime, String endTime) {
     if (jobId == "" || jobId == null) {
       toastMessageError("この求人には応募がありません。", context);
     } else {
@@ -807,6 +808,8 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
           builder: (context) => Padding(
                 padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceHeight(context) * 0.1, vertical: 32),
                 child: ShiftDetailDialogWidget(
+                  startTime: startTime,
+                  endTime: endTime,
                   jobId: jobId,
                   date: date,
                   onSuccess: () => getData(),
@@ -840,7 +843,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                       shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
                       shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
                       shiftCalendarDataSourceByJobPosting = ShiftCalendarDataSourceByJobPosting(
-                          provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId));
+                          provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId, job.startTime, job.endTime));
                     },
                     icon: Icon(
                       Icons.arrow_back_ios_new_rounded,
@@ -859,7 +862,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                       shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
                       shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
                       shiftCalendarDataSourceByJobPosting = ShiftCalendarDataSourceByJobPosting(
-                          provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId));
+                          provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId, job.startTime, job.endTime));
                     },
                     icon: Icon(
                       color: AppColor.primaryColor,
@@ -1085,7 +1088,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
     shiftCalendarDataSource = ShiftCalendarDataSource(provider: provider);
     shiftCalendarDataSourceForJob = ShiftCalendarDataSourceForJob(provider: provider);
     await provider.findJobByOccupation(authProvider.branch?.id ?? "");
-    shiftCalendarDataSourceByJobPosting =
-        ShiftCalendarDataSourceByJobPosting(provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId));
+    shiftCalendarDataSourceByJobPosting = ShiftCalendarDataSourceByJobPosting(
+        provider: provider, onTap: (CountByDate job) => showJobApplyDialog(job.date, job.jobApplyId, job.startTime, job.endTime));
   }
 }

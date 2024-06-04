@@ -19,17 +19,10 @@ import '../../models/worker_model/shift.dart';
 import '../../utils/japanese_text.dart';
 
 class ShiftCalendarProvider with ChangeNotifier {
-  List<String> displayList = [
-    JapaneseText.perWorker,
-    JapaneseText.perShift,
-    JapaneseText.calendarDisplay
-  ];
+  List<String> displayList = [JapaneseText.perWorker, JapaneseText.perShift, JapaneseText.calendarDisplay];
   String selectDisplay = JapaneseText.perWorker;
-  List<ItemSelectModel> jobTitleList = [
-    ItemSelectModel(title: JapaneseText.all, id: "")
-  ];
-  ItemSelectModel? selectedJobTitle =
-      ItemSelectModel(title: JapaneseText.all, id: "");
+  List<ItemSelectModel> jobTitleList = [ItemSelectModel(title: JapaneseText.all, id: "")];
+  ItemSelectModel? selectedJobTitle = ItemSelectModel(title: JapaneseText.all, id: "");
   bool isLoading = false;
   DateTime? startWorkDate;
   DateTime? endWorkDate;
@@ -75,8 +68,7 @@ class ShiftCalendarProvider with ChangeNotifier {
     DateTime lastDate = DateTime(month.year, month.month + 1, 0);
     for (var i = 1; i <= lastDate.day; ++i) {
       dateTimeList.add(DateTime(month.year, month.month, i));
-      rangeDateList.add(CalendarModel(
-          date: DateTime(month.year, month.month, i), shiftModelList: []));
+      rangeDateList.add(CalendarModel(date: DateTime(month.year, month.month, i), shiftModelList: []));
     }
   }
 
@@ -123,8 +115,7 @@ class ShiftCalendarProvider with ChangeNotifier {
 
     ///Filter application by job title
     List<WorkerManagement> afterFilterSelectJobTitle = [];
-    if (selectedJobTitle != null &&
-        selectedJobTitle?.title != JapaneseText.all) {
+    if (selectedJobTitle != null && selectedJobTitle?.title != JapaneseText.all) {
       for (var job in jobApplyList) {
         if (job.jobId == selectedJobTitle?.id) {
           afterFilterSelectJobTitle.add(job);
@@ -137,8 +128,7 @@ class ShiftCalendarProvider with ChangeNotifier {
     List<WorkerManagement> afterFilterRangeDate = [];
     if (startWorkDate != null && endWorkDate != null) {
       for (var job in afterFilterSelectJobTitle) {
-        bool isWithin = isDateRangeWithin(job.shiftList!.first.date!,
-            job.shiftList!.last.date!, startWorkDate!, endWorkDate!);
+        bool isWithin = isDateRangeWithin(job.shiftList!.first.date!, job.shiftList!.last.date!, startWorkDate!, endWorkDate!);
         if (isWithin) {
           afterFilterRangeDate.add(job);
         }
@@ -152,16 +142,14 @@ class ShiftCalendarProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool isDateRangeWithin(
-      DateTime start1, DateTime end1, DateTime start2, DateTime end2) {
+  bool isDateRangeWithin(DateTime start1, DateTime end1, DateTime start2, DateTime end2) {
     return start1.isAfterOrEqualTo(start2) && end1.isBeforeOrEqualTo(end2);
   }
 
   List<WorkerManagement> jobApplyList = [];
 
   getApplicantList(String companyId, String branchId) async {
-    jobApplyList =
-        await WorkerManagementApiService().getAllJobApply(companyId, branchId);
+    jobApplyList = await WorkerManagementApiService().getAllJobApply(companyId, branchId);
     await initializeJobPosting();
     jobTitleList = [ItemSelectModel(title: JapaneseText.all, id: "")];
     for (var job in jobApplyList) {
@@ -177,10 +165,7 @@ class ShiftCalendarProvider with ChangeNotifier {
   initializeJobPosting() async {
     onChangeLoading(true);
     jobPostingList.clear();
-    var data = await Future.wait([
-      for (var job in jobApplyList)
-        JobPostingApiService().getAJobPosting(job.jobId.toString())
-    ]);
+    var data = await Future.wait([for (var job in jobApplyList) JobPostingApiService().getAJobPosting(job.jobId.toString())]);
     for (var job in data) {
       if (job != null) {
         jobPostingList.add(job);
@@ -196,7 +181,7 @@ class ShiftCalendarProvider with ChangeNotifier {
     for (var job in jobApplyList) {
       for (var shift in job.shiftList!) {
         //For Apply Job List
-        shift.applicantCount = 0;
+        shift.applicantCount = 1;
         for (var data in rangeDateList) {
           if (CommonUtils.isTheSameDate(data.date, shift.date)) {
             shift.jobId = job.uid;
@@ -211,7 +196,7 @@ class ShiftCalendarProvider with ChangeNotifier {
               }
             }
             data.shiftModelList!.add(shift);
-            data.jobId = job.uid;
+            data.jobId = job.jobId;
             data.major = major;
             data.applyName = job.myUser?.nameKanJi ?? job.userName ?? "";
             break;
@@ -220,19 +205,39 @@ class ShiftCalendarProvider with ChangeNotifier {
       }
     }
     for (var data in rangeDateList) {
-      data.shiftModelList = data.shiftModelList!.toSet().toList();
+      // data.shiftModelList = data.shiftModelList!.toSet().toList();
+      Map<String, int> shiftCountMap = {};
+
+      // Count duplicates and remove them
+      data.shiftModelList!.removeWhere((shift) {
+        String key = "${shift.date}-${shift.startWorkTime}-${shift.endWorkTime}-${shift.myJob?.uid ?? ""}";
+        if (shiftCountMap.containsKey(key)) {
+          shiftCountMap[key] = shiftCountMap[key]! + shift.applicantCount;
+          return true;
+        } else {
+          shiftCountMap[key] = shift.applicantCount;
+          return false;
+        }
+      });
+
+      // Update applicant count in the original list
+      data.shiftModelList!.forEach((shift) {
+        String key = "${shift.date}-${shift.startWorkTime}-${shift.endWorkTime}-${shift.myJob?.uid ?? ""}";
+        shift.applicantCount = shiftCountMap[key]!;
+      });
+
       //Find Apply Count
       for (var shift in data.shiftModelList!) {
         shift.userNameList = [];
+        if (shift.recruitmentCount == "0") {
+          data.shiftModelList!.remove(shift);
+        }
         for (var job in jobApplyList) {
-          var dateList = job.shiftList!.map((e) => e.date).toList();
-          if (job.myUser != null &&
-              dateList.contains(shift.date) &&
-              (job.shiftList![0].startWorkTime == shift.startWorkTime &&
-                  job.shiftList![0].endWorkTime == shift.endWorkTime)) {
-            shift.applicantCount++;
-            shift.userNameList!
-                .add(job.myUser?.nameKanJi ?? job.userName.toString());
+          var dateList = job.shiftList!.map((e) => e.date!).toList();
+          if (CommonUtils.isArrayOfDateContainDate(dateList, shift.date!) &&
+              (job.shiftList![0].startWorkTime == shift.startWorkTime && job.shiftList![0].endWorkTime == shift.endWorkTime)) {
+            // shift.applicantCount++;
+            shift.userNameList!.add(job.myUser?.nameKanJi ?? job.userName.toString());
           }
         }
       }
@@ -242,47 +247,23 @@ class ShiftCalendarProvider with ChangeNotifier {
     for (var job in jobApplyList) {
       List<ShiftModel> shiftList = job.shiftList ?? [];
       if (shiftList.isNotEmpty != null &&
-          CommonUtils.containsAnyDate(rangeDateList.map((e) => e.date).toList(),
-              shiftList.map((e) => e.date!).toList())) {
+          CommonUtils.containsAnyDate(rangeDateList.map((e) => e.date).toList(), shiftList.map((e) => e.date!).toList())) {
         jobApplyPerDay.add(job);
       }
     }
-
-    // findJobByOccupation();
-
-    // Grouping by applyName
-    // List<CalendarModel> calendarNameList = const [];
-    //
-    // for (var cal in calendarNameList) {
-    //   if (cal.applyName == "") {
-    //     calendarNameList.remove(cal);
-    //   }
-    // }
-    // groupDataByName = calendarNameList;
-
-    // for (var data in groupDataByName) {
-    //   data.allShiftModels = [];
-    //   for (var rang in rangeDateList) {
-    //     if (rang.applyName == data.applyName) {
-    //       print("Shift ${rang.applyName} // ${rang.shiftModelList!.map((e) => e.date)}");
-    //       data.allShiftModels!.addAll(rang.shiftModelList!);
-    //     }
-    //   }
-    // }
+    // jobApplyPerDay = jobApplyPerDay.toSet().toList();
   }
 
   findJobByOccupation(String branchId) async {
     jobPostingDataTableList = [];
     String id = FirebaseAuth.instance.currentUser?.uid ?? "";
     Company? company = await UserApiServices().getProfileCompany(id);
-    var jobPostingList = await JobPostingApiService()
-        .getAllJobPostByCompany(company?.uid ?? "", branchId);
+    var jobPostingList = await JobPostingApiService().getAllJobPostByCompany(company?.uid ?? "", branchId);
     for (var j in jobPostingList) {
       var startDate = DateToAPIHelper.fromApiToLocal(j.startDate ?? "");
       var endDate = DateToAPIHelper.fromApiToLocal(j.endDate ?? "");
       List<DateTime> dList = CommonUtils.getDateRange(startDate, endDate);
-      if (company?.uid == j.companyId &&
-          CommonUtils.containsAnyDate(dateTimeList, dList)) {
+      if (company?.uid == j.companyId && CommonUtils.containsAnyDate(dateTimeList, dList)) {
         JobPostingDataTable jobPostingDataTable = JobPostingDataTable(
             countByDate: dateTimeList
                 .map((e) => CountByDate(
@@ -290,7 +271,9 @@ class ShiftCalendarProvider with ChangeNotifier {
                     count: 0,
                     recruitNumber: j.numberOfRecruit.toString(),
                     jobId: j.uid ?? "",
-                    jobApplyId: ""))
+                    jobApplyId: "",
+                    startTime: j.startTimeHour ?? "",
+                    endTime: j.endTimeHour ?? ""))
                 .toList(),
             recruitNumber: j.numberOfRecruit.toString(),
             jobId: j.uid ?? "",
@@ -317,18 +300,14 @@ class ShiftCalendarProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<GroupedCalendarModel> groupByApplyName(
-      List<CalendarModel> calendarList) {
+  List<GroupedCalendarModel> groupByApplyName(List<CalendarModel> calendarList) {
     Map<String?, GroupedCalendarModel> groupedData = HashMap();
 
     for (var calendarModel in calendarList) {
       if (groupedData.containsKey(calendarModel.applyName)) {
-        groupedData[calendarModel.applyName]
-            ?.allShiftModels!
-            .addAll(calendarModel.shiftModelList ?? []);
+        groupedData[calendarModel.applyName]?.allShiftModels!.addAll(calendarModel.shiftModelList ?? []);
       } else {
-        GroupedCalendarModel groupedModel =
-            GroupedCalendarModel(applyName: calendarModel.applyName);
+        GroupedCalendarModel groupedModel = GroupedCalendarModel(applyName: calendarModel.applyName);
         groupedModel.allShiftModels!.addAll(calendarModel.shiftModelList ?? []);
         groupedData[calendarModel.applyName] = groupedModel;
       }

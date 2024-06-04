@@ -15,7 +15,16 @@ class CountByDate {
   String recruitNumber;
   String jobApplyId;
   String jobId;
-  CountByDate({required this.date, required this.count, required this.recruitNumber, required this.jobId, required this.jobApplyId});
+  String startTime;
+  String endTime;
+  CountByDate(
+      {required this.date,
+      required this.count,
+      required this.recruitNumber,
+      required this.jobId,
+      required this.jobApplyId,
+      required this.startTime,
+      required this.endTime});
 }
 
 class JobPosting {
