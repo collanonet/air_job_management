@@ -47,6 +47,8 @@ class JapaneseText {
 
   static String startWorkingDay = "稼働日　開始";
   static String endWorkingDay = "稼働日　終了";
+  static String postedStartDay = "掲載日　開始";
+  static String postedEndDay = "掲載日　終了";
   static String startWorkingTime = "勤務開始時間";
   static String endWorkingTime = "勤務終了時間";
   static String startBreakTime = "休憩開始時間";

@@ -178,6 +178,8 @@ class JobPostingForCompanyProvider with ChangeNotifier {
 
   DateTime startWorkDate = DateTime.now();
   DateTime endWorkDate = DateTime.now();
+  DateTime startPostDate = DateTime.now();
+  DateTime endPostDate = DateTime.now();
   DateTime startWorkingTime = DateTime(now.year, now.month, now.day, 8, 0, 0);
   DateTime endWorkingTime = DateTime(now.year, now.month, now.day, 17, 0, 0);
   DateTime startBreakTime = DateTime(now.year, now.month, now.day, 12, 0, 0);
@@ -242,6 +244,8 @@ class JobPostingForCompanyProvider with ChangeNotifier {
   initialData() {
     startWorkDate = DateTime.now();
     endWorkDate = DateTime.now();
+    startPostDate = DateTime.now();
+    endPostDate = DateTime.now();
     startWorkingTime = DateTime(now.year, now.month, now.day, 8, 0, 0);
     endWorkingTime = DateTime(now.year, now.month, now.day, 17, 0, 0);
     startBreakTime = DateTime(now.year, now.month, now.day, 12, 0, 0);
@@ -253,6 +257,8 @@ class JobPostingForCompanyProvider with ChangeNotifier {
   onInitForJobPostingDetail(String? id, {JobPosting? jobP, AuthProvider? authProvider}) async {
     startWorkDate = DateTime.now();
     endWorkDate = DateTime.now();
+    startPostDate = DateTime.now();
+    endPostDate = DateTime.now();
     startWorkingTime = DateTime(now.year, now.month, now.day, 8, 0, 0);
     endWorkingTime = DateTime(now.year, now.month, now.day, 17, 0, 0);
     startBreakTime = DateTime(now.year, now.month, now.day, 12, 0, 0);
@@ -314,6 +320,14 @@ class JobPostingForCompanyProvider with ChangeNotifier {
 
       if (jobPosting?.endDate != null && jobPosting?.endDate != "") {
         endWorkDate = DateToAPIHelper.fromApiToLocal(jobPosting!.endDate!);
+      }
+
+      if (jobPosting?.postedStartDate != null && jobPosting?.postedStartDate != "") {
+        startPostDate = DateToAPIHelper.fromApiToLocal(jobPosting!.postedStartDate!);
+      }
+
+      if (jobPosting?.postedEndDate != null && jobPosting?.postedEndDate != "") {
+        endPostDate = DateToAPIHelper.fromApiToLocal(jobPosting!.postedEndDate!);
       }
 
       if (jobPosting!.startTimeHour != null && jobPosting!.startTimeHour != "") {

@@ -130,20 +130,20 @@ class _MatchingWorkerPageState extends State<MatchingWorkerPage> with AfterBuild
                             ),
                             flex: 2,
                           ),
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  FontAwesome.arrow_circle_down,
-                                  color: AppColor.primaryColor,
-                                ),
-                                AppSize.spaceWidth5,
-                                Text("Good率", style: normalTextStyle.copyWith(fontSize: 13)),
-                              ],
-                            ),
-                            flex: 1,
-                          ),
+                          // Expanded(
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.center,
+                          //     children: [
+                          //       Icon(
+                          //         FontAwesome.arrow_circle_down,
+                          //         color: AppColor.primaryColor,
+                          //       ),
+                          //       AppSize.spaceWidth5,
+                          //       Text("Good率", style: normalTextStyle.copyWith(fontSize: 13)),
+                          //     ],
+                          //   ),
+                          //   flex: 1,
+                          // ),
                           Expanded(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -180,41 +180,50 @@ class _MatchingWorkerPageState extends State<MatchingWorkerPage> with AfterBuild
   }
 
   onMatchUser() async {
-    setState(() {
-      isLoading = true;
-    });
-    for (var job in workerManagementProvider.workManagementList) {
-      if (job.isSelect == true) {
-        job.jobTitle = widget.jobPosting.title;
-        job.jobId = widget.jobPosting.uid;
-        job.jobLocation = widget.jobPosting.jobLocation;
-        DateTime startDate = DateToAPIHelper.fromApiToLocal(widget.shiftFrame.startDate!);
-        DateTime endDate = DateToAPIHelper.fromApiToLocal(widget.shiftFrame.endDate!);
-        List<DateTime> dateList = [DateToAPIHelper.timeToDateTime(widget.shiftFrame.startWorkTime!, dateTime: startDate)];
-        for (var i = 1; i <= (startDate.difference(endDate).inDays * -1); ++i) {
-          dateList.add(DateTime(startDate.year, startDate.month, startDate.day + i));
-        }
-        List<ShiftModel> shiftList = [];
-        for (var date in dateList) {
-          if (date.isAfter(DateTime.now())) {
-            shiftList.add(ShiftModel(
-                startBreakTime: widget.shiftFrame.startBreakTime!,
-                date: date,
-                endBreakTime: widget.shiftFrame.endBreakTime!,
-                endWorkTime: widget.shiftFrame.endWorkTime!,
-                price: widget.shiftFrame.hourlyWag!,
-                startWorkTime: widget.shiftFrame.startWorkTime!));
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      for (var job in workerManagementProvider.workManagementList) {
+        if (job.isSelect == true) {
+          print("Job ID is ${job.uid} x ${widget.shiftFrame.startDate} x ${widget.shiftFrame.endDate} x ${widget.shiftFrame.startWorkTime}");
+          job.jobTitle = widget.jobPosting.title;
+          job.jobId = widget.jobPosting.uid;
+          job.jobLocation = widget.jobPosting.jobLocation;
+          DateTime startDate = DateToAPIHelper.fromApiToLocal(widget.jobPosting.startDate!);
+          DateTime endDate = DateToAPIHelper.fromApiToLocal(widget.jobPosting.endDate!);
+          List<DateTime> dateList = [DateToAPIHelper.timeToDateTime(widget.shiftFrame.startWorkTime!, dateTime: startDate)];
+          for (var i = 1; i <= (startDate.difference(endDate).inDays * -1); ++i) {
+            dateList.add(DateTime(startDate.year, startDate.month, startDate.day + i));
           }
+          List<ShiftModel> shiftList = [];
+          for (var date in dateList) {
+            if (date.isAfter(DateTime.now())) {
+              shiftList.add(ShiftModel(
+                  startBreakTime: widget.shiftFrame.startBreakTime!,
+                  date: date,
+                  endBreakTime: widget.shiftFrame.endBreakTime!,
+                  endWorkTime: widget.shiftFrame.endWorkTime!,
+                  price: widget.shiftFrame.hourlyWag!,
+                  startWorkTime: widget.shiftFrame.startWorkTime!));
+            }
+          }
+          job.shiftList = shiftList.map((e) => e).toList();
+
+          await WorkerManagementApiService().updateJobId(job);
         }
-        job.shiftList = shiftList.map((e) => e).toList();
-        await WorkerManagementApiService().updateJobId(job);
       }
+      setState(() {
+        isLoading = false;
+      });
+      Navigator.pop(context);
+      widget.onSuccess();
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print("Error $e");
     }
-    setState(() {
-      isLoading = false;
-    });
-    Navigator.pop(context);
-    widget.onSuccess();
   }
 
   buildList() {

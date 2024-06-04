@@ -142,6 +142,8 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
           if (urlPosterList.isNotEmpty) {
             provider.jobPosting?.image = urlPosterList[0];
           }
+          provider.jobPosting?.postedStartDate = DateToAPIHelper.convertDateToString(provider.startPostDate);
+          provider.jobPosting?.postedEndDate = DateToAPIHelper.convertDateToString(provider.endPostDate);
           provider.jobPosting?.branchId = authProvider.branch?.id ?? "";
           provider.jobPosting?.isAllowSmokingInArea = provider.isAllowSmokingInArea;
           provider.jobPosting?.selectSmokingInDoor = provider.selectSmokingInDoor;

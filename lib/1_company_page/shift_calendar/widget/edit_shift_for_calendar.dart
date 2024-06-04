@@ -69,20 +69,20 @@ class _EditShiftForCalendarPageState extends State<EditShiftForCalendarPage> {
             children: [
               CustomChooseDateOrTimeWidget(
                 width: 200,
-                title: JapaneseText.startWorkingDay,
+                title: JapaneseText.postedStartDay,
                 onTap: () async {
                   var date = await showDatePicker(
-                      context: context, initialDate: provider.startWorkDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
+                      context: context, initialDate: provider.startPostDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
                   if (date != null) {
                     setState(() {
-                      provider.startWorkDate = date;
-                      if (provider.startWorkDate.isAfter(provider.endWorkDate)) {
-                        provider.endWorkDate = date;
+                      provider.startPostDate = date;
+                      if (provider.startPostDate.isAfter(provider.endPostDate)) {
+                        provider.endPostDate = date;
                       }
                     });
                   }
                 },
-                val: toJapanDateWithoutWeekDay(provider.startWorkDate),
+                val: toJapanDateWithoutWeekDay(provider.startPostDate),
                 isHaveIcon: true,
               ),
               Padding(
@@ -94,17 +94,17 @@ class _EditShiftForCalendarPageState extends State<EditShiftForCalendarPage> {
               ),
               CustomChooseDateOrTimeWidget(
                 width: 200,
-                title: JapaneseText.endWorkingDay,
+                title: JapaneseText.postedEndDay,
                 onTap: () async {
                   var date = await showDatePicker(
-                      context: context, initialDate: provider.endWorkDate, firstDate: provider.startWorkDate, lastDate: DateTime(2100));
+                      context: context, initialDate: provider.endPostDate, firstDate: provider.startPostDate, lastDate: DateTime(2100));
                   if (date != null) {
                     setState(() {
-                      provider.endWorkDate = date;
+                      provider.endPostDate = date;
                     });
                   }
                 },
-                val: toJapanDateWithoutWeekDay(provider.endWorkDate),
+                val: toJapanDateWithoutWeekDay(provider.endPostDate),
                 isHaveIcon: true,
               ),
             ],
@@ -117,42 +117,51 @@ class _EditShiftForCalendarPageState extends State<EditShiftForCalendarPage> {
           if (widget.title == "日付を選んでシフト枠作成")
             Row(
               children: [
-                ButtonWidget(
-                  title: "カレンダーから選ぶ",
-                  onPress: () async {
-                    showDateRangePicker(
-                            context: context,
-                            builder: (context, child) {
-                              return Theme(
-                                data: Theme.of(context).copyWith(
-                                  colorScheme: ColorScheme.light(
-                                    primary: AppColor.primaryColor, // header background color
-                                    onPrimary: AppColor.whiteColor, // header text color
-                                    onSurface: Colors.black, // body text color
-                                  ),
-                                  textButtonTheme: TextButtonThemeData(
-                                    style: TextButton.styleFrom(
-                                      foregroundColor: AppColor.primaryColor, // button text color
-                                    ),
-                                  ),
-                                ),
-                                child: child!,
-                              );
-                            },
-                            firstDate: DateTime(2000),
-                            lastDate: DateTime(3000),
-                            initialDateRange: DateTimeRange(start: provider.startWorkDate, end: provider.endWorkDate))
-                        .then((value) {
-                      if (value != null) {
-                        setState(() {
-                          provider.startWorkDate = value.start;
-                          provider.endWorkDate = value.end;
-                        });
-                      }
-                    });
-                  },
-                  color: AppColor.primaryColor,
-                  radius: 25,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CustomChooseDateOrTimeWidget(
+                      width: 200,
+                      title: JapaneseText.startWorkingDay,
+                      onTap: () async {
+                        var date = await showDatePicker(
+                            context: context, initialDate: provider.startWorkDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
+                        if (date != null) {
+                          setState(() {
+                            provider.startWorkDate = date;
+                            if (provider.startWorkDate.isAfter(provider.endWorkDate)) {
+                              provider.endWorkDate = date;
+                            }
+                          });
+                        }
+                      },
+                      val: toJapanDateWithoutWeekDay(provider.startWorkDate),
+                      isHaveIcon: true,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+                      child: Text(
+                        " 〜 ",
+                        style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
+                      ),
+                    ),
+                    CustomChooseDateOrTimeWidget(
+                      width: 200,
+                      title: JapaneseText.endWorkingDay,
+                      onTap: () async {
+                        var date = await showDatePicker(
+                            context: context, initialDate: provider.endWorkDate, firstDate: provider.startWorkDate, lastDate: DateTime(2100));
+                        if (date != null) {
+                          setState(() {
+                            provider.endWorkDate = date;
+                          });
+                        }
+                      },
+                      val: toJapanDateWithoutWeekDay(provider.endWorkDate),
+                      isHaveIcon: true,
+                    ),
+                  ],
                 ),
                 AppSize.spaceWidth16,
                 Expanded(
@@ -164,7 +173,7 @@ class _EditShiftForCalendarPageState extends State<EditShiftForCalendarPage> {
                       style: kNormalText,
                     ),
                     Text(
-                      "${CommonUtils.getDateRange(provider.startWorkDate, provider.endWorkDate).map((e) => "${e.month}/${e.day}")}",
+                      "${CommonUtils.getDateRange(provider.startWorkDate, provider.endWorkDate).map((e) => "${e.month}/${e.day}").toString().replaceAll(")", "")},${provider.endWorkDate.month}/${provider.endWorkDate.day})",
                       style: kNormalText,
                     )
                   ],

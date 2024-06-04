@@ -69,6 +69,57 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                     children: [
                       CustomChooseDateOrTimeWidget(
                         width: 200,
+                        title: JapaneseText.postedStartDay,
+                        onTap: () async {
+                          var date = await showDatePicker(
+                              context: context, initialDate: provider.startPostDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
+                          if (date != null) {
+                            setState(() {
+                              provider.startPostDate = date;
+                              if (provider.startPostDate.isAfter(provider.endPostDate)) {
+                                provider.endPostDate = date;
+                              }
+                            });
+                          }
+                        },
+                        val: toJapanDateWithoutWeekDay(provider.startPostDate),
+                        isHaveIcon: true,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+                        child: Text(
+                          " 〜 ",
+                          style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
+                        ),
+                      ),
+                      CustomChooseDateOrTimeWidget(
+                        width: 200,
+                        title: JapaneseText.postedEndDay,
+                        onTap: () async {
+                          var date = await showDatePicker(
+                              context: context, initialDate: provider.endPostDate, firstDate: provider.startPostDate, lastDate: DateTime(2100));
+                          if (date != null) {
+                            setState(() {
+                              provider.endPostDate = date;
+                            });
+                          }
+                        },
+                        val: toJapanDateWithoutWeekDay(provider.endPostDate),
+                        isHaveIcon: true,
+                      ),
+                    ],
+                  ),
+                  AppSize.spaceHeight16,
+                  Divider(
+                    color: AppColor.thirdColor.withOpacity(0.3),
+                  ),
+                  AppSize.spaceHeight16,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      CustomChooseDateOrTimeWidget(
+                        width: 200,
                         title: JapaneseText.startWorkingDay,
                         onTap: () async {
                           var date = await showDatePicker(
@@ -416,6 +467,57 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [TitleWidget(title: JapaneseText.applicationRequirement), SizedBox()],
+                      ),
+                      AppSize.spaceHeight16,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          CustomChooseDateOrTimeWidget(
+                            width: 200,
+                            title: JapaneseText.postedStartDay,
+                            onTap: () async {
+                              var date = await showDatePicker(
+                                  context: context, initialDate: provider.startPostDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
+                              if (date != null) {
+                                setState(() {
+                                  provider.startPostDate = date;
+                                  if (provider.startPostDate.isAfter(provider.endPostDate)) {
+                                    provider.endPostDate = date;
+                                  }
+                                });
+                              }
+                            },
+                            val: toJapanDateWithoutWeekDay(provider.startPostDate),
+                            isHaveIcon: true,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
+                            child: Text(
+                              " 〜 ",
+                              style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
+                            ),
+                          ),
+                          CustomChooseDateOrTimeWidget(
+                            width: 200,
+                            title: JapaneseText.postedEndDay,
+                            onTap: () async {
+                              var date = await showDatePicker(
+                                  context: context, initialDate: provider.endPostDate, firstDate: provider.startPostDate, lastDate: DateTime(2100));
+                              if (date != null) {
+                                setState(() {
+                                  provider.endPostDate = date;
+                                });
+                              }
+                            },
+                            val: toJapanDateWithoutWeekDay(provider.endPostDate),
+                            isHaveIcon: true,
+                          ),
+                        ],
+                      ),
+                      AppSize.spaceHeight16,
+                      Divider(
+                        color: AppColor.thirdColor.withOpacity(0.3),
                       ),
                       AppSize.spaceHeight16,
                       Row(

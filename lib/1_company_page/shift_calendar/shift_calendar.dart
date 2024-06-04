@@ -715,6 +715,8 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
         jobPostingId: provider.jobPosting?.uid ?? "",
         startDate: DateToAPIHelper.convertDateToString(p.startWorkDate),
         endDate: DateToAPIHelper.convertDateToString(p.endWorkDate),
+        endPostDate: DateToAPIHelper.convertDateToString(p.endPostDate),
+        startPostDate: DateToAPIHelper.convertDateToString(p.startPostDate),
         startWorkTime: dateTimeToHourAndMinute(p.startWorkingTime),
         endWorkTime: dateTimeToHourAndMinute(p.endWorkingTime),
         startBreakTime: dateTimeToHourAndMinute(p.startWorkingTime),
@@ -1021,6 +1023,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
   }
 
   showMatching() {
+    print("Job uid is ${provider.jobPosting?.uid}");
     showDialog(
         context: context,
         builder: (_) => AlertDialog(

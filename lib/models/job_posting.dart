@@ -33,6 +33,8 @@ class JobPosting {
   String? content;
   String? startDate;
   String? endDate;
+  String? postedStartDate;
+  String? postedEndDate;
   String? image;
   Location? location;
   String? numberOfRecruit;
@@ -428,7 +430,9 @@ class JobPosting {
       this.youCanChooseTheTimeAndDayOfTheWeek,
       this.youCanWorkForAlongTime,
       this.coverList,
-      this.createdAt});
+      this.createdAt,
+      this.postedEndDate,
+      this.postedStartDate});
 
   @override
   int get hashCode => uid.hashCode ^ title.hashCode;
@@ -438,6 +442,8 @@ class JobPosting {
       identical(this, other) || other is JobPosting && runtimeType == other.runtimeType && uid == other.uid && title == other.title;
 
   factory JobPosting.fromJson(Map<String, dynamic> json) => JobPosting(
+      postedStartDate: json["postedStartDate"] ?? json["startDate"],
+      postedEndDate: json["postedEndDate"] ?? json["endDate"],
       branchId: json["branch_id"],
       selectedDate: json["selectedDate"] != null ? List<String>.from(json["selectedDate"].map((e) => e)) : [],
       limitGroupEmail: json["limit_group_email"] != null ? List<String>.from(json["limit_group_email"].map((e) => e)) : [],
@@ -626,6 +632,8 @@ class JobPosting {
       endBreakTimeHour: json["end_break_time_hour"]);
 
   Map<String, dynamic> toJson() => {
+        "postedStartDate": postedStartDate,
+        "postedEndDate": postedEndDate,
         "is_delete": false,
         "branch_id": branchId,
         "selectedDate": selectedDate != null ? selectedDate!.map((e) => e).toList() : [],
