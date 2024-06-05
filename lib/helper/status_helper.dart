@@ -32,7 +32,6 @@ class StatusHelper {
   }
 
   static englishToJapan(String status) {
-    print("Status is $status");
     if (status.contains("approved")) {
       return JapaneseText.hired;
     } else if (status.contains("canceled") || status.contains("rejected")) {

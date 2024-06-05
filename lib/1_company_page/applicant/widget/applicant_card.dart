@@ -110,7 +110,7 @@ class ApplicantCardWidget extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Center(
-                  child: StatusHelper().displayStatus(job.shiftList!.map((e) => e.status).toString()),
+                  child: job.shiftList!.isNotEmpty ? StatusHelper().displayStatus(job.shiftList!.map((e) => e.status).toString()) : SizedBox(),
                 ),
               ),
               flex: 1,
