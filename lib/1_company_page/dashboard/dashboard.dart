@@ -1,4 +1,5 @@
 import 'package:air_job_management/1_company_page/dashboard/chat.dart';
+import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/dashboard.dart';
@@ -294,7 +295,11 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
               itemBuilder: (context, index) {
                 var notification = provider.notificationList[index];
                 return InkWell(
-                  onTap: () => context.go(MyRoute.companyShift),
+                  onTap: () async {
+                    context.go(MyRoute.companyShift);
+                    await JobPostingApiService().updateNotificationToRead(notification.uid ?? "");
+                    getData();
+                  },
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 16),
                     child: Row(
@@ -319,7 +324,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
                             AppSize.spaceWidth32,
                             Expanded(
                                 child: Text(
-                              notification.des ?? "",
+                              notification.shortDes ?? "",
                               style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 16),
                               overflow: TextOverflow.fade,
                               // maxLines: 3,
@@ -327,7 +332,12 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
                           ],
                         )),
                         AppSize.spaceWidth32,
-                        Text(toJapanMonthAndYearDay(notification.date!), style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16))
+                        Text(toJapanMonthAndYearDay(notification.date!), style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16)),
+                        AppSize.spaceWidth32,
+                        Text(
+                          notification.isRead == true ? "既読" : "未読",
+                          style: kNormalText,
+                        )
                       ],
                     ),
                   ),

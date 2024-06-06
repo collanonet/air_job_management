@@ -77,6 +77,16 @@ class JobPostingApiService {
     }
   }
 
+  Future<bool> updateNotificationToRead(String uid) async {
+    try {
+      await notificationRef.doc(uid).update({"isRead": true});
+      return true;
+    } catch (e) {
+      debugPrint("Error getAllNotification =>> ${e.toString()}");
+      return false;
+    }
+  }
+
   Future<List<JobPosting>> getAllJobPostByCompany(String companyId, String branchId) async {
     try {
       print("Get all job post $companyId, $branchId");

@@ -26,7 +26,7 @@ class WithdrawFilterWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "検索を取り消す",
+            "ワーカー名検索",
             style: titleStyle,
           ),
           AppSize.spaceHeight8,

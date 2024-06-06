@@ -67,7 +67,7 @@ class _UsageDetailPageState extends State<UsageDetailPage> with AfterBuildMixin 
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "支払請求リスト",
+                                          "支払請求申請一覧",
                                           style: titleStyle,
                                         ),
                                         AppSize.spaceWidth32,
@@ -111,6 +111,18 @@ class _UsageDetailPageState extends State<UsageDetailPage> with AfterBuildMixin 
                                         child: Text("申請者 日付", style: normalTextStyle.copyWith(fontSize: 13)),
                                       ),
                                       flex: 2,
+                                    ),
+                                    Expanded(
+                                      child: Center(
+                                        child: Text("フルネーム", style: normalTextStyle.copyWith(fontSize: 13)),
+                                      ),
+                                      flex: 2,
+                                    ),
+                                    Expanded(
+                                      child: Center(
+                                        child: Text("銀行ID", style: normalTextStyle.copyWith(fontSize: 13)),
+                                      ),
+                                      flex: 1,
                                     ),
                                     Expanded(
                                       child: Center(

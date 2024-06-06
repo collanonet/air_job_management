@@ -71,6 +71,26 @@ class WithdrawCardWidget extends StatelessWidget {
             Expanded(
               child: Center(
                 child: Text(
+                  "${withdrawModel.bankModel?.bankId}",
+                  style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 16),
+                  overflow: TextOverflow.fade,
+                ),
+              ),
+              flex: 2,
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
+                  "${withdrawModel.bankModel?.fullName}",
+                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                  overflow: TextOverflow.fade,
+                ),
+              ),
+              flex: 1,
+            ),
+            Expanded(
+              child: Center(
+                child: Text(
                   "${CommonUtils.statusFromApiToLocal(withdrawModel.status!)}",
                   style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
@@ -93,7 +113,7 @@ class WithdrawCardWidget extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    width: 125,
+                    width: 100,
                     child: ButtonWidget(
                       radius: 25,
                       color: withdrawModel.status == "approved" ? AppColor.primaryColor : AppColor.whiteColor,
@@ -103,7 +123,7 @@ class WithdrawCardWidget extends StatelessWidget {
                   ),
                   AppSize.spaceWidth16,
                   SizedBox(
-                    width: 125,
+                    width: 100,
                     child: ButtonWidget(
                       radius: 25,
                       color: withdrawModel.status == "rejected" ? AppColor.primaryColor : AppColor.whiteColor,
