@@ -10,6 +10,7 @@ import 'package:air_job_management/models/entry_exit_history.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/entry_exit_history.dart';
 import 'package:air_job_management/utils/common_utils.dart';
+import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,13 +24,18 @@ import '../../api/user_api.dart';
 import '../../helper/japan_date_time.dart';
 import '../../models/company.dart';
 import '../../models/job_posting.dart';
+import '../../models/user.dart';
 import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
+import '../../utils/japanese_text.dart';
 import '../../utils/my_route.dart';
 import '../../utils/style.dart';
+import '../../utils/toast_message_util.dart';
+import '../../widgets/title.dart';
 import '../entry_exit_history_list/data_source/entry_list_data_source.dart';
 import '../entry_exit_history_list/widget/filter.dart';
 import '../entry_exit_history_list/widget/ratting_dialog.dart';
+import '../woker_management/worker_management_detail/basic_information.dart';
 import 'data_source/entry_exit_and_shift_data_source.dart';
 
 class EntryExitHistoryPage extends StatefulWidget {
@@ -56,73 +62,78 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
     super.initState();
   }
 
+  bool loadingOverlay = false;
+
   @override
   Widget build(BuildContext context) {
     provider = Provider.of<EntryExitHistoryProvider>(context);
     authProvider = Provider.of<AuthProvider>(context);
-    return SizedBox(
-        width: AppSize.getDeviceWidth(context),
-        height: AppSize.getDeviceHeight(context),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const EntryFilterWidget(),
-                AppSize.spaceHeight16,
-                // IconButton(
-                //     onPressed: () {
-                //       EntryExitApiService().insertDataForTesting(provider.entryList);
-                //     },
-                //     icon: const Icon(Icons.refresh)),
-                const TabSelectionWidget(),
-                if (provider.selectedMenu == provider.tabMenu[0])
-                  Container(
-                    decoration: boxDecoration,
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            buildTab(provider.displayList[0]),
-                            buildTab(provider.displayList[1]),
-                            buildTab(provider.displayList[2]),
-                            buildTab(provider.displayList[3]),
-                          ],
-                        ),
-                        AppSize.spaceHeight16,
-                        if (provider.selectDisplay == provider.displayList[0])
-                          buildEntryExitList()
-                        else if (provider.selectDisplay == provider.displayList[2])
-                          buildAttendanceListByMonth()
-                        else if (provider.selectDisplay == provider.displayList[3])
-                          buildDataTableOvertimeByDay()
-                        else
-                          buildMonthDisplay(),
-                      ],
-                    ),
-                  )
-                else
-                  Container(
-                    decoration: boxDecoration,
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            buildTab(provider.displayList[0]),
-                            buildTab(provider.displayList[1]),
-                          ],
-                        ),
-                        AppSize.spaceHeight16,
-                        if (provider.selectDisplay == provider.displayList[0]) buildDataTableListOfShiftByUser() else buildMonthDisplay(),
-                      ],
-                    ),
-                  )
-              ],
+    return CustomLoadingOverlay(
+      isLoading: loadingOverlay,
+      child: SizedBox(
+          width: AppSize.getDeviceWidth(context),
+          height: AppSize.getDeviceHeight(context),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const EntryFilterWidget(),
+                  AppSize.spaceHeight16,
+                  // IconButton(
+                  //     onPressed: () {
+                  //       EntryExitApiService().insertDataForTesting(provider.entryList);
+                  //     },
+                  //     icon: const Icon(Icons.refresh)),
+                  const TabSelectionWidget(),
+                  if (provider.selectedMenu == provider.tabMenu[0])
+                    Container(
+                      decoration: boxDecoration,
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              buildTab(provider.displayList[0]),
+                              buildTab(provider.displayList[1]),
+                              buildTab(provider.displayList[2]),
+                              buildTab(provider.displayList[3]),
+                            ],
+                          ),
+                          AppSize.spaceHeight16,
+                          if (provider.selectDisplay == provider.displayList[0])
+                            buildEntryExitList()
+                          else if (provider.selectDisplay == provider.displayList[2])
+                            buildAttendanceListByMonth()
+                          else if (provider.selectDisplay == provider.displayList[3])
+                            buildDataTableOvertimeByDay()
+                          else
+                            buildMonthDisplay(),
+                        ],
+                      ),
+                    )
+                  else
+                    Container(
+                      decoration: boxDecoration,
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              buildTab(provider.displayList[0]),
+                              buildTab(provider.displayList[1]),
+                            ],
+                          ),
+                          AppSize.spaceHeight16,
+                          if (provider.selectDisplay == provider.displayList[0]) buildDataTableListOfShiftByUser() else buildMonthDisplay(),
+                        ],
+                      ),
+                    )
+                ],
+              ),
             ),
-          ),
-        ));
+          )),
+    );
   }
 
   ScrollController scrollController = ScrollController();
@@ -204,7 +215,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                   style: kNormalText.copyWith(fontFamily: "Bold"),
                 )),
               ],
-              source: EntryListDataSource(data: provider.entryList, ratting: (entry) => showRatingDialog(entry)),
+              source:
+                  EntryListDataSource(data: provider.entryList, ratting: (entry) => showRatingDialog(entry), onUserTap: (user) => onUserTapped(user)),
             ),
           ),
         ),
@@ -572,9 +584,12 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                         ? const SizedBox()
                         : Row(
                             children: [
-                              DataTableFixedWidthWidget(
-                                data: data.userName,
-                                width: 130,
+                              InkWell(
+                                onTap: () => onUserTapped(data.myUser),
+                                child: DataTableFixedWidthWidget(
+                                  data: data.userName,
+                                  width: 130,
+                                ),
                               ),
                               const DataTableFixedWidthWidget(data: "パート"),
                               DataTableFixedWidthWidget(data: "${CommonUtils.totalActualWorkDay(data.shiftList ?? [], provider.dateList)}"),
@@ -1093,14 +1108,19 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                         width: 180,
                         child: Row(
                           children: [
-                            Container(
-                              height: 70,
-                              width: 115,
-                              color: const Color(0xffF0F3F5),
-                              alignment: Alignment.topCenter,
-                              child: Text(
-                                "${provider.shiftAndWorkTimeByUserList[index].userName}",
-                                style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 14),
+                            InkWell(
+                              onTap: () => onUserTapped(
+                                provider.shiftAndWorkTimeByUserList[index].myUser,
+                              ),
+                              child: Container(
+                                height: 70,
+                                width: 115,
+                                color: const Color(0xffF0F3F5),
+                                alignment: Alignment.topCenter,
+                                child: Text(
+                                  "${provider.shiftAndWorkTimeByUserList[index].userName}",
+                                  style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 14),
+                                ),
                               ),
                             ),
                             AppSize.spaceWidth5,
@@ -1214,6 +1234,39 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
         )
       ],
     );
+  }
+
+  onChangeOverlayLoading(bool loading) {
+    setState(() {
+      loadingOverlay = loading;
+    });
+  }
+
+  onUserTapped(MyUser? user) async {
+    if (user != null) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TitleWidget(title: JapaneseText.basicInformation),
+                  IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close))
+                ],
+              ),
+              content: SizedBox(
+                height: AppSize.getDeviceHeight(context) * 0.7,
+                width: AppSize.getDeviceWidth(context) * 0.9,
+                child: Scaffold(
+                  body: SizedBox(
+                      height: AppSize.getDeviceHeight(context) * 0.7,
+                      width: AppSize.getDeviceWidth(context) * 0.9,
+                      child: BasicInformationPage(myUser: user)),
+                ),
+              )));
+    } else {
+      toastMessageError("Not found user", context);
+    }
   }
 
   @override

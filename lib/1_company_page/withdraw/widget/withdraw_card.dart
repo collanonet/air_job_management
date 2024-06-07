@@ -15,7 +15,8 @@ class WithdrawCardWidget extends StatelessWidget {
   final WithdrawModel withdrawModel;
   final Function onApprove;
   final Function onReject;
-  const WithdrawCardWidget({super.key, required this.withdrawModel, required this.onApprove, required this.onReject});
+  final Function onUserTap;
+  const WithdrawCardWidget({super.key, required this.onUserTap, required this.withdrawModel, required this.onApprove, required this.onReject});
 
   @override
   Widget build(BuildContext context) {
@@ -33,18 +34,21 @@ class WithdrawCardWidget extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      withdrawModel.workerName == "" ? JapaneseText.empty : withdrawModel.workerName.toString(),
-                      style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
-                      overflow: TextOverflow.fade,
-                    ),
-                  )
-                ],
+              child: InkWell(
+                onTap: () => onUserTap(withdrawModel.workerID),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        withdrawModel.workerName == "" ? JapaneseText.empty : withdrawModel.workerName.toString(),
+                        style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                        overflow: TextOverflow.fade,
+                      ),
+                    )
+                  ],
+                ),
               ),
               flex: 2,
             ),

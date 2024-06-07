@@ -6,8 +6,9 @@ import '../../../utils/style.dart';
 class EntryListDataSource extends DataTableSource {
   final List<EntryExitHistory> data;
   final Function ratting;
+  final Function onUserTap;
 
-  EntryListDataSource({required this.data, required this.ratting});
+  EntryListDataSource({required this.data, required this.ratting, required this.onUserTap});
 
   @override
   DataRow? getRow(int index) {
@@ -26,9 +27,12 @@ class EntryListDataSource extends DataTableSource {
         "${entry.jobTitle}",
         style: kNormalText,
       )),
-      DataCell(Text(
-        "${entry.myUser?.nameKanJi}",
-        style: kNormalText,
+      DataCell(InkWell(
+        onTap: () => onUserTap(entry.myUser),
+        child: Text(
+          "${entry.myUser?.nameKanJi}",
+          style: kNormalText,
+        ),
       )),
       DataCell(Text(
         "パート",
