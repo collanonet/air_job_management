@@ -6,7 +6,6 @@ import 'package:air_job_management/providers/company/dashboard.dart';
 import 'package:air_job_management/providers/home.dart';
 import 'package:air_job_management/widgets/loading.dart';
 import 'package:air_job_management/widgets/title.dart';
-import 'package:badges/badges.dart' as badges;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -121,43 +120,44 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
               ),
             ],
           ),
-          Spacer(),
-          PopupMenuButton(
-              icon: badges.Badge(
-                badgeContent: Text(
-                  '${provider.notificationList.length}',
-                  style: kNormalText.copyWith(color: Colors.white, fontSize: 10),
-                ),
-                child: const Icon(
-                  Icons.notifications,
-                  size: 30,
-                ),
-              ),
-              itemBuilder: (context) => provider.notificationList
-                  .map((e) => PopupMenuItem(
-                      onTap: () => context.go(MyRoute.companyShift),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AppSize.spaceHeight8,
-                          Text(
-                            "${e.title}",
-                            style: kTitleText,
-                          ),
-                          Text(
-                            "${e.des}",
-                            style: kNormalText,
-                          ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              "${toJapanDateTime(e.date!)}",
-                              style: kNormalText,
-                            ),
-                          ),
-                        ],
-                      )))
-                  .toList())
+          const Spacer(),
+          const SizedBox()
+          // PopupMenuButton(
+          //     icon: badges.Badge(
+          //       badgeContent: Text(
+          //         '${provider.notificationList.length}',
+          //         style: kNormalText.copyWith(color: Colors.white, fontSize: 10),
+          //       ),
+          //       child: const Icon(
+          //         Icons.notifications,
+          //         size: 30,
+          //       ),
+          //     ),
+          //     itemBuilder: (context) => provider.notificationList
+          //         .map((e) => PopupMenuItem(
+          //             onTap: () => context.go(MyRoute.companyShift),
+          //             child: Column(
+          //               crossAxisAlignment: CrossAxisAlignment.start,
+          //               children: [
+          //                 AppSize.spaceHeight8,
+          //                 Text(
+          //                   "${e.title}",
+          //                   style: kTitleText,
+          //                 ),
+          //                 Text(
+          //                   "${e.des}",
+          //                   style: kNormalText,
+          //                 ),
+          //                 Align(
+          //                   alignment: Alignment.centerRight,
+          //                   child: Text(
+          //                     "${toJapanDateTime(e.date!)}",
+          //                     style: kNormalText,
+          //                   ),
+          //                 ),
+          //               ],
+          //             )))
+          //         .toList())
         ],
       ),
     );
@@ -317,7 +317,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
                               child: Center(
                                 child: Text(
                                   notification.title ?? "",
-                                  style: kNormalText.copyWith(color: Color(0xff6DC9E5), fontSize: 13),
+                                  style: kNormalText.copyWith(color: const Color(0xff6DC9E5), fontSize: 11),
                                 ),
                               ),
                             ),

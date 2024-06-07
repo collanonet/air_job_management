@@ -58,7 +58,7 @@ class JobPostingApiService {
 
   Future<List<NotificationModel>> getAllNotification(String companyId) async {
     try {
-      var doc = await notificationRef.where("company_id", isEqualTo: companyId).get();
+      var doc = await notificationRef.where("company_id", isEqualTo: companyId).where("isSeeker", isEqualTo: true).get();
       if (doc.docs.isNotEmpty) {
         List<NotificationModel> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
