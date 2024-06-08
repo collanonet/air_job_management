@@ -1,3 +1,6 @@
+import 'dart:html' as html;
+import 'dart:js' as js;
+
 import 'package:air_job_management/2_worker_page/viewprofile/other_setting/private_policy.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/other_setting/term_of_use.dart';
 import 'package:air_job_management/api/user_api.dart';
@@ -44,6 +47,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
   TextEditingController contentController = TextEditingController();
 
   startTime() async {
+    print("Splash called");
     FirebaseAuth.instance.authStateChanges().listen((user) async {
       if (GoRouter.of(context).location == "/") {
         if (user != null) {
@@ -80,6 +84,17 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
           setState(() {
             isSplash = false;
           });
+        }
+      } else {
+        if (user != null) {
+          MyUser? users = await UserApiServices().getProfileUser(user.uid);
+          if (users?.role == null) {
+            if (GoRouter.of(context).location.toString().contains("company")) {
+              context.go(GoRouter.of(context).location);
+            } else {
+              context.go(MyRoute.companyDashboard);
+            }
+          }
         }
       }
     });
@@ -144,7 +159,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                     tooltip: "Menu",
                     onSelected: (MenuEnum result) async {
                       if (result == MenuEnum.worker) {
-                        context.go(MyRoute.jobOption);
+                        toastMessageError("このオプションは利用できません。モバイルアプリのシーカーを使用してください。", context);
                       } else if (result == MenuEnum.home) {
                         scrollController.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
                       } else if (result == MenuEnum.aboutUs) {
@@ -153,7 +168,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                         scrollController.animateTo(scrollController.position.maxScrollExtent - 340,
                             duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
                       } else {
-                        toastMessageSuccess("This options is not available for mobile", context);
+                        toastMessageError("This options is not available for mobile", context);
                       }
                     },
                     itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuEnum>>[
@@ -234,7 +249,20 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                 ),
                                 AppSize.spaceHeight16,
                                 InkWell(
-                                  onTap: () => toastMessageSuccess("App not yet available on Google Play Store or App Store.", context),
+                                  onTap: () {
+                                    String userAgent = html.window.navigator.userAgent;
+                                    if (userAgent.contains('Mac OS')) {
+                                      js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
+                                    } else if (userAgent.contains('Windows')) {
+                                      js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
+                                    } else {
+                                      if (userAgent.contains('iOS')) {
+                                        js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
+                                      } else {
+                                        js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
+                                      }
+                                    }
+                                  },
                                   child: Image.asset(
                                     "assets/download.jpeg",
                                     height: 200,
@@ -501,7 +529,8 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                           title: JapaneseText.aboutUs,
                           onTap: () => scrollController.animateTo(aboutUs, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn)),
                       AppSize.spaceWidth5,
-                      menuWidget(title: JapaneseText.jobSeekerPage, onTap: () => context.go(MyRoute.jobOption)),
+                      menuWidget(
+                          title: JapaneseText.jobSeekerPage, onTap: () => toastMessageError("このオプションは利用できません。モバイルアプリのシーカーを使用してください。", context)),
                       AppSize.spaceWidth5,
                       menuWidget(title: JapaneseText.companyPage, onTap: () => context.go(MyRoute.companyLogin)),
                       AppSize.spaceWidth5,
@@ -545,7 +574,20 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                       ),
                                       AppSize.spaceHeight16,
                                       InkWell(
-                                        onTap: () => toastMessageSuccess("App not yet available on Google Play Store or App Store.", context),
+                                        onTap: () {
+                                          String userAgent = html.window.navigator.userAgent;
+                                          if (userAgent.contains('Mac OS')) {
+                                            js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
+                                          } else if (userAgent.contains('Windows')) {
+                                            js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
+                                          } else {
+                                            if (userAgent.contains('iOS')) {
+                                              js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
+                                            } else {
+                                              js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
+                                            }
+                                          }
+                                        },
                                         child: Image.asset(
                                           "assets/download.jpeg",
                                           height: 200,

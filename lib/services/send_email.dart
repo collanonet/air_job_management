@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:http/http.dart' as http;
@@ -189,9 +190,13 @@ class NotificationService {
         "company_branch": branchId,
         "user_id": userId,
         "username": name,
-        "date": DateTime.now(),
+        "created_at": DateTime.now(),
         "isJobApply": false,
-        "isRequest": true,
+        "isSeeker": false,
+        "applyDate": DateToAPIHelper.fromApiToLocal(date),
+        "isHoliday": isHoliday,
+        "isStartTime": isEditStartTime,
+        "isLeaveEarly": isLeaveEarly,
         "message": {
           "subject": msg,
           "text": text,
@@ -275,9 +280,13 @@ class NotificationService {
         "company_branch": branchId,
         "user_id": userId,
         "username": name,
+        "isSeeker": false,
+        "applyDate": DateTime.now(),
         "isJobApply": true,
-        "isRequest": false,
-        "date": DateTime.now(),
+        "isHoliday": false,
+        "isStartTime": false,
+        "isLeaveEarly": false,
+        "created_at": DateTime.now(),
         "message": {
           "subject": msg,
           "text": text,
