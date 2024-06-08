@@ -5,16 +5,21 @@ class NotificationModel {
   String? uid;
   String? title;
   String? des;
+  String? jobId;
+  String? jobPostingId;
   String? shortDes;
   String? companyId;
   String? userId;
   String? companyName;
   DateTime? date;
+  DateTime? applyDate;
   bool? isJobApply;
   bool? isRequest;
   bool? isRead;
   NotificationModel(
       {this.isRead,
+        this.jobPostingId,
+        this.jobId,
       this.shortDes,
       this.title,
       this.date,
@@ -24,7 +29,7 @@ class NotificationModel {
       this.companyId,
       this.companyName,
       this.isJobApply,
-      this.isRequest});
+      this.isRequest, this.applyDate});
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
     String shortDes = JapaneseText.empty;
     DateTime applyDate = json["applyDate"] != null ? json["applyDate"].toDate() : DateTime.now();
@@ -41,6 +46,9 @@ class NotificationModel {
       shortDes = "ワーカーの${json["username"] ?? ""}さん　${DateToAPIHelper.convertDateToString(applyDate)}のシフトの休日申請がありました。";
     }
     return NotificationModel(
+      applyDate: json["applyDate"] != null ? json["applyDate"].toDate() : DateTime.now(),
+        jobId: json["jobId"] ?? "",
+        jobPostingId: json["jobPostingId"] ?? "",
         isRead: json["isRead"] ?? false,
         isJobApply: json["isJobApply"] ?? false,
         isRequest: json["isRequest"] ?? false,

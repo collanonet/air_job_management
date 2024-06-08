@@ -965,65 +965,6 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
     );
   }
 
-  buildList() {
-    return Container(
-      width: AppSize.getDeviceWidth(context),
-      decoration: boxDecoration,
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-      child: Column(
-        children: [
-          TitleWidget(title: provider.displayList[0]),
-          AppSize.spaceHeight16,
-          Row(
-            children: [
-              Expanded(
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 80),
-                      child: Text(
-                        "求人タイトル",
-                        style: normalTextStyle.copyWith(fontSize: 13),
-                      ),
-                    )),
-                flex: 3,
-              ),
-              Expanded(
-                child: Center(
-                  child: Text("稼働期間", style: normalTextStyle.copyWith(fontSize: 13)),
-                ),
-                flex: 2,
-              ),
-              SizedBox(
-                  width: 100,
-                  child: Center(
-                    child: Text("掲載状況", style: normalTextStyle.copyWith(fontSize: 13)),
-                  ))
-            ],
-          ),
-          AppSize.spaceHeight16,
-          ListView.builder(
-              shrinkWrap: true,
-              itemCount: provider.jobPostingList.length,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                var job = provider.jobPostingList[index];
-                return JobCardDisplay(
-                  title: job.title!,
-                  shiftFrame: job,
-                  onClick: () {
-                    setState(() {
-                      provider.jobPosting = job;
-                    });
-                  },
-                  selectShiftFrame: provider.jobPosting,
-                );
-              })
-        ],
-      ),
-    );
-  }
-
   showMatching() {
     print("Job uid is ${provider.jobPosting?.uid}");
     showDialog(

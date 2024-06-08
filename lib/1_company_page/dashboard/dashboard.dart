@@ -20,6 +20,7 @@ import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
 import '../../utils/my_route.dart';
 import '../../utils/style.dart';
+import '../shift_calendar/widget/shift_detail_dialog.dart';
 
 class DashboardPageForCompany extends StatefulWidget {
   const DashboardPageForCompany({Key? key}) : super(key: key);
@@ -296,7 +297,19 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
                 var notification = provider.notificationList[index];
                 return InkWell(
                   onTap: () async {
-                    context.go(MyRoute.companyShift);
+                    // context.go(MyRoute.companyShift);
+                    showDialog(
+                        context: context,
+                        builder: (context) => Padding(
+                          padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceHeight(context) * 0.1, vertical: 32),
+                          child: ShiftDetailDialogWidget(
+                            startTime: "",
+                            endTime: "",
+                            jobId: notification.jobId!,
+                            date: notification.applyDate!,
+                            onSuccess: () => getData(),
+                          ),
+                        ));
                     await JobPostingApiService().updateNotificationToRead(notification.uid ?? "");
                     getData();
                   },
