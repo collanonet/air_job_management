@@ -1,5 +1,5 @@
+import 'package:air_job_management/1_company_page/applicant/widget/all_shift.dart';
 import 'package:air_job_management/1_company_page/woker_management/widget/job_card.dart';
-import 'package:air_job_management/1_company_page/woker_management/worker_management_detail/application_history.dart';
 import 'package:air_job_management/1_company_page/woker_management/worker_management_detail/basic_information.dart';
 import 'package:air_job_management/1_company_page/woker_management/worker_management_detail/chat.dart';
 import 'package:air_job_management/api/company/worker_managment.dart';
@@ -64,7 +64,11 @@ class _ApplicantRootPageState extends State<ApplicantRootPage> with AfterBuildMi
               companyName: authProvider.myCompany!.companyName,
             )
           else
-            ApplicationHistoryPage(myUser: provider.selectedJob?.myUser),
+            AllShiftApplicantPage(
+              myUser: provider.selectedJob!.myUser!,
+              id: provider.selectedJob!.uid!,
+              searchJobId: provider.selectedJob!.jobId!,
+            ),
         ],
       ),
     );

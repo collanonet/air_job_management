@@ -1,14 +1,17 @@
 import 'package:air_job_management/1_company_page/job_posting/job_posting_detail/job_posting_shift.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/matching_worker.dart';
+import 'package:air_job_management/api/job_posting.dart';
+import 'package:air_job_management/const/const.dart';
 import 'package:air_job_management/providers/auth.dart';
+import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
+import 'package:air_job_management/widgets/custom_dialog.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../helper/date_to_api.dart';
-import '../../../helper/japan_date_time.dart';
 import '../../../models/job_posting.dart';
 import '../../../providers/company/job_posting.dart';
 import '../../../utils/app_color.dart';
@@ -33,6 +36,7 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
   ShiftFrame? selectShiftFrame;
   List<ShiftFrame> shiftFrameList = [];
   bool isLoading = true;
+  int index = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +57,18 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
                   const TitleWidget(title: "シフト枠　一覧"),
                   Expanded(
                       child: MatchingAndCopyButtonWidget(
+                    onDelete: () {
+                      if (selectShiftFrame == null) {
+                        toastMessageError("マッチングの前に、まず1つの仕事を選んでください！", context);
+                      } else {
+                        CustomDialog.confirmDelete(
+                            context: context,
+                            onDelete: () {
+                              Navigator.pop(context);
+                              onDelete();
+                            });
+                      }
+                    },
                     onAdd: () {
                       if (selectShiftFrame == null) {
                         toastMessageError("マッチングの前に、まず1つの仕事を選んでください！", context);
@@ -184,7 +200,9 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
                   title: provider.jobPosting?.title ?? "",
                   onClick: () {
                     setState(() {
+                      this.index = index;
                       selectShiftFrame = shiftFrame;
+                      print("Select index ${this.index}");
                     });
                   },
                 );
@@ -213,11 +231,34 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
           );
         }).then((value) {
       if (value != null) {
-        setState(() {
-          shiftFrameList = value;
-        });
+        onRefreshData();
       }
     });
+  }
+
+  onDelete() async {
+    try {
+      print("Before delete ${shiftFrameList.length}");
+      shiftFrameList.removeAt(index);
+      setState(() {
+        isLoading = true;
+      });
+      print("After deleted ${shiftFrameList.length}");
+      selectShiftFrame = null;
+      provider.jobPosting!.shiftFrameList = shiftFrameList;
+      String? isSuccess = await JobPostingApiService().updateJobPostingInfo(provider.jobPosting!);
+      setState(() {
+        isLoading = false;
+      });
+      if (isSuccess == ConstValue.success) {
+        toastMessageSuccess(JapaneseText.successUpdate, context);
+        onRefreshData();
+      } else {
+        toastMessageSuccess(JapaneseText.failUpdate, context);
+      }
+    } catch (e) {
+      toastMessageSuccess(e.toString(), context);
+    }
   }
 
   onRefreshData() async {
@@ -226,27 +267,28 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
       isLoading = true;
     });
     shiftFrameList = [];
-    // await provider.onInitForJobPostingDetail(authProvider.myCompany?.uid ?? "");
+    provider.jobPosting = await JobPostingApiService().getAJobPosting(provider.jobPosting!.uid!);
+    setState(() {});
     getData();
   }
 
   getData() async {
     shiftFrameList.add(ShiftFrame(
-        startDate: DateToAPIHelper.convertDateToString(provider.startWorkDate),
-        recruitmentNumberPeople: provider.numberOfRecruitPeople.text,
+        startDate: provider.jobPosting!.startDate,
+        recruitmentNumberPeople: provider.jobPosting!.numberOfRecruit,
         expiredTime: null,
-        endDate: DateToAPIHelper.convertDateToString(provider.endWorkDate),
-        endBreakTime: dateTimeToHourAndMinute(provider.endBreakTime),
-        endWorkTime: dateTimeToHourAndMinute(provider.endWorkingTime),
-        startBreakTime: dateTimeToHourAndMinute(provider.startBreakTime),
-        startWorkTime: dateTimeToHourAndMinute(provider.startWorkingTime),
-        applicationDateline: provider.selectedDeadline,
-        bicycleCommutingPossible: provider.bicycleCommutingPossible,
-        emergencyContact: provider.emergencyContact.text,
-        hourlyWag: provider.hourlyWag.text,
-        motorCycleCarCommutingPossible: provider.motorCycleCarCommutingPossible,
-        selectedPublicSetting: provider.selectedPublicSetting,
-        transportExpenseFee: provider.transportExp.text));
+        endDate: provider.jobPosting!.endDate,
+        endBreakTime: provider.jobPosting!.endTimeHour,
+        endWorkTime: provider.jobPosting!.endTimeHour,
+        startBreakTime: provider.jobPosting!.startBreakTimeHour,
+        startWorkTime: provider.jobPosting!.startTimeHour,
+        applicationDateline: provider.jobPosting!.applicationDateline,
+        bicycleCommutingPossible: provider.jobPosting!.bicycleCommutingPossible,
+        emergencyContact: provider.jobPosting!.emergencyContact,
+        hourlyWag: provider.jobPosting!.hourlyWag,
+        motorCycleCarCommutingPossible: provider.jobPosting!.motorCycleCarCommutingPossible,
+        selectedPublicSetting: provider.jobPosting!.selectedPublicSetting,
+        transportExpenseFee: provider.jobPosting!.transportExpenseFee));
     shiftFrameList.addAll(provider.jobPosting?.shiftFrameList ?? []);
     setState(() {
       isLoading = false;

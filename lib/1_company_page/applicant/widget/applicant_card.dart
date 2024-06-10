@@ -66,8 +66,8 @@ class ApplicantCardWidget extends StatelessWidget {
                       onTap: () {
                         if (job.userId != null) {
                           provider.setJob = job;
-                          context.go("/company/worker-management/${job.uid}");
-                          // context.go("/company/applicant/${job.uid}");
+                          // context.go("/company/worker-management/${job.uid}");
+                          context.go("/company/applicant/${job.uid}");
                         } else {
                           context.go("/company/worker-management/outside-worker/${job.uid}");
                         }

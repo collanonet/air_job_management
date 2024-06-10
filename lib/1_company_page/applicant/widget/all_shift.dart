@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../api/worker_api/search_api.dart';
-import '../../../models/worker_model/search_job.dart';
 import '../../../models/worker_model/shift.dart';
 import '../../../utils/app_color.dart';
 import '../../../utils/app_size.dart';
@@ -21,16 +20,18 @@ import '../../../widgets/empty_data.dart';
 import '../../../widgets/loading.dart';
 import '../../job_posting/create_or_edit_job_posting.dart';
 
-class ApplicationHistoryPage extends StatefulWidget {
-  final MyUser? myUser;
-  const ApplicationHistoryPage({super.key, required this.myUser});
+class AllShiftApplicantPage extends StatefulWidget {
+  final String id;
+  final MyUser myUser;
+  final String searchJobId;
+  const AllShiftApplicantPage({super.key, required this.id, required this.myUser, required this.searchJobId});
 
   @override
-  State<ApplicationHistoryPage> createState() => _ApplicationHistoryPageState();
+  State<AllShiftApplicantPage> createState() => _AllShiftApplicantPageState();
 }
 
-class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with AfterBuildMixin {
-  List<WorkerManagement> jobList = [];
+class _AllShiftApplicantPageState extends State<AllShiftApplicantPage> with AfterBuildMixin {
+  WorkerManagement? workerManagement;
   bool isLoading = true;
   late AuthProvider authProvider;
   List<ShiftModel> shiftList = [];
@@ -300,16 +301,11 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
 
   getData() async {
     shiftList = [];
-    jobList = await WorkerManagementApiService()
-        .getAllJobApplyForAUSer(authProvider.myCompany?.uid ?? "", widget.myUser?.uid ?? "", authProvider.branch?.id ?? "");
-    var data = await Future.wait([for (var job in jobList) SearchJobApi().getASearchJob(job.jobId.toString())]);
-    for (var d in jobList) {
-      SearchJob? job = data[jobList.indexOf(d)];
-      for (var shift in d.shiftList!) {
-        shift.myJob = job;
-        shift.jobId = d.uid;
-      }
-      shiftList.addAll(d.shiftList!);
+    workerManagement = await WorkerManagementApiService().getAJob(widget.id);
+    var job = await SearchJobApi().getASearchJob(widget.searchJobId);
+    shiftList = workerManagement?.shiftList ?? [];
+    for (var shift in shiftList) {
+      shift.myJob = job;
     }
     shiftList.sort((a, b) => b.date!.compareTo(a.date!));
     setState(() {
@@ -332,12 +328,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
             isLoading = true;
           });
           bool isSuccess = await WorkerManagementApiService().updateShiftStatus(
-              branch: authProvider.branch,
-              shiftList,
-              shiftList[index].jobId!,
-              shiftModel: shiftModel,
-              company: authProvider.myCompany!,
-              myUser: myUser);
+              branch: authProvider.branch, shiftList, widget.id, shiftModel: shiftModel, company: authProvider.myCompany!, myUser: myUser);
           if (isSuccess) {
             await getData();
             toastMessageSuccess(JapaneseText.successUpdate, context);

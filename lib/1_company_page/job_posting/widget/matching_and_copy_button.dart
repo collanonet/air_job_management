@@ -7,7 +7,8 @@ import '../../../widgets/custom_button.dart';
 class MatchingAndCopyButtonWidget extends StatelessWidget {
   final Function onAdd;
   final Function onCopyPaste;
-  const MatchingAndCopyButtonWidget({super.key, required this.onAdd, required this.onCopyPaste});
+  final Function onDelete;
+  const MatchingAndCopyButtonWidget({super.key, required this.onAdd, required this.onCopyPaste, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +20,14 @@ class MatchingAndCopyButtonWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             const Spacer(),
+            SizedBox(width: 130, child: ButtonWidget(radius: 25, title: "削除", color: Colors.red, onPress: () => onDelete())),
+            AppSize.spaceWidth16,
+            Container(
+              width: 2,
+              color: AppColor.darkGrey,
+              height: 39,
+            ),
+            AppSize.spaceWidth16,
             SizedBox(width: 180, child: ButtonWidget(radius: 25, title: "手動マッチング", color: AppColor.primaryColor, onPress: () => onAdd())),
             AppSize.spaceWidth16,
             SizedBox(
