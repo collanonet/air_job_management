@@ -122,7 +122,8 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
             ],
           ),
           const Spacer(),
-          const SizedBox()
+          const SizedBox(),
+          IconButton(onPressed: () => getData(), icon: const Icon(Icons.refresh))
           // PopupMenuButton(
           //     icon: badges.Badge(
           //       badgeContent: Text(
@@ -301,15 +302,15 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
                     showDialog(
                         context: context,
                         builder: (context) => Padding(
-                          padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceHeight(context) * 0.1, vertical: 32),
-                          child: ShiftDetailDialogWidget(
-                            startTime: "",
-                            endTime: "",
-                            jobId: notification.jobId!,
-                            date: notification.applyDate!,
-                            onSuccess: () => getData(),
-                          ),
-                        ));
+                              padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceHeight(context) * 0.1, vertical: 32),
+                              child: ShiftDetailDialogWidget(
+                                startTime: "",
+                                endTime: "",
+                                jobId: notification.jobId!,
+                                date: notification.applyDate!,
+                                onSuccess: () => getData(),
+                              ),
+                            ));
                     await JobPostingApiService().updateNotificationToRead(notification.uid ?? "");
                     getData();
                   },

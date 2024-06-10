@@ -10,21 +10,13 @@ import '../utils/date_time_utils.dart';
 class JobPostingProvider with ChangeNotifier {
   //For Job Posting List
   List<JobPosting> jobPostingList = [];
-  List<String> statusList = [
-    JapaneseText.allData,
-    JapaneseText.duringCorrespondence,
-    JapaneseText.end
-  ];
+  List<String> statusList = [JapaneseText.allData, JapaneseText.duringCorrespondence, JapaneseText.end];
 
   String? selectedStatus;
   DateTime? startDateForFilter;
   DateTime? endDateForFilter;
 
-  List<String> newArrivalList = [
-    JapaneseText.allData,
-    JapaneseText.newArrival,
-    JapaneseText.interview
-  ];
+  List<String> newArrivalList = [JapaneseText.allData, JapaneseText.newArrival, JapaneseText.interview];
   String? selectedNewArrival;
 
   //For Job Posting Detail
@@ -130,13 +122,7 @@ class JobPostingProvider with ChangeNotifier {
   List<String> selectedHotelCleaningItemLearn = [];
 
   String selectedDesiredGender = JapaneseText.bothGender;
-  List<String> nationalityList = [
-    "Japanese",
-    "Cambodian",
-    "Vietnamese",
-    "Thai",
-    "Singapour"
-  ];
+  List<String> nationalityList = ["Japanese", "Cambodian", "Vietnamese", "Thai", "Singapour"];
   String? selectedNationality;
 
   List<String> necessaryJapanSkillList = [
@@ -166,11 +152,8 @@ class JobPostingProvider with ChangeNotifier {
     } else {
       for (var job in jobPostingList) {
         DateTime now = DateTime.now();
-        DateTime endDate =
-            MyDateTimeUtils.fromApiToLocal(job.endDate ?? job.startDate!);
-        String status = endDate.isBefore(now)
-            ? JapaneseText.end
-            : JapaneseText.duringCorrespondence;
+        DateTime endDate = MyDateTimeUtils.fromApiToLocal(job.endDate ?? job.startDate!);
+        String status = endDate.isBefore(now) ? JapaneseText.end : JapaneseText.duringCorrespondence;
         if (selectedStatus == status) {
           filteredJobByStatus.add(job);
         } else if (selectedStatus == status) {
@@ -184,22 +167,19 @@ class JobPostingProvider with ChangeNotifier {
         if (job.startDate != null && job.endDate != null) {
           DateTime startDate = MyDateTimeUtils.fromApiToLocal(job.startDate!);
           DateTime endDate = MyDateTimeUtils.fromApiToLocal(job.endDate!);
-          final isInRange = isBetweenRangeDates(
-              startDateForFilter!, endDateForFilter!, startDate, endDate);
+          final isInRange = isBetweenRangeDates(startDateForFilter!, endDateForFilter!, startDate, endDate);
           if (isInRange) {
             filteredJobByDate.add(job);
           }
         } else if (job.startDate != null) {
           DateTime startDate = MyDateTimeUtils.fromApiToLocal(job.startDate!);
-          final isInRange = isDateWithinRangeDates(
-              startDate, startDateForFilter!, endDateForFilter!);
+          final isInRange = isDateWithinRangeDates(startDate, startDateForFilter!, endDateForFilter!);
           if (isInRange) {
             filteredJobByDate.add(job);
           }
         } else if (job.endDate != null) {
           DateTime endDate = MyDateTimeUtils.fromApiToLocal(job.startDate!);
-          final isInRange = isDateWithinRangeDates(
-              endDate, startDateForFilter!, endDateForFilter!);
+          final isInRange = isDateWithinRangeDates(endDate, startDateForFilter!, endDateForFilter!);
           if (isInRange) {
             filteredJobByDate.add(job);
           }
@@ -212,18 +192,15 @@ class JobPostingProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool isBetweenRangeDates(DateTime startDate1, DateTime endDate1,
-      DateTime startDate2, DateTime endDate2) {
+  bool isBetweenRangeDates(DateTime startDate1, DateTime endDate1, DateTime startDate2, DateTime endDate2) {
     return (startDate1.isAfter(startDate2) || startDate1 == startDate2) &&
         (startDate1.isBefore(endDate2) || startDate1 == endDate2) &&
         (endDate1.isAfter(startDate2) || endDate1 == startDate2) &&
         (endDate1.isBefore(endDate2) || endDate1 == endDate2);
   }
 
-  bool isDateWithinRangeDates(
-      DateTime selectedDate, DateTime startDate1, DateTime endDate1) {
-    return ((selectedDate.isAfter(startDate1) || selectedDate == startDate1) &&
-        (selectedDate.isBefore(endDate1) || selectedDate == endDate1));
+  bool isDateWithinRangeDates(DateTime selectedDate, DateTime startDate1, DateTime endDate1) {
+    return ((selectedDate.isAfter(startDate1) || selectedDate == startDate1) && (selectedDate.isBefore(endDate1) || selectedDate == endDate1));
   }
 
   onChangeStartDate(DateTime? date) {
@@ -465,10 +442,8 @@ class JobPostingProvider with ChangeNotifier {
     endRecruitDate.text = jobPosting?.endDate ?? "";
     if (jobPosting?.location != null) {
       companyLocation.text = jobPosting?.location?.name ?? "";
-      if (jobPosting?.location?.lat != null &&
-          jobPosting?.location?.lat != "") {
-        companyLocationLatLng.text =
-            "${jobPosting?.location?.lat}, ${jobPosting?.location?.lng}";
+      if (jobPosting?.location?.lat != null && jobPosting?.location?.lat != "") {
+        companyLocationLatLng.text = "${jobPosting?.location?.lat}, ${jobPosting?.location?.lng}";
       }
     }
     numberOfRecruitPeople.text = jobPosting?.numberOfRecruit ?? "";
@@ -479,22 +454,19 @@ class JobPostingProvider with ChangeNotifier {
     holidayDetail.text = jobPosting?.holidayDetail ?? "";
     selectedOccupation = jobPosting?.occupationType;
     chooseOccupationSkill = jobPosting?.occupation ?? false;
-    selectedEmploymentType = jobPosting?.employmentType;
+    if (employmentType.contains(jobPosting?.employmentType ?? "")) {
+      selectedEmploymentType = jobPosting?.employmentType;
+    }
     selectedNationality = jobPosting?.desiredNationality;
     selectedNecessaryJapanSkill = jobPosting?.necessaryJapanSkill;
     selectedContentOfTest = jobPosting?.contentOfTheTest ?? [];
     selectedStatusOfRecident = jobPosting?.statusOfResidence ?? [];
-    selectedHotelCleaningItemLearn =
-        jobPosting?.hotelCleaningLearningItem ?? [];
-    contractProvisioning = jobPosting?.employmentContractProvisioning == true
-        ? JapaneseText.yes
-        : JapaneseText.no;
+    selectedHotelCleaningItemLearn = jobPosting?.hotelCleaningLearningItem ?? [];
+    contractProvisioning = jobPosting?.employmentContractProvisioning == true ? JapaneseText.yes : JapaneseText.no;
     if (jobPosting?.interviewLocation != null) {
       interviewLocation.text = jobPosting?.interviewLocation?.name ?? "";
-      if (jobPosting?.interviewLocation?.lat != null &&
-          jobPosting?.interviewLocation?.lat != "") {
-        interviewLocationLatLng.text =
-            "${jobPosting?.interviewLocation?.lat}, ${jobPosting?.interviewLocation?.lng}";
+      if (jobPosting?.interviewLocation?.lat != null && jobPosting?.interviewLocation?.lat != "") {
+        interviewLocationLatLng.text = "${jobPosting?.interviewLocation?.lat}, ${jobPosting?.interviewLocation?.lng}";
       }
     }
     otherQualification.text = jobPosting?.otherQualification ?? "";

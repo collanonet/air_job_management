@@ -9,7 +9,6 @@ import 'package:air_job_management/pages/company/company.dart';
 import 'package:air_job_management/pages/dashboard/dashboard.dart';
 import 'package:air_job_management/pages/job_seeker/job_seeker.dart';
 import 'package:air_job_management/pages/setting/setting.dart';
-import 'package:air_job_management/pages/shift/shift.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -24,8 +23,8 @@ class HomeProvider with ChangeNotifier {
     JapaneseText.jobSeeker,
     JapaneseText.recruitingCompany,
     JapaneseText.job,
-    JapaneseText.shift,
-    JapaneseText.setting
+    JapaneseText.usageDetail,
+    // JapaneseText.setting
   ];
   List<IconData> menuIconList = const [
     Icons.dashboard_sharp,
@@ -33,7 +32,7 @@ class HomeProvider with ChangeNotifier {
     Icons.maps_home_work_outlined,
     Icons.work_rounded,
     Icons.calendar_month_rounded,
-    Icons.settings_rounded
+    // Icons.settings_rounded
   ];
 
   List<String> menuListForCompany = [
@@ -57,7 +56,7 @@ class HomeProvider with ChangeNotifier {
     FontAwesome.building
   ];
 
-  List<Widget> menuPageList = const [DashboardPage(), JobSeekerPage(), CompanyPage(), JobPage(), ShiftPage(), SettingPage()];
+  List<Widget> menuPageList = const [DashboardPage(), JobSeekerPage(), CompanyPage(), JobPage(), UsageDetailPage(), SettingPage()];
   List<Widget> menuPageListForCompany = const [
     DashboardPageForCompany(),
     JobPostingForCompanyPage(),

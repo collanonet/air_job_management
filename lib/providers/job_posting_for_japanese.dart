@@ -568,7 +568,9 @@ class JobPostingForJapaneseProvider with ChangeNotifier {
     endWorkTime.text = jobPosting?.endTimeHour ?? "";
     numberOfAnnualHolidays.text = jobPosting?.annualHoliday ?? "";
     holidayDetail.text = jobPosting?.holidayDetail ?? "";
-    selectedOccupation = jobPosting?.occupationType;
+    if (occupationList.contains(jobPosting?.occupationType ?? "")) {
+      selectedOccupation = jobPosting?.occupationType;
+    }
     chooseOccupationSkill = jobPosting?.occupation ?? false;
     selectedEmploymentType = jobPosting?.employmentType;
     selectedNationality = jobPosting?.desiredNationality;

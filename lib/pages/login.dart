@@ -1,9 +1,5 @@
 import 'package:air_job_management/helper/role_helper.dart';
-import 'package:air_job_management/pages/register/new_form_register.dart';
-import 'package:air_job_management/pages/register/new_register_form_for_part_time.dart';
-import 'package:air_job_management/pages/splash_page.dart';
 import 'package:air_job_management/providers/auth.dart';
-import 'package:air_job_management/services/social_login.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/respnsive.dart';
@@ -21,7 +17,6 @@ import '../const/const.dart';
 import '../models/user.dart';
 import '../utils/japanese_text.dart';
 import '../utils/my_route.dart';
-import '../utils/page_route.dart';
 import '../utils/style.dart';
 import '../utils/toast_message_util.dart';
 
@@ -106,56 +101,56 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
             AppSize.spaceHeight30,
-            AppSize.spaceHeight16,
-            socialLoginButton(
-                assets: "assets/google.png",
-                title: "Googleでログイン",
-                colors: const Color(0xffCDD6DD).withOpacity(0.3),
-                onTap: () async {
-                  MyUser? user = await SocialLogin().googleSignIn(widget.isFullTime, authProvider);
-                  if (user != null) {
-                    if (user.nameKanJi != "" || user.nameFu != "") {
-                      if (user.isFullTimeStaff == true) {
-                        context.go(MyRoute.workerJobSearchFullTime);
-                      } else {
-                        context.go(MyRoute.workerJobSearchPartTime);
-                      }
-                    } else {
-                      if (widget.isFullTime) {
-                        MyPageRoute.goTo(context, NewFormRegistrationPage(myUser: user));
-                      } else {
-                        MyPageRoute.goTo(context, NewFormRegistrationForPartTimePage(myUser: user));
-                      }
-                    }
-                  } else {
-                    MessageWidget.show("Googleでログイン中にエラーが発生しました");
-                  }
-                }),
-            AppSize.spaceHeight16,
-            socialLoginButton(
-                assets: "assets/x.png",
-                title: "Xでログイン",
-                colors: const Color(0xff495960),
-                onTap: () async {
-                  MyUser? user = await SocialLogin().twitterSignIn(widget.isFullTime, authProvider);
-                  if (user != null) {
-                    if (user.nameKanJi != "" || user.nameFu != "") {
-                      if (user.isFullTimeStaff == true) {
-                        context.go(MyRoute.workerJobSearchFullTime);
-                      } else {
-                        context.go(MyRoute.workerJobSearchPartTime);
-                      }
-                    } else {
-                      if (widget.isFullTime) {
-                        MyPageRoute.goTo(context, NewFormRegistrationPage(myUser: user));
-                      } else {
-                        MyPageRoute.goTo(context, NewFormRegistrationForPartTimePage(myUser: user));
-                      }
-                    }
-                  } else {
-                    MessageWidget.show("X でログイン中にエラーが発生しました");
-                  }
-                }),
+            // AppSize.spaceHeight16,
+            // socialLoginButton(
+            //     assets: "assets/google.png",
+            //     title: "Googleでログイン",
+            //     colors: const Color(0xffCDD6DD).withOpacity(0.3),
+            //     onTap: () async {
+            //       MyUser? user = await SocialLogin().googleSignIn(widget.isFullTime, authProvider);
+            //       if (user != null) {
+            //         if (user.nameKanJi != "" || user.nameFu != "") {
+            //           if (user.isFullTimeStaff == true) {
+            //             context.go(MyRoute.workerJobSearchFullTime);
+            //           } else {
+            //             context.go(MyRoute.workerJobSearchPartTime);
+            //           }
+            //         } else {
+            //           if (widget.isFullTime) {
+            //             MyPageRoute.goTo(context, NewFormRegistrationPage(myUser: user));
+            //           } else {
+            //             MyPageRoute.goTo(context, NewFormRegistrationForPartTimePage(myUser: user));
+            //           }
+            //         }
+            //       } else {
+            //         MessageWidget.show("Googleでログイン中にエラーが発生しました");
+            //       }
+            //     }),
+            // AppSize.spaceHeight16,
+            // socialLoginButton(
+            //     assets: "assets/x.png",
+            //     title: "Xでログイン",
+            //     colors: const Color(0xff495960),
+            //     onTap: () async {
+            //       MyUser? user = await SocialLogin().twitterSignIn(widget.isFullTime, authProvider);
+            //       if (user != null) {
+            //         if (user.nameKanJi != "" || user.nameFu != "") {
+            //           if (user.isFullTimeStaff == true) {
+            //             context.go(MyRoute.workerJobSearchFullTime);
+            //           } else {
+            //             context.go(MyRoute.workerJobSearchPartTime);
+            //           }
+            //         } else {
+            //           if (widget.isFullTime) {
+            //             MyPageRoute.goTo(context, NewFormRegistrationPage(myUser: user));
+            //           } else {
+            //             MyPageRoute.goTo(context, NewFormRegistrationForPartTimePage(myUser: user));
+            //           }
+            //         }
+            //       } else {
+            //         MessageWidget.show("X でログイン中にエラーが発生しました");
+            //       }
+            //     }),
             // AppSize.spaceHeight16,
             // AppSize.spaceHeight16,
             // Center(
@@ -313,13 +308,15 @@ class _LoginPageState extends State<LoginPage> {
         if (user.role == RoleHelper.admin) {
           context.go(MyRoute.dashboard);
         } else {
-          if (user.isFullTimeStaff == true) {
-            isFullTime = true;
-            context.go(MyRoute.workerJobSearchFullTime);
-          } else {
-            isFullTime = false;
-            context.go(MyRoute.workerJobSearchPartTime);
-          }
+          await authProvider.logout();
+          toastMessageError("求職者の方はモバイルアプリをご利用ください。", context);
+          // if (user.isFullTimeStaff == true) {
+          //   isFullTime = true;
+          //   context.go(MyRoute.workerJobSearchFullTime);
+          // } else {
+          //   isFullTime = false;
+          //   context.go(MyRoute.workerJobSearchPartTime);
+          // }
         }
       } else {
         toastMessageError("${authProvider.errorMessage}", context);
