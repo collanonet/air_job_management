@@ -8,8 +8,8 @@ import '../../../utils/style.dart';
 
 class ShiftFrameCardWidget extends StatelessWidget {
   final String title;
-  final ShiftFrame shiftFrame;
-  final ShiftFrame? selectShiftFrame;
+  final UpdateHistory shiftFrame;
+  final UpdateHistory? selectShiftFrame;
   final Function onClick;
   const ShiftFrameCardWidget({super.key, required this.shiftFrame, required this.onClick, this.selectShiftFrame, required this.title});
 
@@ -67,7 +67,7 @@ class ShiftFrameCardWidget extends StatelessWidget {
             Expanded(
               child: Center(
                 child: Text(
-                  "${shiftFrame.startDate} - ${shiftFrame.endDate}\n${shiftFrame.startWorkTime} - ${shiftFrame.endWorkTime} ",
+                  "${shiftFrame.startDate} - ${shiftFrame.endDate}\n${shiftFrame.startTime} - ${shiftFrame.endTime} ",
                   style: kTitleText.copyWith(color: AppColor.darkGrey, fontSize: 16, fontFamily: "Normal"),
                   overflow: TextOverflow.fade,
                 ),
@@ -77,35 +77,30 @@ class ShiftFrameCardWidget extends StatelessWidget {
             Expanded(
               child: Center(
                 child: Text(
-                  shiftFrame.recruitmentNumberPeople ?? "",
+                  shiftFrame.recruitment ?? "",
                   style: kTitleText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),
               ),
-              flex: 1,
+              flex: 2,
             ),
             Expanded(
+              flex: 2,
               child: Center(
-                child: Text(
-                  shiftFrame.applyCount ?? "",
-                  style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
-                  overflow: TextOverflow.fade,
-                ),
+                child: Container(
+                    width: 100,
+                    height: 36,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25), color: isExpired ? AppColor.endColor : AppColor.duringCorrespondingColor),
+                    child: Center(
+                      child: Text(
+                        isExpired ? "終了" : "掲載中",
+                        style: kTitleText.copyWith(color: AppColor.whiteColor, fontSize: 16),
+                        overflow: TextOverflow.fade,
+                      ),
+                    )),
               ),
-              flex: 1,
             ),
-            Container(
-                width: 100,
-                height: 36,
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(25), color: isExpired ? AppColor.endColor : AppColor.duringCorrespondingColor),
-                child: Center(
-                  child: Text(
-                    isExpired ? "終了" : "掲載中",
-                    style: kTitleText.copyWith(color: AppColor.whiteColor, fontSize: 16),
-                    overflow: TextOverflow.fade,
-                  ),
-                )),
           ],
         ),
       ),

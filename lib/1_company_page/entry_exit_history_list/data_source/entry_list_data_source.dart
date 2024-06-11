@@ -1,4 +1,5 @@
 import 'package:air_job_management/models/entry_exit_history.dart';
+import 'package:air_job_management/utils/app_color.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/style.dart';
@@ -31,7 +32,7 @@ class EntryListDataSource extends DataTableSource {
         onTap: () => onUserTap(entry.myUser),
         child: Text(
           "${entry.myUser?.nameKanJi}",
-          style: kNormalText,
+          style: kNormalText.copyWith(color: AppColor.primaryColor),
         ),
       )),
       DataCell(Text(

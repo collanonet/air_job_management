@@ -12,6 +12,7 @@ import 'package:air_job_management/providers/company/entry_exit_history.dart';
 import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
+import 'package:air_job_management/widgets/user_basic_information.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -35,7 +36,6 @@ import '../../widgets/title.dart';
 import '../entry_exit_history_list/data_source/entry_list_data_source.dart';
 import '../entry_exit_history_list/widget/filter.dart';
 import '../entry_exit_history_list/widget/ratting_dialog.dart';
-import '../woker_management/worker_management_detail/basic_information.dart';
 import 'data_source/entry_exit_and_shift_data_source.dart';
 
 class EntryExitHistoryPage extends StatefulWidget {
@@ -589,6 +589,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                                 child: DataTableFixedWidthWidget(
                                   data: data.userName,
                                   width: 130,
+                                  isName: true,
                                 ),
                               ),
                               const DataTableFixedWidthWidget(data: "パート"),
@@ -883,14 +884,27 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                         width: 180,
                         child: Row(
                           children: [
-                            Container(
-                              height: 120,
-                              width: 115,
-                              color: const Color(0xffF0F3F5),
-                              alignment: Alignment.topCenter,
-                              child: Text(
-                                "${provider.entryExitCalendarByUser[index].userName}",
-                                style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 14),
+                            InkWell(
+                              onTap: () async {
+                                MyUser? user;
+                                for (var entry in provider.entryList) {
+                                  if (entry.myUser!.nameKanJi!.contains(provider.entryExitCalendarByUser[index].userName!)) {
+                                    user = entry.myUser;
+                                    break;
+                                  }
+                                }
+                                await Future.delayed(const Duration(milliseconds: 300));
+                                onUserTapped(user);
+                              },
+                              child: Container(
+                                height: 120,
+                                width: 115,
+                                color: const Color(0xffF0F3F5),
+                                alignment: Alignment.topCenter,
+                                child: Text(
+                                  "${provider.entryExitCalendarByUser[index].userName}",
+                                  style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 14),
+                                ),
                               ),
                             ),
                             AppSize.spaceWidth5,
@@ -1256,12 +1270,12 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
               ),
               content: SizedBox(
                 height: AppSize.getDeviceHeight(context) * 0.7,
-                width: AppSize.getDeviceWidth(context) * 0.9,
+                width: AppSize.getDeviceWidth(context),
                 child: Scaffold(
                   body: SizedBox(
                       height: AppSize.getDeviceHeight(context) * 0.7,
-                      width: AppSize.getDeviceWidth(context) * 0.9,
-                      child: BasicInformationPage(myUser: user)),
+                      width: AppSize.getDeviceWidth(context),
+                      child: UserBasicInformationPage(myUser: user)),
                 ),
               )));
     } else {

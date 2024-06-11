@@ -1,7 +1,6 @@
 import 'package:air_job_management/1_company_page/withdraw/widget/approve_or_reject_dialog.dart';
 import 'package:air_job_management/1_company_page/withdraw/widget/filter.dart';
 import 'package:air_job_management/1_company_page/withdraw/widget/withdraw_card.dart';
-import 'package:air_job_management/1_company_page/woker_management/worker_management_detail/basic_information.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/models/widthraw.dart';
 import 'package:air_job_management/providers/auth.dart';
@@ -10,6 +9,7 @@ import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:air_job_management/widgets/title.dart';
+import 'package:air_job_management/widgets/user_basic_information.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
@@ -135,7 +135,7 @@ class _UsageDetailPageState extends State<UsageDetailPage> with AfterBuildMixin 
                                       ),
                                       Expanded(
                                         child: Center(
-                                          child: Text("お振込先金融機関名", style: normalTextStyle.copyWith(fontSize: 13)),
+                                          child: Text("お振込先\n金融機関名", style: normalTextStyle.copyWith(fontSize: 13)),
                                         ),
                                         flex: 1,
                                       ),
@@ -223,12 +223,12 @@ class _UsageDetailPageState extends State<UsageDetailPage> with AfterBuildMixin 
               ),
               content: SizedBox(
                 height: AppSize.getDeviceHeight(context) * 0.7,
-                width: AppSize.getDeviceWidth(context) * 0.9,
+                width: AppSize.getDeviceWidth(context),
                 child: Scaffold(
                   body: SizedBox(
                       height: AppSize.getDeviceHeight(context) * 0.7,
-                      width: AppSize.getDeviceWidth(context) * 0.9,
-                      child: BasicInformationPage(myUser: user)),
+                      width: AppSize.getDeviceWidth(context),
+                      child: UserBasicInformationPage(myUser: user)),
                 ),
               )));
     } else {

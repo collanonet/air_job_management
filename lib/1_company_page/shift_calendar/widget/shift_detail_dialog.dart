@@ -34,8 +34,15 @@ class ShiftDetailDialogWidget extends StatefulWidget {
   final String endTime;
   final DateTime date;
   final Function onSuccess;
+  final bool isRequest;
   const ShiftDetailDialogWidget(
-      {super.key, required this.jobId, required this.date, required this.onSuccess, required this.endTime, required this.startTime});
+      {super.key,
+      required this.jobId,
+      required this.date,
+      required this.onSuccess,
+      required this.endTime,
+      required this.startTime,
+      this.isRequest = false});
 
   @override
   State<ShiftDetailDialogWidget> createState() => _ShiftDetailDialogWidgetState();
@@ -52,6 +59,14 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
   List<String> menuTab = ["新規応募", "変更申請"];
   String selectedTab = "新規応募";
   late AuthProvider authProvider;
+
+  @override
+  void initState() {
+    if (widget.isRequest) {
+      selectedTab = "変更申請";
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

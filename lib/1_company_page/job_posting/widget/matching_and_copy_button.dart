@@ -30,10 +30,10 @@ class MatchingAndCopyButtonWidget extends StatelessWidget {
             AppSize.spaceWidth16,
             SizedBox(width: 180, child: ButtonWidget(radius: 25, title: "手動マッチング", color: AppColor.primaryColor, onPress: () => onAdd())),
             AppSize.spaceWidth16,
-            SizedBox(
-              width: 180,
-              child: ButtonWidget(radius: 25, title: "コピーして作成", color: AppColor.primaryColor, onPress: () => onCopyPaste()),
-            ),
+            // SizedBox(
+            //   width: 180,
+            //   child: ButtonWidget(radius: 25, title: "コピーして作成", color: AppColor.primaryColor, onPress: () => onCopyPaste()),
+            // ),
           ],
         ),
       ),

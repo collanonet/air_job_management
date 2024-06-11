@@ -304,6 +304,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
                         builder: (context) => Padding(
                               padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceHeight(context) * 0.1, vertical: 32),
                               child: ShiftDetailDialogWidget(
+                                isRequest: notification.isJobApply == true ? false : true,
                                 startTime: "",
                                 endTime: "",
                                 jobId: notification.jobId!,

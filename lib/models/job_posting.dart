@@ -241,6 +241,8 @@ class JobPosting {
   String? selectSmokingInDoor;
   List<String>? selectedDate;
 
+  List<UpdateHistory>? updateList;
+
   JobPosting(
       {this.isAllowSmokingInArea,
       this.isSelect = false,
@@ -432,7 +434,8 @@ class JobPosting {
       this.coverList,
       this.createdAt,
       this.postedEndDate,
-      this.postedStartDate});
+      this.postedStartDate,
+      this.updateList});
 
   @override
   int get hashCode => uid.hashCode ^ title.hashCode;
@@ -442,6 +445,7 @@ class JobPosting {
       identical(this, other) || other is JobPosting && runtimeType == other.runtimeType && uid == other.uid && title == other.title;
 
   factory JobPosting.fromJson(Map<String, dynamic> json) => JobPosting(
+      updateList: json["updateList"] == null ? [] : List<UpdateHistory>.from(json["updateList"]!.map((x) => UpdateHistory.fromJson(x))),
       postedStartDate: json["postedStartDate"] ?? json["startDate"],
       postedEndDate: json["postedEndDate"] ?? json["endDate"],
       branchId: json["branch_id"],
@@ -639,6 +643,7 @@ class JobPosting {
         "selectedDate": selectedDate != null ? selectedDate!.map((e) => e).toList() : [],
         "smoking_allow": isAllowSmokingInArea,
         "smoking_options": selectSmokingInDoor,
+        "updateList": updateList != null ? updateList!.map((e) => e.toJson()).toList() : [],
         "limit_group_email": limitGroupEmail != null ? limitGroupEmail!.map((e) => e).toList() : [],
         "shiftFrameList": shiftFrameList != null ? shiftFrameList!.map((e) => e.toJson()).toList() : [],
         "jobLocation": jobLocation,
@@ -929,6 +934,41 @@ class Location {
         "postalCode": postalCode,
         "building": building,
         "street": street,
+      };
+}
+
+class UpdateHistory {
+  String? startDate;
+  String? endDate;
+  String? postStartDate;
+  String? postEndDate;
+  String? recruitment;
+  String? startTime;
+  String? endTime;
+  String? title;
+  UpdateHistory({this.endDate, this.startDate, this.endTime, this.startTime, this.title, this.postEndDate, this.postStartDate, this.recruitment});
+  factory UpdateHistory.fromJson(Map<String, dynamic> json) {
+    return UpdateHistory(
+      endTime: json["endTime"].toString(),
+      startTime: json["startTime"].toString(),
+      title: json["title"].toString(),
+      endDate: json["endDate"].toString(),
+      startDate: json["startDate"].toString(),
+      postEndDate: json["postEndDate"].toString(),
+      postStartDate: json["postStartDate"].toString(),
+      recruitment: json["recruitment"].toString(),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "endTime": endTime,
+        "startTime": startTime,
+        "title": title,
+        "endDate": endDate,
+        "startDate": startDate,
+        "postEndDate": postEndDate,
+        "postStartDate": postStartDate,
+        "recruitment": recruitment,
       };
 }
 

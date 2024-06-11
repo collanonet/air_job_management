@@ -19,6 +19,7 @@ import 'package:sura_flutter/sura_flutter.dart';
 import '../../2_worker_page/viewprofile/widgets/pickimage.dart';
 import '../../api/user_api.dart';
 import '../../models/company.dart';
+import '../../models/job_posting.dart';
 import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
 import '../../utils/style.dart';
@@ -142,6 +143,17 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
           if (urlPosterList.isNotEmpty) {
             provider.jobPosting?.image = urlPosterList[0];
           }
+          var update = UpdateHistory(
+            recruitment: provider.numberOfRecruitPeople.text.toString(),
+            postStartDate: DateToAPIHelper.convertDateToString(provider.startPostDate),
+            postEndDate: DateToAPIHelper.convertDateToString(provider.endPostDate),
+            startDate: DateToAPIHelper.convertDateToString(provider.startWorkDate),
+            endDate: DateToAPIHelper.convertDateToString(provider.endWorkDate),
+            title: provider.title.text.toString(),
+            startTime: dateTimeToHourAndMinute(provider.startWorkingTime),
+            endTime: dateTimeToHourAndMinute(provider.endWorkingTime),
+          );
+          provider.jobPosting?.updateList!.add(update);
           provider.jobPosting?.postedStartDate = DateToAPIHelper.convertDateToString(provider.startPostDate);
           provider.jobPosting?.postedEndDate = DateToAPIHelper.convertDateToString(provider.endPostDate);
           provider.jobPosting?.branchId = authProvider.branch?.id ?? "";

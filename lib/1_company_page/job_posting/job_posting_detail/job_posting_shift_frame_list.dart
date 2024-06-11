@@ -1,4 +1,3 @@
-import 'package:air_job_management/1_company_page/job_posting/job_posting_detail/job_posting_shift.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/matching_worker.dart';
 import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/const/const.dart';
@@ -11,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
-import '../../../helper/date_to_api.dart';
 import '../../../models/job_posting.dart';
 import '../../../providers/company/job_posting.dart';
 import '../../../utils/app_color.dart';
@@ -33,8 +31,8 @@ class JobPostingShiftFramePageForCompany extends StatefulWidget {
 class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFramePageForCompany> with AfterBuildMixin {
   late JobPostingForCompanyProvider provider;
   late AuthProvider authProvider;
-  ShiftFrame? selectShiftFrame;
-  List<ShiftFrame> shiftFrameList = [];
+  UpdateHistory? selectShiftFrame;
+  List<UpdateHistory> updateHistoyList = [];
   bool isLoading = true;
   int index = 0;
 
@@ -78,7 +76,22 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
                             builder: (_) => AlertDialog(
                                   content: MatchingWorkerPage(
                                     jobPosting: provider.jobPosting!,
-                                    shiftFrame: selectShiftFrame!,
+                                    shiftFrame: ShiftFrame(
+                                        startDate: selectShiftFrame!.startDate,
+                                        recruitmentNumberPeople: selectShiftFrame!.recruitment,
+                                        expiredTime: null,
+                                        endDate: selectShiftFrame!.endDate,
+                                        endBreakTime: provider.jobPosting!.endBreakTimeHour,
+                                        endWorkTime: selectShiftFrame!.endTime,
+                                        startBreakTime: provider.jobPosting!.startBreakTimeHour,
+                                        startWorkTime: selectShiftFrame!.startTime,
+                                        applicationDateline: provider.jobPosting!.applicationDateline,
+                                        bicycleCommutingPossible: provider.jobPosting!.bicycleCommutingPossible,
+                                        emergencyContact: provider.jobPosting!.emergencyContact,
+                                        hourlyWag: provider.jobPosting!.hourlyWag,
+                                        motorCycleCarCommutingPossible: provider.jobPosting!.motorCycleCarCommutingPossible,
+                                        selectedPublicSetting: provider.jobPosting!.selectedPublicSetting,
+                                        transportExpenseFee: provider.jobPosting!.transportExpenseFee),
                                     onSuccess: () {
                                       onRefreshData();
                                     },
@@ -87,46 +100,46 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
                       }
                     },
                     onCopyPaste: () {
-                      if (selectShiftFrame == null) {
-                        toastMessageError("マッチングの前に、まず1つの仕事を選んでください！", context);
-                      } else {
-                        var now = DateTime.now();
-                        provider.transportExp.text = selectShiftFrame!.transportExpenseFee!;
-                        provider.hourlyWag.text = selectShiftFrame!.hourlyWag!;
-                        provider.numberOfRecruitPeople.text = selectShiftFrame!.recruitmentNumberPeople!;
-                        provider.startWorkDate = DateToAPIHelper.fromApiToLocal(selectShiftFrame!.startDate!);
-                        provider.endWorkDate = DateToAPIHelper.fromApiToLocal(selectShiftFrame!.endDate!);
-                        provider.startWorkingTime = DateTime(
-                            now.year,
-                            now.month,
-                            now.day,
-                            int.parse(selectShiftFrame!.startWorkTime.toString().split(":")[0]),
-                            int.parse(selectShiftFrame!.startWorkTime.toString().split(":")[1]),
-                            0);
-                        provider.endWorkingTime = DateTime(
-                            now.year,
-                            now.month,
-                            now.day,
-                            int.parse(selectShiftFrame!.endWorkTime.toString().split(":")[0]),
-                            int.parse(selectShiftFrame!.endWorkTime.toString().split(":")[1]),
-                            0);
-                        provider.startBreakTime = DateTime(
-                            now.year,
-                            now.month,
-                            now.day,
-                            int.parse(selectShiftFrame!.startBreakTime.toString().split(":")[0]),
-                            int.parse(selectShiftFrame!.startBreakTime.toString().split(":")[1]),
-                            0);
-                        provider.endBreakTime = DateTime(
-                            now.year,
-                            now.month,
-                            now.day,
-                            int.parse(selectShiftFrame!.endBreakTime.toString().split(":")[0]),
-                            int.parse(selectShiftFrame!.endBreakTime.toString().split(":")[1]),
-                            0);
-                        setState(() {});
-                        showCopyAndPaste();
-                      }
+                      // if (selectShiftFrame == null) {
+                      //   toastMessageError("マッチングの前に、まず1つの仕事を選んでください！", context);
+                      // } else {
+                      //   var now = DateTime.now();
+                      //   provider.transportExp.text = selectShiftFrame!.transportExpenseFee!;
+                      //   provider.hourlyWag.text = selectShiftFrame!.hourlyWag!;
+                      //   provider.numberOfRecruitPeople.text = selectShiftFrame!.recruitmentNumberPeople!;
+                      //   provider.startWorkDate = DateToAPIHelper.fromApiToLocal(selectShiftFrame!.startDate!);
+                      //   provider.endWorkDate = DateToAPIHelper.fromApiToLocal(selectShiftFrame!.endDate!);
+                      //   provider.startWorkingTime = DateTime(
+                      //       now.year,
+                      //       now.month,
+                      //       now.day,
+                      //       int.parse(selectShiftFrame!.startWorkTime.toString().split(":")[0]),
+                      //       int.parse(selectShiftFrame!.startWorkTime.toString().split(":")[1]),
+                      //       0);
+                      //   provider.endWorkingTime = DateTime(
+                      //       now.year,
+                      //       now.month,
+                      //       now.day,
+                      //       int.parse(selectShiftFrame!.endWorkTime.toString().split(":")[0]),
+                      //       int.parse(selectShiftFrame!.endWorkTime.toString().split(":")[1]),
+                      //       0);
+                      //   provider.startBreakTime = DateTime(
+                      //       now.year,
+                      //       now.month,
+                      //       now.day,
+                      //       int.parse(selectShiftFrame!.startBreakTime.toString().split(":")[0]),
+                      //       int.parse(selectShiftFrame!.startBreakTime.toString().split(":")[1]),
+                      //       0);
+                      //   provider.endBreakTime = DateTime(
+                      //       now.year,
+                      //       now.month,
+                      //       now.day,
+                      //       int.parse(selectShiftFrame!.endBreakTime.toString().split(":")[0]),
+                      //       int.parse(selectShiftFrame!.endBreakTime.toString().split(":")[1]),
+                      //       0);
+                      //   setState(() {});
+                      //   showCopyAndPaste();
+                      // }
                     },
                   ))
                 ],
@@ -157,16 +170,16 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
                   child: Center(
                     child: Text("募集人数", style: normalTextStyle.copyWith(fontSize: 13)),
                   ),
-                  flex: 1,
+                  flex: 2,
                 ),
+                // Expanded(
+                //   child: Center(
+                //     child: Text("応募人数", style: normalTextStyle.copyWith(fontSize: 13)),
+                //   ),
+                //   flex: 1,
+                // ),
                 Expanded(
-                  child: Center(
-                    child: Text("応募人数", style: normalTextStyle.copyWith(fontSize: 13)),
-                  ),
-                  flex: 1,
-                ),
-                SizedBox(
-                    width: 100,
+                    flex: 2,
                     child: Center(
                       child: Text("掲載状況", style: normalTextStyle.copyWith(fontSize: 13)),
                     ))
@@ -186,14 +199,14 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
         child: LoadingWidget(AppColor.primaryColor),
       );
     } else {
-      if (shiftFrameList.isNotEmpty) {
+      if (updateHistoyList.isNotEmpty) {
         return Expanded(
           child: ListView.separated(
-              itemCount: shiftFrameList.length,
+              itemCount: updateHistoyList.length,
               shrinkWrap: true,
-              separatorBuilder: (context, index) => Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == shiftFrameList.length ? 20 : 0)),
+              separatorBuilder: (context, index) => Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == updateHistoyList.length ? 20 : 0)),
               itemBuilder: (context, index) {
-                ShiftFrame shiftFrame = shiftFrameList[index];
+                UpdateHistory shiftFrame = updateHistoyList[index];
                 return ShiftFrameCardWidget(
                   shiftFrame: shiftFrame,
                   selectShiftFrame: selectShiftFrame,
@@ -216,36 +229,34 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
     }
   }
 
-  showCopyAndPaste() {
-    showDialog(
-        context: context,
-        builder: (_) {
-          return Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Padding(
-              padding: EdgeInsets.all(AppSize.getDeviceHeight(context) * 0.1),
-              child: const JobPostingShiftPageForCompany(
-                isFromCopyShift: true,
-              ),
-            ),
-          );
-        }).then((value) {
-      if (value != null) {
-        onRefreshData();
-      }
-    });
-  }
+  // showCopyAndPaste() {
+  //   showDialog(
+  //       context: context,
+  //       builder: (_) {
+  //         return Scaffold(
+  //           backgroundColor: Colors.transparent,
+  //           body: Padding(
+  //             padding: EdgeInsets.all(AppSize.getDeviceHeight(context) * 0.1),
+  //             child: const JobPostingShiftPageForCompany(
+  //               isFromCopyShift: true,
+  //             ),
+  //           ),
+  //         );
+  //       }).then((value) {
+  //     if (value != null) {
+  //       onRefreshData();
+  //     }
+  //   });
+  // }
 
   onDelete() async {
     try {
-      print("Before delete ${shiftFrameList.length}");
-      shiftFrameList.removeAt(index);
+      updateHistoyList.removeAt(index);
       setState(() {
         isLoading = true;
       });
-      print("After deleted ${shiftFrameList.length}");
       selectShiftFrame = null;
-      provider.jobPosting!.shiftFrameList = shiftFrameList;
+      provider.jobPosting!.updateList = updateHistoyList;
       String? isSuccess = await JobPostingApiService().updateJobPostingInfo(provider.jobPosting!);
       setState(() {
         isLoading = false;
@@ -266,30 +277,27 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
     setState(() {
       isLoading = true;
     });
-    shiftFrameList = [];
+    updateHistoyList = [];
     provider.jobPosting = await JobPostingApiService().getAJobPosting(provider.jobPosting!.uid!);
     setState(() {});
     getData();
   }
 
   getData() async {
-    shiftFrameList.add(ShiftFrame(
-        startDate: provider.jobPosting!.startDate,
-        recruitmentNumberPeople: provider.jobPosting!.numberOfRecruit,
-        expiredTime: null,
-        endDate: provider.jobPosting!.endDate,
-        endBreakTime: provider.jobPosting!.endTimeHour,
-        endWorkTime: provider.jobPosting!.endTimeHour,
-        startBreakTime: provider.jobPosting!.startBreakTimeHour,
-        startWorkTime: provider.jobPosting!.startTimeHour,
-        applicationDateline: provider.jobPosting!.applicationDateline,
-        bicycleCommutingPossible: provider.jobPosting!.bicycleCommutingPossible,
-        emergencyContact: provider.jobPosting!.emergencyContact,
-        hourlyWag: provider.jobPosting!.hourlyWag,
-        motorCycleCarCommutingPossible: provider.jobPosting!.motorCycleCarCommutingPossible,
-        selectedPublicSetting: provider.jobPosting!.selectedPublicSetting,
-        transportExpenseFee: provider.jobPosting!.transportExpenseFee));
-    shiftFrameList.addAll(provider.jobPosting?.shiftFrameList ?? []);
+    if (provider.jobPosting!.updateList!.isEmpty) {
+      updateHistoyList.add(UpdateHistory(
+        recruitment: provider.jobPosting!.numberOfRecruit.toString(),
+        postStartDate: provider.jobPosting!.postedStartDate.toString(),
+        postEndDate: provider.jobPosting!.postedEndDate.toString(),
+        startDate: provider.jobPosting!.endDate.toString(),
+        endDate: provider.jobPosting!.startDate.toString(),
+        title: provider.jobPosting!.title.toString(),
+        startTime: provider.jobPosting!.startTimeHour.toString(),
+        endTime: provider.jobPosting!.endTimeHour.toString(),
+      ));
+    } else {
+      updateHistoyList.addAll(provider.jobPosting?.updateList ?? []);
+    }
     setState(() {
       isLoading = false;
     });
