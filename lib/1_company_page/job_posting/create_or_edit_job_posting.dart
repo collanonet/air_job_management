@@ -143,17 +143,43 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
           if (urlPosterList.isNotEmpty) {
             provider.jobPosting?.image = urlPosterList[0];
           }
-          var update = UpdateHistory(
-            recruitment: provider.numberOfRecruitPeople.text.toString(),
-            postStartDate: DateToAPIHelper.convertDateToString(provider.startPostDate),
-            postEndDate: DateToAPIHelper.convertDateToString(provider.endPostDate),
-            startDate: DateToAPIHelper.convertDateToString(provider.startWorkDate),
-            endDate: DateToAPIHelper.convertDateToString(provider.endWorkDate),
-            title: provider.title.text.toString(),
-            startTime: dateTimeToHourAndMinute(provider.startWorkingTime),
-            endTime: dateTimeToHourAndMinute(provider.endWorkingTime),
-          );
-          provider.jobPosting?.updateList!.add(update);
+          if (widget.isCopyPaste == true) {
+            if (provider.jobPosting!.updateList!.isEmpty) {
+              provider.jobPosting!.updateList!.add(UpdateHistory(
+                recruitment: provider.jobPosting!.numberOfRecruit.toString(),
+                postStartDate: provider.jobPosting!.postedStartDate.toString(),
+                postEndDate: provider.jobPosting!.postedEndDate.toString(),
+                startDate: provider.jobPosting!.startDate.toString(),
+                endDate: provider.jobPosting!.endDate.toString(),
+                title: provider.jobPosting!.title.toString(),
+                startTime: provider.jobPosting!.startTimeHour.toString(),
+                endTime: provider.jobPosting!.endTimeHour.toString(),
+              ));
+            }
+            var update = UpdateHistory(
+              recruitment: provider.numberOfRecruitPeople.text.toString(),
+              postStartDate: DateToAPIHelper.convertDateToString(provider.startPostDate),
+              postEndDate: DateToAPIHelper.convertDateToString(provider.endPostDate),
+              startDate: DateToAPIHelper.convertDateToString(provider.startWorkDate),
+              endDate: DateToAPIHelper.convertDateToString(provider.endWorkDate),
+              title: provider.title.text.toString(),
+              startTime: dateTimeToHourAndMinute(provider.startWorkingTime),
+              endTime: dateTimeToHourAndMinute(provider.endWorkingTime),
+            );
+            provider.jobPosting?.updateList!.add(update);
+          } else {
+            var update = UpdateHistory(
+              recruitment: provider.numberOfRecruitPeople.text.toString(),
+              postStartDate: DateToAPIHelper.convertDateToString(provider.startPostDate),
+              postEndDate: DateToAPIHelper.convertDateToString(provider.endPostDate),
+              startDate: DateToAPIHelper.convertDateToString(provider.startWorkDate),
+              endDate: DateToAPIHelper.convertDateToString(provider.endWorkDate),
+              title: provider.title.text.toString(),
+              startTime: dateTimeToHourAndMinute(provider.startWorkingTime),
+              endTime: dateTimeToHourAndMinute(provider.endWorkingTime),
+            );
+            provider.jobPosting?.updateList!.add(update);
+          }
           provider.jobPosting?.postedStartDate = DateToAPIHelper.convertDateToString(provider.startPostDate);
           provider.jobPosting?.postedEndDate = DateToAPIHelper.convertDateToString(provider.endPostDate);
           provider.jobPosting?.branchId = authProvider.branch?.id ?? "";
@@ -211,6 +237,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
                 provider.jobPosting?.uid != null && widget.isCopyPaste == null ? JapaneseText.successUpdate : JapaneseText.successCreate);
             await provider.getAllJobPost(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
             if (widget.isCopyPaste == true) {
+              await JobPostingApiService().updateJobHistory(widget.jobPosting ?? "", provider.jobPosting?.updateList ?? []);
               Navigator.pop(context);
             } else {
               context.go(MyRoute.companyJobPosting);

@@ -193,7 +193,7 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
                                     color: AppColor.primaryColor,
                                   ),
                                   AppSize.spaceWidth5,
-                                  Text("最終稼働日", style: normalTextStyle.copyWith(fontSize: 13)),
+                                  Text("シフト応募日", style: normalTextStyle.copyWith(fontSize: 13)),
                                 ],
                               ),
                               flex: 2,

@@ -7,6 +7,13 @@ class JobPostingDataTable {
   String jobId;
   List<CountByDate> countByDate;
   JobPostingDataTable({required this.countByDate, this.job = "", this.jobId = "", this.applyCount = 0, this.recruitNumber = "0"});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is JobPostingDataTable && runtimeType == other.runtimeType && jobId == other.jobId && job == other.job;
+
+  @override
+  int get hashCode => jobId.hashCode ^ job.hashCode;
 }
 
 class CountByDate {

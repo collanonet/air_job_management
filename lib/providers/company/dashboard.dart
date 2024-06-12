@@ -27,7 +27,7 @@ class DashboardForCompanyProvider with ChangeNotifier {
     var data = await Future.wait([
       JobPostingApiService().getAllJobPostByCompany(companyId, branchId),
       WorkerManagementApiService().getAllJobApply(companyId, branchId),
-      JobPostingApiService().getAllNotification(companyId),
+      JobPostingApiService().getAllNotification(branchId),
     ]);
     jobPostingList = data[0] as List<JobPosting>;
     applicantList = data[1] as List<WorkerManagement>;

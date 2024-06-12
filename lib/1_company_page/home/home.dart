@@ -1,7 +1,9 @@
+import 'package:air_job_management/1_company_page/dashboard/dashboard.dart';
 import 'package:air_job_management/1_company_page/home/widgets/air_job_management.dart';
 import 'package:air_job_management/1_company_page/home/widgets/choose_branch.dart';
 import 'package:air_job_management/1_company_page/home/widgets/tab_section.dart';
 import 'package:air_job_management/providers/auth.dart';
+import 'package:air_job_management/providers/company/dashboard.dart';
 import 'package:air_job_management/providers/home.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/my_route.dart';
@@ -11,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
+
+import '../../api/withraw.dart';
 
 class HomePageForCompany extends StatefulWidget {
   final String? selectItem;
@@ -24,6 +28,7 @@ class HomePageForCompany extends StatefulWidget {
 class _HomePageForCompanyState extends State<HomePageForCompany> with AfterBuildMixin {
   late HomeProvider homeProvider;
   late AuthProvider authProvider;
+  late DashboardForCompanyProvider dashboardPageForCompany;
 
   @override
   void afterBuild(BuildContext context) {
@@ -34,6 +39,7 @@ class _HomePageForCompanyState extends State<HomePageForCompany> with AfterBuild
 
   @override
   Widget build(BuildContext context) {
+    dashboardPageForCompany = Provider.of<DashboardForCompanyProvider>(context);
     homeProvider = Provider.of<HomeProvider>(context);
     authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
@@ -105,7 +111,16 @@ class _HomePageForCompanyState extends State<HomePageForCompany> with AfterBuild
   }
 
   showChooseBranchDialog() {
-    showDialog(context: context, builder: (context) => const ChooseBranchWidget());
+    showDialog(
+        context: context,
+        builder: (context) => ChooseBranchWidget(
+              onRefresh: () async {
+                dashboardPageForCompany.onChangeLoading(true);
+                await dashboardPageForCompany.onInit(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
+                withdrawList = await WithdrawApiService().getAllWithdraw("");
+                dashboardPageForCompany.onChangeLoading(false);
+              },
+            ));
   }
 
   rightWidget() {

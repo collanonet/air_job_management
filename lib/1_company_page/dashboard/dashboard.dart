@@ -22,6 +22,8 @@ import '../../utils/my_route.dart';
 import '../../utils/style.dart';
 import '../shift_calendar/widget/shift_detail_dialog.dart';
 
+List<WithdrawModel> withdrawList = [];
+
 class DashboardPageForCompany extends StatefulWidget {
   const DashboardPageForCompany({Key? key}) : super(key: key);
 
@@ -33,7 +35,6 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
   late AuthProvider authProvider;
   late DashboardForCompanyProvider provider;
   late HomeProvider homeProvider;
-  List<WithdrawModel> withdrawList = [];
 
   @override
   void initState() {

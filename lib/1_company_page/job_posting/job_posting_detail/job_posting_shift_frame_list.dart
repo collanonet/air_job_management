@@ -32,9 +32,9 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
   late JobPostingForCompanyProvider provider;
   late AuthProvider authProvider;
   UpdateHistory? selectShiftFrame;
-  List<UpdateHistory> updateHistoyList = [];
   bool isLoading = true;
   int index = 0;
+  List<UpdateHistory> updateHistoyList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -210,12 +210,11 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
                 return ShiftFrameCardWidget(
                   shiftFrame: shiftFrame,
                   selectShiftFrame: selectShiftFrame,
-                  title: provider.jobPosting?.title ?? "",
+                  title: shiftFrame.title ?? "",
                   onClick: () {
                     setState(() {
                       this.index = index;
                       selectShiftFrame = shiftFrame;
-                      print("Select index ${this.index}");
                     });
                   },
                 );
@@ -284,13 +283,14 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
   }
 
   getData() async {
+    print("History ${provider.jobPosting!.updateList!.map((e) => e.title)}");
     if (provider.jobPosting!.updateList!.isEmpty) {
       updateHistoyList.add(UpdateHistory(
         recruitment: provider.jobPosting!.numberOfRecruit.toString(),
         postStartDate: provider.jobPosting!.postedStartDate.toString(),
         postEndDate: provider.jobPosting!.postedEndDate.toString(),
-        startDate: provider.jobPosting!.endDate.toString(),
-        endDate: provider.jobPosting!.startDate.toString(),
+        startDate: provider.jobPosting!.startDate.toString(),
+        endDate: provider.jobPosting!.endDate.toString(),
         title: provider.jobPosting!.title.toString(),
         startTime: provider.jobPosting!.startTimeHour.toString(),
         endTime: provider.jobPosting!.endTimeHour.toString(),
@@ -298,6 +298,20 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
     } else {
       updateHistoyList.addAll(provider.jobPosting?.updateList ?? []);
     }
+    // if (widget.isView) {
+    //   updateHistoyList.add(UpdateHistory(
+    //     recruitment: provider.numberOfRecruitPeople.text.toString(),
+    //     postStartDate: DateToAPIHelper.convertDateToString(provider.startPostDate),
+    //     postEndDate: DateToAPIHelper.convertDateToString(provider.endPostDate),
+    //     startDate: DateToAPIHelper.convertDateToString(provider.startWorkDate),
+    //     endDate: DateToAPIHelper.convertDateToString(provider.endWorkDate),
+    //     title: provider.title.text.toString(),
+    //     startTime: dateTimeToHourAndMinute(provider.startWorkingTime),
+    //     endTime: dateTimeToHourAndMinute(provider.endWorkingTime),
+    //   ));
+    //   provider.jobPosting?.updateList = updateHistoyList;
+    // }
+    updateHistoyList.sort((a, b) => b.endDate!.compareTo(a.endDate!));
     setState(() {
       isLoading = false;
     });

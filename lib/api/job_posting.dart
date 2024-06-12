@@ -56,9 +56,9 @@ class JobPostingApiService {
     }
   }
 
-  Future<List<NotificationModel>> getAllNotification(String companyId) async {
+  Future<List<NotificationModel>> getAllNotification(String branchId) async {
     try {
-      var doc = await notificationRef.where("company_id", isEqualTo: companyId).where("isSeeker", isEqualTo: true).get();
+      var doc = await notificationRef.where("company_branch", isEqualTo: branchId).where("isSeeker", isEqualTo: true).get();
       if (doc.docs.isNotEmpty) {
         List<NotificationModel> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
@@ -203,6 +203,17 @@ class JobPostingApiService {
     print("UID is ${jobPosting?.uid}");
     try {
       await jobPostingRef.doc(jobPosting!.uid).update(jobPosting.toJson());
+      return ConstValue.success;
+    } catch (e) {
+      debugPrint("Error updateJobPostingInfo =>> ${e.toString()}");
+      return "$e";
+    }
+  }
+
+  Future<String?> updateJobHistory(String uid, List<UpdateHistory> updateHistoryList) async {
+    print("UID is $uid");
+    try {
+      await jobPostingRef.doc(uid).update({"updateList": updateHistoryList.map((e) => e.toJson())});
       return ConstValue.success;
     } catch (e) {
       debugPrint("Error updateJobPostingInfo =>> ${e.toString()}");

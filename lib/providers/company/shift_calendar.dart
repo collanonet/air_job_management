@@ -289,6 +289,7 @@ class ShiftCalendarProvider with ChangeNotifier {
         jobPostingDataTableList.add(jobPostingDataTable);
       }
     }
+    jobPostingDataTableList = jobPostingDataTableList.toSet().toList();
     notifyListeners();
   }
 

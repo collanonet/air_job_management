@@ -94,7 +94,7 @@ class ShiftFrameCardWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(25), color: isExpired ? AppColor.endColor : AppColor.duringCorrespondingColor),
                     child: Center(
                       child: Text(
-                        isExpired ? "終了" : "掲載中",
+                        isExpired ? "稼働終了" : "掲載中",
                         style: kTitleText.copyWith(color: AppColor.whiteColor, fontSize: 16),
                         overflow: TextOverflow.fade,
                       ),

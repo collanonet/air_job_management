@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:air_job_management/1_company_page/shift_calendar/widget/copy_paste.dart';
 import 'package:air_job_management/1_company_page/shift_calendar/widget/edit_shift_for_calendar.dart';
-import 'package:air_job_management/1_company_page/shift_calendar/widget/job_card_display.dart';
 import 'package:air_job_management/1_company_page/shift_calendar/widget/shift_detail_dialog.dart';
 import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/const/const.dart';
@@ -13,7 +12,6 @@ import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
-import 'package:air_job_management/widgets/title.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -327,138 +325,58 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
   }
 
   buildShiftPerMonth() {
-    return shiftCalendarDataSource == null
-        ? const SizedBox()
-        : Column(
-            children: [
-              AppSize.spaceHeight16,
-              buildMonthDisplay(true),
-              AppSize.spaceHeight16,
-              AppSize.spaceHeight30,
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 73),
-                    child: SizedBox(
-                      height: provider.jobPostingDataTableList.length * 45,
-                      width: 80,
-                      child: ListView.builder(
-                          itemCount: provider.jobPostingDataTableList.length,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return SizedBox(
-                              height: 45,
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(
-                                  provider.jobPostingDataTableList[index].job,
-                                  style: kNormalText.copyWith(fontFamily: "Bold"),
-                                ),
-                              ),
-                            );
-                          }),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 50, right: 5, left: 10),
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.person,
-                          size: 20,
-                          color: AppColor.primaryColor,
-                        ),
-                        AppSize.spaceHeight5,
-                        Container(
-                          height: provider.jobPostingDataTableList.length * 45,
-                          width: 35,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.primaryColor),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () =>
-                                  scrollControllerForShiftPerDay.animateTo(0, duration: const Duration(milliseconds: 1000), curve: Curves.ease),
-                              child: const Center(
-                                child: Icon(
-                                  Icons.arrow_back_ios_new_rounded,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
+    return Column(
+      children: [
+        AppSize.spaceHeight16,
+        buildMonthDisplay(true),
+        AppSize.spaceHeight16,
+        AppSize.spaceHeight30,
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 73),
+              child: SizedBox(
+                height: provider.jobPostingDataTableList.length * 45,
+                width: 80,
+                child: ListView.builder(
+                    itemCount: provider.jobPostingDataTableList.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return SizedBox(
+                        height: 45,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
+                            provider.jobPostingDataTableList[index].job,
+                            style: kNormalText.copyWith(fontFamily: "Bold"),
                           ),
                         ),
-                      ],
-                    ),
+                      );
+                    }),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 50, right: 5, left: 10),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.person,
+                    size: 20,
+                    color: AppColor.primaryColor,
                   ),
-                  SizedBox(
-                    height: (provider.jobPostingDataTableList.length * 45) + 70,
-                    width: AppSize.getDeviceWidth(context) * 0.65,
-                    child: ScrollConfiguration(
-                      behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
-                        PointerDeviceKind.touch,
-                        PointerDeviceKind.mouse,
-                      }),
-                      child: Scrollbar(
-                        controller: scrollControllerForShiftPerDay,
-                        isAlwaysShown: true,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          controller: scrollControllerForShiftPerDay,
-                          child: SfDataGrid(
-                              source: shiftCalendarDataSourceByJobPosting,
-                              columnWidthMode: ColumnWidthMode.fill,
-                              isScrollbarAlwaysShown: false,
-                              rowHeight: 45,
-                              headerRowHeight: 65,
-                              shrinkWrapRows: true,
-                              shrinkWrapColumns: true,
-                              gridLinesVisibility: GridLinesVisibility.none,
-                              headerGridLinesVisibility: GridLinesVisibility.none,
-                              // horizontalScrollController: scrollControllerForShiftPerDay,
-                              horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
-                              verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
-                              columns: provider.rangeDateList.map((e) {
-                                return GridColumn(
-                                    width: 80,
-                                    label: Center(
-                                        child: Column(
-                                      children: [
-                                        Text(e.date.day.toString()),
-                                        Container(
-                                          width: 78,
-                                          height: 23,
-                                          margin: const EdgeInsets.symmetric(vertical: 5),
-                                          color: (e.date.weekday == 6 || e.date.weekday == 7)
-                                              ? Colors.redAccent.withOpacity(0.1)
-                                              : Colors.blue.withOpacity(0.1),
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            toJapanWeekDayWithInt(e.date.weekday),
-                                            style: kNormalText.copyWith(fontSize: 10),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                                    columnName: e.date.toString());
-                              }).toList()),
-                        ),
-                      ),
-                    ),
-                  ),
+                  AppSize.spaceHeight5,
                   Container(
                     height: provider.jobPostingDataTableList.length * 45,
                     width: 35,
-                    margin: const EdgeInsets.only(top: 73, left: 5),
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.primaryColor),
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
-                        onTap: () => scrollControllerForShiftPerDay.animateTo(scrollControllerForShiftPerDay.position.maxScrollExtent,
-                            duration: const Duration(milliseconds: 1000), curve: Curves.ease),
+                        onTap: () => scrollControllerForShiftPerDay.animateTo(0, duration: const Duration(milliseconds: 1000), curve: Curves.ease),
                         child: const Center(
                           child: Icon(
-                            Icons.arrow_forward_ios_rounded,
+                            Icons.arrow_back_ios_new_rounded,
                             color: Colors.white,
                           ),
                         ),
@@ -466,9 +384,86 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                     ),
                   ),
                 ],
-              )
-            ],
-          );
+              ),
+            ),
+            SizedBox(
+              height: (provider.jobPostingDataTableList.length * 45) + 70,
+              width: AppSize.getDeviceWidth(context) * 0.65,
+              child: ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
+                  PointerDeviceKind.touch,
+                  PointerDeviceKind.mouse,
+                }),
+                child: Scrollbar(
+                  controller: scrollControllerForShiftPerDay,
+                  isAlwaysShown: true,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    controller: scrollControllerForShiftPerDay,
+                    child: SfDataGrid(
+                        source: shiftCalendarDataSourceByJobPosting,
+                        columnWidthMode: ColumnWidthMode.fill,
+                        isScrollbarAlwaysShown: false,
+                        rowHeight: 45,
+                        headerRowHeight: 65,
+                        shrinkWrapRows: true,
+                        shrinkWrapColumns: true,
+                        gridLinesVisibility: GridLinesVisibility.none,
+                        headerGridLinesVisibility: GridLinesVisibility.none,
+                        // horizontalScrollController: scrollControllerForShiftPerDay,
+                        horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+                        verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+                        columns: provider.rangeDateList.map((e) {
+                          return GridColumn(
+                              width: 80,
+                              label: Center(
+                                  child: Column(
+                                children: [
+                                  Text(e.date.day.toString()),
+                                  Container(
+                                    width: 78,
+                                    height: 23,
+                                    margin: const EdgeInsets.symmetric(vertical: 5),
+                                    color: (e.date.weekday == 6 || e.date.weekday == 7)
+                                        ? Colors.redAccent.withOpacity(0.1)
+                                        : Colors.blue.withOpacity(0.1),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      toJapanWeekDayWithInt(e.date.weekday),
+                                      style: kNormalText.copyWith(fontSize: 10),
+                                    ),
+                                  ),
+                                ],
+                              )),
+                              columnName: e.date.toString());
+                        }).toList()),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              height: provider.jobPostingDataTableList.length * 45,
+              width: 35,
+              margin: const EdgeInsets.only(top: 73, left: 5),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.primaryColor),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => scrollControllerForShiftPerDay.animateTo(scrollControllerForShiftPerDay.position.maxScrollExtent,
+                      duration: const Duration(milliseconds: 1000), curve: Curves.ease),
+                  child: const Center(
+                    child: Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        )
+      ],
+    );
   }
 
   List<String> menuTab = ["日付を選んでシフト枠作成", "曜日と時間帯を選んでシフト枠作成"];

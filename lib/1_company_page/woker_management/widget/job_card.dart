@@ -1,3 +1,4 @@
+import 'package:air_job_management/1_company_page/woker_management/worker_management.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
@@ -15,11 +16,7 @@ class JobApplyCardWidget extends StatelessWidget {
   final WorkerManagement job;
   final bool isFromMatching;
   final int index;
-  const JobApplyCardWidget(
-      {super.key,
-      required this.job,
-      this.isFromMatching = false,
-      this.index = 0});
+  const JobApplyCardWidget({super.key, required this.job, this.isFromMatching = false, this.index = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +26,7 @@ class JobApplyCardWidget extends StatelessWidget {
       padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
       margin: const EdgeInsets.only(bottom: 4, left: 0, right: 0),
       decoration: BoxDecoration(
-          color: job.isSelect == true
-              ? Colors.orange.withOpacity(0.1)
-              : Colors.transparent,
+          color: job.isSelect == true ? Colors.orange.withOpacity(0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(width: 1, color: AppColor.primaryColor)),
       child: InkWell(
@@ -43,8 +38,7 @@ class JobApplyCardWidget extends StatelessWidget {
               provider.setJob = job;
               context.go("/company/worker-management/${job.uid}");
             } else {
-              context
-                  .go("/company/worker-management/outside-worker/${job.uid}");
+              context.go("/company/worker-management/outside-worker/${job.uid}");
             }
           }
         },
@@ -65,9 +59,7 @@ class JobApplyCardWidget extends StatelessWidget {
                       errorWidget: (_, __, ___) => Container(
                         width: 48,
                         height: 48,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            color: AppColor.primaryColor),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
                         child: Center(
                           child: Icon(
                             Icons.person,
@@ -89,12 +81,8 @@ class JobApplyCardWidget extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                (job.myUser?.nameKanJi != null &&
-                                        job.myUser?.nameKanJi != "")
-                                    ? "${job.myUser?.nameKanJi}"
-                                    : JapaneseText.empty,
-                                style: kTitleText.copyWith(
-                                    color: AppColor.primaryColor, fontSize: 15),
+                                (job.myUser?.nameKanJi != null && job.myUser?.nameKanJi != "") ? "${job.myUser?.nameKanJi}" : JapaneseText.empty,
+                                style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
                                 overflow: TextOverflow.fade,
                               ),
                             ),
@@ -109,8 +97,7 @@ class JobApplyCardWidget extends StatelessWidget {
                         ),
                         Text(
                           job.jobLocation ?? "",
-                          style: kNormalText.copyWith(
-                              color: AppColor.darkGrey, fontSize: 15),
+                          style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 15),
                           overflow: TextOverflow.fade,
                         ),
                       ],
@@ -125,11 +112,8 @@ class JobApplyCardWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 32),
                 child: Center(
                   child: Text(
-                    calculateAge(DateToAPIHelper.fromApiToLocal(
-                            job.myUser!.dob!.replaceAll("-", "/").toString())) +
-                        "   ${job.myUser?.gender}",
-                    style: kNormalText.copyWith(
-                        color: AppColor.darkGrey, fontSize: 16),
+                    calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) + "   ${job.myUser?.gender}",
+                    style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                     overflow: TextOverflow.fade,
                   ),
                 ),
@@ -140,8 +124,7 @@ class JobApplyCardWidget extends StatelessWidget {
               child: Center(
                 child: Text(
                   "${job.myUser?.phone}",
-                  style: kNormalText.copyWith(
-                      color: AppColor.darkGrey, fontSize: 16),
+                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),
               ),
@@ -161,15 +144,11 @@ class JobApplyCardWidget extends StatelessWidget {
               child: Center(
                 child: Text(
                   job.shiftList!.length > 1
-                      ? DateToAPIHelper.convertDateToString(
-                              job.shiftList!.first.date!) +
+                      ? DateToAPIHelper.convertDateToString(job.shiftList!.first.date!) +
                           " ~ " +
-                          DateToAPIHelper.convertDateToString(
-                              job.shiftList!.last.date!)
-                      : DateToAPIHelper.convertDateToString(
-                          job.shiftList!.first.date!),
-                  style: kNormalText.copyWith(
-                      color: AppColor.darkGrey, fontSize: 16),
+                          DateToAPIHelper.convertDateToString(job.shiftList!.last.date!)
+                      : DateToAPIHelper.convertDateToString(job.shiftList!.first.date!),
+                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),
               ),
@@ -178,9 +157,8 @@ class JobApplyCardWidget extends StatelessWidget {
             Expanded(
               child: Center(
                 child: Text(
-                  "${job.applyCount}回",
-                  style: kNormalText.copyWith(
-                      color: AppColor.darkGrey, fontSize: 16),
+                  "${countWorkingHistory(job.userId.toString())}回",
+                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),
               ),
@@ -190,6 +168,16 @@ class JobApplyCardWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  countWorkingHistory(String id) {
+    int i = 0;
+    for (var entry in entryListInWorkerManagment) {
+      if (entry.userId == id) {
+        i++;
+      }
+    }
+    return i.toString();
   }
 }
 
