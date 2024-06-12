@@ -6,7 +6,6 @@ import 'package:air_job_management/1_company_page/job_posting/widget/job_posting
 import 'package:air_job_management/api/company/worker_managment.dart';
 import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
-import 'package:air_job_management/models/worker_model/shift.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/job_posting.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
@@ -214,13 +213,13 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> wit
       print("Shift ${workerList.map((e) => e.shiftList!.map((e) => e.date.toString()))}");
       //Remove future shift data
       try {
-        for (var i = 0; i < workerList.length; i++) {
-          WorkerManagement worker = workerList[i];
-          for (ShiftModel shift in worker.shiftList!) {
+        for (var worker in workerList) {
+          for (var i = 0; i < worker.shiftList!.length; i++) {
+            var shift = worker.shiftList![i];
             DateTime date = DateTime(shift.date!.year, shift.date!.month, shift.date!.day, 0, 0, 0);
             print("Date $date x $now : ${date.isAfter(now)}");
             if (date.isAfter(now)) {
-              worker.shiftList!.remove(shift);
+              worker.shiftList!.removeAt(i);
             }
           }
         }
