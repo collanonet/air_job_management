@@ -126,6 +126,29 @@ class WorkerManagementApiService {
     }
   }
 
+  Future<List<WorkerManagement>> getAllJobApplyByJobPostingId(String jobPostingId) async {
+    try {
+      var doc = await jobRef.where("job_id", isEqualTo: jobPostingId).get();
+      if (doc.docs.isNotEmpty) {
+        List<WorkerManagement> list = [];
+        for (int i = 0; i < doc.docs.length; i++) {
+          WorkerManagement company = WorkerManagement.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          company.uid = doc.docs[i].id;
+          list.add(company);
+        }
+        for (var job in list) {
+          job.shiftList!.sort((a, b) => a.date!.compareTo(b.date!));
+        }
+        return list;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print("Error getAllJobApply =>> ${e.toString()}");
+      return [];
+    }
+  }
+
   Future<List<WorkerManagement>> getAllJobApplyForAUSerWithoutBranch(String companyId, String userId) async {
     try {
       var doc = await jobRef.where("company_id", isEqualTo: companyId).where("user_id", isEqualTo: userId).get();
@@ -284,12 +307,54 @@ class WorkerManagementApiService {
     }
   }
 
+  Future<bool> updateShiftStatusForDelete(List<ShiftModel> shiftList, String jobId,
+      {Branch? branch, Company? company, String? status, MyUser? myUser}) async {
+    try {
+      shiftList = shiftList.toSet().toList();
+      await jobRef.doc(jobId).update({"shift": shiftList.isEmpty ? [] : shiftList.map((e) => e.toJson())});
+      if (company != null && myUser != null) {
+        String managerName = "";
+        if (company.manager != []) {
+          managerName = company.manager!.first.kanji ?? "";
+        }
+        await NotificationService.sendEmailApplyShift(
+            token: myUser.fcmToken ?? "",
+            startTime: shiftList.isEmpty ? "00" : shiftList.first.startWorkTime ?? "",
+            endTime: shiftList.isEmpty ? "00" : shiftList.first.endWorkTime ?? "",
+            branchName: branch?.name ?? "",
+            managerName: managerName,
+            email: myUser.email ?? "",
+            msg: "Your Shift Apply",
+            name: myUser.nameKanJi ?? "",
+            userId: myUser.uid ?? "",
+            companyId: company.uid ?? "",
+            companyName: company.companyName ?? "",
+            branchId: branch?.id ?? "",
+            status: status!,
+            date: DateToAPIHelper.convertDateToString(DateTime.now()));
+      }
+      return true;
+    } catch (e) {
+      debugPrint("Error updateJobStatus =>> ${e.toString()}");
+      return false;
+    }
+  }
+
   Future<bool> updateJobStatus(String jobId, String status) async {
     try {
       await jobRef.doc(jobId).update({"status": status});
       return true;
     } catch (e) {
       debugPrint("Error updateJobStatus =>> ${e.toString()}");
+      return false;
+    }
+  }
+
+  Future<bool> deleteJobApply(String id) async {
+    try {
+      await jobRef.doc(id).delete();
+      return true;
+    } catch (e) {
       return false;
     }
   }

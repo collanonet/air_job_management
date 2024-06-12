@@ -3,7 +3,10 @@ import 'package:air_job_management/1_company_page/job_posting/restore_delete_job
 import 'package:air_job_management/1_company_page/job_posting/widget/create_or_delete.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/filter.dart';
 import 'package:air_job_management/1_company_page/job_posting/widget/job_posting_card_for_company.dart';
+import 'package:air_job_management/api/company/worker_managment.dart';
 import 'package:air_job_management/api/job_posting.dart';
+import 'package:air_job_management/models/company/worker_management.dart';
+import 'package:air_job_management/models/worker_model/shift.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/job_posting.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
@@ -100,8 +103,7 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> wit
                           context: context,
                           onDelete: () async {
                             Navigator.pop(context);
-                            await JobPostingApiService().deleteJobPosting(selectedJobPosting!.uid!);
-                            getData();
+                            onDelete();
                           });
                     }
                   },
@@ -201,6 +203,51 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> wit
         getData();
       }
     });
+  }
+
+  onDelete() async {
+    bool isDeleted = await JobPostingApiService().deleteJobPosting(selectedJobPosting!.uid!);
+    //Check condition for remove future shift data when job deleted
+    if (isDeleted) {
+      List<WorkerManagement> workerList = await WorkerManagementApiService().getAllJobApplyByJobPostingId(selectedJobPosting!.uid!);
+      DateTime now = DateTime.now();
+      print("Shift ${workerList.map((e) => e.shiftList!.map((e) => e.date.toString()))}");
+      //Remove future shift data
+      try {
+        for (var i = 0; i < workerList.length; i++) {
+          WorkerManagement worker = workerList[i];
+          for (ShiftModel shift in worker.shiftList!) {
+            DateTime date = DateTime(shift.date!.year, shift.date!.month, shift.date!.day, 0, 0, 0);
+            print("Date $date x $now : ${date.isAfter(now)}");
+            if (date.isAfter(now)) {
+              worker.shiftList!.remove(shift);
+            }
+          }
+        }
+      } catch (e) {
+        print("Error is $e");
+      }
+      //Delete Job Search
+      for (var i = 0; i < workerList.length; i++) {
+        WorkerManagement worker = workerList[i];
+        if (worker.shiftList?.isEmpty == true) {
+          workerList.removeAt(i);
+          await WorkerManagementApiService().deleteJobApply(worker.uid!);
+        }
+      }
+
+      //After delete
+      print("After delete ${workerList.map((e) => e.shiftList!.map((e) => e.date.toString()))}");
+      //Update shift data
+      await Future.wait([
+        for (var worker in workerList)
+          WorkerManagementApiService().updateShiftStatusForDelete(worker.shiftList ?? [], worker.uid!,
+              branch: authProvider.branch, myUser: worker.myUser!, status: "rejected", company: authProvider.myCompany)
+      ]);
+    } else {
+      toastMessageError("Job posting not found", context);
+    }
+    await getData();
   }
 
   buildList() {
