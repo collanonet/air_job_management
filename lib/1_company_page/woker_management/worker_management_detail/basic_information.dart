@@ -1,6 +1,10 @@
+import 'package:air_job_management/api/company/worker_managment.dart';
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/models/user.dart';
+import 'package:air_job_management/models/worker_model/shift.dart';
+import 'package:air_job_management/providers/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../pages/register/widget/radio_list_tile.dart';
@@ -10,6 +14,7 @@ import '../../../utils/japanese_text.dart';
 import '../../../utils/style.dart';
 import '../../../widgets/custom_textfield.dart';
 import '../../../widgets/title.dart';
+import '../../applicant/applicant_root.dart';
 
 class BasicInformationPage extends StatefulWidget {
   final MyUser? myUser;
@@ -22,6 +27,30 @@ class BasicInformationPage extends StatefulWidget {
 class _BasicInformationPageState extends State<BasicInformationPage> with AfterBuildMixin {
   MyUser? myUser;
   ScrollController scrollController = ScrollController();
+  String numberOfWorkTime = "";
+  String cancellationRate = "";
+  String lastMinuteCancellationRate = "";
+  List<ShiftModel> shiftList = [];
+
+  lastMinCountCancelTimes() {
+    int i = 0;
+    for (var shift in shiftList) {
+      if (shift.status == "canceled") {
+        i++;
+      }
+    }
+    return "${(i * 100) / shiftList.length}";
+  }
+
+  countWorkingHistory(String id) {
+    int i = 0;
+    for (var entry in entryForApplicant) {
+      if (entry.userId == id) {
+        i++;
+      }
+    }
+    return i.toString();
+  }
 
   @override
   void initState() {
@@ -87,7 +116,7 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
               ),
               AppSize.spaceHeight5,
               Text(
-                "5%",
+                "$lastMinuteCancellationRate%",
                 style: kNormalText.copyWith(fontSize: 16, fontFamily: "Normal"),
               )
             ],
@@ -108,7 +137,7 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
               ),
               AppSize.spaceHeight5,
               Text(
-                "10%",
+                "0%",
                 style: kNormalText.copyWith(fontSize: 16, fontFamily: "Normal"),
               )
             ],
@@ -129,7 +158,7 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
               ),
               AppSize.spaceHeight5,
               Text(
-                "25回",
+                "$numberOfWorkTime回",
                 style: kNormalText.copyWith(fontSize: 16, fontFamily: "Normal"),
               )
             ],
@@ -536,7 +565,14 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
   @override
   void afterBuild(BuildContext context) async {
     // TODO: implement afterBuild
+    var auth = Provider.of<AuthProvider>(context, listen: false);
     myUser = await UserApiServices().getProfileUser(myUser?.uid ?? "");
+    var listWorker = await WorkerManagementApiService().getAllJobApplyForAUSer(auth.myCompany?.uid ?? "", myUser?.uid ?? "", auth.branch?.id ?? "");
+    for (var job in listWorker) {
+      shiftList.addAll(job.shiftList ?? []);
+    }
+    lastMinuteCancellationRate = lastMinCountCancelTimes();
+    numberOfWorkTime = countWorkingHistory(myUser?.uid ?? "");
     setState(() {});
   }
 }

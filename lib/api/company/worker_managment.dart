@@ -277,7 +277,7 @@ class WorkerManagementApiService {
   Future<bool> updateShiftStatus(List<ShiftModel> shiftList, String jobId,
       {Branch? branch, Company? company, ShiftModel? shiftModel, MyUser? myUser}) async {
     try {
-      shiftList = shiftList.toSet().toList();
+      // shiftList = shiftList.toSet().toList();
       await jobRef.doc(jobId).update({"shift": shiftList.map((e) => e.toJson())});
       if (company != null && myUser != null) {
         String managerName = "";

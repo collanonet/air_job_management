@@ -622,10 +622,10 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                           : AppColor.whiteColor,
                                   title: "確定する",
                                   onPress: () {
-                                    if (shift.status != "completed") {
+                                    if (shift.status != "completed" && shift.status != "canceled") {
                                       updateJobStatus(job.shiftList!, shift, "確定する", index, job.uid!, job.myUser!);
                                     } else {
-                                      toastMessageError("この仕事は完了しました。", context);
+                                      toastMessageError("このアクションは完了またはキャンセルされたため、編集できません。", context);
                                     }
                                   },
                                 ),
@@ -642,10 +642,10 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                           : AppColor.whiteColor,
                                   title: "不承認にする",
                                   onPress: () {
-                                    if (shift.status != "completed") {
+                                    if (shift.status != "completed" && shift.status != "canceled") {
                                       updateJobStatus(job.shiftList!, shift, "キャンセル", index, job.uid!, job.myUser!);
                                     } else {
-                                      toastMessageError("この仕事は完了しました。", context);
+                                      toastMessageError("このアクションは完了またはキャンセルされたため、編集できません。", context);
                                     }
                                   },
                                 ),
@@ -729,19 +729,26 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
   }
 
   getData() async {
-    workerManagement = await WorkerManagementApiService().getAJob(widget.jobId);
-    jobPosting = await JobPostingApiService().getAJobPosting(workerManagement!.jobId!);
-    applicantList = await WorkerManagementApiService().getAllApplicantByJobId(workerManagement!.jobId!);
-    requestList = await RequestApiService().getRequestByDate(DateToAPIHelper.convertDateToString(widget.date), workerManagement!.jobId!);
-    print("Request Length ${requestList.length}");
-    for (var job in applicantList) {
-      var dateList = job.shiftList!.map((e) => e.date).toList();
-      if (job.myUser != null && dateList.contains(widget.date)) {
-        countApplyPeople++;
+    try {
+      workerManagement = await WorkerManagementApiService().getAJob(widget.jobId);
+      jobPosting = await JobPostingApiService().getAJobPosting(workerManagement?.jobId ?? "");
+      applicantList = await WorkerManagementApiService().getAllApplicantByJobId(workerManagement?.jobId ?? "");
+      requestList = await RequestApiService().getRequestByDate(DateToAPIHelper.convertDateToString(widget.date), workerManagement?.jobId ?? "");
+      print("Request Length ${requestList.length}");
+      for (var job in applicantList) {
+        var dateList = job.shiftList!.map((e) => e.date).toList();
+        if (job.myUser != null && dateList.contains(widget.date)) {
+          countApplyPeople++;
+        }
       }
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      toastMessageError("Shift not found, this shift may deleted in somewhere.", context);
     }
-    setState(() {
-      isLoading = false;
-    });
   }
 }

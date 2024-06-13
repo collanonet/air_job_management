@@ -1,3 +1,4 @@
+import 'package:air_job_management/helper/currency_format.dart';
 import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/models/widthraw.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
@@ -55,7 +56,7 @@ class WithdrawCardWidget extends StatelessWidget {
             Expanded(
               child: Center(
                 child: Text(
-                  "¥ ${withdrawModel.amount}",
+                  CurrencyFormatHelper.displayData(withdrawModel.amount.toString()),
                   style: kNormalText.copyWith(fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),

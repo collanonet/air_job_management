@@ -17,6 +17,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
+import '../../api/entry_exit.dart';
 import '../../api/user_api.dart';
 import '../../models/company.dart';
 import '../../providers/auth.dart';
@@ -26,6 +27,7 @@ import '../../utils/my_route.dart';
 import '../../utils/style.dart';
 import '../../widgets/empty_data.dart';
 import '../../widgets/loading.dart';
+import 'applicant_root.dart';
 
 class ApplicantListPage extends StatefulWidget {
   const ApplicantListPage({super.key});
@@ -58,6 +60,7 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
         authProvider.onChangeCompany(company);
         workerManagementProvider.setCompanyId = authProvider.myCompany?.uid ?? "";
         await workerManagementProvider.getApplicantList(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
+        entryForApplicant = await EntryExitApiService().getAllEntryList(authProvider.myCompany?.uid ?? "");
         workerManagementProvider.onChangeLoading(false);
       } else {
         context.go(MyRoute.companyLogin);
@@ -65,6 +68,7 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
     } else {
       workerManagementProvider.setCompanyId = authProvider.myCompany?.uid ?? "";
       await workerManagementProvider.getApplicantList(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
+      entryForApplicant = await EntryExitApiService().getAllEntryList(authProvider.myCompany?.uid ?? "");
       workerManagementProvider.onChangeLoading(false);
     }
   }

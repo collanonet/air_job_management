@@ -248,10 +248,10 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                                       : AppColor.whiteColor,
                               title: "確定する",
                               onPress: () {
-                                if (shift.status != "completed") {
+                                if (shift.status != "completed" && shift.status != "canceled") {
                                   updateJobStatus(index, shift, "確定する", widget.myUser!);
                                 } else {
-                                  toastMessageError("この仕事は完了しました。", context);
+                                  toastMessageError("このアクションは完了またはキャンセルされたため、編集できません。", context);
                                 }
                               },
                             ),
@@ -268,10 +268,10 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                                       : AppColor.whiteColor,
                               title: "不承認にする",
                               onPress: () {
-                                if (shift.status != "completed") {
+                                if (shift.status != "completed" && shift.status != "canceled") {
                                   updateJobStatus(index, shift, "キャンセル", widget.myUser!);
                                 } else {
-                                  toastMessageError("この仕事は完了しました。", context);
+                                  toastMessageError("このアクションは完了またはキャンセルされたため、編集できません。", context);
                                 }
                               },
                             ),

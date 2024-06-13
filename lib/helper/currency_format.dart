@@ -6,7 +6,7 @@ class CurrencyFormatHelper {
     if (amount == null || amount == "") {
       amount = "0";
     }
-    return '￥${oCcy.format(int.parse(amount)).toString()}';
+    return '￥${oCcy.format(double.parse(amount)).toString()}';
   }
 
   static String displayDataRightYen(String? amount) {
@@ -14,6 +14,6 @@ class CurrencyFormatHelper {
     if (amount == null || amount == "") {
       amount = "0";
     }
-    return '${oCcy.format(int.parse(amount)).toString()}円';
+    return '${oCcy.format(double.parse(amount)).toString()}円';
   }
 }

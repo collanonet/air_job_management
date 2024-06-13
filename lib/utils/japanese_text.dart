@@ -25,6 +25,7 @@ class JapaneseText {
   static String hired = "確定済";
   static String working = "稼働済";
   static String canceled = "キャンセル";
+  static String rejected = "キャンセル";
   static String pending = "保留中";
 
   static String expWelcome = "未経験歓迎";

@@ -14,6 +14,7 @@ import '../../../utils/app_size.dart';
 import '../../../utils/style.dart';
 import '../../job_posting/create_or_edit_job_posting.dart';
 import '../../woker_management/widget/job_card.dart';
+import '../applicant_root.dart';
 
 class ApplicantCardWidget extends StatelessWidget {
   final WorkerManagement job;
@@ -150,7 +151,7 @@ class ApplicantCardWidget extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "      ${job.applyCount ?? 0}回",
+                  "      ${countWorkingHistory(job.userId.toString())}回",
                   style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),
@@ -175,5 +176,15 @@ class ApplicantCardWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  countWorkingHistory(String id) {
+    int i = 0;
+    for (var entry in entryForApplicant) {
+      if (entry.userId == id) {
+        i++;
+      }
+    }
+    return i.toString();
   }
 }

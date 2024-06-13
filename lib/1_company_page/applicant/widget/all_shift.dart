@@ -249,10 +249,10 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage> with Afte
                                       : AppColor.whiteColor,
                               title: "確定する",
                               onPress: () {
-                                if (shift.status != "completed") {
+                                if (shift.status != "completed" && shift.status != "canceled") {
                                   updateJobStatus(index, shift, "確定する", widget.myUser!);
                                 } else {
-                                  toastMessageError("この仕事は完了しました。", context);
+                                  toastMessageError("このアクションは完了またはキャンセルされたため、編集できません。", context);
                                 }
                               },
                             ),
@@ -269,10 +269,10 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage> with Afte
                                       : AppColor.whiteColor,
                               title: "不承認にする",
                               onPress: () {
-                                if (shift.status != "completed") {
+                                if (shift.status != "completed" && shift.status != "canceled") {
                                   updateJobStatus(index, shift, "キャンセル", widget.myUser!);
                                 } else {
-                                  toastMessageError("この仕事は完了しました。", context);
+                                  toastMessageError("このアクションは完了またはキャンセルされたため、編集できません。", context);
                                 }
                               },
                             ),
@@ -301,16 +301,24 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage> with Afte
 
   getData() async {
     shiftList = [];
-    workerManagement = await WorkerManagementApiService().getAJob(widget.id);
-    var job = await SearchJobApi().getASearchJob(widget.searchJobId);
-    shiftList = workerManagement?.shiftList ?? [];
-    for (var shift in shiftList) {
-      shift.myJob = job;
+    try {
+      workerManagement = await WorkerManagementApiService().getAJob(widget.id);
+      var job = await SearchJobApi().getASearchJob(widget.searchJobId);
+      shiftList = workerManagement?.shiftList ?? [];
+      for (var shift in shiftList) {
+        shift.myJob = job;
+      }
+      shiftList.sort((a, b) => b.date!.compareTo(a.date!));
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      print("Error is $e");
+      setState(() {
+        isLoading = false;
+      });
+      toastMessageError("Not found job, this job may deleted", context);
     }
-    shiftList.sort((a, b) => b.date!.compareTo(a.date!));
-    setState(() {
-      isLoading = false;
-    });
   }
 
   updateJobStatus(int index, ShiftModel shiftModel, String action, MyUser myUser) {

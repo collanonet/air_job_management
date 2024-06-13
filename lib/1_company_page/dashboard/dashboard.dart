@@ -1,3 +1,4 @@
+import 'package:air_job_management/1_company_page/applicant/applicant_root.dart';
 import 'package:air_job_management/1_company_page/dashboard/chat.dart';
 import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/helper/japan_date_time.dart';
@@ -16,6 +17,7 @@ import '../../api/user_api.dart';
 import '../../api/withraw.dart';
 import '../../models/company.dart';
 import '../../models/widthraw.dart';
+import '../../providers/company/worker_management.dart';
 import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
 import '../../utils/my_route.dart';
@@ -35,6 +37,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
   late AuthProvider authProvider;
   late DashboardForCompanyProvider provider;
   late HomeProvider homeProvider;
+  late WorkerManagementProvider workerManagementProvider;
 
   @override
   void initState() {
@@ -47,6 +50,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
     homeProvider = Provider.of<HomeProvider>(context);
     authProvider = Provider.of<AuthProvider>(context);
     provider = Provider.of<DashboardForCompanyProvider>(context);
+    workerManagementProvider = Provider.of<WorkerManagementProvider>(context);
     return SizedBox(
       width: AppSize.getDeviceWidth(context),
       height: AppSize.getDeviceHeight(context),
@@ -300,19 +304,34 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
                 return InkWell(
                   onTap: () async {
                     // context.go(MyRoute.companyShift);
-                    showDialog(
-                        context: context,
-                        builder: (context) => Padding(
-                              padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceHeight(context) * 0.1, vertical: 32),
-                              child: ShiftDetailDialogWidget(
-                                isRequest: notification.isJobApply == true ? false : true,
-                                startTime: "",
-                                endTime: "",
-                                jobId: notification.jobId!,
-                                date: notification.applyDate!,
-                                onSuccess: () => getData(),
-                              ),
-                            ));
+                    if (notification.isJobApply == true) {
+                      workerManagementProvider.onChangeSelectMenu(workerManagementProvider.tabMenu[2]);
+                      showDialog(
+                          context: context,
+                          builder: (context) => Padding(
+                                padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceHeight(context) * 0.1, vertical: 32),
+                                child: Scaffold(
+                                  body: ApplicantRootPage(
+                                    isView: true,
+                                    uid: notification.jobId ?? "",
+                                  ),
+                                ),
+                              ));
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (context) => Padding(
+                                padding: EdgeInsets.symmetric(horizontal: AppSize.getDeviceHeight(context) * 0.1, vertical: 32),
+                                child: ShiftDetailDialogWidget(
+                                  isRequest: notification.isJobApply == true ? false : true,
+                                  startTime: "",
+                                  endTime: "",
+                                  jobId: notification.jobId!,
+                                  date: notification.applyDate!,
+                                  onSuccess: () => getData(),
+                                ),
+                              ));
+                    }
                     await JobPostingApiService().updateNotificationToRead(notification.uid ?? "");
                     getData();
                   },
