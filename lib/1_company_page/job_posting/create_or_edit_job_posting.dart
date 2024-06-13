@@ -127,6 +127,10 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
         MessageWidget.show("勤務地を選択してください");
       } else {
         try {
+          bool isTheSameMajorJob = false;
+          if (provider.jobPosting?.majorOccupation == provider.selectedSpecificOccupation) {
+            isTheSameMajorJob = true;
+          }
           provider.onChangeLoading(true);
           List<String> urlPosterList = [];
           for (int i = 0; i < provider.jobPosterProfile.length; i++) {
@@ -167,6 +171,9 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
               endTime: dateTimeToHourAndMinute(provider.endWorkingTime),
             );
             provider.jobPosting?.updateList!.add(update);
+            if (isTheSameMajorJob == false) {
+              provider.jobPosting?.updateList = [];
+            }
           } else {
             var update = UpdateHistory(
               recruitment: provider.numberOfRecruitPeople.text.toString(),
@@ -236,7 +243,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
             MessageWidget.show(
                 provider.jobPosting?.uid != null && widget.isCopyPaste == null ? JapaneseText.successUpdate : JapaneseText.successCreate);
             await provider.getAllJobPost(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
-            if (widget.isCopyPaste == true) {
+            if (widget.isCopyPaste == true && isTheSameMajorJob) {
               await JobPostingApiService().updateJobHistory(widget.jobPosting ?? "", provider.jobPosting?.updateList ?? []);
               Navigator.pop(context);
             } else {

@@ -45,7 +45,7 @@ class CreateOrDeleteJobPostingForCompany extends StatelessWidget {
             AppSize.spaceWidth16,
             SizedBox(
               width: 180,
-              child: ButtonWidget(radius: 25, title: "コピーして作成", color: AppColor.primaryColor, onPress: () => onCopyPaste()),
+              child: ButtonWidget(radius: 25, title: "ひな形から求人作成", color: AppColor.primaryColor, onPress: () => onCopyPaste()),
             ),
           ],
         ),

@@ -92,7 +92,7 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(25),
                     child: Center(
                       child: Text(
-                        "シフト枠を作成する",
+                        "編集",
                         style: kTitleText.copyWith(color: AppColor.whiteColor, fontSize: 13),
                         overflow: TextOverflow.fade,
                       ),
