@@ -1,6 +1,8 @@
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/models/user.dart';
+import 'package:air_job_management/providers/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../pages/register/widget/radio_list_tile.dart';
@@ -10,6 +12,10 @@ import '../../../utils/japanese_text.dart';
 import '../../../utils/style.dart';
 import '../../../widgets/custom_textfield.dart';
 import '../../../widgets/title.dart';
+import '../1_company_page/applicant/applicant_root.dart';
+import '../api/company/worker_managment.dart';
+import '../api/entry_exit.dart';
+import '../models/worker_model/shift.dart';
 
 class UserBasicInformationPage extends StatefulWidget {
   final MyUser? myUser;
@@ -19,7 +25,8 @@ class UserBasicInformationPage extends StatefulWidget {
   State<UserBasicInformationPage> createState() => _BasicInformationPageState();
 }
 
-class _BasicInformationPageState extends State<UserBasicInformationPage> with AfterBuildMixin {
+class _BasicInformationPageState extends State<UserBasicInformationPage>
+    with AfterBuildMixin {
   MyUser? myUser;
   ScrollController scrollController = ScrollController();
 
@@ -27,6 +34,31 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
   void initState() {
     myUser = widget.myUser;
     super.initState();
+  }
+
+  String numberOfWorkTime = "";
+  String cancellationRate = "";
+  String lastMinuteCancellationRate = "";
+  List<ShiftModel> shiftList = [];
+
+  lastMinCountCancelTimes() {
+    int i = 0;
+    for (var shift in shiftList) {
+      if (shift.status == "canceled") {
+        i++;
+      }
+    }
+    return i == 0 ? "0" : "${(i * 100) / shiftList.length}";
+  }
+
+  countWorkingHistory(String id) {
+    int i = 0;
+    for (var entry in entryForApplicant) {
+      if (entry.userId == id) {
+        i++;
+      }
+    }
+    return i.toString();
   }
 
   @override
@@ -86,7 +118,7 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
               ),
               AppSize.spaceHeight5,
               Text(
-                "5%",
+                "$lastMinuteCancellationRate%",
                 style: kNormalText.copyWith(fontSize: 16, fontFamily: "Normal"),
               )
             ],
@@ -107,7 +139,7 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
               ),
               AppSize.spaceHeight5,
               Text(
-                "10%",
+                "0%",
                 style: kNormalText.copyWith(fontSize: 16, fontFamily: "Normal"),
               )
             ],
@@ -128,7 +160,7 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
               ),
               AppSize.spaceHeight5,
               Text(
-                "25回",
+                "$numberOfWorkTime回",
                 style: kNormalText.copyWith(fontSize: 16, fontFamily: "Normal"),
               )
             ],
@@ -160,7 +192,8 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
                 width: AppSize.getDeviceWidth(context) * 0.2,
                 child: PrimaryTextField(
                   hint: "",
-                  controller: TextEditingController(text: "${myUser?.nameKanJi}"),
+                  controller:
+                      TextEditingController(text: "${myUser?.nameKanJi}"),
                   isRequired: false,
                   readOnly: true,
                 ),
@@ -324,7 +357,8 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
                 width: AppSize.getDeviceWidth(context) * 0.2,
                 child: PrimaryTextField(
                   hint: "",
-                  controller: TextEditingController(text: "${myUser?.affiliation}"),
+                  controller:
+                      TextEditingController(text: "${myUser?.affiliation}"),
                   isRequired: false,
                   readOnly: true,
                 ),
@@ -347,8 +381,12 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
                 width: AppSize.getDeviceWidth(context) * 0.4,
                 child: PrimaryTextField(
                   hint: "",
-                  controller:
-                      TextEditingController(text: myUser?.otherQualificationList!.map((e) => e).toString().replaceAll("(", "").replaceAll(")", "")),
+                  controller: TextEditingController(
+                      text: myUser?.otherQualificationList!
+                          .map((e) => e)
+                          .toString()
+                          .replaceAll("(", "")
+                          .replaceAll(")", "")),
                   isRequired: false,
                   readOnly: true,
                 ),
@@ -380,7 +418,8 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
                 width: AppSize.getDeviceWidth(context) * 0.13,
                 child: PrimaryTextField(
                   hint: "",
-                  controller: TextEditingController(text: myUser?.postalCode ?? ""),
+                  controller:
+                      TextEditingController(text: myUser?.postalCode ?? ""),
                   isRequired: false,
                   readOnly: true,
                 ),
@@ -403,7 +442,9 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
                 width: AppSize.getDeviceWidth(context) * 0.13,
                 child: PrimaryTextField(
                   hint: "",
-                  controller: TextEditingController(text: "${myUser?.city ?? myUser?.province ?? myUser?.street}"),
+                  controller: TextEditingController(
+                      text:
+                          "${myUser?.city ?? myUser?.province ?? myUser?.street}"),
                   isRequired: false,
                   readOnly: true,
                 ),
@@ -527,7 +568,8 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
     return Container(
       width: 320,
       height: 200,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Color(0xffF0F3F5)),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16), color: Color(0xffF0F3F5)),
       child: Image.network(url),
     );
   }
@@ -535,7 +577,17 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
   @override
   void afterBuild(BuildContext context) async {
     // TODO: implement afterBuild
+    var auth = Provider.of<AuthProvider>(context, listen: false);
     myUser = await UserApiServices().getProfileUser(myUser?.uid ?? "");
+    entryForApplicant =
+        await EntryExitApiService().getAllEntryList(auth.myCompany?.uid ?? "");
+    var listWorker = await WorkerManagementApiService().getAllJobApplyForAUSer(
+        auth.myCompany?.uid ?? "", myUser?.uid ?? "", auth.branch?.id ?? "");
+    for (var job in listWorker) {
+      shiftList.addAll(job.shiftList ?? []);
+    }
+    lastMinuteCancellationRate = lastMinCountCancelTimes();
+    numberOfWorkTime = countWorkingHistory(myUser?.uid ?? "");
     setState(() {});
   }
 }

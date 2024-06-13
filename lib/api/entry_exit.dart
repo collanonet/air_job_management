@@ -15,11 +15,36 @@ class EntryExitApiService {
       List<EntryExitHistory> entryList = [];
       if (doc.size > 0) {
         for (var data in doc.docs) {
-          EntryExitHistory entryExitHistory = EntryExitHistory.fromJson(data.data());
+          EntryExitHistory entryExitHistory =
+              EntryExitHistory.fromJson(data.data());
           entryExitHistory.uid = data.id;
           entryList.add(entryExitHistory);
         }
-        entryList.sort((a, b) => b.workDateToDateTime!.compareTo(a.workDateToDateTime!));
+        entryList.sort(
+            (a, b) => b.workDateToDateTime!.compareTo(a.workDateToDateTime!));
+        return entryList;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      Logger.printLog("Error =>> ${e.toString()}");
+      return [];
+    }
+  }
+
+  Future<List<EntryExitHistory>> getAllEntryListByUser(String id) async {
+    try {
+      var doc = await entryRef.where("userId", isEqualTo: id).get();
+      List<EntryExitHistory> entryList = [];
+      if (doc.size > 0) {
+        for (var data in doc.docs) {
+          EntryExitHistory entryExitHistory =
+              EntryExitHistory.fromJson(data.data());
+          entryExitHistory.uid = data.id;
+          entryList.add(entryExitHistory);
+        }
+        entryList.sort(
+            (a, b) => b.workDateToDateTime!.compareTo(a.workDateToDateTime!));
         return entryList;
       } else {
         return [];
@@ -40,21 +65,27 @@ class EntryExitApiService {
         entry.scheduleEndWorkingTime = "17:00";
         entry.startWorkingTime = "09:00";
         entry.endWorkingTime = "19:00";
-        var data = calculateWorkingTime(entry.startWorkingTime, entry.endWorkingTime, "01:00");
+        var data = calculateWorkingTime(
+            entry.startWorkingTime, entry.endWorkingTime, "01:00");
         entry.workingHour = data[0];
         entry.workingMinute = data[1];
 
-        var actualWorkData = calculateWorkingTime(entry.scheduleStartWorkingTime, entry.scheduleEndWorkingTime, "01:00");
+        var actualWorkData = calculateWorkingTime(
+            entry.scheduleStartWorkingTime,
+            entry.scheduleEndWorkingTime,
+            "01:00");
         entry.actualWorkingHour = actualWorkData[0];
         entry.actualWorkingMinute = actualWorkData[1];
 
-        var breakTimeData = calculateBreakTime(entry.scheduleEndBreakTime, entry.scheduleStartBreakTime);
+        var breakTimeData = calculateBreakTime(
+            entry.scheduleEndBreakTime, entry.scheduleStartBreakTime);
         entry.breakingTimeHour = breakTimeData[0];
         entry.breakingTimeMinute = breakTimeData[1];
 
         ///Calculate late data
         bool isLate = false;
-        List<int> lateData = calculateLateTime(entry.scheduleStartWorkingTime, entry.startWorkingTime);
+        List<int> lateData = calculateLateTime(
+            entry.scheduleStartWorkingTime, entry.startWorkingTime);
         int lateHour = lateData[0];
         int lateMinute = lateData[1];
         if (lateHour > 0 || lateMinute > 0) {
@@ -68,7 +99,8 @@ class EntryExitApiService {
         bool isLeaveEarly = false;
         int leaveEarlyHour = 0;
         int leaveEarlyMinute = 0;
-        List<int> leaveData = calculateBreakTime(entry.endWorkingTime, entry.scheduleEndWorkingTime);
+        List<int> leaveData = calculateBreakTime(
+            entry.endWorkingTime, entry.scheduleEndWorkingTime);
         leaveEarlyHour = leaveData[0];
         leaveEarlyMinute = leaveData[1];
         if (leaveEarlyMinute > 0 || leaveEarlyHour > 0) {
@@ -79,19 +111,26 @@ class EntryExitApiService {
         entry.leaveEarlyHour = leaveEarlyHour;
 
         ///Calculate Overtime
-        List<int> overTimeData = calculateOvertime(entry.scheduleEndWorkingTime, entry.endWorkingTime, "00:00");
+        List<int> overTimeData = calculateOvertime(
+            entry.scheduleEndWorkingTime, entry.endWorkingTime, "00:00");
         entry.overtime =
             "${DateToAPIHelper.formatTimeTwoDigits(overTimeData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(overTimeData[1].toString())}";
 
         ///within statutory
-        var scheduleWorkingData = calculateWorkingTime(entry.scheduleStartWorkingTime, entry.scheduleEndWorkingTime, "01:00");
-        List<int> withinStatutoryData =
-            calculateWorkingTime("${scheduleWorkingData[0]}:${scheduleWorkingData[1]}", "$overTimeLegalLimit:00", "00:00");
+        var scheduleWorkingData = calculateWorkingTime(
+            entry.scheduleStartWorkingTime,
+            entry.scheduleEndWorkingTime,
+            "01:00");
+        List<int> withinStatutoryData = calculateWorkingTime(
+            "${scheduleWorkingData[0]}:${scheduleWorkingData[1]}",
+            "$overTimeLegalLimit:00",
+            "00:00");
         entry.overtimeWithinLegalLimit =
             "${DateToAPIHelper.formatTimeTwoDigits(withinStatutoryData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(withinStatutoryData[1].toString())}";
 
         ///non statutory
-        List<int> nonStatutoryData = calculateBreakTime(entry.overtime, entry.overtimeWithinLegalLimit);
+        List<int> nonStatutoryData =
+            calculateBreakTime(entry.overtime, entry.overtimeWithinLegalLimit);
         entry.nonStatutoryOvertime =
             "${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[1].toString())}";
 
@@ -114,21 +153,25 @@ class EntryExitApiService {
       entry.scheduleEndWorkingTime = "17:00";
       entry.startWorkingTime = "09:00";
       entry.endWorkingTime = "19:00";
-      var data = calculateWorkingTime(entry.startWorkingTime, entry.endWorkingTime, "01:00");
+      var data = calculateWorkingTime(
+          entry.startWorkingTime, entry.endWorkingTime, "01:00");
       entry.workingHour = data[0];
       entry.workingMinute = data[1];
 
-      var actualWorkData = calculateWorkingTime(entry.scheduleStartWorkingTime, entry.scheduleEndWorkingTime, "01:00");
+      var actualWorkData = calculateWorkingTime(entry.scheduleStartWorkingTime,
+          entry.scheduleEndWorkingTime, "01:00");
       entry.actualWorkingHour = actualWorkData[0];
       entry.actualWorkingMinute = actualWorkData[1];
 
-      var breakTimeData = calculateBreakTime(entry.scheduleEndBreakTime, entry.scheduleStartBreakTime);
+      var breakTimeData = calculateBreakTime(
+          entry.scheduleEndBreakTime, entry.scheduleStartBreakTime);
       entry.breakingTimeHour = breakTimeData[0];
       entry.breakingTimeMinute = breakTimeData[1];
 
       ///Calculate late data
       bool isLate = false;
-      List<int> lateData = calculateLateTime(entry.scheduleStartWorkingTime, entry.startWorkingTime);
+      List<int> lateData = calculateLateTime(
+          entry.scheduleStartWorkingTime, entry.startWorkingTime);
       int lateHour = lateData[0];
       int lateMinute = lateData[1];
       if (lateHour > 0 || lateMinute > 0) {
@@ -142,7 +185,8 @@ class EntryExitApiService {
       bool isLeaveEarly = false;
       int leaveEarlyHour = 0;
       int leaveEarlyMinute = 0;
-      List<int> leaveData = calculateBreakTime(entry.endWorkingTime, entry.scheduleEndWorkingTime);
+      List<int> leaveData = calculateBreakTime(
+          entry.endWorkingTime, entry.scheduleEndWorkingTime);
       leaveEarlyHour = leaveData[0];
       leaveEarlyMinute = leaveData[1];
       if (leaveEarlyMinute > 0 || leaveEarlyHour > 0) {
@@ -153,18 +197,26 @@ class EntryExitApiService {
       entry.leaveEarlyHour = leaveEarlyHour;
 
       ///Calculate Overtime
-      List<int> overTimeData = calculateOvertime(entry.scheduleEndWorkingTime, entry.endWorkingTime, "00:00");
+      List<int> overTimeData = calculateOvertime(
+          entry.scheduleEndWorkingTime, entry.endWorkingTime, "00:00");
       entry.overtime =
           "${DateToAPIHelper.formatTimeTwoDigits(overTimeData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(overTimeData[1].toString())}";
 
       ///within statutory
-      var scheduleWorkingData = calculateWorkingTime(entry.scheduleStartWorkingTime, entry.scheduleEndWorkingTime, "01:00");
-      List<int> withinStatutoryData = calculateWorkingTime("${scheduleWorkingData[0]}:${scheduleWorkingData[1]}", "$overTimeLegalLimit:00", "00:00");
+      var scheduleWorkingData = calculateWorkingTime(
+          entry.scheduleStartWorkingTime,
+          entry.scheduleEndWorkingTime,
+          "01:00");
+      List<int> withinStatutoryData = calculateWorkingTime(
+          "${scheduleWorkingData[0]}:${scheduleWorkingData[1]}",
+          "$overTimeLegalLimit:00",
+          "00:00");
       entry.overtimeWithinLegalLimit =
           "${DateToAPIHelper.formatTimeTwoDigits(withinStatutoryData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(withinStatutoryData[1].toString())}";
 
       ///non statutory
-      List<int> nonStatutoryData = calculateBreakTime(entry.overtime, entry.overtimeWithinLegalLimit);
+      List<int> nonStatutoryData =
+          calculateBreakTime(entry.overtime, entry.overtimeWithinLegalLimit);
       entry.nonStatutoryOvertime =
           "${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[1].toString())}";
 
@@ -176,7 +228,8 @@ class EntryExitApiService {
     }
   }
 
-  Future<bool> updateReview(String entryId, String userId, Review review) async {
+  Future<bool> updateReview(
+      String entryId, String userId, Review review) async {
     try {
       print("update review $userId, $entryId, ${review.rate}");
       await entryRef.doc(entryId).update({"review": review.toJson()});

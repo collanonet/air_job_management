@@ -27,7 +27,9 @@ class ApplicantCardWidget extends StatelessWidget {
       width: AppSize.getDeviceWidth(context),
       padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
       margin: const EdgeInsets.only(bottom: 4, left: 0, right: 0),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), border: Border.all(width: 1, color: AppColor.primaryColor)),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(width: 1, color: AppColor.primaryColor)),
       child: InkWell(
         onTap: () {
           // provider.setJob = job;
@@ -50,7 +52,9 @@ class ApplicantCardWidget extends StatelessWidget {
                       errorWidget: (_, __, ___) => Container(
                         width: 48,
                         height: 48,
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            color: AppColor.primaryColor),
                         child: Center(
                           child: Icon(
                             Icons.person,
@@ -70,33 +74,45 @@ class ApplicantCardWidget extends StatelessWidget {
                           // context.go("/company/worker-management/${job.uid}");
                           context.go("/company/applicant/${job.uid}");
                         } else {
-                          context.go("/company/worker-management/outside-worker/${job.uid}");
+                          context.go(
+                              "/company/worker-management/outside-worker/${job.uid}");
                         }
                       },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                            Expanded(
-                              child: Text(
-                                (job.myUser?.nameKanJi != null && job.myUser?.nameKanJi != "") ? "${job.myUser?.nameKanJi}" : JapaneseText.empty,
-                                style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
-                                overflow: TextOverflow.fade,
-                              ),
-                            ),
-                            AppSize.spaceWidth5,
-                            job.userId != null
-                                ? const SizedBox()
-                                : Icon(
-                                    Icons.star,
-                                    color: AppColor.primaryColor,
-                                  )
-                          ]),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    (job.myUser?.nameKanJi != null &&
+                                            job.myUser?.nameKanJi != "")
+                                        ? "${job.myUser?.nameKanJi}"
+                                        : JapaneseText.empty,
+                                    style: kTitleText.copyWith(
+                                        color: AppColor.primaryColor,
+                                        fontSize: 15),
+                                    overflow: TextOverflow.fade,
+                                  ),
+                                ),
+                                AppSize.spaceWidth5,
+                                job.userId != null
+                                    ? const SizedBox()
+                                    : Icon(
+                                        Icons.star,
+                                        color: AppColor.primaryColor,
+                                      )
+                              ]),
                           Text(
-                            calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) +
+                            calculateAge(DateToAPIHelper.fromApiToLocal(job
+                                    .myUser!.dob!
+                                    .replaceAll("-", "/")
+                                    .toString())) +
                                 "   ${job.myUser?.gender == null || job.myUser?.gender == "" ? JapaneseText.empty : job.myUser?.gender}",
-                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 14),
+                            style: kNormalText.copyWith(
+                                color: AppColor.darkGrey, fontSize: 14),
                             overflow: TextOverflow.fade,
                           ),
                         ],
@@ -111,7 +127,10 @@ class ApplicantCardWidget extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Center(
-                  child: job.shiftList!.isNotEmpty ? StatusHelper().displayStatus(job.shiftList!.map((e) => e.status).toString()) : SizedBox(),
+                  child: job.shiftList!.isNotEmpty
+                      ? StatusHelper().displayStatus(
+                          job.shiftList!.map((e) => e.status).toString())
+                      : SizedBox(),
                 ),
               ),
               flex: 1,
@@ -129,7 +148,8 @@ class ApplicantCardWidget extends StatelessWidget {
                 child: Center(
                   child: Text(
                     "${job.jobTitle}",
-                    style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 16),
+                    style: kNormalText.copyWith(
+                        color: AppColor.primaryColor, fontSize: 16),
                     overflow: TextOverflow.fade,
                   ),
                 ),
@@ -141,7 +161,8 @@ class ApplicantCardWidget extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "  ${toJapanDateTime(job.createdDate ?? DateTime.now())}",
-                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                  style: kNormalText.copyWith(
+                      color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),
               ),
@@ -152,7 +173,8 @@ class ApplicantCardWidget extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "      ${countWorkingHistory(job.userId.toString())}回",
-                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                  style: kNormalText.copyWith(
+                      color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),
               ),
@@ -162,11 +184,15 @@ class ApplicantCardWidget extends StatelessWidget {
               child: Center(
                 child: Text(
                   job.shiftList!.length > 1
-                      ? DateToAPIHelper.convertDateToString(job.shiftList!.first.date!) +
+                      ? DateToAPIHelper.convertDateToString(
+                              job.shiftList!.first.date!) +
                           " ~ " +
-                          DateToAPIHelper.convertDateToString(job.shiftList!.last.date!)
-                      : DateToAPIHelper.convertDateToString(job.shiftList!.first.date!),
-                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                          DateToAPIHelper.convertDateToString(
+                              job.shiftList!.last.date!)
+                      : DateToAPIHelper.convertDateToString(
+                          job.shiftList!.first.date!),
+                  style: kNormalText.copyWith(
+                      color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),
               ),
@@ -177,14 +203,14 @@ class ApplicantCardWidget extends StatelessWidget {
       ),
     );
   }
+}
 
-  countWorkingHistory(String id) {
-    int i = 0;
-    for (var entry in entryForApplicant) {
-      if (entry.userId == id) {
-        i++;
-      }
+countWorkingHistory(String id) {
+  int i = 0;
+  for (var entry in entryForApplicant) {
+    if (entry.userId == id) {
+      i++;
     }
-    return i.toString();
   }
+  return i.toString();
 }

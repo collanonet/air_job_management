@@ -1,5 +1,6 @@
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
+import 'package:air_job_management/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -47,7 +48,7 @@ class TabSectionWidget extends StatelessWidget {
               AppSize.spaceHeight8,
               Text(
                 title,
-                style: TextStyle(
+                style: kNormalText.copyWith(
                     color: homeProvider.selectedItemForCompany == title
                         ? AppColor.whiteColor
                         : Colors.grey,
