@@ -17,7 +17,9 @@ class SearchJobApi {
     try {
       var doc = await search.doc(id).get();
       if (doc.exists) {
-        return SearchJob.fromJson(doc.data()!);
+        var job = SearchJob.fromJson(doc.data()!);
+        job.uid = doc.id;
+        return job;
       } else {
         return null;
       }
@@ -27,10 +29,16 @@ class SearchJobApi {
     }
   }
 
-  Future<bool> createJobRequest(SearchJob job, MyUser myUser, List<ShiftModel> shiftList) async {
+  Future<bool> createJobRequest(
+      SearchJob job, MyUser myUser, List<ShiftModel> shiftList) async {
     try {
-      var doc = await jobcollection.where("user_id", isEqualTo: myUser.uid).where("status", isEqualTo: "pending").get();
-      List<String> dateList = shiftList.map((e) => DateToAPIHelper.convertDateToString(e.date!)).toList();
+      var doc = await jobcollection
+          .where("user_id", isEqualTo: myUser.uid)
+          .where("status", isEqualTo: "pending")
+          .get();
+      List<String> dateList = shiftList
+          .map((e) => DateToAPIHelper.convertDateToString(e.date!))
+          .toList();
       if (doc.size > 0) {
         for (var data in doc.docs) {
           var d = data.data()["shift"] as List;
@@ -73,12 +81,18 @@ class SearchJobApi {
   }
 
   Future<bool> createJobRequestForOutsideUser(
-      String? branchId, String? docId, SearchJob job, MyUser myUser, List<ShiftModel> shiftList, List<String> urlFile) async {
+      String? branchId,
+      String? docId,
+      SearchJob job,
+      MyUser myUser,
+      List<ShiftModel> shiftList,
+      List<String> urlFile) async {
     try {
       if (docId == null) {
         var doc = await jobcollection
             .where("job_id", isEqualTo: job.uid)
-            .where("username", isEqualTo: "${myUser.nameKanJi} ${myUser.nameFu}")
+            .where("username",
+                isEqualTo: "${myUser.nameKanJi} ${myUser.nameFu}")
             .where("status", isEqualTo: "pending")
             .where("branch_id", isEqualTo: branchId)
             .get();

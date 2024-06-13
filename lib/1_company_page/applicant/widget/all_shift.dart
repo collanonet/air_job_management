@@ -24,13 +24,18 @@ class AllShiftApplicantPage extends StatefulWidget {
   final String id;
   final MyUser myUser;
   final String searchJobId;
-  const AllShiftApplicantPage({super.key, required this.id, required this.myUser, required this.searchJobId});
+  const AllShiftApplicantPage(
+      {super.key,
+      required this.id,
+      required this.myUser,
+      required this.searchJobId});
 
   @override
   State<AllShiftApplicantPage> createState() => _AllShiftApplicantPageState();
 }
 
-class _AllShiftApplicantPageState extends State<AllShiftApplicantPage> with AfterBuildMixin {
+class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
+    with AfterBuildMixin {
   WorkerManagement? workerManagement;
   bool isLoading = true;
   late AuthProvider authProvider;
@@ -122,19 +127,22 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage> with Afte
                   children: [
                     Expanded(
                       child: Center(
-                        child: Text("求人タイトル", style: normalTextStyle.copyWith(fontSize: 13)),
+                        child: Text("求人タイトル",
+                            style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
                       flex: 3,
                     ),
                     Expanded(
                       child: Center(
-                        child: Text("応募稼働日", style: normalTextStyle.copyWith(fontSize: 13)),
+                        child: Text("応募稼働日",
+                            style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
                       flex: 2,
                     ),
                     Expanded(
                       child: Center(
-                        child: Text("状態", style: normalTextStyle.copyWith(fontSize: 13)),
+                        child: Text("状態",
+                            style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
                       flex: 3,
                     ),
@@ -160,15 +168,20 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage> with Afte
         return ListView.separated(
             itemCount: shiftList.length,
             shrinkWrap: true,
-            separatorBuilder: (context, index) => Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == shiftList.length ? 20 : 0)),
+            separatorBuilder: (context, index) => Padding(
+                padding: EdgeInsets.only(
+                    top: 10, bottom: index + 1 == shiftList.length ? 20 : 0)),
             itemBuilder: (context, index) {
               ShiftModel shift = shiftList[index];
               return Container(
                 // height: 110,
                 width: AppSize.getDeviceWidth(context),
-                padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
+                padding: const EdgeInsets.only(
+                    top: 16, bottom: 16, left: 32, right: 16),
                 margin: const EdgeInsets.only(bottom: 4, left: 0, right: 0),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), border: Border.all(width: 1, color: AppColor.primaryColor)),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(width: 1, color: AppColor.primaryColor)),
                 child: Row(
                   children: [
                     Expanded(
@@ -179,7 +192,9 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage> with Afte
                           Container(
                             width: 48,
                             height: 48,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                color: AppColor.primaryColor),
                             child: Center(
                               child: Icon(
                                 Icons.folder_outlined,
@@ -198,14 +213,17 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage> with Afte
                                   onTap: () => showDialog(
                                       context: context,
                                       builder: (context) => AlertDialog(
-                                            content: CreateOrEditJobPostingPageForCompany(
+                                            content:
+                                                CreateOrEditJobPostingPageForCompany(
                                               isView: true,
-                                              jobPosting: shift.myJob!.uid,
+                                              jobPosting: shift.myJob?.uid,
                                             ),
                                           )),
                                   child: Text(
                                     shift.myJob?.title ?? "",
-                                    style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
+                                    style: kTitleText.copyWith(
+                                        color: AppColor.primaryColor,
+                                        fontSize: 16),
                                     overflow: TextOverflow.fade,
                                   ),
                                 ),
@@ -227,7 +245,8 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage> with Afte
                         child: Center(
                           child: Text(
                             "${DateToAPIHelper.convertDateToString(shift.date!)}  ${shift.startWorkTime}〜${shift.endWorkTime}",
-                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                            style: kNormalText.copyWith(
+                                color: AppColor.darkGrey, fontSize: 16),
                             overflow: TextOverflow.fade,
                           ),
                         ),
@@ -249,10 +268,14 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage> with Afte
                                       : AppColor.whiteColor,
                               title: "確定する",
                               onPress: () {
-                                if (shift.status != "completed" && shift.status != "canceled") {
-                                  updateJobStatus(index, shift, "確定する", widget.myUser!);
+                                if (shift.status != "completed" &&
+                                    shift.status != "canceled") {
+                                  updateJobStatus(
+                                      index, shift, "確定する", widget.myUser!);
                                 } else {
-                                  toastMessageError("このアクションは完了またはキャンセルされたため、編集できません。", context);
+                                  toastMessageError(
+                                      "このアクションは完了またはキャンセルされたため、編集できません。",
+                                      context);
                                 }
                               },
                             ),
@@ -269,10 +292,14 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage> with Afte
                                       : AppColor.whiteColor,
                               title: "不承認にする",
                               onPress: () {
-                                if (shift.status != "completed" && shift.status != "canceled") {
-                                  updateJobStatus(index, shift, "キャンセル", widget.myUser!);
+                                if (shift.status != "completed" &&
+                                    shift.status != "canceled") {
+                                  updateJobStatus(
+                                      index, shift, "キャンセル", widget.myUser!);
                                 } else {
-                                  toastMessageError("このアクションは完了またはキャンセルされたため、編集できません。", context);
+                                  toastMessageError(
+                                      "このアクションは完了またはキャンセルされたため、編集できません。",
+                                      context);
                                 }
                               },
                             ),
@@ -321,7 +348,8 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage> with Afte
     }
   }
 
-  updateJobStatus(int index, ShiftModel shiftModel, String action, MyUser myUser) {
+  updateJobStatus(
+      int index, ShiftModel shiftModel, String action, MyUser myUser) {
     CustomDialog.confirmDialog(
         context: context,
         onApprove: () async {
@@ -336,7 +364,12 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage> with Afte
             isLoading = true;
           });
           bool isSuccess = await WorkerManagementApiService().updateShiftStatus(
-              branch: authProvider.branch, shiftList, widget.id, shiftModel: shiftModel, company: authProvider.myCompany!, myUser: myUser);
+              branch: authProvider.branch,
+              shiftList,
+              widget.id,
+              shiftModel: shiftModel,
+              company: authProvider.myCompany!,
+              myUser: myUser);
           if (isSuccess) {
             await getData();
             toastMessageSuccess(JapaneseText.successUpdate, context);
