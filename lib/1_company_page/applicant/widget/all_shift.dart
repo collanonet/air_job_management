@@ -40,6 +40,7 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
   bool isLoading = true;
   late AuthProvider authProvider;
   List<ShiftModel> shiftList = [];
+  List<DateTime> selectedShift = [];
 
   @override
   void initState() {
@@ -91,7 +92,15 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
                                     radius: 25,
                                     color: AppColor.whiteColor,
                                     title: "確定する",
-                                    onPress: () {},
+                                    onPress: () {
+                                      if (selectedShift.isNotEmpty) {
+                                        updateMultipleJobStatus(
+                                            "確定する", widget.myUser);
+                                      } else {
+                                        toastMessageError(
+                                            "少なくとも1つ選択してください。", context);
+                                      }
+                                    },
                                   ),
                                 ),
                                 AppSize.spaceWidth8,
@@ -101,7 +110,15 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
                                     radius: 25,
                                     color: AppColor.whiteColor,
                                     title: "不承認にする",
-                                    onPress: () {},
+                                    onPress: () {
+                                      if (selectedShift.isNotEmpty) {
+                                        updateMultipleJobStatus(
+                                            "キャンセル", widget.myUser);
+                                      } else {
+                                        toastMessageError(
+                                            "少なくとも1つ選択してください。", context);
+                                      }
+                                    },
                                   ),
                                 )
                               ],
@@ -173,142 +190,158 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
                     top: 10, bottom: index + 1 == shiftList.length ? 20 : 0)),
             itemBuilder: (context, index) {
               ShiftModel shift = shiftList[index];
-              return Container(
-                // height: 110,
-                width: AppSize.getDeviceWidth(context),
-                padding: const EdgeInsets.only(
-                    top: 16, bottom: 16, left: 32, right: 16),
-                margin: const EdgeInsets.only(bottom: 4, left: 0, right: 0),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(width: 1, color: AppColor.primaryColor)),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                color: AppColor.primaryColor),
-                            child: Center(
-                              child: Icon(
-                                Icons.folder_outlined,
-                                color: AppColor.whiteColor,
-                                size: 30,
+              return InkWell(
+                onTap: () {
+                  if (selectedShift.contains(shift.date)) {
+                    selectedShift.remove(shift.date);
+                  } else {
+                    selectedShift.add(shift.date!);
+                  }
+                  setState(() {});
+                },
+                child: Container(
+                  // height: 110,
+                  width: AppSize.getDeviceWidth(context),
+                  padding: const EdgeInsets.only(
+                      top: 16, bottom: 16, left: 32, right: 16),
+                  margin: const EdgeInsets.only(bottom: 4, left: 0, right: 0),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: selectedShift.contains(shift.date)
+                          ? AppColor.primaryColor.withOpacity(0.1)
+                          : Colors.transparent,
+                      border:
+                          Border.all(width: 1, color: AppColor.primaryColor)),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25),
+                                  color: AppColor.primaryColor),
+                              child: Center(
+                                child: Icon(
+                                  Icons.folder_outlined,
+                                  color: AppColor.whiteColor,
+                                  size: 30,
+                                ),
                               ),
                             ),
-                          ),
-                          AppSize.spaceWidth16,
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                InkWell(
-                                  onTap: () => showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                            content:
-                                                CreateOrEditJobPostingPageForCompany(
-                                              isView: true,
-                                              jobPosting: shift.myJob?.uid,
-                                            ),
-                                          )),
-                                  child: Text(
-                                    shift.myJob?.title ?? "",
-                                    style: kTitleText.copyWith(
-                                        color: AppColor.primaryColor,
-                                        fontSize: 16),
-                                    overflow: TextOverflow.fade,
+                            AppSize.spaceWidth16,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  InkWell(
+                                    onTap: () => showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                              content:
+                                                  CreateOrEditJobPostingPageForCompany(
+                                                isView: true,
+                                                jobPosting: shift.myJob?.uid,
+                                              ),
+                                            )),
+                                    child: Text(
+                                      shift.myJob?.title ?? "",
+                                      style: kTitleText.copyWith(
+                                          color: AppColor.primaryColor,
+                                          fontSize: 16),
+                                      overflow: TextOverflow.fade,
+                                    ),
                                   ),
-                                ),
-                                // Text(
-                                //   job.jobLocation ?? "",
-                                //   style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
-                                //   overflow: TextOverflow.fade,
-                                // ),
-                              ],
-                            ),
-                          )
-                        ],
+                                  // Text(
+                                  //   job.jobLocation ?? "",
+                                  //   style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                                  //   overflow: TextOverflow.fade,
+                                  // ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        flex: 3,
                       ),
-                      flex: 3,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 32),
-                        child: Center(
-                          child: Text(
-                            "${DateToAPIHelper.convertDateToString(shift.date!)}  ${shift.startWorkTime}〜${shift.endWorkTime}",
-                            style: kNormalText.copyWith(
-                                color: AppColor.darkGrey, fontSize: 16),
-                            overflow: TextOverflow.fade,
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 32),
+                          child: Center(
+                            child: Text(
+                              "${DateToAPIHelper.convertDateToString(shift.date!)}  ${shift.startWorkTime}〜${shift.endWorkTime}",
+                              style: kNormalText.copyWith(
+                                  color: AppColor.darkGrey, fontSize: 16),
+                              overflow: TextOverflow.fade,
+                            ),
                           ),
                         ),
+                        flex: 2,
                       ),
-                      flex: 2,
-                    ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 150,
-                            child: ButtonWidget(
-                              radius: 25,
-                              color: shift.status == "completed"
-                                  ? AppColor.bgPageColor
-                                  : shift.status == "approved"
-                                      ? AppColor.primaryColor
-                                      : AppColor.whiteColor,
-                              title: "確定する",
-                              onPress: () {
-                                if (shift.status != "completed" &&
-                                    shift.status != "canceled") {
-                                  updateJobStatus(
-                                      index, shift, "確定する", widget.myUser!);
-                                } else {
-                                  toastMessageError(
-                                      "このアクションは完了またはキャンセルされたため、編集できません。",
-                                      context);
-                                }
-                              },
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 150,
+                              child: ButtonWidget(
+                                radius: 25,
+                                color: shift.status == "completed" ||
+                                        shift.status == "canceled"
+                                    ? AppColor.bgPageColor
+                                    : shift.status == "approved"
+                                        ? AppColor.primaryColor
+                                        : AppColor.whiteColor,
+                                title: "確定する",
+                                onPress: () {
+                                  if (shift.status != "completed" &&
+                                      shift.status != "canceled") {
+                                    updateJobStatus(
+                                        index, shift, "確定する", widget.myUser!);
+                                  } else {
+                                    toastMessageError(
+                                        "このアクションは完了またはキャンセルされたため、編集できません。",
+                                        context);
+                                  }
+                                },
+                              ),
                             ),
-                          ),
-                          AppSize.spaceWidth32,
-                          SizedBox(
-                            width: 150,
-                            child: ButtonWidget(
-                              radius: 25,
-                              color: shift.status == "completed"
-                                  ? AppColor.bgPageColor
-                                  : shift.status == "rejected"
-                                      ? AppColor.primaryColor
-                                      : AppColor.whiteColor,
-                              title: "不承認にする",
-                              onPress: () {
-                                if (shift.status != "completed" &&
-                                    shift.status != "canceled") {
-                                  updateJobStatus(
-                                      index, shift, "キャンセル", widget.myUser!);
-                                } else {
-                                  toastMessageError(
-                                      "このアクションは完了またはキャンセルされたため、編集できません。",
-                                      context);
-                                }
-                              },
-                            ),
-                          )
-                        ],
+                            AppSize.spaceWidth32,
+                            SizedBox(
+                              width: 150,
+                              child: ButtonWidget(
+                                radius: 25,
+                                color: shift.status == "completed" ||
+                                        shift.status == "canceled"
+                                    ? AppColor.bgPageColor
+                                    : shift.status == "rejected"
+                                        ? AppColor.primaryColor
+                                        : AppColor.whiteColor,
+                                title: "不承認にする",
+                                onPress: () {
+                                  if (shift.status != "completed" &&
+                                      shift.status != "canceled") {
+                                    updateJobStatus(
+                                        index, shift, "キャンセル", widget.myUser!);
+                                  } else {
+                                    toastMessageError(
+                                        "このアクションは完了またはキャンセルされたため、編集できません。",
+                                        context);
+                                  }
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                        flex: 3,
                       ),
-                      flex: 3,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             });
@@ -371,6 +404,44 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
               company: authProvider.myCompany!,
               myUser: myUser);
           if (isSuccess) {
+            await getData();
+            toastMessageSuccess(JapaneseText.successUpdate, context);
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+            toastMessageSuccess(JapaneseText.failUpdate, context);
+          }
+        },
+        title: "本当に確定しますか？",
+        titleText: action);
+  }
+
+  updateMultipleJobStatus(String action, MyUser myUser) {
+    String status = action == "確定する" ? "approved" : "rejected";
+    CustomDialog.confirmDialog(
+        context: context,
+        onApprove: () async {
+          Navigator.pop(context);
+          for (var shift in shiftList) {
+            if (selectedShift.contains(shift.date)) {
+              shift.status = status;
+            }
+          }
+          setState(() {
+            isLoading = true;
+          });
+          bool isSuccess = await WorkerManagementApiService()
+              .updateShiftStatusForMultipleShift(
+                  branch: authProvider.branch,
+                  shiftList,
+                  widget.id,
+                  status: status,
+                  dateList: selectedShift,
+                  company: authProvider.myCompany!,
+                  myUser: myUser);
+          if (isSuccess) {
+            selectedShift = [];
             await getData();
             toastMessageSuccess(JapaneseText.successUpdate, context);
           } else {

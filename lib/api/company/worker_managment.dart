@@ -13,7 +13,8 @@ import '../../services/send_email.dart';
 class WorkerManagementApiService {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final db = FirebaseFirestore.instance;
-  final CollectionReference jobRef = FirebaseFirestore.instance.collection('job');
+  final CollectionReference jobRef =
+      FirebaseFirestore.instance.collection('job');
 
   Future<bool> updateAllSearchJob() async {
     List<String> idList = [
@@ -99,17 +100,20 @@ class WorkerManagementApiService {
       "zm8FBlVRKbOGd27tDmVH",
       "zvHx8DdjFEdkE9Gf5cB0",
     ];
-    await Future.wait(idList.map((e) => jobRef.doc(e).update({"branch_id": "1714112463487"})));
+    await Future.wait(idList
+        .map((e) => jobRef.doc(e).update({"branch_id": "1714112463487"})));
     return true;
   }
 
-  Future<List<WorkerManagement>> getAllJobApplyWithoutBranch(String companyId) async {
+  Future<List<WorkerManagement>> getAllJobApplyWithoutBranch(
+      String companyId) async {
     try {
       var doc = await jobRef.where("company_id", isEqualTo: companyId).get();
       if (doc.docs.isNotEmpty) {
         List<WorkerManagement> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
-          WorkerManagement company = WorkerManagement.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          WorkerManagement company = WorkerManagement.fromJson(
+              doc.docs[i].data() as Map<String, dynamic>);
           company.uid = doc.docs[i].id;
           list.add(company);
         }
@@ -126,13 +130,15 @@ class WorkerManagementApiService {
     }
   }
 
-  Future<List<WorkerManagement>> getAllJobApplyByJobPostingId(String jobPostingId) async {
+  Future<List<WorkerManagement>> getAllJobApplyByJobPostingId(
+      String jobPostingId) async {
     try {
       var doc = await jobRef.where("job_id", isEqualTo: jobPostingId).get();
       if (doc.docs.isNotEmpty) {
         List<WorkerManagement> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
-          WorkerManagement company = WorkerManagement.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          WorkerManagement company = WorkerManagement.fromJson(
+              doc.docs[i].data() as Map<String, dynamic>);
           company.uid = doc.docs[i].id;
           list.add(company);
         }
@@ -149,13 +155,18 @@ class WorkerManagementApiService {
     }
   }
 
-  Future<List<WorkerManagement>> getAllJobApplyForAUSerWithoutBranch(String companyId, String userId) async {
+  Future<List<WorkerManagement>> getAllJobApplyForAUSerWithoutBranch(
+      String companyId, String userId) async {
     try {
-      var doc = await jobRef.where("company_id", isEqualTo: companyId).where("user_id", isEqualTo: userId).get();
+      var doc = await jobRef
+          .where("company_id", isEqualTo: companyId)
+          .where("user_id", isEqualTo: userId)
+          .get();
       if (doc.docs.isNotEmpty) {
         List<WorkerManagement> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
-          WorkerManagement company = WorkerManagement.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          WorkerManagement company = WorkerManagement.fromJson(
+              doc.docs[i].data() as Map<String, dynamic>);
           company.uid = doc.docs[i].id;
           list.add(company);
         }
@@ -172,10 +183,14 @@ class WorkerManagementApiService {
     }
   }
 
-  Future<List<WorkerManagement>> getAllJobApplyForAUSer(String companyId, String userId, String branchId) async {
+  Future<List<WorkerManagement>> getAllJobApplyForAUSer(
+      String companyId, String userId, String branchId) async {
     try {
-      var doc =
-          await jobRef.where("company_id", isEqualTo: companyId).where("user_id", isEqualTo: userId).where("branch_id", isEqualTo: branchId).get();
+      var doc = await jobRef
+          .where("company_id", isEqualTo: companyId)
+          .where("user_id", isEqualTo: userId)
+          .where("branch_id", isEqualTo: branchId)
+          .get();
       // var doc = await jobRef
       //     .where("company_id", isEqualTo: companyId)
       //     .where("user_id", isEqualTo: userId)
@@ -183,7 +198,8 @@ class WorkerManagementApiService {
       if (doc.docs.isNotEmpty) {
         List<WorkerManagement> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
-          WorkerManagement company = WorkerManagement.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          WorkerManagement company = WorkerManagement.fromJson(
+              doc.docs[i].data() as Map<String, dynamic>);
           company.uid = doc.docs[i].id;
           list.add(company);
         }
@@ -200,7 +216,8 @@ class WorkerManagementApiService {
     }
   }
 
-  Future<List<WorkerManagement>> getAllJobApply(String companyId, String branchId) async {
+  Future<List<WorkerManagement>> getAllJobApply(
+      String companyId, String branchId) async {
     try {
       var doc = await jobRef
           .where("company_id", isEqualTo: companyId)
@@ -215,12 +232,16 @@ class WorkerManagementApiService {
       if (doc.docs.isNotEmpty) {
         List<WorkerManagement> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
-          WorkerManagement company = WorkerManagement.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          WorkerManagement company = WorkerManagement.fromJson(
+              doc.docs[i].data() as Map<String, dynamic>);
           company.uid = doc.docs[i].id;
           list.add(company);
         }
         Map<String, int> userOrderCount = {};
-        var data = await Future.wait([for (var job in list) UserApiServices().getProfileUser(job.userId.toString())]);
+        var data = await Future.wait([
+          for (var job in list)
+            UserApiServices().getProfileUser(job.userId.toString())
+        ]);
         for (var job in list) {
           for (var u in data) {
             if (u != null && u.uid == job.userId) {
@@ -262,7 +283,8 @@ class WorkerManagementApiService {
     try {
       DocumentSnapshot doc = await jobRef.doc(uid).get();
       if (doc.exists) {
-        WorkerManagement workerManagement = WorkerManagement.fromJson(doc.data() as Map<String, dynamic>);
+        WorkerManagement workerManagement =
+            WorkerManagement.fromJson(doc.data() as Map<String, dynamic>);
         workerManagement.uid = doc.id;
         return workerManagement;
       } else {
@@ -275,10 +297,15 @@ class WorkerManagementApiService {
   }
 
   Future<bool> updateShiftStatus(List<ShiftModel> shiftList, String jobId,
-      {Branch? branch, Company? company, ShiftModel? shiftModel, MyUser? myUser}) async {
+      {Branch? branch,
+      Company? company,
+      ShiftModel? shiftModel,
+      MyUser? myUser}) async {
     try {
       // shiftList = shiftList.toSet().toList();
-      await jobRef.doc(jobId).update({"shift": shiftList.map((e) => e.toJson())});
+      await jobRef
+          .doc(jobId)
+          .update({"shift": shiftList.map((e) => e.toJson())});
       if (company != null && myUser != null) {
         String managerName = "";
         if (company.manager!.isNotEmpty) {
@@ -307,11 +334,58 @@ class WorkerManagementApiService {
     }
   }
 
-  Future<bool> updateShiftStatusForDelete(List<ShiftModel> shiftList, String jobId,
-      {Branch? branch, Company? company, String? status, MyUser? myUser}) async {
+  Future<bool> updateShiftStatusForMultipleShift(
+      List<ShiftModel> shiftList, String jobId,
+      {Branch? branch,
+      Company? company,
+      List<DateTime>? dateList,
+      String? status,
+      MyUser? myUser}) async {
+    try {
+      // shiftList = shiftList.toSet().toList();
+      await jobRef
+          .doc(jobId)
+          .update({"shift": shiftList.map((e) => e.toJson())});
+      if (company != null && myUser != null) {
+        String managerName = "";
+        if (company.manager!.isNotEmpty) {
+          managerName = company.manager!.first.kanji ?? "";
+        }
+        for (var date in dateList!) {
+          await NotificationService.sendEmailApplyShift(
+              token: myUser.fcmToken ?? "",
+              startTime: shiftList.first.startWorkTime ?? "",
+              endTime: shiftList.first.endWorkTime ?? "",
+              branchName: branch?.name ?? "",
+              managerName: managerName,
+              email: myUser.email ?? "",
+              msg: "Your Shift Apply",
+              name: myUser.nameKanJi ?? "",
+              userId: myUser.uid ?? "",
+              companyId: company.uid ?? "",
+              companyName: company.companyName ?? "",
+              branchId: branch?.id ?? "",
+              status: status!,
+              date: DateToAPIHelper.convertDateToString(date));
+        }
+      }
+      return true;
+    } catch (e) {
+      debugPrint("Error updateJobStatus =>> ${e.toString()}");
+      return false;
+    }
+  }
+
+  Future<bool> updateShiftStatusForDelete(
+      List<ShiftModel> shiftList, String jobId,
+      {Branch? branch,
+      Company? company,
+      String? status,
+      MyUser? myUser}) async {
     try {
       shiftList = shiftList.toSet().toList();
-      await jobRef.doc(jobId).update({"shift": shiftList.isEmpty ? [] : shiftList.map((e) => e.toJson())});
+      await jobRef.doc(jobId).update(
+          {"shift": shiftList.isEmpty ? [] : shiftList.map((e) => e.toJson())});
       if (company != null && myUser != null) {
         String managerName = "";
         if (company.manager != []) {
@@ -319,8 +393,10 @@ class WorkerManagementApiService {
         }
         await NotificationService.sendEmailApplyShift(
             token: myUser.fcmToken ?? "",
-            startTime: shiftList.isEmpty ? "00" : shiftList.first.startWorkTime ?? "",
-            endTime: shiftList.isEmpty ? "00" : shiftList.first.endWorkTime ?? "",
+            startTime:
+                shiftList.isEmpty ? "00" : shiftList.first.startWorkTime ?? "",
+            endTime:
+                shiftList.isEmpty ? "00" : shiftList.first.endWorkTime ?? "",
             branchName: branch?.name ?? "",
             managerName: managerName,
             email: myUser.email ?? "",
@@ -389,12 +465,16 @@ class WorkerManagementApiService {
       if (doc.docs.isNotEmpty) {
         List<WorkerManagement> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
-          WorkerManagement company = WorkerManagement.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          WorkerManagement company = WorkerManagement.fromJson(
+              doc.docs[i].data() as Map<String, dynamic>);
           company.uid = doc.docs[i].id;
           list.add(company);
         }
         Map<String, int> userOrderCount = {};
-        var data = await Future.wait([for (var job in list) UserApiServices().getProfileUser(job.userId.toString())]);
+        var data = await Future.wait([
+          for (var job in list)
+            UserApiServices().getProfileUser(job.userId.toString())
+        ]);
         for (var job in list) {
           for (var u in data) {
             if (u != null && u.uid == job.userId) {
