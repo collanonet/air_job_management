@@ -122,6 +122,10 @@ class _CompanyChatPageState extends State<CompanyChatPage> with AfterBuildMixin 
               if (!isMe && ((index + 1) == snapshot.data!.docs.length)) {
                 MessageApi(message.senderId, widget.companyID).updateSeen(snapshot.data!.docs[index].id);
               }
+              bool isSeen = isMe ? true : false;
+              if (data.containsKey("isSeen") && !isMe) {
+                isSeen = data["isSeen"];
+              }
               return Column(
                 children: [
                   buildDateAndMonth(oldData, parseTimeStampToDate(DateTime.parse(data["created_at"]))),
@@ -133,7 +137,7 @@ class _CompanyChatPageState extends State<CompanyChatPage> with AfterBuildMixin 
                           ? Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Text(
-                                "${DateToAPIHelper.timeFormat(DateTime.parse(message.createdAt.toString()))} 既読",
+                                "${DateToAPIHelper.timeFormat(DateTime.parse(message.createdAt.toString()))} ${(isSeen && !isMe) ? "既読" : "未読"}",
                                 style: TextStyle(
                                   color: Theme.of(context).colorScheme.secondary,
                                   fontSize: 9,
@@ -194,7 +198,7 @@ class _CompanyChatPageState extends State<CompanyChatPage> with AfterBuildMixin 
                           ? Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Text(
-                                "${DateToAPIHelper.timeFormat(DateTime.parse(message.createdAt.toString()))} 既読",
+                                "${DateToAPIHelper.timeFormat(DateTime.parse(message.createdAt.toString()))} ${isSeen ? "既読" : "未読"}",
                                 style: TextStyle(
                                   color: Theme.of(context).colorScheme.secondary,
                                   fontSize: 9,

@@ -343,13 +343,23 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
-                      return SizedBox(
-                        height: 45,
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            provider.jobPostingDataTableList[index].job,
-                            style: kNormalText.copyWith(fontFamily: "Bold"),
+                      return InkWell(
+                        onTap: () => showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  content: CreateOrEditJobPostingPageForCompany(
+                                    isView: true,
+                                    jobPosting: provider.jobPostingDataTableList[index].jobId,
+                                  ),
+                                )),
+                        child: SizedBox(
+                          height: 45,
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              provider.jobPostingDataTableList[index].job,
+                              style: kNormalText.copyWith(fontFamily: "Bold"),
+                            ),
                           ),
                         ),
                       );

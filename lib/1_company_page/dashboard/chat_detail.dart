@@ -23,13 +23,7 @@ class DashboardChatPage extends StatefulWidget {
   final String? companyName;
   final String? companyImageUrl;
 
-  const DashboardChatPage({
-    super.key,
-    required this.myUser,
-    required this.companyID,
-    this.companyName,
-    this.companyImageUrl,
-  });
+  const DashboardChatPage({super.key, required this.myUser, required this.companyID, this.companyName, this.companyImageUrl});
 
   @override
   State<DashboardChatPage> createState() => _DashboardChatPageState();
@@ -129,6 +123,10 @@ class _DashboardChatPageState extends State<DashboardChatPage> with AfterBuildMi
               if (index > 0) {
                 oldData = snapshot.data!.docs[index - 1].data()! as Map<String, dynamic>;
               }
+              bool isSeen = isMe ? true : false;
+              if (data.containsKey("isSeen") && !isMe) {
+                isSeen = data["isSeen"];
+              }
               return Column(
                 children: [
                   buildDateAndMonth(oldData, parseTimeStampToDate(DateTime.parse(data["created_at"]))),
@@ -140,7 +138,7 @@ class _DashboardChatPageState extends State<DashboardChatPage> with AfterBuildMi
                           ? Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Text(
-                                "${DateToAPIHelper.timeFormat(DateTime.parse(message.createdAt.toString()))} 既読",
+                                "${DateToAPIHelper.timeFormat(DateTime.parse(message.createdAt.toString()))} ${(isSeen && !isMe) ? "既読" : "未読"}",
                                 style: TextStyle(
                                   color: Theme.of(context).colorScheme.secondary,
                                   fontSize: 9,
@@ -232,7 +230,7 @@ class _DashboardChatPageState extends State<DashboardChatPage> with AfterBuildMi
                           ? Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Text(
-                                "${DateToAPIHelper.timeFormat(DateTime.parse(message.createdAt.toString()))} 既読",
+                                "${DateToAPIHelper.timeFormat(DateTime.parse(message.createdAt.toString()))} ${isSeen ? "既読" : "未読"}",
                                 style: TextStyle(
                                   color: Theme.of(context).colorScheme.secondary,
                                   fontSize: 9,

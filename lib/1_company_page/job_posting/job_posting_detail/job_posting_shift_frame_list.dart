@@ -211,6 +211,9 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
                   shiftFrame: shiftFrame,
                   selectShiftFrame: selectShiftFrame,
                   title: shiftFrame.title ?? "",
+                  onUpdateStatus: () {
+                    updateJobHistory(index, shiftFrame.isClose!);
+                  },
                   onClick: () {
                     setState(() {
                       this.index = index;
@@ -269,6 +272,12 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
     } catch (e) {
       toastMessageSuccess(e.toString(), context);
     }
+  }
+
+  updateJobHistory(int index, bool isClose) async {
+    updateHistoyList[index].isClose = !isClose;
+    await JobPostingApiService().updateJobHistory(provider.jobPosting!.uid!, updateHistoyList);
+    onRefreshData();
   }
 
   onRefreshData() async {

@@ -1,6 +1,12 @@
+import 'package:air_job_management/api/company/request.dart';
 import 'package:air_job_management/api/user_api.dart';
+import 'package:air_job_management/helper/date_to_api.dart';
+import 'package:air_job_management/models/company/request.dart';
+import 'package:air_job_management/models/company/worker_management.dart';
+import 'package:air_job_management/models/entry_exit_history.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/providers/auth.dart';
+import 'package:air_job_management/utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
@@ -25,8 +31,7 @@ class UserBasicInformationPage extends StatefulWidget {
   State<UserBasicInformationPage> createState() => _BasicInformationPageState();
 }
 
-class _BasicInformationPageState extends State<UserBasicInformationPage>
-    with AfterBuildMixin {
+class _BasicInformationPageState extends State<UserBasicInformationPage> with AfterBuildMixin {
   MyUser? myUser;
   ScrollController scrollController = ScrollController();
 
@@ -49,6 +54,22 @@ class _BasicInformationPageState extends State<UserBasicInformationPage>
       }
     }
     return i == 0 ? "0" : "${(i * 100) / shiftList.length}";
+  }
+
+  cancellationRatesTimes() {
+    int i = 0;
+    DateTime now = DateTime.now();
+    DateTime lastOne = DateTime(now.year, now.month, now.day - 1);
+    DateTime lastTwo = DateTime(now.year, now.month, now.day - 2);
+    DateTime lastThree = DateTime(now.year, now.month, now.day - 3);
+    List<DateTime> dateList = [now, lastOne, lastTwo, lastThree];
+    for (var request in requestByUserList) {
+      DateTime date = DateToAPIHelper.fromApiToLocal(request.date!);
+      if (request.status == "approved" && CommonUtils.isArrayOfDateContainDate(dateList, date)) {
+        i++;
+      }
+    }
+    return i == 0 ? "0" : "${(i * 100) / requestByUserList.length}";
   }
 
   countWorkingHistory(String id) {
@@ -139,7 +160,7 @@ class _BasicInformationPageState extends State<UserBasicInformationPage>
               ),
               AppSize.spaceHeight5,
               Text(
-                "0%",
+                "$cancellationRate%",
                 style: kNormalText.copyWith(fontSize: 16, fontFamily: "Normal"),
               )
             ],
@@ -192,8 +213,7 @@ class _BasicInformationPageState extends State<UserBasicInformationPage>
                 width: AppSize.getDeviceWidth(context) * 0.2,
                 child: PrimaryTextField(
                   hint: "",
-                  controller:
-                      TextEditingController(text: "${myUser?.nameKanJi}"),
+                  controller: TextEditingController(text: "${myUser?.nameKanJi}"),
                   isRequired: false,
                   readOnly: true,
                 ),
@@ -357,8 +377,7 @@ class _BasicInformationPageState extends State<UserBasicInformationPage>
                 width: AppSize.getDeviceWidth(context) * 0.2,
                 child: PrimaryTextField(
                   hint: "",
-                  controller:
-                      TextEditingController(text: "${myUser?.affiliation}"),
+                  controller: TextEditingController(text: "${myUser?.affiliation}"),
                   isRequired: false,
                   readOnly: true,
                 ),
@@ -381,12 +400,8 @@ class _BasicInformationPageState extends State<UserBasicInformationPage>
                 width: AppSize.getDeviceWidth(context) * 0.4,
                 child: PrimaryTextField(
                   hint: "",
-                  controller: TextEditingController(
-                      text: myUser?.otherQualificationList!
-                          .map((e) => e)
-                          .toString()
-                          .replaceAll("(", "")
-                          .replaceAll(")", "")),
+                  controller:
+                      TextEditingController(text: myUser?.otherQualificationList!.map((e) => e).toString().replaceAll("(", "").replaceAll(")", "")),
                   isRequired: false,
                   readOnly: true,
                 ),
@@ -418,8 +433,7 @@ class _BasicInformationPageState extends State<UserBasicInformationPage>
                 width: AppSize.getDeviceWidth(context) * 0.13,
                 child: PrimaryTextField(
                   hint: "",
-                  controller:
-                      TextEditingController(text: myUser?.postalCode ?? ""),
+                  controller: TextEditingController(text: myUser?.postalCode ?? ""),
                   isRequired: false,
                   readOnly: true,
                 ),
@@ -442,9 +456,7 @@ class _BasicInformationPageState extends State<UserBasicInformationPage>
                 width: AppSize.getDeviceWidth(context) * 0.13,
                 child: PrimaryTextField(
                   hint: "",
-                  controller: TextEditingController(
-                      text:
-                          "${myUser?.city ?? myUser?.province ?? myUser?.street}"),
+                  controller: TextEditingController(text: "${myUser?.city ?? myUser?.province ?? myUser?.street}"),
                   isRequired: false,
                   readOnly: true,
                 ),
@@ -568,8 +580,7 @@ class _BasicInformationPageState extends State<UserBasicInformationPage>
     return Container(
       width: 320,
       height: 200,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16), color: Color(0xffF0F3F5)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Color(0xffF0F3F5)),
       child: Image.network(url),
     );
   }
@@ -578,16 +589,22 @@ class _BasicInformationPageState extends State<UserBasicInformationPage>
   void afterBuild(BuildContext context) async {
     // TODO: implement afterBuild
     var auth = Provider.of<AuthProvider>(context, listen: false);
-    myUser = await UserApiServices().getProfileUser(myUser?.uid ?? "");
-    entryForApplicant =
-        await EntryExitApiService().getAllEntryList(auth.myCompany?.uid ?? "");
-    var listWorker = await WorkerManagementApiService().getAllJobApplyForAUSer(
-        auth.myCompany?.uid ?? "", myUser?.uid ?? "", auth.branch?.id ?? "");
+    var data = await Future.wait([
+      UserApiServices().getProfileUser(myUser?.uid ?? ""),
+      EntryExitApiService().getAllEntryList(auth.myCompany?.uid ?? ""),
+      RequestApiService().getAllHolidayRequestByUsers(myUser?.uid ?? ""),
+      WorkerManagementApiService().getAllJobApplyForAUSer(auth.myCompany?.uid ?? "", myUser?.uid ?? "", auth.branch?.id ?? "")
+    ]);
+    myUser = data[0] as MyUser?;
+    entryForApplicant = data[1] as List<EntryExitHistory>;
+    requestByUserList = data[2] as List<Request>;
+    var listWorker = data[3] as List<WorkerManagement>;
     for (var job in listWorker) {
       shiftList.addAll(job.shiftList ?? []);
     }
     lastMinuteCancellationRate = lastMinCountCancelTimes();
     numberOfWorkTime = countWorkingHistory(myUser?.uid ?? "");
+    cancellationRate = cancellationRatesTimes();
     setState(() {});
   }
 }

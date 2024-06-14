@@ -3,6 +3,7 @@ import 'package:air_job_management/1_company_page/woker_management/widget/job_ca
 import 'package:air_job_management/1_company_page/woker_management/worker_management_detail/basic_information.dart';
 import 'package:air_job_management/1_company_page/woker_management/worker_management_detail/chat.dart';
 import 'package:air_job_management/api/company/worker_managment.dart';
+import 'package:air_job_management/models/company/request.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
@@ -20,6 +21,7 @@ import '../../utils/style.dart';
 import '../../widgets/custom_loading_overlay.dart';
 
 List<EntryExitHistory> entryForApplicant = [];
+List<Request> requestByUserList = [];
 
 class ApplicantRootPage extends StatefulWidget {
   final String uid;

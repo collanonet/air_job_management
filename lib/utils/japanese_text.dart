@@ -56,6 +56,7 @@ class JapaneseText {
   static String endBreakTime = "休憩終了時間";
   static String recruitmentDeadlineTime = "求人の締切時間";
 
+  static String privatePost = "非公開";
   static String publicSetting = "公開設定";
   static String openToPublic = "一般公開";
   static String groupLimitRelease = "グループ限定公開";

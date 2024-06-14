@@ -48,13 +48,14 @@ class EntryListDataSource extends DataTableSource {
         style: kNormalText,
       )),
       DataCell(Text(
-        entry.startWorkingTime.toString().isNotEmpty && entry.endWorkingTime.toString().isEmpty
+        entry.startWorkingTime.toString().isNotEmpty && (entry.endWorkingTime.toString().isEmpty || entry.endWorkingTime.toString() == "00:00")
             ? "仕事"
             : entry.startWorkingTime.toString().isEmpty
                 ? "不在"
                 : "勤務外",
         style: kNormalText.copyWith(
-            color: entry.startWorkingTime.toString().isNotEmpty && entry.endWorkingTime.toString().isEmpty
+            color: entry.startWorkingTime.toString().isNotEmpty &&
+                    (entry.endWorkingTime.toString().isEmpty || entry.endWorkingTime.toString() == "00:00")
                 ? Colors.orangeAccent
                 : entry.startWorkingTime.toString().isEmpty
                     ? Colors.red

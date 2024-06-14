@@ -953,9 +953,12 @@ class UpdateHistory {
   String? startTime;
   String? endTime;
   String? title;
-  UpdateHistory({this.endDate, this.startDate, this.endTime, this.startTime, this.title, this.postEndDate, this.postStartDate, this.recruitment});
+  bool? isClose;
+  UpdateHistory(
+      {this.isClose, this.endDate, this.startDate, this.endTime, this.startTime, this.title, this.postEndDate, this.postStartDate, this.recruitment});
   factory UpdateHistory.fromJson(Map<String, dynamic> json) {
     return UpdateHistory(
+      isClose: json["isClose"] ?? false,
       endTime: json["endTime"].toString(),
       startTime: json["startTime"].toString(),
       title: json["title"].toString(),
@@ -968,6 +971,7 @@ class UpdateHistory {
   }
 
   Map<String, dynamic> toJson() => {
+        "isClose": isClose,
         "endTime": endTime,
         "startTime": startTime,
         "title": title,

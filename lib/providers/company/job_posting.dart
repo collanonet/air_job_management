@@ -4,6 +4,7 @@ import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/providers/auth.dart';
+import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -186,7 +187,8 @@ class JobPostingForCompanyProvider with ChangeNotifier {
   DateTime endBreakTime = DateTime(now.year, now.month, now.day, 13, 0, 0);
 
   filterData(String id, String branchId) async {
-    String text = searchController.text;
+    String text = CommonUtils.normalize(searchController.text);
+    print("Normalized text $text");
     await getAllJobPost(id, branchId);
     if (text.isNotEmpty) {
       List<JobPosting> jobPostingFilterList = [];

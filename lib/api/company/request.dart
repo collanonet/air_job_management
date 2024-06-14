@@ -11,17 +11,33 @@ import '../../utils/common_utils.dart';
 import '../../utils/log.dart';
 
 class RequestApiService {
-  final CollectionReference requestRef =
-      FirebaseFirestore.instance.collection('request');
+  final CollectionReference requestRef = FirebaseFirestore.instance.collection('request');
 
-  Future<int> getTotalHolidayLeaveRequest(
-      String userId, String startDate, String endDate) async {
+  Future<List<Request>> getAllHolidayRequestByUsers(String userId) async {
+    try {
+      var doc = await requestRef.where("userId", isEqualTo: userId).where("is_holiday", isEqualTo: true).get();
+      if (doc.docs.isEmpty) {
+        return [];
+      } else {
+        List<Request> requestList = [];
+        for (var data in doc.docs) {
+          Request request = Request.fromJson(data.data() as Map<String, dynamic>);
+          request.myUser = await UserApiServices().getProfileUser(request.userId!);
+          request.uid = data.id;
+          requestList.add(request);
+        }
+        return requestList;
+      }
+    } catch (e) {
+      print("Error getTotalHolidayLeaveRequest $e");
+      return [];
+    }
+  }
+
+  Future<int> getTotalHolidayLeaveRequest(String userId, String startDate, String endDate) async {
     try {
       //.where("status", isEqualTo: "approved")
-      var doc = await requestRef
-          .where("userId", isEqualTo: userId)
-          .where("isHoliday", isEqualTo: true)
-          .get();
+      var doc = await requestRef.where("userId", isEqualTo: userId).where("isHoliday", isEqualTo: true).get();
       if (doc.docs.isEmpty) {
         return 0;
       } else {
@@ -44,23 +60,17 @@ class RequestApiService {
     }
   }
 
-  Future<List<Request>> getRequestBetweenDate(
-      String startDate, String endDate) async {
+  Future<List<Request>> getRequestBetweenDate(String startDate, String endDate) async {
     try {
       print("getRequestBetweenDate $startDate, $endDate");
-      var doc = await requestRef
-          .where("date", isGreaterThanOrEqualTo: startDate)
-          .where("date", isLessThanOrEqualTo: endDate)
-          .get();
+      var doc = await requestRef.where("date", isGreaterThanOrEqualTo: startDate).where("date", isLessThanOrEqualTo: endDate).get();
       if (doc.docs.isEmpty) {
         return [];
       } else {
         List<Request> requestList = [];
         for (var data in doc.docs) {
-          Request request =
-              Request.fromJson(data.data() as Map<String, dynamic>);
-          request.myUser =
-              await UserApiServices().getProfileUser(request.userId!);
+          Request request = Request.fromJson(data.data() as Map<String, dynamic>);
+          request.myUser = await UserApiServices().getProfileUser(request.userId!);
           request.uid = data.id;
           requestList.add(request);
         }
@@ -72,23 +82,17 @@ class RequestApiService {
     }
   }
 
-  Future<List<Request>> getRequestByDate(
-      String date, String jobPostingId) async {
+  Future<List<Request>> getRequestByDate(String date, String jobPostingId) async {
     try {
       print("getRequestByDate $date, $jobPostingId");
-      var doc = await requestRef
-          .where("date", isEqualTo: date)
-          .where("jobId", isEqualTo: jobPostingId)
-          .get();
+      var doc = await requestRef.where("date", isEqualTo: date).where("jobId", isEqualTo: jobPostingId).get();
       if (doc.docs.isEmpty) {
         return [];
       } else {
         List<Request> requestList = [];
         for (var data in doc.docs) {
-          Request request =
-              Request.fromJson(data.data() as Map<String, dynamic>);
-          request.myUser =
-              await UserApiServices().getProfileUser(request.userId!);
+          Request request = Request.fromJson(data.data() as Map<String, dynamic>);
+          request.myUser = await UserApiServices().getProfileUser(request.userId!);
           request.uid = data.id;
           requestList.add(request);
         }
@@ -100,28 +104,20 @@ class RequestApiService {
     }
   }
 
-  Future<bool> updateRequestStatus(
-      Request request, String status, Company company, Branch? branch) async {
+  Future<bool> updateRequestStatus(Request request, String status, Company company, Branch? branch) async {
     try {
-      WorkerManagement? workerManagement =
-          await WorkerManagementApiService().getAJob(request.applyJobId!);
+      WorkerManagement? workerManagement = await WorkerManagementApiService().getAJob(request.applyJobId!);
       if (workerManagement != null) {
         for (var shift in workerManagement.shiftList!) {
-          bool isDateEqual =
-              DateToAPIHelper.convertDateToString(shift.date!) == request.date;
-          bool isStartTimeEqual =
-              (shift.startWorkTime == request.shiftModel!.startWorkTime ||
-                  shift.startWorkTime == request.fromTime);
-          bool isEndTimeEqual =
-              (shift.endWorkTime == request.shiftModel!.endWorkTime ||
-                  shift.endWorkTime == request.toTime);
+          bool isDateEqual = DateToAPIHelper.convertDateToString(shift.date!) == request.date;
+          bool isStartTimeEqual = (shift.startWorkTime == request.shiftModel!.startWorkTime || shift.startWorkTime == request.fromTime);
+          bool isEndTimeEqual = (shift.endWorkTime == request.shiftModel!.endWorkTime || shift.endWorkTime == request.toTime);
           if (isDateEqual && isStartTimeEqual && isEndTimeEqual) {
             if (status == "approved") {
               shift.startWorkTime = request.fromTime.toString();
               shift.endWorkTime = request.toTime.toString();
             } else {
-              shift.startWorkTime =
-                  request.shiftModel!.startWorkTime.toString();
+              shift.startWorkTime = request.shiftModel!.startWorkTime.toString();
               shift.endWorkTime = request.shiftModel!.endWorkTime.toString();
             }
             break;
@@ -144,12 +140,9 @@ class RequestApiService {
           isLeaveEarly: request.isLeaveEarly ?? false,
           managerName: managerName,
           branchName: branch?.name ?? "",
-          endTime: request.isLeaveEarly == true
-              ? request.toTime ?? request.shiftModel?.endWorkTime ?? ""
-              : request.shiftModel?.endWorkTime ?? "",
-          startTime: request.isUpdateShift == true
-              ? request.fromTime ?? request.shiftModel?.startWorkTime ?? ""
-              : request.shiftModel?.startWorkTime ?? "",
+          endTime: request.isLeaveEarly == true ? request.toTime ?? request.shiftModel?.endWorkTime ?? "" : request.shiftModel?.endWorkTime ?? "",
+          startTime:
+              request.isUpdateShift == true ? request.fromTime ?? request.shiftModel?.startWorkTime ?? "" : request.shiftModel?.startWorkTime ?? "",
           email: request.myUser?.email ?? "",
           msg: "Application Request",
           name: request.myUser?.nameKanJi ?? "",

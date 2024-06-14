@@ -57,7 +57,7 @@ class WithdrawCardWidget extends StatelessWidget {
               child: Center(
                 child: Text(
                   CurrencyFormatHelper.displayData(withdrawModel.amount.toString()),
-                  style: kNormalText.copyWith(fontSize: 16),
+                  style: kNormalText.copyWith(fontSize: 14),
                   overflow: TextOverflow.fade,
                 ),
               ),
@@ -67,8 +67,9 @@ class WithdrawCardWidget extends StatelessWidget {
               child: Center(
                 child: Text(
                   "${toJapanDateTime(withdrawModel.createdAt!)}",
-                  style: kNormalText.copyWith(fontSize: 16),
+                  style: kNormalText.copyWith(fontSize: 14),
                   overflow: TextOverflow.fade,
+                  textAlign: TextAlign.center,
                 ),
               ),
               flex: 2,
@@ -77,7 +78,7 @@ class WithdrawCardWidget extends StatelessWidget {
               child: Center(
                 child: Text(
                   "${withdrawModel.bankModel?.bankId}",
-                  style: kNormalText.copyWith(fontSize: 16),
+                  style: kNormalText.copyWith(fontSize: 14),
                   overflow: TextOverflow.fade,
                 ),
               ),
@@ -87,7 +88,7 @@ class WithdrawCardWidget extends StatelessWidget {
               child: Center(
                 child: Text(
                   "${withdrawModel.bankModel?.fullName}",
-                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 14),
                   overflow: TextOverflow.fade,
                 ),
               ),
@@ -97,7 +98,7 @@ class WithdrawCardWidget extends StatelessWidget {
               child: Center(
                 child: Text(
                   "${CommonUtils.statusFromApiToLocal(withdrawModel.status!)}",
-                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 14),
                   overflow: TextOverflow.fade,
                 ),
               ),
@@ -107,7 +108,7 @@ class WithdrawCardWidget extends StatelessWidget {
               child: Center(
                 child: Text(
                   withdrawModel.reason ?? "",
-                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 14),
                   overflow: TextOverflow.fade,
                 ),
               ),

@@ -14,6 +14,11 @@ class CommonUtils {
     await Future.delayed(Duration(milliseconds: mili));
   }
 
+  static String normalize(String input) {
+    return input.toLowerCase().replaceAll('が', 'か゛').replaceAll('ぎ', 'き゛').replaceAll('ぐ', 'く゛').replaceAll('げ', 'け゛').replaceAll('ご', 'こ゛');
+    // Add more normalization rules as needed
+  }
+
   static List<DateTime> getDateRange(DateTime startDate, DateTime endDate) {
     List<DateTime> dateRange = [];
 

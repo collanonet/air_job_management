@@ -7,9 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
+import '../../../api/company/request.dart';
+import '../../../helper/date_to_api.dart';
 import '../../../pages/register/widget/radio_list_tile.dart';
 import '../../../utils/app_color.dart';
 import '../../../utils/app_size.dart';
+import '../../../utils/common_utils.dart';
 import '../../../utils/japanese_text.dart';
 import '../../../utils/style.dart';
 import '../../../widgets/custom_textfield.dart';
@@ -40,6 +43,22 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
       }
     }
     return "${(i * 100) / shiftList.length}";
+  }
+
+  cancellationRatesTimes() {
+    int i = 0;
+    DateTime now = DateTime.now();
+    DateTime lastOne = DateTime(now.year, now.month, now.day - 1);
+    DateTime lastTwo = DateTime(now.year, now.month, now.day - 2);
+    DateTime lastThree = DateTime(now.year, now.month, now.day - 3);
+    List<DateTime> dateList = [now, lastOne, lastTwo, lastThree];
+    for (var request in requestByUserList) {
+      DateTime date = DateToAPIHelper.fromApiToLocal(request.date!);
+      if (request.status == "approved" && CommonUtils.isArrayOfDateContainDate(dateList, date)) {
+        i++;
+      }
+    }
+    return i == 0 ? "0" : "${(i * 100) / requestByUserList.length}";
   }
 
   countWorkingHistory(String id) {
@@ -137,7 +156,7 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
               ),
               AppSize.spaceHeight5,
               Text(
-                "0%",
+                "$cancellationRate%",
                 style: kNormalText.copyWith(fontSize: 16, fontFamily: "Normal"),
               )
             ],
@@ -567,12 +586,14 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
     // TODO: implement afterBuild
     var auth = Provider.of<AuthProvider>(context, listen: false);
     myUser = await UserApiServices().getProfileUser(myUser?.uid ?? "");
+    requestByUserList = await RequestApiService().getAllHolidayRequestByUsers(myUser?.uid ?? "");
     var listWorker = await WorkerManagementApiService().getAllJobApplyForAUSer(auth.myCompany?.uid ?? "", myUser?.uid ?? "", auth.branch?.id ?? "");
     for (var job in listWorker) {
       shiftList.addAll(job.shiftList ?? []);
     }
     lastMinuteCancellationRate = lastMinCountCancelTimes();
     numberOfWorkTime = countWorkingHistory(myUser?.uid ?? "");
+    cancellationRate = cancellationRatesTimes();
     setState(() {});
   }
 }

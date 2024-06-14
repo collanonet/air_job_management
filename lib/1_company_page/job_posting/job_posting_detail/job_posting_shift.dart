@@ -702,6 +702,15 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                           Padding(
                             padding: const EdgeInsets.only(top: 7),
                             child: RadioListTileWidget(
+                                title: JapaneseText.privatePost,
+                                onChange: (v) => provider.onChangeSelectPublicSetting(JapaneseText.privatePost),
+                                size: 120,
+                                val: provider.selectedPublicSetting),
+                          ),
+                          AppSize.spaceWidth32,
+                          Padding(
+                            padding: const EdgeInsets.only(top: 7),
+                            child: RadioListTileWidget(
                                 title: JapaneseText.groupLimitRelease,
                                 onChange: (v) => provider.onChangeSelectPublicSetting(JapaneseText.groupLimitRelease),
                                 size: 180,

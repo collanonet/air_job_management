@@ -1,4 +1,3 @@
-import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:flutter/material.dart';
@@ -11,17 +10,19 @@ class ShiftFrameCardWidget extends StatelessWidget {
   final UpdateHistory shiftFrame;
   final UpdateHistory? selectShiftFrame;
   final Function onClick;
-  const ShiftFrameCardWidget({super.key, required this.shiftFrame, required this.onClick, this.selectShiftFrame, required this.title});
+  final Function onUpdateStatus;
+  const ShiftFrameCardWidget(
+      {super.key, required this.shiftFrame, required this.onClick, this.selectShiftFrame, required this.title, required this.onUpdateStatus});
 
   @override
   Widget build(BuildContext context) {
-    bool isExpired = false;
-    DateTime now = DateTime.now();
-    DateTime today = DateTime(now.year, now.month, now.day, 0, 0, 0, 0, 0);
-    DateTime endDate = DateToAPIHelper.fromApiToLocal(shiftFrame.endDate!);
-    if (endDate.isBefore(today) && today != endDate) {
-      isExpired = true;
-    }
+    bool isExpired = shiftFrame.isClose ?? false;
+    // DateTime now = DateTime.now();
+    // DateTime today = DateTime(now.year, now.month, now.day, 0, 0, 0, 0, 0);
+    // DateTime endDate = DateToAPIHelper.fromApiToLocal(shiftFrame.endDate!);
+    // if (endDate.isBefore(today) && today != endDate) {
+    //   isExpired = true;
+    // }
     return Container(
       // height: 110,
       width: AppSize.getDeviceWidth(context),
@@ -87,18 +88,21 @@ class ShiftFrameCardWidget extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Center(
-                child: Container(
-                    width: 100,
-                    height: 36,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25), color: isExpired ? AppColor.endColor : AppColor.duringCorrespondingColor),
-                    child: Center(
-                      child: Text(
-                        isExpired ? "稼働終了" : "掲載中",
-                        style: kTitleText.copyWith(color: AppColor.whiteColor, fontSize: 16),
-                        overflow: TextOverflow.fade,
-                      ),
-                    )),
+                child: InkWell(
+                  onTap: () => onUpdateStatus(),
+                  child: Container(
+                      width: 100,
+                      height: 36,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25), color: isExpired ? AppColor.endColor : AppColor.duringCorrespondingColor),
+                      child: Center(
+                        child: Text(
+                          isExpired ? "稼働終了" : "掲載中",
+                          style: kTitleText.copyWith(color: AppColor.whiteColor, fontSize: 16),
+                          overflow: TextOverflow.fade,
+                        ),
+                      )),
+                ),
               ),
             ),
           ],
