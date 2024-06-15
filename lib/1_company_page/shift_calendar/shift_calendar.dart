@@ -24,12 +24,15 @@ import '../../helper/japan_date_time.dart';
 import '../../models/calendar.dart';
 import '../../models/company.dart';
 import '../../models/job_posting.dart';
+import '../../models/user.dart';
 import '../../providers/auth.dart';
 import '../../providers/company/job_posting.dart';
 import '../../utils/app_size.dart';
 import '../../utils/my_route.dart';
 import '../../utils/toast_message_util.dart';
 import '../../widgets/custom_loading_overlay.dart';
+import '../../widgets/title.dart';
+import '../../widgets/user_basic_information.dart';
 import '../job_posting/create_or_edit_job_posting.dart';
 import '../job_posting/widget/matching_worker.dart';
 import 'data_source/shift_calendar.dart';
@@ -184,13 +187,16 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
-                            return SizedBox(
-                              height: 45,
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(
-                                  "${provider.jobApplyPerDay[index].myUser?.nameKanJi}",
-                                  style: kNormalText.copyWith(fontFamily: "Bold"),
+                            return InkWell(
+                              onTap: () => onUserTapped(provider.jobApplyPerDay[index].myUser),
+                              child: SizedBox(
+                                height: 45,
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    "${provider.jobApplyPerDay[index].myUser?.nameKanJi}",
+                                    style: kNormalText.copyWith(fontFamily: "Bold"),
+                                  ),
                                 ),
                               ),
                             );
@@ -1006,6 +1012,33 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
         getData();
       }
     });
+  }
+
+  onUserTapped(MyUser? user) async {
+    if (user != null) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TitleWidget(title: JapaneseText.basicInformation),
+                  IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close))
+                ],
+              ),
+              content: SizedBox(
+                height: AppSize.getDeviceHeight(context) * 0.7,
+                width: AppSize.getDeviceWidth(context),
+                child: Scaffold(
+                  body: SizedBox(
+                      height: AppSize.getDeviceHeight(context) * 0.7,
+                      width: AppSize.getDeviceWidth(context),
+                      child: UserBasicInformationPage(myUser: user)),
+                ),
+              )));
+    } else {
+      toastMessageError("Not found user", context);
+    }
   }
 
   @override

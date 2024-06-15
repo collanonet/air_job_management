@@ -59,10 +59,14 @@ class ShiftModel {
       };
 
   @override
-  int get hashCode => startWorkTime.hashCode ^ endWorkTime.hashCode;
+  int get hashCode => startWorkTime.hashCode ^ endWorkTime.hashCode ^ date.hashCode;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ShiftModel && runtimeType == other.runtimeType && startWorkTime == other.startWorkTime && endWorkTime == other.endWorkTime;
+      other is ShiftModel &&
+          runtimeType == other.runtimeType &&
+          startWorkTime == other.startWorkTime &&
+          endWorkTime == other.endWorkTime &&
+          date == other.date;
 }

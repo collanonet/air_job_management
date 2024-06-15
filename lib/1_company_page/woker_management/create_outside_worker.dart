@@ -405,7 +405,7 @@ class _CreateOutsideStaffPageState extends State<CreateOutsideStaffPage> with Af
               Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    JapaneseText.affiliate,
+                    "所属",
                     style: kNormalText.copyWith(fontSize: 12),
                   )),
               AppSize.spaceHeight5,
