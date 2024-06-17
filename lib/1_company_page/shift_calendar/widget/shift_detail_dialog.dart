@@ -615,8 +615,9 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                 width: 140,
                                 child: ButtonWidget(
                                   radius: 25,
-                                  color: shift.status == "completed"
-                                      ? AppColor.bgPageColor
+                                  color: shift.status == "completed" ||
+                                      shift.status == "canceled"
+                                      ? Colors.grey
                                       : shift.status == "approved"
                                           ? AppColor.primaryColor
                                           : AppColor.whiteColor,
@@ -635,8 +636,9 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                 width: 145,
                                 child: ButtonWidget(
                                   radius: 25,
-                                  color: shift.status == "completed"
-                                      ? AppColor.bgPageColor
+                                  color: shift.status == "completed" ||
+                                      shift.status == "canceled"
+                                      ? Colors.grey
                                       : shift.status == "rejected"
                                           ? AppColor.primaryColor
                                           : AppColor.whiteColor,

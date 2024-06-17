@@ -192,6 +192,42 @@ class CommonUtils {
     }
   }
 
+  static calculateOvertimeInEntry(EntryExitHistory entry, {bool? isOvertime, bool? withInLimit, bool? nonSat}){
+    ///Calculate Overtime
+    List<int> overTimeData = calculateOvertime(
+        entry.scheduleEndWorkingTime, entry.endWorkingTime, "00:00");
+    entry.overtime =
+    "${DateToAPIHelper.formatTimeTwoDigits(overTimeData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(overTimeData[1].toString())}";
+
+    ///within statutory
+    var scheduleWorkingData = calculateWorkingTime(
+        entry.scheduleStartWorkingTime,
+        entry.scheduleEndWorkingTime,
+        "01:00");
+    List<int> withinStatutoryData = [0, 0];
+    if(overTimeData[0] > 0 || overTimeData[1] > 0){
+      withinStatutoryData = calculateWorkingTime(
+          "${scheduleWorkingData[0]}:${scheduleWorkingData[1]}",
+          "$overTimeLegalLimit:00",
+          "00:00");
+    }
+    entry.overtimeWithinLegalLimit =
+    "${DateToAPIHelper.formatTimeTwoDigits(withinStatutoryData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(withinStatutoryData[1].toString())}";
+
+    ///non statutory
+    List<int> nonStatutoryData =
+    calculateBreakTime(entry.overtime, entry.overtimeWithinLegalLimit);
+    entry.nonStatutoryOvertime =
+    "${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[1].toString())}";
+    if(isOvertime == true){
+      return entry.overtime;
+    }else if(withInLimit == true){
+      return entry.overtimeWithinLegalLimit;
+    }else{
+      return entry.nonStatutoryOvertime;
+    }
+  }
+
   static totalPaidHoliday(List<Request> requestList, String username, List<DateTime> dateList) {
     int size = 0;
     for (var request in requestList) {
@@ -325,7 +361,8 @@ class CommonUtils {
     for (int i = 0; i < entryList.length; i++) {
       DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
       if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
-        List<int> overTimeData = calculateOvertime(entryList[i].scheduleEndWorkingTime, entryList[i].endWorkingTime, "00:00");
+        entryList[i].overtime = calculateOvertimeInEntry(entryList[i], isOvertime: true);
+        List<int> overTimeData = [int.parse(entryList[i].overtime!.split(":")[0]), int.parse(entryList[i].overtime!.split(":")[1])];
         hour += overTimeData[0];
         minute += overTimeData[1];
       }
@@ -353,6 +390,7 @@ class CommonUtils {
     int minute = 0;
     for (int i = 0; i < entryList.length; i++) {
       DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
+      entryList[i].overtimeWithinLegalLimit = calculateOvertimeInEntry(entryList[i], withInLimit: true);
       if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
         hour += int.parse(entryList[i].overtimeWithinLegalLimit!.split(":")[0]);
         minute += int.parse(entryList[i].overtimeWithinLegalLimit!.split(":")[1]);
@@ -368,6 +406,7 @@ class CommonUtils {
     int minute = 0;
     for (int i = 0; i < entryList.length; i++) {
       DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
+      entryList[i].nonStatutoryOvertime = calculateOvertimeInEntry(entryList[i], nonSat: true);
       if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
         hour += int.parse(entryList[i].nonStatutoryOvertime!.split(":")[0]);
         minute += int.parse(entryList[i].nonStatutoryOvertime!.split(":")[1]);

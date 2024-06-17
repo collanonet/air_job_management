@@ -293,7 +293,7 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
                                 radius: 25,
                                 color: shift.status == "completed" ||
                                         shift.status == "canceled"
-                                    ? AppColor.bgPageColor
+                                    ? Colors.grey
                                     : shift.status == "approved"
                                         ? AppColor.primaryColor
                                         : AppColor.whiteColor,
@@ -318,7 +318,7 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
                                 radius: 25,
                                 color: shift.status == "completed" ||
                                         shift.status == "canceled"
-                                    ? AppColor.bgPageColor
+                                    ? Colors.grey
                                     : shift.status == "rejected"
                                         ? AppColor.primaryColor
                                         : AppColor.whiteColor,

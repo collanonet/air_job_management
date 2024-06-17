@@ -195,7 +195,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                                   alignment: Alignment.centerRight,
                                   child: Text(
                                     "${provider.jobApplyPerDay[index].myUser?.nameKanJi}",
-                                    style: kNormalText.copyWith(fontFamily: "Bold"),
+                                    style: kNormalText.copyWith(fontFamily: "Bold", color: AppColor.primaryColor),
                                   ),
                                 ),
                               ),
@@ -364,7 +364,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                             alignment: Alignment.centerRight,
                             child: Text(
                               provider.jobPostingDataTableList[index].job,
-                              style: kNormalText.copyWith(fontFamily: "Bold"),
+                              style: kNormalText.copyWith(fontFamily: "Bold", color: AppColor.primaryColor),
                             ),
                           ),
                         ),
