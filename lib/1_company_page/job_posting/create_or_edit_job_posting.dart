@@ -184,6 +184,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
               title: provider.title.text.toString(),
               startTime: dateTimeToHourAndMinute(provider.startWorkingTime),
               endTime: dateTimeToHourAndMinute(provider.endWorkingTime),
+              isClose: provider.selectedPublicSetting == JapaneseText.privatePost ? true : false
             );
             provider.jobPosting?.updateList!.add(update);
           }
