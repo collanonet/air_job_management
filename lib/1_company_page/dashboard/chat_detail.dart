@@ -123,9 +123,10 @@ class _DashboardChatPageState extends State<DashboardChatPage> with AfterBuildMi
               if (index > 0) {
                 oldData = snapshot.data!.docs[index - 1].data()! as Map<String, dynamic>;
               }
-              bool isSeen = isMe ? true : false;
-              if (data.containsKey("isSeen") && !isMe) {
-                isSeen = data["isSeen"];
+              bool isRead = data["isSeen"] ?? false;
+              if(!isMe && !isRead){
+                //Seen Chat in detail screen
+                MessageApi(widget.myUser.uid!, widget.companyID).updateSeen(snapshot.data!.docs[index].id);
               }
               return Column(
                 children: [
@@ -138,7 +139,7 @@ class _DashboardChatPageState extends State<DashboardChatPage> with AfterBuildMi
                           ? Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Text(
-                                "${DateToAPIHelper.timeFormat(DateTime.parse(message.createdAt.toString()))} ${(isSeen && !isMe) ? "既読" : "未読"}",
+                                "${DateToAPIHelper.timeFormat(DateTime.parse(message.createdAt.toString()))} ${isRead ? "既読" : "未読"}",
                                 style: TextStyle(
                                   color: Theme.of(context).colorScheme.secondary,
                                   fontSize: 9,
@@ -230,7 +231,7 @@ class _DashboardChatPageState extends State<DashboardChatPage> with AfterBuildMi
                           ? Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Text(
-                                "${DateToAPIHelper.timeFormat(DateTime.parse(message.createdAt.toString()))} ${isSeen ? "既読" : "未読"}",
+                                "${DateToAPIHelper.timeFormat(DateTime.parse(message.createdAt.toString()))} ${isRead ? "既読" : "未読"}",
                                 style: TextStyle(
                                   color: Theme.of(context).colorScheme.secondary,
                                   fontSize: 9,
@@ -312,6 +313,7 @@ class _DashboardChatPageState extends State<DashboardChatPage> with AfterBuildMi
                   setState(() {
                     isSending = false;
                   });
+                  animateListToLatest();
                 }).catchError((e) {
                   setState(() {
                     isError = true;
@@ -435,10 +437,14 @@ class _DashboardChatPageState extends State<DashboardChatPage> with AfterBuildMi
     }
   }
 
+  animateListToLatest(){
+    scrollController.animateTo(scrollController.position.maxScrollExtent, duration: const Duration(seconds: 1), curve: Curves.ease);
+  }
+
   @override
   void afterBuild(BuildContext context) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    scrollController.animateTo(scrollController.position.maxScrollExtent, duration: const Duration(seconds: 1), curve: Curves.ease);
+    animateListToLatest();
   }
 }
 
