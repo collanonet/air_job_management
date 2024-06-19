@@ -48,14 +48,25 @@ class ShiftCalendarDataSource extends DataGridSource {
               alignment: Alignment.center,
               margin: const EdgeInsets.all(1),
               decoration: BoxDecoration(
-                  color: shiftModel.status == "approved" ? AppColor.primaryColor : Colors.orange.withOpacity(0.2),
+                  color: shiftModel.status == "completed"
+                      ? Colors.grey
+                      : shiftModel.status == "approved"
+                          ? AppColor.primaryColor
+                          : Colors.orange.withOpacity(0.2),
                   border: Border.all(
                       width: shiftModel.status == "approved" ? 0 : 2,
-                      color: shiftModel.status == "approved" ? Colors.white : AppColor.primaryColor)),
+                      color: shiftModel.status == "completed"
+                          ? Colors.grey
+                          : shiftModel.status == "approved"
+                              ? Colors.white
+                              : AppColor.primaryColor)),
               child: Text(
                 "${shiftModel.startWorkTime}\n~\n${shiftModel.endWorkTime}",
                 textAlign: TextAlign.center,
-                style: kNormalText.copyWith(fontSize: 11, color: shiftModel.status == "approved" ? Colors.white : Colors.black, height: 1),
+                style: kNormalText.copyWith(
+                    fontSize: 11,
+                    color: shiftModel.status == "approved" || shiftModel.status == "completed" ? Colors.white : Colors.black,
+                    height: 1),
               ),
             );
     }).toList());

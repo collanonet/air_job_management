@@ -3,13 +3,15 @@ import 'package:air_job_management/utils/app_color.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/style.dart';
+import '../../job_posting/create_or_edit_job_posting.dart';
 
 class EntryListDataSource extends DataTableSource {
   final List<EntryExitHistory> data;
   final Function ratting;
   final Function onUserTap;
+  final BuildContext context;
 
-  EntryListDataSource({required this.data, required this.ratting, required this.onUserTap});
+  EntryListDataSource({required this.data, required this.ratting, required this.onUserTap, required this.context});
 
   @override
   DataRow? getRow(int index) {
@@ -24,9 +26,19 @@ class EntryListDataSource extends DataTableSource {
         "${entry.workDate}",
         style: kNormalText,
       )),
-      DataCell(Text(
-        "${entry.jobTitle}",
-        style: kNormalText,
+      DataCell(InkWell(
+        onTap: () => showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  content: CreateOrEditJobPostingPageForCompany(
+                    isView: true,
+                    jobPosting: entry.jobID,
+                  ),
+                )),
+        child: Text(
+          "${entry.jobTitle}",
+          style: kNormalText.copyWith(color: AppColor.primaryColor),
+        ),
       )),
       DataCell(InkWell(
         onTap: () => onUserTap(entry.myUser),

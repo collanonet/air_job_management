@@ -193,9 +193,12 @@ class JobPostingForCompanyProvider with ChangeNotifier {
     if (text.isNotEmpty) {
       List<JobPosting> jobPostingFilterList = [];
       for (var job in jobPostingList) {
-        if (job.majorOccupation!.toLowerCase().contains(text.toLowerCase()) ||
-            job.title!.toLowerCase().contains(text.toLowerCase()) ||
-            job.jobLocation!.toLowerCase().contains(text.toLowerCase())) {
+        String normalizeMajor = CommonUtils.normalize(job.majorOccupation.toString().toLowerCase());
+        String normalTitle = CommonUtils.normalize(job.title.toString().toLowerCase());
+        String normalizeJobLocation = CommonUtils.normalize(job.jobLocation.toString().toLowerCase());
+        if (normalizeMajor.contains(text.toLowerCase()) ||
+            normalTitle.contains(text.toLowerCase()) ||
+            normalizeJobLocation.toLowerCase().contains(text.toLowerCase())) {
           jobPostingFilterList.add(job);
         }
       }

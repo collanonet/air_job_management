@@ -75,7 +75,7 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
   countWorkingHistory(String id) {
     int i = 0;
     for (var entry in entryForApplicant) {
-      if (entry.userId == id) {
+      if (entry.userId == id && entry.endWorkDate != null && entry.endWorkDate != "") {
         i++;
       }
     }
@@ -456,7 +456,7 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
                 width: AppSize.getDeviceWidth(context) * 0.13,
                 child: PrimaryTextField(
                   hint: "",
-                  controller: TextEditingController(text: "${myUser?.city ?? myUser?.province ?? myUser?.street}"),
+                  controller: TextEditingController(text: "${myUser?.city ?? ""}"),
                   isRequired: false,
                   readOnly: true,
                 ),

@@ -182,7 +182,7 @@ class ApplicantCardWidget extends StatelessWidget {
 countWorkingHistory(String id) {
   int i = 0;
   for (var entry in entryForApplicant) {
-    if (entry.userId == id) {
+    if (entry.userId == id && entry.endWorkDate != null && entry.endWorkDate != "") {
       i++;
     }
   }

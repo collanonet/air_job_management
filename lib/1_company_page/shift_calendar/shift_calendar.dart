@@ -967,6 +967,34 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                           )
                         ],
                       ),
+                    ),
+                    AppSize.spaceWidth8,
+                    Text(
+                      "完了",
+                      style: kNormalText.copyWith(fontSize: 13),
+                    ),
+                    AppSize.spaceWidth8,
+                    Container(
+                      width: 65,
+                      height: 50,
+                      decoration: BoxDecoration(color: Colors.grey, border: Border.all(width: 2, color: Colors.grey)),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "11:30",
+                            style: kNormalText.copyWith(fontSize: 13, color: Colors.white),
+                          ),
+                          Text(
+                            "~",
+                            style: kNormalText.copyWith(fontSize: 13, color: Colors.white, height: 0.4),
+                          ),
+                          Text(
+                            "19:00",
+                            style: kNormalText.copyWith(fontSize: 13, color: Colors.white),
+                          )
+                        ],
+                      ),
                     )
                   ],
                 ),

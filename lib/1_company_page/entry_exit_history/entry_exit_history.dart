@@ -215,8 +215,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                   style: kNormalText.copyWith(fontFamily: "Bold"),
                 )),
               ],
-              source:
-                  EntryListDataSource(data: provider.entryList, ratting: (entry) => showRatingDialog(entry), onUserTap: (user) => onUserTapped(user)),
+              source: EntryListDataSource(
+                  context: context, data: provider.entryList, ratting: (entry) => showRatingDialog(entry), onUserTap: (user) => onUserTapped(user)),
             ),
           ),
         ),

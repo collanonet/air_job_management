@@ -15,8 +15,22 @@ class CommonUtils {
   }
 
   static String normalize(String input) {
-    return input.toLowerCase().replaceAll('が', 'か゛').replaceAll('ぎ', 'き゛').replaceAll('ぐ', 'く゛').replaceAll('げ', 'け゛').replaceAll('ご', 'こ゛');
-    // Add more normalization rules as needed
+    input = input.toLowerCase().replaceAll('が', 'か゛').replaceAll('ぎ', 'き゛').replaceAll('ぐ', 'く゛').replaceAll('げ', 'け゛').replaceAll('ご', 'こ゛');
+    // Normalize full-width characters to half-width
+    input = input.replaceAllMapped(RegExp(r'[！-～]'), (match) {
+      return String.fromCharCode(match.group(0)!.codeUnitAt(0) - 0xFEE0);
+    });
+
+    // Normalize full-width spaces to half-width spaces
+    input = input.replaceAll('　', ' ');
+
+    // Normalize Hiragana to Katakana
+    input = input.replaceAllMapped(RegExp(r'[ぁ-ん]'), (match) {
+      return String.fromCharCode(match.group(0)!.codeUnitAt(0) + 0x60);
+    });
+
+    // Lowercase the input for case-insensitive comparison
+    return input.toLowerCase();
   }
 
   static List<DateTime> getDateRange(DateTime startDate, DateTime endDate) {
@@ -192,38 +206,30 @@ class CommonUtils {
     }
   }
 
-  static calculateOvertimeInEntry(EntryExitHistory entry, {bool? isOvertime, bool? withInLimit, bool? nonSat}){
+  static calculateOvertimeInEntry(EntryExitHistory entry, {bool? isOvertime, bool? withInLimit, bool? nonSat}) {
     ///Calculate Overtime
-    List<int> overTimeData = calculateOvertime(
-        entry.scheduleEndWorkingTime, entry.endWorkingTime, "00:00");
+    List<int> overTimeData = calculateOvertime(entry.scheduleEndWorkingTime, entry.endWorkingTime, "00:00");
     entry.overtime =
-    "${DateToAPIHelper.formatTimeTwoDigits(overTimeData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(overTimeData[1].toString())}";
+        "${DateToAPIHelper.formatTimeTwoDigits(overTimeData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(overTimeData[1].toString())}";
 
     ///within statutory
-    var scheduleWorkingData = calculateWorkingTime(
-        entry.scheduleStartWorkingTime,
-        entry.scheduleEndWorkingTime,
-        "01:00");
+    var scheduleWorkingData = calculateWorkingTime(entry.scheduleStartWorkingTime, entry.scheduleEndWorkingTime, "01:00");
     List<int> withinStatutoryData = [0, 0];
-    if(overTimeData[0] > 0 || overTimeData[1] > 0){
-      withinStatutoryData = calculateWorkingTime(
-          "${scheduleWorkingData[0]}:${scheduleWorkingData[1]}",
-          "$overTimeLegalLimit:00",
-          "00:00");
+    if (overTimeData[0] > 0 || overTimeData[1] > 0) {
+      withinStatutoryData = calculateWorkingTime("${scheduleWorkingData[0]}:${scheduleWorkingData[1]}", "$overTimeLegalLimit:00", "00:00");
     }
     entry.overtimeWithinLegalLimit =
-    "${DateToAPIHelper.formatTimeTwoDigits(withinStatutoryData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(withinStatutoryData[1].toString())}";
+        "${DateToAPIHelper.formatTimeTwoDigits(withinStatutoryData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(withinStatutoryData[1].toString())}";
 
     ///non statutory
-    List<int> nonStatutoryData =
-    calculateBreakTime(entry.overtime, entry.overtimeWithinLegalLimit);
+    List<int> nonStatutoryData = calculateBreakTime(entry.overtime, entry.overtimeWithinLegalLimit);
     entry.nonStatutoryOvertime =
-    "${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[1].toString())}";
-    if(isOvertime == true){
+        "${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[1].toString())}";
+    if (isOvertime == true) {
       return entry.overtime;
-    }else if(withInLimit == true){
+    } else if (withInLimit == true) {
       return entry.overtimeWithinLegalLimit;
-    }else{
+    } else {
       return entry.nonStatutoryOvertime;
     }
   }
