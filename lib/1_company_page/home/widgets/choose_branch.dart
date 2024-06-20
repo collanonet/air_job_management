@@ -36,6 +36,7 @@ class _ChooseBranchWidgetState extends State<ChooseBranchWidget> with AfterBuild
         child: ListView.builder(
             itemCount: authProvider.myCompany?.branchList!.length,
             shrinkWrap: true,
+            reverse: true,
             itemBuilder: (context, index) {
               var branch = authProvider.myCompany?.branchList![index];
               return Container(
@@ -55,7 +56,7 @@ class _ChooseBranchWidgetState extends State<ChooseBranchWidget> with AfterBuild
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        "${branch!.name} | ${branch.postalCode} | ${branch.location}",
+                        branch?.name == "企業" ? "企業" : "${branch!.name} | ${branch.postalCode} | ${branch.location}",
                         style: kNormalText.copyWith(fontFamily: "Normal", color: Colors.black),
                         overflow: TextOverflow.fade,
                       ),
@@ -101,6 +102,22 @@ class _ChooseBranchWidgetState extends State<ChooseBranchWidget> with AfterBuild
 
   @override
   void afterBuild(BuildContext context) {
+    Branch branch = Branch(
+      id: "",
+      name: "企業",
+      location: "",
+      postalCode: "",
+    );
+    bool isContain = false;
+    for (var b in authProvider.myCompany!.branchList!) {
+      if (branch.id == b.id && branch.name == b.name && branch.location == b.location) {
+        isContain = true;
+        break;
+      }
+    }
+    if (!isContain) {
+      authProvider.myCompany!.branchList!.add(branch);
+    }
     setState(() {
       selectedBranch = authProvider.branch;
     });

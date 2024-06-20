@@ -295,6 +295,14 @@ final GoRouter _router = GoRouter(
                 },
               ),
               GoRoute(
+                path: 'branch',
+                builder: (BuildContext context, GoRouterState state) {
+                  return HomePageForCompany(
+                    selectItem: JapaneseText.allBranch,
+                  );
+                },
+              ),
+              GoRoute(
                 path: 'job-posting',
                 builder: (BuildContext context, GoRouterState state) {
                   return HomePageForCompany(

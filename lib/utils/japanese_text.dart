@@ -183,6 +183,8 @@ class JapaneseText {
   static String incomplete = "未完了";
   static String complete = "完了";
   static String all = "すべて";
+  static String allBranch = "店舗一覧";
+  static String companyInfo = "店舗一覧";
 
   static String staffId = "社員番号";
   static String groupId = "勤務地ID";

@@ -75,20 +75,36 @@ class _HomePageForCompanyState extends State<HomePageForCompany> with AfterBuild
               onChooseBranch: () => showChooseBranchDialog(),
             ),
             AppSize.spaceHeight16,
-            for (int i = 0; i < homeProvider.menuListForCompany.length; i++)
-              Column(
-                children: [
-                  TabSectionWidget(
-                      title: homeProvider.menuListForCompany[i],
-                      icon: homeProvider.menuIconListForCompany[i],
-                      onPress: () {
-                        homeProvider.onChangeSelectItemForCompany(homeProvider.menuListForCompany[i]);
-                        var route = homeProvider.checkRouteForCompany(homeProvider);
-                        context.go(route);
-                      }),
-                  AppSize.spaceHeight8,
-                ],
-              ),
+            if (authProvider.branch?.name == "企業")
+              for (int i = 0; i < homeProvider.menuListForCompanyMainBranch.length; i++)
+                Column(
+                  children: [
+                    TabSectionWidget(
+                        title: homeProvider.menuListForCompanyMainBranch[i],
+                        icon: homeProvider.menuIconListForCompanyMainBranch[i],
+                        onPress: () {
+                          homeProvider.onChangeSelectItemForCompany(homeProvider.menuListForCompanyMainBranch[i]);
+                          var route = homeProvider.checkRouteForCompany(homeProvider);
+                          context.go(route);
+                        }),
+                    AppSize.spaceHeight8,
+                  ],
+                )
+            else
+              for (int i = 0; i < homeProvider.menuListForCompany.length; i++)
+                Column(
+                  children: [
+                    TabSectionWidget(
+                        title: homeProvider.menuListForCompany[i],
+                        icon: homeProvider.menuIconListForCompany[i],
+                        onPress: () {
+                          homeProvider.onChangeSelectItemForCompany(homeProvider.menuListForCompany[i]);
+                          var route = homeProvider.checkRouteForCompany(homeProvider);
+                          context.go(route);
+                        }),
+                    AppSize.spaceHeight8,
+                  ],
+                ),
             TabSectionWidget(
                 title: "ログアウト",
                 icon: Icons.logout,
@@ -115,6 +131,9 @@ class _HomePageForCompanyState extends State<HomePageForCompany> with AfterBuild
         context: context,
         builder: (context) => ChooseBranchWidget(
               onRefresh: () async {
+                if (authProvider.branch?.name == "企業") {
+                  homeProvider.onChangeSelectItemForCompany(homeProvider.menuListForCompanyMainBranch[0]);
+                }
                 dashboardPageForCompany.onChangeLoading(true);
                 await dashboardPageForCompany.onInit(authProvider.myCompany?.uid ?? "", authProvider.branch?.id ?? "");
                 withdrawList = await WithdrawApiService().getAllWithdraw("");
@@ -124,7 +143,17 @@ class _HomePageForCompanyState extends State<HomePageForCompany> with AfterBuild
   }
 
   rightWidget() {
-    int selectedIndex = homeProvider.menuListForCompany.indexOf(homeProvider.selectedItemForCompany);
-    return Expanded(child: widget.page != null ? widget.page! : homeProvider.menuPageListForCompany.elementAt(selectedIndex));
+    int selectedIndex = 0;
+    if (authProvider.branch?.name == "企業") {
+      selectedIndex = homeProvider.menuListForCompanyMainBranch.indexOf(homeProvider.selectedItemForCompany);
+    } else {
+      selectedIndex = homeProvider.menuListForCompany.indexOf(homeProvider.selectedItemForCompany);
+    }
+    return Expanded(
+        child: widget.page != null
+            ? widget.page!
+            : authProvider.branch?.name == "企業"
+                ? homeProvider.menuPageListForCompanyMainBranch.elementAt(selectedIndex == -1 ? 0 : selectedIndex)
+                : homeProvider.menuPageListForCompany.elementAt(selectedIndex == -1 ? 0 : selectedIndex));
   }
 }

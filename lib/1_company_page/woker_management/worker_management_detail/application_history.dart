@@ -266,8 +266,8 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                               width: 150,
                               child: ButtonWidget(
                                 radius: 25,
-                                color: shift.status == "completed"
-                                    ? AppColor.bgPageColor
+                                color: shift.status == "completed" || shift.status == "canceled"
+                                    ? Colors.grey
                                     : shift.status == "approved"
                                         ? AppColor.primaryColor
                                         : AppColor.whiteColor,
@@ -286,8 +286,8 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                               width: 150,
                               child: ButtonWidget(
                                 radius: 25,
-                                color: shift.status == "completed"
-                                    ? AppColor.bgPageColor
+                                color: shift.status == "completed" || shift.status == "canceled"
+                                    ? Colors.grey
                                     : shift.status == "rejected"
                                         ? AppColor.primaryColor
                                         : AppColor.whiteColor,

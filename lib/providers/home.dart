@@ -1,4 +1,5 @@
 import 'package:air_job_management/1_company_page/applicant/applicant.dart';
+import 'package:air_job_management/1_company_page/company_profile/company_branch.dart';
 import 'package:air_job_management/1_company_page/dashboard/dashboard.dart';
 import 'package:air_job_management/1_company_page/job_posting/job_posting.dart';
 import 'package:air_job_management/1_company_page/shift_calendar/shift_calendar.dart';
@@ -35,6 +36,20 @@ class HomeProvider with ChangeNotifier {
     // Icons.settings_rounded
   ];
 
+  List<String> menuListForCompanyMainBranch = [
+    JapaneseText.companyInformationManagement,
+    JapaneseText.allBranch,
+    JapaneseText.usageDetail,
+    JapaneseText.workingTimeManagement,
+  ];
+
+  List<IconData> menuIconListForCompanyMainBranch = const [
+    FontAwesome.building,
+    Icons.dashboard,
+    FontAwesome.calculator,
+    Icons.person_pin_rounded,
+  ];
+
   List<String> menuListForCompany = [
     JapaneseText.dashboardCompany,
     JapaneseText.recruitmentTemplate,
@@ -66,6 +81,15 @@ class HomeProvider with ChangeNotifier {
     EntryExitHistoryPage(),
     UsageDetailPage(),
     RootCompanyPage()
+  ];
+
+  List<Widget> menuPageListForCompanyMainBranch = const [
+    RootCompanyPage(),
+    CompanyBranchPage(
+      isFromMain: true,
+    ),
+    UsageDetailPage(),
+    WorkerManagementPage(),
   ];
   String selectedItem = JapaneseText.analysis;
   String selectedItemForCompany = JapaneseText.analysis;

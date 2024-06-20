@@ -10,6 +10,7 @@ class MyRoute {
   static var companyUsageDetail = "/company/usage-detail";
   static var companyInformationManagement = "/company/information-management";
   static var companyCreateJobPosting = "/company/job-posting/create";
+  static var companyAllBranch = "/company/branch";
   static var workerPage = "/worker";
   static var jobOption = "/worker/job-options";
   static var workerSearchJobPage = "/worker/search-job";
