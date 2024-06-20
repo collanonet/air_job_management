@@ -180,21 +180,21 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                   Padding(
                     padding: const EdgeInsets.only(top: 73),
                     child: SizedBox(
-                      height: provider.jobApplyPerDay.length * 45,
+                      height: provider.shiftBySeekerPerMonth.length * 45,
                       width: 80,
                       child: ListView.builder(
-                          itemCount: provider.jobApplyPerDay.length,
+                          itemCount: provider.shiftBySeekerPerMonth.length,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             return InkWell(
-                              onTap: () => onUserTapped(provider.jobApplyPerDay[index].myUser),
+                              onTap: () => onUserTapped(provider.shiftBySeekerPerMonth[index].myUser),
                               child: SizedBox(
                                 height: 45,
                                 child: Align(
                                   alignment: Alignment.centerRight,
                                   child: Text(
-                                    "${provider.jobApplyPerDay[index].myUser?.nameKanJi}",
+                                    "${provider.shiftBySeekerPerMonth[index].myUser?.nameKanJi}",
                                     style: kNormalText.copyWith(fontFamily: "Bold", color: AppColor.primaryColor),
                                   ),
                                 ),
@@ -214,7 +214,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                         ),
                         AppSize.spaceHeight5,
                         Container(
-                          height: provider.jobApplyPerDay.length * 45,
+                          height: provider.shiftBySeekerPerMonth.length * 45,
                           width: 35,
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.primaryColor),
                           child: Material(
@@ -306,7 +306,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                     ),
                   ),
                   Container(
-                    height: provider.jobApplyPerDay.length * 45,
+                    height: provider.shiftBySeekerPerMonth.length * 45,
                     width: 35,
                     margin: const EdgeInsets.only(top: 73, left: 5),
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: AppColor.primaryColor),

@@ -1,3 +1,4 @@
+import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/models/worker_model/shift.dart';
 
 class CalendarModel {
@@ -12,8 +13,10 @@ class CalendarModel {
 
 class GroupedCalendarModel {
   String? applyName;
+  String? seekerId;
   String? status;
+  MyUser? myUser;
   List<CalendarModel>? calendarModels;
   List<ShiftModel>? allShiftModels = [];
-  GroupedCalendarModel({this.applyName, this.calendarModels, this.allShiftModels, this.status});
+  GroupedCalendarModel({this.applyName, this.calendarModels, this.allShiftModels, this.status, this.seekerId, this.myUser});
 }

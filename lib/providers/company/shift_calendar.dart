@@ -30,7 +30,7 @@ class ShiftCalendarProvider with ChangeNotifier {
   static DateTime now = DateTime.now();
   String companyId = "";
   List<CalendarModel> rangeDateList = [];
-  List<GroupedCalendarModel> groupDataByName = [];
+  List<GroupedCalendarModel> shiftBySeekerPerMonth = [];
   List<JobPostingDataTable> jobPostingDataTableList = [];
   List<DateTime> dateTimeList = [];
   DateTime firstDate = DateTime(now.year, now.month, 1);
@@ -250,6 +250,46 @@ class ShiftCalendarProvider with ChangeNotifier {
         jobApplyPerDay.add(job);
       }
     }
+    shiftBySeekerPerMonth = [];
+    List<String> seekerIds = jobApplyList.map((e) => e.userId.toString()).toSet().toList();
+    // print("Ids ${seekerIds.length}");
+
+    ///Map name
+    for (var seekerId in seekerIds) {
+      var groupData = GroupedCalendarModel(
+          calendarModels: rangeDateList.map((e) => CalendarModel(date: e.date, shiftModelList: [])).toList(), applyName: "", seekerId: "");
+      for (var job in jobApplyPerDay) {
+        if (job.userId == seekerId) {
+          groupData.applyName = job.myUser?.nameKanJi ?? "";
+          groupData.seekerId = seekerId;
+          groupData.myUser = job.myUser;
+          shiftBySeekerPerMonth.add(groupData);
+          break;
+        }
+      }
+    }
+
+    // print("Group data ${shiftBySeekerPerMonth.map((e) => e.applyName.toString())}");
+
+    for (var groupData in shiftBySeekerPerMonth) {
+      for (var job in jobApplyPerDay) {
+        if (job.userId == groupData.myUser?.uid) {
+          List<ShiftModel> shiftList = job.shiftList ?? [];
+          List<DateTime> dateListFromShift = shiftList.map((e) => e.date!).toList();
+          for (var seeker in groupData.calendarModels!) {
+            for (var shift in shiftList) {
+              // print("Shift ${job.userId} - ${shift.date} x ${seeker.date}");
+              if (CommonUtils.isTheSameDate(shift.date!, seeker.date)) {
+                seeker.shiftModelList = [shift];
+                seeker.jobId = job.jobId;
+                seeker.searchJobId = job.uid;
+                seeker.applyName = job.myUser?.nameKanJi ?? "";
+              }
+            }
+          }
+        }
+      }
+    }
     notifyListeners();
   }
 
@@ -257,7 +297,7 @@ class ShiftCalendarProvider with ChangeNotifier {
     jobPostingDataTableList = [];
     String id = FirebaseAuth.instance.currentUser?.uid ?? "";
     Company? company = await UserApiServices().getProfileCompany(id);
-    var jobPostingList = await JobPostingApiService().getAllJobPostByCompany(company?.uid ?? "", branchId);
+    var jobPostingList = await JobPostingApiService().getAllJobPostByCompany(company?.uid ?? "", branchId, isFromCalendar: false);
     for (var j in jobPostingList) {
       var startDate = DateToAPIHelper.fromApiToLocal(j.startDate ?? "");
       var endDate = DateToAPIHelper.fromApiToLocal(j.endDate ?? "");
@@ -283,13 +323,28 @@ class ShiftCalendarProvider with ChangeNotifier {
           }
           // print("Count by date ${date.date} x ${date.count}");
         }
-
         jobPostingDataTable.job = j.majorOccupation ?? "Empty";
         jobPostingDataTable.applyCount = count;
+        jobPostingDataTable.isDelete = j.isDelete ?? false;
         jobPostingDataTableList.add(jobPostingDataTable);
       }
     }
     jobPostingDataTableList = jobPostingDataTableList.toSet().toList();
+
+    ///Remove job that don't have apply
+    // for (var jobApplyTable in jobPostingDataTableList) {
+    //   bool atLeastHaveOne = false;
+    //   for (var data in jobApplyTable.countByDate) {
+    //     if (data.count > 0) {
+    //       atLeastHaveOne = true;
+    //       break;
+    //     }
+    //   }
+    //   print("${jobApplyTable.job} x $atLeastHaveOne - ${jobApplyTable.isDelete}");
+    //   if (!atLeastHaveOne && jobApplyTable.isDelete) {
+    //     jobPostingDataTableList.remove(jobApplyTable);
+    //   }
+    // }
     notifyListeners();
   }
 

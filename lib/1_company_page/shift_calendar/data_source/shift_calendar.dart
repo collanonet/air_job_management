@@ -12,14 +12,9 @@ class ShiftCalendarDataSource extends DataGridSource {
   // ignore: non_constant_identifier_names
   /// Creates the employee data source class with required details.
   ShiftCalendarDataSource({required ShiftCalendarProvider provider}) {
-    for (var job in provider.jobApplyPerDay) {
-      _employeeData.add(DataGridRow(
-          cells: provider.rangeDateList
-              .map((e) => DataGridCell<GroupedCalendarModel>(
-                  columnName: e.date.toString(),
-                  value: GroupedCalendarModel(
-                      applyName: job.myUser?.nameKanJi ?? "Empty", allShiftModels: job.shiftList, calendarModels: [], status: job.status)))
-              .toList()));
+    for (var job in provider.shiftBySeekerPerMonth) {
+      _employeeData
+          .add(DataGridRow(cells: job.calendarModels!.map((e) => DataGridCell<CalendarModel>(columnName: e.date.toString(), value: e)).toList()));
     }
   }
 
@@ -32,9 +27,9 @@ class ShiftCalendarDataSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((e) {
-      GroupedCalendarModel calendarModel = e.value;
+      CalendarModel calendarModel = e.value;
       ShiftModel? shiftModel;
-      for (var shift in calendarModel.allShiftModels!) {
+      for (var shift in calendarModel.shiftModelList!) {
         if (CommonUtils.isTheSameDate(shift.date, DateTime.parse(e.columnName))) {
           shiftModel = shift;
         }

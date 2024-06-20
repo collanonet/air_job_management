@@ -32,8 +32,11 @@ class ShiftCalendarDataSourceByJobPosting extends DataGridSource {
         job.recruitNumber = "5";
       }
       // print("Job ${job.date} ${job.count}/${job.recruitNumber}");
-      return job.recruitNumber == "0"
-          ? const SizedBox()
+      return job.recruitNumber == "0" || job.count == 0
+          ? Container(
+              margin: const EdgeInsets.all(1),
+              color: const Color(0xffF0F3F5),
+            )
           : InkWell(
               onTap: () => onTap(job),
               child: Container(

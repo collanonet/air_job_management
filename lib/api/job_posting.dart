@@ -87,14 +87,19 @@ class JobPostingApiService {
     }
   }
 
-  Future<List<JobPosting>> getAllJobPostByCompany(String companyId, String branchId) async {
+  Future<List<JobPosting>> getAllJobPostByCompany(String companyId, String branchId, {bool isFromCalendar = false}) async {
     try {
-      print("Get all job post $companyId, $branchId");
-      var doc = await jobPostingRef
-          .where("company_id", isEqualTo: companyId)
-          .where("branch_id", isEqualTo: branchId)
-          .where("is_delete", isEqualTo: false)
-          .get();
+      print("Get all job post $companyId, $branchId, $isFromCalendar");
+      var doc;
+      if (isFromCalendar) {
+        doc = await jobPostingRef.where("company_id", isEqualTo: companyId).where("branch_id", isEqualTo: branchId).get();
+      } else {
+        doc = await jobPostingRef
+            .where("company_id", isEqualTo: companyId)
+            .where("branch_id", isEqualTo: branchId)
+            .where("is_delete", isEqualTo: false)
+            .get();
+      }
       if (doc.docs.isNotEmpty) {
         List<JobPosting> list = [];
         for (int i = 0; i < doc.docs.length; i++) {

@@ -5,8 +5,10 @@ class JobPostingDataTable {
   int applyCount;
   String job;
   String jobId;
+  bool isDelete;
   List<CountByDate> countByDate;
-  JobPostingDataTable({required this.countByDate, this.job = "", this.jobId = "", this.applyCount = 0, this.recruitNumber = "0"});
+  JobPostingDataTable(
+      {required this.countByDate, this.job = "", this.jobId = "", this.applyCount = 0, this.recruitNumber = "0", this.isDelete = false});
 
   @override
   bool operator ==(Object other) =>
@@ -249,9 +251,11 @@ class JobPosting {
   List<String>? selectedDate;
 
   List<UpdateHistory>? updateList;
+  bool? isDelete;
 
   JobPosting(
       {this.isAllowSmokingInArea,
+      this.isDelete,
       this.isSelect = false,
       this.branchId,
       this.selectedDate,
@@ -452,6 +456,7 @@ class JobPosting {
       identical(this, other) || other is JobPosting && runtimeType == other.runtimeType && uid == other.uid && title == other.title;
 
   factory JobPosting.fromJson(Map<String, dynamic> json) => JobPosting(
+      isDelete: json["is_delete"] ?? false,
       updateList: json["updateList"] == null ? [] : List<UpdateHistory>.from(json["updateList"]!.map((x) => UpdateHistory.fromJson(x))),
       postedStartDate: json["postedStartDate"] ?? json["startDate"],
       postedEndDate: json["postedEndDate"] ?? json["endDate"],
@@ -645,7 +650,7 @@ class JobPosting {
   Map<String, dynamic> toJson() => {
         "postedStartDate": postedStartDate,
         "postedEndDate": postedEndDate,
-        "is_delete": false,
+        "is_delete": isDelete,
         "branch_id": branchId,
         "selectedDate": selectedDate != null ? selectedDate!.map((e) => e).toList() : [],
         "smoking_allow": isAllowSmokingInArea,
