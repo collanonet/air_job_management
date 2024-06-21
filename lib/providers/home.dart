@@ -40,7 +40,7 @@ class HomeProvider with ChangeNotifier {
     JapaneseText.companyInformationManagement,
     JapaneseText.allBranch,
     JapaneseText.usageDetail,
-    JapaneseText.workingTimeManagement,
+    JapaneseText.workerCompany,
   ];
 
   List<IconData> menuIconListForCompanyMainBranch = const [

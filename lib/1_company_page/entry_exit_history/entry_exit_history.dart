@@ -452,7 +452,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                                     "${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyMinute.toString())}"),
                             DataTableWidget(
                                 data:
-                                    "${DateToAPIHelper.formatTimeTwoDigits(e.actualWorkingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.actualWorkingMinute.toString())}"),
+                                    "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
                             DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, withInLimit: true)),
                             DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, nonSat: true)),
                             DataTableWidget(data: e.holidayWork),

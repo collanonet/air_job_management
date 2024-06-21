@@ -30,6 +30,7 @@ class CommonUtils {
     });
 
     // Lowercase the input for case-insensitive comparison
+    print("Normalized Text ${input.toLowerCase()}");
     return input.toLowerCase();
   }
 
@@ -212,19 +213,16 @@ class CommonUtils {
     entry.overtime =
         "${DateToAPIHelper.formatTimeTwoDigits(overTimeData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(overTimeData[1].toString())}";
 
+    ///non statutory
+    List<int> nonStatutoryData = calculateBreakTime("${entry.workingHour}:${entry.workingMinute}", "$overTimeLegalLimit:00");
+    entry.nonStatutoryOvertime =
+        "${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[1].toString())}";
+
     ///within statutory
-    var scheduleWorkingData = calculateWorkingTime(entry.scheduleStartWorkingTime, entry.scheduleEndWorkingTime, "01:00");
-    List<int> withinStatutoryData = [0, 0];
-    if (overTimeData[0] > 0 || overTimeData[1] > 0) {
-      withinStatutoryData = calculateWorkingTime("${scheduleWorkingData[0]}:${scheduleWorkingData[1]}", "$overTimeLegalLimit:00", "00:00");
-    }
+    List<int> withinStatutoryData = calculateBreakTime(entry.overtime, entry.nonStatutoryOvertime);
     entry.overtimeWithinLegalLimit =
         "${DateToAPIHelper.formatTimeTwoDigits(withinStatutoryData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(withinStatutoryData[1].toString())}";
 
-    ///non statutory
-    List<int> nonStatutoryData = calculateBreakTime(entry.overtime, entry.overtimeWithinLegalLimit);
-    entry.nonStatutoryOvertime =
-        "${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[1].toString())}";
     if (isOvertime == true) {
       return entry.overtime;
     } else if (withInLimit == true) {
@@ -297,12 +295,19 @@ class CommonUtils {
     return DateToAPIHelper.formatTimeTwoDigits(workDateList.length.toString());
   }
 
-  static calculateTotalAbsent(List<ShiftModel> shiftList, List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+  static calculateTotalAbsent(List<ShiftModel> shiftList, List<EntryExitHistory> entryList, List<DateTime> dateList, String name) {
+    DateTime now = DateTime.now();
+    List<DateTime> dateTimeList = [];
+    for (var date in dateList) {
+      if (CommonUtils.isDateInRange(date, dateList.first, now)) {
+        dateTimeList.add(date);
+      }
+    }
     List<ShiftModel> scheduleList = shiftList;
     List<ShiftModel> scheduleList2 = [];
     scheduleList2 = [];
     for (var s in scheduleList) {
-      if (dateTimeList.contains(s.date)) {
+      if (dateTimeList.contains(s.date) && s.status == "approved") {
         scheduleList2.add(s);
       }
     }

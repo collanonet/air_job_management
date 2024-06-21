@@ -75,7 +75,7 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
   countWorkingHistory(String id) {
     int i = 0;
     for (var entry in entryForApplicant) {
-      if (entry.userId == id && entry.endWorkDate != null && entry.endWorkDate != "") {
+      if (entry.userId == id && entry.endWorkingTime != null && entry.endWorkingTime != "" && entry.endWorkingTime != "00:00") {
         i++;
       }
     }

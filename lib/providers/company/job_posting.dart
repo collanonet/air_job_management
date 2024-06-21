@@ -188,7 +188,6 @@ class JobPostingForCompanyProvider with ChangeNotifier {
 
   filterData(String id, String branchId) async {
     String text = CommonUtils.normalize(searchController.text);
-    print("Normalized text $text");
     await getAllJobPost(id, branchId);
     if (text.isNotEmpty) {
       List<JobPosting> jobPostingFilterList = [];
