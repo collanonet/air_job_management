@@ -719,7 +719,10 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
         context: context,
         builder: (context) => AlertDialog(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              title: const TitleWidget(title: "求人ひな形　一覧"),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [const TitleWidget(title: "求人ひな形　一覧"), IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close))],
+              ),
               content: SizedBox(
                 width: AppSize.getDeviceHeight(context),
                 height: AppSize.getDeviceHeight(context) * 0.5,
@@ -731,7 +734,9 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                       return Container(
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                            color: Colors.transparent, border: Border.all(color: AppColor.primaryColor), borderRadius: BorderRadius.circular(5)),
+                            color: provider.jobPosting?.uid == jobPost.uid ? Colors.orange.withOpacity(0.1) : Colors.transparent,
+                            border: Border.all(color: provider.jobPosting?.uid == jobPost.uid ? AppColor.primaryColor : AppColor.darkGrey, width: 1),
+                            borderRadius: BorderRadius.circular(5)),
                         child: Material(
                           color: Colors.transparent,
                           child: InkWell(
