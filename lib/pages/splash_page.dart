@@ -1,6 +1,7 @@
 import 'dart:html' as html;
 import 'dart:js' as js;
 
+import 'package:air_job_management/1_company_page/home/widgets/choose_branch.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/other_setting/private_policy.dart';
 import 'package:air_job_management/2_worker_page/viewprofile/other_setting/term_of_use.dart';
 import 'package:air_job_management/api/user_api.dart';
@@ -59,7 +60,8 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
           authProvider.setProfile = users;
           if (company != null) {
             authProvider.setCompany = company;
-            context.go(MyRoute.companyDashboard);
+            authProvider.branch = mainBranch;
+            context.go(MyRoute.companyInformationManagement);
           } else {
             if (users!.role == RoleHelper.admin) {
               context.go(MyRoute.dashboard);
@@ -88,11 +90,13 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
       } else {
         if (user != null) {
           MyUser? users = await UserApiServices().getProfileUser(user.uid);
+          AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
           if (users?.role == null) {
             if (GoRouter.of(context).location.toString().contains("company")) {
               context.go(GoRouter.of(context).location);
             } else {
-              context.go(MyRoute.companyDashboard);
+              authProvider.branch = mainBranch;
+              context.go(MyRoute.companyInformationManagement);
             }
           }
         }

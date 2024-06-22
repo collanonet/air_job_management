@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 import '../../models/company.dart';
 import '../../utils/japanese_text.dart';
 import '../../utils/my_route.dart';
+import '../home/widgets/choose_branch.dart';
 
 class LoginPageForCompany extends StatefulWidget {
   const LoginPageForCompany({super.key});
@@ -197,8 +198,8 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
       }
       if (user != null) {
         authProvider.setCompany = user;
-        authProvider.onChangeBranch(user.branchList!.first);
-        context.go(MyRoute.companyDashboard);
+        authProvider.onChangeBranch(mainBranch);
+        context.go(MyRoute.companyInformationManagement);
       } else {
         toastMessageError("${authProvider.errorMessage}", context);
       }

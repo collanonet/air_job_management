@@ -92,11 +92,11 @@ class HomeProvider with ChangeNotifier {
     WorkerManagementPage(),
   ];
   String selectedItem = JapaneseText.analysis;
-  String selectedItemForCompany = JapaneseText.analysis;
+  String selectedItemForCompany = JapaneseText.companyInformationManagement;
 
   onInit() {
     selectedItem = JapaneseText.analysis;
-    selectedItemForCompany = JapaneseText.dashboardCompany;
+    selectedItemForCompany = JapaneseText.companyInformationManagement;
   }
 
   onChangeSelectItem(String item) {

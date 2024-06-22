@@ -12,6 +12,13 @@ import '../../../utils/app_color.dart';
 import '../../../utils/app_size.dart';
 import '../../../widgets/custom_button.dart';
 
+Branch mainBranch = Branch(
+  id: "",
+  name: "企業",
+  location: "",
+  postalCode: "",
+);
+
 class ChooseBranchWidget extends StatefulWidget {
   final Function onRefresh;
   const ChooseBranchWidget({super.key, required this.onRefresh});
@@ -36,7 +43,6 @@ class _ChooseBranchWidgetState extends State<ChooseBranchWidget> with AfterBuild
         child: ListView.builder(
             itemCount: authProvider.myCompany?.branchList!.length,
             shrinkWrap: true,
-            reverse: true,
             itemBuilder: (context, index) {
               var branch = authProvider.myCompany?.branchList![index];
               return Container(
@@ -91,7 +97,9 @@ class _ChooseBranchWidgetState extends State<ChooseBranchWidget> with AfterBuild
                     authProvider.onChangeBranch(selectedBranch);
                     Navigator.pop(context);
                     widget.onRefresh();
-                    context.go(MyRoute.companyDashboard);
+                    if (selectedBranch?.name != mainBranch.name) {
+                      context.go(MyRoute.companyDashboard);
+                    }
                   }),
             ),
           ]),
@@ -102,21 +110,16 @@ class _ChooseBranchWidgetState extends State<ChooseBranchWidget> with AfterBuild
 
   @override
   void afterBuild(BuildContext context) {
-    Branch branch = Branch(
-      id: "",
-      name: "企業",
-      location: "",
-      postalCode: "",
-    );
     bool isContain = false;
     for (var b in authProvider.myCompany!.branchList!) {
-      if (branch.id == b.id && branch.name == b.name && branch.location == b.location) {
+      if (mainBranch.id == b.id && mainBranch.name == b.name && mainBranch.location == b.location) {
         isContain = true;
         break;
       }
     }
     if (!isContain) {
-      authProvider.myCompany!.branchList!.add(branch);
+      authProvider.myCompany!.branchList!.add(mainBranch);
+      authProvider.myCompany!.branchList = authProvider.myCompany!.branchList!.reversed.toList();
     }
     setState(() {
       selectedBranch = authProvider.branch;

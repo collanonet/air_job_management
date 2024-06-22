@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../1_company_page/home/widgets/choose_branch.dart';
 import '../const/const.dart';
 import '../models/user.dart';
 import '../utils/encrypt_utils.dart';
@@ -48,7 +49,7 @@ class AuthProvider with ChangeNotifier {
   onChangeCompany(Company? company, {Branch? branch}) {
     myCompany = company;
     if (myCompany!.branchList!.isNotEmpty && this.branch == null) {
-      this.branch = myCompany!.branchList!.first;
+      this.branch = mainBranch;
     }
     if (branch != null) {
       this.branch = branch;
