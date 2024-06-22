@@ -208,8 +208,14 @@ class CommonUtils {
   }
 
   static calculateOvertimeInEntry(EntryExitHistory entry, {bool? isOvertime, bool? withInLimit, bool? nonSat}) {
+    ///Calculate break time
+    var breakTime = calculateBreakTime(entry.scheduleEndBreakTime, entry.scheduleStartBreakTime);
+
+    ///Schedule Working
+    var scheduleWorking = calculateWorkingTime(entry.scheduleStartWorkingTime, entry.scheduleEndWorkingTime, "${breakTime[0]}:${breakTime[1]}");
+
     ///Calculate Overtime
-    List<int> overTimeData = calculateOvertime(entry.scheduleEndWorkingTime, entry.endWorkingTime, "00:00");
+    List<int> overTimeData = calculateBreakTime("${entry.workingHour}:${entry.workingMinute}", "${scheduleWorking[0]}:${scheduleWorking[1]}");
     entry.overtime =
         "${DateToAPIHelper.formatTimeTwoDigits(overTimeData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(overTimeData[1].toString())}";
 

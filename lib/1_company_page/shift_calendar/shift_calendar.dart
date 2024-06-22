@@ -8,7 +8,6 @@ import 'package:air_job_management/const/const.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/providers/company/shift_calendar.dart';
 import 'package:air_job_management/utils/app_color.dart';
-import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
@@ -596,92 +595,95 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                                 ? provider.rangeDateList[(i + 1) - provider.firstDate.weekday]
                                 : CalendarModel(date: DateTime(2000), shiftModelList: [], jobId: "");
                             var weekDay = date.date.weekday;
-                            return Container(
-                              decoration: BoxDecoration(
-                                  color: weekDay == 6 && date.date.year != 2000
-                                      ? const Color(0xffEFFCFF)
-                                      : weekDay == 7 && date.date.year != 2000
-                                          ? const Color(0xffFFF2F2)
-                                          : Colors.white,
-                                  border: Border.all(width: 0.2, color: AppColor.darkGrey)),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 5),
-                                    child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          date.date.year == 2000 ? "" : '${date.date.day}',
-                                          style: kTitleText.copyWith(color: AppColor.midGrey, fontSize: 16),
-                                        )),
-                                  ),
-                                  Expanded(
-                                      child: ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: date.shiftModelList!.length,
-                                          itemBuilder: (context, ind) {
-                                            var shift = date.shiftModelList![ind];
-                                            JobPosting? jobPosting = provider.jobPosting;
-                                            List<DateTime> dateList = jobPosting != null
-                                                ? CommonUtils.getDateRange(DateToAPIHelper.fromApiToLocal(jobPosting.startDate!),
-                                                    DateToAPIHelper.fromApiToLocal(jobPosting.endDate!))
-                                                : [];
-                                            bool isHaveBorder = (provider.jobPosting?.uid == shift.myJob?.uid &&
-                                                    CommonUtils.isArrayOfDateContainDate(dateList, shift.date!)) &&
-                                                selectedDate == shift.date;
+                            return InkWell(
+                              onTap: date.shiftModelList!.isNotEmpty ? null : () => chooseJobPostingDialog(),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: weekDay == 6 && date.date.year != 2000
+                                        ? const Color(0xffEFFCFF)
+                                        : weekDay == 7 && date.date.year != 2000
+                                            ? const Color(0xffFFF2F2)
+                                            : Colors.white,
+                                    border: Border.all(width: 0.2, color: AppColor.darkGrey)),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 5),
+                                      child: Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text(
+                                            date.date.year == 2000 ? "" : '${date.date.day}',
+                                            style: kTitleText.copyWith(color: AppColor.midGrey, fontSize: 16),
+                                          )),
+                                    ),
+                                    Expanded(
+                                        child: ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: date.shiftModelList!.length,
+                                            itemBuilder: (context, ind) {
+                                              var shift = date.shiftModelList![ind];
 
-                                            return Container(
-                                              margin: const EdgeInsets.only(left: 5, right: 5, bottom: 4),
-                                              width: 400,
-                                              decoration: BoxDecoration(
-                                                  color: shift.applicantCount.toString() == shift.recruitmentCount.toString()
-                                                      ? const Color(0xff7DC338)
-                                                      : AppColor.primaryColor,
-                                                  border: isHaveBorder ? Border.all(width: 2, color: Colors.green) : null),
-                                              height: 20,
-                                              child: Material(
-                                                color: Colors.transparent,
-                                                child: InkWell(
-                                                  onTap: () async {
-                                                    var job = await JobPostingApiService().getAJobPosting(shift.myJob?.uid ?? "");
-                                                    p.onInitForJobPostingDetail(shift.myJob?.uid ?? "", jobP: job);
-                                                    provider.jobPosting = job;
-                                                    selectedDate = shift.date;
-                                                    setState(() {});
-                                                  },
-                                                  onDoubleTap: () => showJobApplyDialog(shift.date!, shift.jobId!),
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(left: 5),
-                                                    child: Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            "${shift.startWorkTime} - ${shift.endWorkTime} ",
-                                                            style: kNormalText.copyWith(color: Colors.white, fontSize: 12),
+                                              ///22 June (Updated)
+                                              // JobPosting? jobPosting = provider.jobPosting;
+                                              // List<DateTime> dateList = jobPosting != null
+                                              //     ? CommonUtils.getDateRange(DateToAPIHelper.fromApiToLocal(jobPosting.startDate!),
+                                              //         DateToAPIHelper.fromApiToLocal(jobPosting.endDate!))
+                                              //     : [];
+                                              bool isHaveBorder = (provider.jobPosting?.uid == shift.myJob?.uid) && selectedDate == shift.date;
+
+                                              return Container(
+                                                margin: const EdgeInsets.only(left: 5, right: 5, bottom: 4),
+                                                width: 400,
+                                                decoration: BoxDecoration(
+                                                    color: shift.applicantCount.toString() == shift.recruitmentCount.toString()
+                                                        ? const Color(0xff7DC338)
+                                                        : AppColor.primaryColor,
+                                                    border: isHaveBorder ? Border.all(width: 2, color: Colors.green) : null),
+                                                height: 20,
+                                                child: Material(
+                                                  color: Colors.transparent,
+                                                  child: InkWell(
+                                                    onTap: () async {
+                                                      var job = await JobPostingApiService().getAJobPosting(shift.myJob?.uid ?? "");
+                                                      p.onInitForJobPostingDetail(shift.myJob?.uid ?? "", jobP: job);
+                                                      provider.jobPosting = job;
+                                                      selectedDate = shift.date;
+                                                      setState(() {});
+                                                    },
+                                                    onDoubleTap: () => showJobApplyDialog(shift.date!, shift.jobId!),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(left: 5),
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              "${shift.startWorkTime} - ${shift.endWorkTime} ",
+                                                              style: kNormalText.copyWith(color: Colors.white, fontSize: 12),
+                                                            ),
                                                           ),
-                                                        ),
-                                                        const Icon(
-                                                          Icons.person,
-                                                          color: Colors.white,
-                                                          size: 15,
-                                                        ),
-                                                        AppSize.spaceWidth5,
-                                                        Padding(
-                                                          padding: const EdgeInsets.only(bottom: 1),
-                                                          child: Text(
-                                                            "${shift.applicantCount}/${shift.recruitmentCount}",
-                                                            style: kNormalText.copyWith(color: Colors.white, fontSize: 11),
+                                                          const Icon(
+                                                            Icons.person,
+                                                            color: Colors.white,
+                                                            size: 15,
                                                           ),
-                                                        ),
-                                                        AppSize.spaceWidth5,
-                                                      ],
+                                                          AppSize.spaceWidth5,
+                                                          Padding(
+                                                            padding: const EdgeInsets.only(bottom: 1),
+                                                            child: Text(
+                                                              "${shift.applicantCount}/${shift.recruitmentCount}",
+                                                              style: kNormalText.copyWith(color: Colors.white, fontSize: 11),
+                                                            ),
+                                                          ),
+                                                          AppSize.spaceWidth5,
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                            );
-                                          }))
-                                ],
+                                              );
+                                            }))
+                                  ],
+                                ),
                               ),
                             );
                           } else {
@@ -710,6 +712,49 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
         ],
       ),
     );
+  }
+
+  chooseJobPostingDialog() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              title: const TitleWidget(title: "求人ひな形　一覧"),
+              content: SizedBox(
+                width: AppSize.getDeviceHeight(context),
+                height: AppSize.getDeviceHeight(context) * 0.5,
+                child: ListView.builder(
+                    itemCount: provider.jobPostingList.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      JobPosting jobPost = provider.jobPostingList[index];
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                            color: Colors.transparent, border: Border.all(color: AppColor.primaryColor), borderRadius: BorderRadius.circular(5)),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () async {
+                              p.onInitForJobPostingDetail(jobPost.uid ?? "", jobP: jobPost);
+                              provider.jobPosting = jobPost;
+                              setState(() {});
+                              Navigator.pop(context);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                "${jobPost.title} | ${jobPost.startDate}~${jobPost.endDate} | ${jobPost.majorOccupation} | ${jobPost.numberOfRecruit}",
+                                style: kNormalText.copyWith(fontFamily: "Normal", color: Colors.black),
+                                overflow: TextOverflow.fade,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+              ),
+            ));
   }
 
   buildEditJobPosting() {

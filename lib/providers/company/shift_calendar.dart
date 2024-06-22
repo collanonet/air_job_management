@@ -171,6 +171,9 @@ class ShiftCalendarProvider with ChangeNotifier {
         jobPostingList.add(job);
       }
     }
+
+    ///Updated 22 June
+    jobPostingList = jobPostingList.toSet().toList();
     onChangeLoading(false);
   }
 
