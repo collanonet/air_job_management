@@ -187,23 +187,25 @@ class JobPostingForCompanyProvider with ChangeNotifier {
   DateTime endBreakTime = DateTime(now.year, now.month, now.day, 13, 0, 0);
 
   filterData(String id, String branchId) async {
-    String text = CommonUtils.normalize(searchController.text);
-    await getAllJobPost(id, branchId);
+    String text = searchController.text;
+    jobPostingList = await JobPostingApiService().getAllJobPostByCompany(id, branchId);
+    print("Text is $text, ${jobPostingList.length}");
     if (text.isNotEmpty) {
       List<JobPosting> jobPostingFilterList = [];
       for (var job in jobPostingList) {
-        String normalizeMajor = CommonUtils.normalize(job.majorOccupation.toString().toLowerCase());
-        String normalTitle = CommonUtils.normalize(job.title.toString().toLowerCase());
-        String normalizeJobLocation = CommonUtils.normalize(job.jobLocation.toString().toLowerCase());
+        String normalizeMajor = job.majorOccupation.toString().toLowerCase();
+        String normalTitle = job.title.toString().toLowerCase();
+        String normalizeJobLocation = job.jobLocation.toString().toLowerCase();
         if (normalizeMajor.contains(text.toLowerCase()) ||
             normalTitle.contains(text.toLowerCase()) ||
-            normalizeJobLocation.toLowerCase().contains(text.toLowerCase())) {
+            normalizeJobLocation.contains(text.toLowerCase())) {
           jobPostingFilterList.add(job);
         }
       }
       jobPostingList = jobPostingFilterList;
       notifyListeners();
     }
+    notifyListeners();
   }
 
   getAllJobPost(String id, String branchId) async {
