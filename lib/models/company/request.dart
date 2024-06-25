@@ -19,9 +19,11 @@ class Request {
   bool? isHoliday;
   String? status;
   MyUser? myUser;
+  String? reason;
 
   Request(
       {this.shiftModel,
+      this.reason,
       this.myUser,
       this.uid,
       this.status,
@@ -41,6 +43,7 @@ class Request {
 
   factory Request.fromJson(Map<String, dynamic> json) {
     return Request(
+        reason: json['reason'],
         applyJobId: json['applyJobId'],
         status: json['status'],
         email: json['email'],
@@ -59,6 +62,7 @@ class Request {
   }
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
+    data['reason'] = reason;
     data['applyJobId'] = applyJobId;
     data['shiftModel'] = shiftModel?.toJson();
     data['jobId'] = jobId;
