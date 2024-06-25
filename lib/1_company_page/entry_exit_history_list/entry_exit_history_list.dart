@@ -37,7 +37,7 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> wit
   @override
   void initState() {
     Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading = true;
-    Provider.of<EntryExitHistoryProvider>(context, listen: false).initData();
+    Provider.of<EntryExitHistoryProvider>(context, listen: false).initData(context);
     super.initState();
   }
 

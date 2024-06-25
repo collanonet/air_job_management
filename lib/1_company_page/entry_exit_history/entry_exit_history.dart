@@ -55,7 +55,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
   @override
   void initState() {
     Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading = true;
-    Provider.of<EntryExitHistoryProvider>(context, listen: false).initData();
+    Provider.of<EntryExitHistoryProvider>(context, listen: false).initData(context);
     entryExitAndShiftDataByUser = EntryExitAndShiftDataByUser(provider: Provider.of<EntryExitHistoryProvider>(context, listen: false), onTap: () {});
     entryExitHistoryDataSourceByDate =
         EntryExitHistoryDataSourceByDate(provider: Provider.of<EntryExitHistoryProvider>(context, listen: false), onTap: () {});
@@ -69,7 +69,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
     provider = Provider.of<EntryExitHistoryProvider>(context);
     authProvider = Provider.of<AuthProvider>(context);
     return CustomLoadingOverlay(
-      isLoading: loadingOverlay,
+      isLoading: loadingOverlay || provider.overlayLoadingFilter,
       child: SizedBox(
           width: AppSize.getDeviceWidth(context),
           height: AppSize.getDeviceHeight(context),
