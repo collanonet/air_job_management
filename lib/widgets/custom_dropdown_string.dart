@@ -34,7 +34,7 @@ class CustomDropDownWidget extends StatelessWidget {
                       value: e,
                       child: Text(
                         isItemSelectModel == true ? e.title : e,
-                        style: kNormalText.copyWith(fontSize: 16, color: AppColor.darkGrey),
+                        style: kNormalText.copyWith(fontSize: 14, color: AppColor.darkGrey),
                       )))
                   .toList(),
               onChanged: (e) => onChange(e)),

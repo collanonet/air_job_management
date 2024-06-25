@@ -241,7 +241,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                     ),
                     Expanded(
                       child: Center(
-                        child: Text("電話番号", style: normalTextStyle.copyWith(fontSize: 13)),
+                        child: Text(selectedTab == menuTab[1] ? "電話番号" : "理由", style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
                       flex: 2,
                     ),
@@ -373,7 +373,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                 Expanded(
                   child: Center(
                     child: Text(
-                      "${request.myUser?.phone}",
+                      request.reason ?? "",
                       style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                       overflow: TextOverflow.fade,
                     ),
@@ -615,8 +615,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                 width: 140,
                                 child: ButtonWidget(
                                   radius: 25,
-                                  color: shift.status == "completed" ||
-                                      shift.status == "canceled"
+                                  color: shift.status == "completed" || shift.status == "canceled"
                                       ? Colors.grey
                                       : shift.status == "approved"
                                           ? AppColor.primaryColor
@@ -636,8 +635,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                 width: 145,
                                 child: ButtonWidget(
                                   radius: 25,
-                                  color: shift.status == "completed" ||
-                                      shift.status == "canceled"
+                                  color: shift.status == "completed" || shift.status == "canceled"
                                       ? Colors.grey
                                       : shift.status == "rejected"
                                           ? AppColor.primaryColor

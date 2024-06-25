@@ -3,12 +3,16 @@ import 'package:air_job_management/api/company/worker_managment.dart';
 import 'package:air_job_management/api/entry_exit.dart';
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
+import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/models/company/request.dart';
+import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/models/shift_and_work_time.dart';
 import 'package:air_job_management/models/worker_model/shift.dart';
+import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/common_utils.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/cupertino.dart';
 
+import '../../api/job_posting.dart';
 import '../../models/company/worker_management.dart';
 import '../../models/entry_calendar_by_user.dart';
 import '../../models/entry_exit_history.dart';
@@ -17,6 +21,7 @@ import '../../utils/japanese_text.dart';
 class EntryExitHistoryProvider with ChangeNotifier {
   List<EntryExitHistory> entryList = [];
   bool isLoading = false;
+  bool overlayLoadingFilter = false;
   List<String> displayList = [JapaneseText.byMonth, JapaneseText.perWorker, "勤怠管理一覧", "所定労働時間外一覧"];
   String selectDisplay = JapaneseText.byMonth;
 
@@ -76,6 +81,10 @@ class EntryExitHistoryProvider with ChangeNotifier {
   String? selectedJobTitle;
   List<String> jobTitleList = [JapaneseText.all];
 
+  String? selectedBranch;
+  List<String> branchList = [JapaneseText.all];
+  List<Branch> allBranchFromAuth = [];
+
   String? selectedUsernameForEntryExit;
   List<String> usernameListForEntryExit = [JapaneseText.all];
 
@@ -94,7 +103,8 @@ class EntryExitHistoryProvider with ChangeNotifier {
     isLoading = loading;
   }
 
-  initData() {
+  initData(BuildContext context) {
+    overlayLoadingFilter = false;
     dateList = [];
     startDay = DateTime(DateTime.now().year, DateTime.now().month, 1);
     endDay = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
@@ -102,10 +112,17 @@ class EntryExitHistoryProvider with ChangeNotifier {
       var date = DateTime(endDay.year, endDay.month, i);
       dateList.add(date);
     }
+    var auth = AuthProvider.getProvider(context, listen: false);
+    branchList = [];
+    for (var branch in auth.myCompany!.branchList!) {
+      branchList.add(branch.name.toString());
+    }
+    allBranchFromAuth = auth.myCompany!.branchList ?? [];
+    selectedBranch = branchList.first;
   }
 
   onChangeTitle(String? val, String branchId) {
-    selectedJobTitle = val;
+    selectedBranch = val;
     filterEntryExitHistory(branchId);
     notifyListeners();
   }
@@ -134,21 +151,49 @@ class EntryExitHistoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  onChangeOverlayLoading(bool loading) {
+    overlayLoadingFilter = loading;
+    notifyListeners();
+  }
+
   onChangeEndDate(DateTime? endDate, String branchId) {
     endWorkDate = endDate;
     filterEntryExitHistory(branchId);
     notifyListeners();
   }
 
+  getBranch(String title) {
+    Branch? b;
+    for (var branch in allBranchFromAuth) {
+      if (title == branch.name) {
+        b = branch;
+        break;
+      }
+    }
+    return b;
+  }
+
   filterEntryExitHistory(String branchId) async {
+    onChangeOverlayLoading(true);
     await getEntryData(companyId);
+    var jobPostingList = await JobPostingApiService().getAllJobPostByCompanyWithoutBranch(companyId);
 
     ///Filter application by job title
     List<EntryExitHistory> afterFilterSelectJobTitle = [];
-    if (selectedJobTitle != null && selectedJobTitle != JapaneseText.all) {
-      for (var job in entryList) {
-        if (job.jobTitle.toString().contains(selectedJobTitle.toString())) {
-          afterFilterSelectJobTitle.add(job);
+    if (selectedBranch != null && selectedBranch != "企業") {
+      for (var entry in entryList) {
+        JobPosting? jobPost;
+        for (var job in jobPostingList) {
+          if (job.uid == entry.jobID) {
+            jobPost = job;
+            break;
+          }
+        }
+        if (jobPost != null) {
+          Branch? branch = getBranch(selectedBranch!);
+          if (branch?.id == jobPost.branchId) {
+            afterFilterSelectJobTitle.add(entry);
+          }
         }
       }
     } else {
@@ -179,7 +224,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
       afterFilterUsername = afterFilterRangeDate;
     }
     entryList = afterFilterUsername;
-    notifyListeners();
+    onChangeOverlayLoading(false);
   }
 
   onChangeMonth(DateTime now) {

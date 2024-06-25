@@ -161,6 +161,26 @@ class JobPostingApiService {
     }
   }
 
+  Future<List<JobPosting>> getAllJobPostByCompanyWithoutBranch(String companyId) async {
+    try {
+      var doc = await jobPostingRef.where("company_id", isEqualTo: companyId).get();
+      if (doc.docs.isNotEmpty) {
+        List<JobPosting> list = [];
+        for (int i = 0; i < doc.docs.length; i++) {
+          JobPosting jobPosting = JobPosting.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          jobPosting.uid = doc.docs[i].id;
+          list.add(jobPosting);
+        }
+        return list;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      debugPrint("Error getAllJobPost =>> ${e.toString()}");
+      return [];
+    }
+  }
+
   Future<JobPosting?> getAJobPosting(String uid) async {
     print("Get a job posting $uid");
     try {
