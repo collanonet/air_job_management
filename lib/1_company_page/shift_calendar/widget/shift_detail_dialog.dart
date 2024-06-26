@@ -241,7 +241,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                     ),
                     Expanded(
                       child: Center(
-                        child: Text(selectedTab == menuTab[1] ? "電話番号" : "理由", style: normalTextStyle.copyWith(fontSize: 13)),
+                        child: Text(selectedTab == menuTab[0] ? "電話番号" : "申請理由", style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
                       flex: 2,
                     ),

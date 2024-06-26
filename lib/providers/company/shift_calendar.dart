@@ -308,7 +308,12 @@ class ShiftCalendarProvider with ChangeNotifier {
       if (company?.uid == j.companyId && CommonUtils.containsAnyDate(dateTimeList, dList)) {
         JobPostingDataTable jobPostingDataTable = JobPostingDataTable(
             countByDate: dateTimeList
-                .map((e) => CountByDate(date: e, count: 0, recruitNumber: j.numberOfRecruit.toString(), jobId: j.uid ?? "", jobApplyId: ""))
+                .map((e) => CountByDate(
+                    date: DateTime(e.year, e.month, e.day, 0, 0, 0),
+                    count: 0,
+                    recruitNumber: j.numberOfRecruit.toString(),
+                    jobId: j.uid ?? "",
+                    jobApplyId: ""))
                 .toList(),
             recruitNumber: j.numberOfRecruit.toString(),
             jobId: j.uid ?? "",

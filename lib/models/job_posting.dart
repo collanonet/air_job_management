@@ -650,7 +650,7 @@ class JobPosting {
   Map<String, dynamic> toJson() => {
         "postedStartDate": postedStartDate,
         "postedEndDate": postedEndDate,
-        "is_delete": isDelete,
+        "is_delete": isDelete ?? false,
         "branch_id": branchId,
         "selectedDate": selectedDate != null ? selectedDate!.map((e) => e).toList() : [],
         "smoking_allow": isAllowSmokingInArea,

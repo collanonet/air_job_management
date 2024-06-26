@@ -4,7 +4,6 @@ import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/providers/auth.dart';
-import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -257,7 +256,7 @@ class JobPostingForCompanyProvider with ChangeNotifier {
     startBreakTime = DateTime(now.year, now.month, now.day, 12, 0, 0);
     endBreakTime = DateTime(now.year, now.month, now.day, 13, 0, 0);
     jobPosterProfile = [null];
-    jobPosting = JobPosting(location: Location());
+    jobPosting = JobPosting(location: Location(), updateList: []);
   }
 
   onInitForJobPostingDetail(String? id, {JobPosting? jobP, AuthProvider? authProvider}) async {
@@ -353,7 +352,7 @@ class JobPostingForCompanyProvider with ChangeNotifier {
             int.parse(jobPosting!.endBreakTimeHour.toString().split(":")[1]), 0);
       }
     } else {
-      jobPosting = JobPosting(location: Location());
+      jobPosting = JobPosting(location: Location(), updateList: []);
     }
     onChangeLoading(false);
   }

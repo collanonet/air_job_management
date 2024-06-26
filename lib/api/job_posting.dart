@@ -100,6 +100,7 @@ class JobPostingApiService {
             .where("is_delete", isEqualTo: false)
             .get();
       }
+      print(doc.docs.length);
       if (doc.docs.isNotEmpty) {
         List<JobPosting> list = [];
         for (int i = 0; i < doc.docs.length; i++) {

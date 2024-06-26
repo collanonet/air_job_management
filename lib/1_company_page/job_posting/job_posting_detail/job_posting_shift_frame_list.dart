@@ -292,38 +292,43 @@ class _JobPostingShiftFramePageForCompanyState extends State<JobPostingShiftFram
   }
 
   getData() async {
-    print("History ${provider.jobPosting!.updateList!.map((e) => e.title)}");
-    if (provider.jobPosting!.updateList!.isEmpty) {
-      updateHistoyList.add(UpdateHistory(
-        recruitment: provider.jobPosting!.numberOfRecruit.toString(),
-        postStartDate: provider.jobPosting!.postedStartDate.toString(),
-        postEndDate: provider.jobPosting!.postedEndDate.toString(),
-        startDate: provider.jobPosting!.startDate.toString(),
-        endDate: provider.jobPosting!.endDate.toString(),
-        title: provider.jobPosting!.title.toString(),
-        startTime: provider.jobPosting!.startTimeHour.toString(),
-        endTime: provider.jobPosting!.endTimeHour.toString(),
-      ));
-    } else {
-      updateHistoyList.addAll(provider.jobPosting?.updateList ?? []);
+    try {
+      if (provider.jobPosting != null && provider.jobPosting!.updateList!.isEmpty) {
+        updateHistoyList.add(UpdateHistory(
+          recruitment: provider.jobPosting!.numberOfRecruit.toString(),
+          postStartDate: provider.jobPosting!.postedStartDate.toString(),
+          postEndDate: provider.jobPosting!.postedEndDate.toString(),
+          startDate: provider.jobPosting!.startDate.toString(),
+          endDate: provider.jobPosting!.endDate.toString(),
+          title: provider.jobPosting!.title.toString(),
+          startTime: provider.jobPosting!.startTimeHour.toString(),
+          endTime: provider.jobPosting!.endTimeHour.toString(),
+        ));
+      } else {
+        updateHistoyList.addAll(provider.jobPosting?.updateList ?? []);
+      }
+      // if (widget.isView) {
+      //   updateHistoyList.add(UpdateHistory(
+      //     recruitment: provider.numberOfRecruitPeople.text.toString(),
+      //     postStartDate: DateToAPIHelper.convertDateToString(provider.startPostDate),
+      //     postEndDate: DateToAPIHelper.convertDateToString(provider.endPostDate),
+      //     startDate: DateToAPIHelper.convertDateToString(provider.startWorkDate),
+      //     endDate: DateToAPIHelper.convertDateToString(provider.endWorkDate),
+      //     title: provider.title.text.toString(),
+      //     startTime: dateTimeToHourAndMinute(provider.startWorkingTime),
+      //     endTime: dateTimeToHourAndMinute(provider.endWorkingTime),
+      //   ));
+      //   provider.jobPosting?.updateList = updateHistoyList;
+      // }
+      updateHistoyList.sort((a, b) => b.endDate!.compareTo(a.endDate!));
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
     }
-    // if (widget.isView) {
-    //   updateHistoyList.add(UpdateHistory(
-    //     recruitment: provider.numberOfRecruitPeople.text.toString(),
-    //     postStartDate: DateToAPIHelper.convertDateToString(provider.startPostDate),
-    //     postEndDate: DateToAPIHelper.convertDateToString(provider.endPostDate),
-    //     startDate: DateToAPIHelper.convertDateToString(provider.startWorkDate),
-    //     endDate: DateToAPIHelper.convertDateToString(provider.endWorkDate),
-    //     title: provider.title.text.toString(),
-    //     startTime: dateTimeToHourAndMinute(provider.startWorkingTime),
-    //     endTime: dateTimeToHourAndMinute(provider.endWorkingTime),
-    //   ));
-    //   provider.jobPosting?.updateList = updateHistoyList;
-    // }
-    updateHistoyList.sort((a, b) => b.endDate!.compareTo(a.endDate!));
-    setState(() {
-      isLoading = false;
-    });
   }
 
   @override
