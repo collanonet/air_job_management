@@ -381,8 +381,8 @@ class EntryExitHistoryProvider with ChangeNotifier {
           isTheSameUser = true;
         }
         if (isWithin && isTheSameUser) {
-          for (var shift in shiftList) {
-            if (shift.status == "approved") {
+          for (var shift in job.shiftList!) {
+            if (shift.status == "approved" || shift.status == "completed") {
               entryByUser.shiftList!.add(shift);
             }
           }
