@@ -1,3 +1,4 @@
+import 'package:air_job_management/1_company_page/job_posting/create_or_edit_job_posting.dart';
 import 'package:air_job_management/1_company_page/woker_management/worker_management.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
@@ -100,6 +101,11 @@ class JobApplyCardWidget extends StatelessWidget {
                           style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 15),
                           overflow: TextOverflow.fade,
                         ),
+                        Text(
+                          calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) + "   ${job.myUser?.gender}",
+                          style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                          overflow: TextOverflow.fade,
+                        )
                       ],
                     ),
                   )
@@ -108,17 +114,24 @@ class JobApplyCardWidget extends StatelessWidget {
               flex: 2,
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(right: 32),
+              child: InkWell(
+                onTap: () => showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                          content: CreateOrEditJobPostingPageForCompany(
+                            isView: true,
+                            jobPosting: job.jobId,
+                          ),
+                        )),
                 child: Center(
                   child: Text(
-                    calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) + "   ${job.myUser?.gender}",
-                    style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                    "${job.jobTitle}",
+                    style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 16),
                     overflow: TextOverflow.fade,
                   ),
                 ),
               ),
-              flex: 2,
+              flex: 3,
             ),
             Expanded(
               child: Center(

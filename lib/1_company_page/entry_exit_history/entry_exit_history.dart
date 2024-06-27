@@ -51,6 +51,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
   late EntryExitAndShiftDataByUser entryExitAndShiftDataByUser;
   late AuthProvider authProvider;
   Branch? branch;
+  ScrollController scrollController22 = ScrollController();
 
   @override
   void initState() {
@@ -75,61 +76,61 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
           height: AppSize.getDeviceHeight(context),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const EntryFilterWidget(),
-                  AppSize.spaceHeight16,
-                  // IconButton(
-                  //     onPressed: () {
-                  //       EntryExitApiService().insertDataForTesting(provider.entryList);
-                  //     },
-                  //     icon: const Icon(Icons.refresh)),
-                  const TabSelectionWidget(),
-                  if (provider.selectedMenu == provider.tabMenu[0])
-                    Container(
-                      decoration: boxDecoration,
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              buildTab(provider.displayList[0]),
-                              buildTab(provider.displayList[1]),
-                              buildTab(provider.displayList[2]),
-                              buildTab(provider.displayList[3]),
-                            ],
-                          ),
-                          AppSize.spaceHeight16,
-                          if (provider.selectDisplay == provider.displayList[0])
-                            buildEntryExitList()
-                          else if (provider.selectDisplay == provider.displayList[2])
-                            buildAttendanceListByMonth()
-                          else if (provider.selectDisplay == provider.displayList[3])
-                            buildDataTableOvertimeByDay()
-                          else
-                            buildMonthDisplay(),
-                        ],
-                      ),
-                    )
-                  else
-                    Container(
-                      decoration: boxDecoration,
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              buildTab(provider.displayList[0]),
-                              buildTab(provider.displayList[1]),
-                            ],
-                          ),
-                          AppSize.spaceHeight16,
-                          if (provider.selectDisplay == provider.displayList[0]) buildDataTableListOfShiftByUser() else buildMonthDisplay(),
-                        ],
-                      ),
-                    )
-                ],
+            child: Scrollbar(
+              controller: scrollController22,
+              isAlwaysShown: true,
+              child: SingleChildScrollView(
+                controller: scrollController22,
+                child: Column(
+                  children: [
+                    const EntryFilterWidget(),
+                    AppSize.spaceHeight16,
+                    const TabSelectionWidget(),
+                    if (provider.selectedMenu == provider.tabMenu[0])
+                      Container(
+                        decoration: boxDecoration,
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                buildTab(provider.displayList[0]),
+                                buildTab(provider.displayList[1]),
+                                buildTab(provider.displayList[2]),
+                                buildTab(provider.displayList[3]),
+                              ],
+                            ),
+                            AppSize.spaceHeight16,
+                            if (provider.selectDisplay == provider.displayList[0])
+                              buildEntryExitList()
+                            else if (provider.selectDisplay == provider.displayList[2])
+                              buildAttendanceListByMonth()
+                            else if (provider.selectDisplay == provider.displayList[3])
+                              buildDataTableOvertimeByDay()
+                            else
+                              buildMonthDisplay(),
+                          ],
+                        ),
+                      )
+                    else
+                      Container(
+                        decoration: boxDecoration,
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                buildTab(provider.displayList[0]),
+                                buildTab(provider.displayList[1]),
+                              ],
+                            ),
+                            AppSize.spaceHeight16,
+                            if (provider.selectDisplay == provider.displayList[0]) buildDataTableListOfShiftByUser() else buildMonthDisplay(),
+                          ],
+                        ),
+                      )
+                  ],
+                ),
               ),
             ),
           )),
@@ -156,7 +157,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
         ),
         SizedBox(
           width: AppSize.getDeviceWidth(context),
-          height: AppSize.getDeviceHeight(context) * 0.7,
+          height: AppSize.getDeviceHeight(context) * 0.8,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: PaginatedDataTable(
