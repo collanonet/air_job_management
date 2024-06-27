@@ -595,95 +595,91 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                   primary: false,
                   controller: controllerIndex3,
                   scrollDirection: Axis.horizontal,
-                  child: Expanded(
-                    child: SizedBox(
-                      width: AppSize.getDeviceWidth(context) * 1.3,
-                      child: ListView.builder(
-                          itemCount: provider.shiftAndWorkTimeByUserList.length,
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          itemBuilder: (context, index) {
-                            var data = provider.shiftAndWorkTimeByUserList[index];
-                            return data.userName == ""
-                                ? const SizedBox()
-                                : Column(
-                                    children: [
-                                      index == 0
-                                          ? Row(
-                                              children: [
-                                                ...provider.rowHeaderForAttendanceManagementList.map((e) => Container(
-                                                      height: 30,
-                                                      width: provider.rowHeaderForAttendanceManagementList.indexOf(e) == 0 ? 130 : 70,
-                                                      margin: const EdgeInsets.symmetric(vertical: 1),
-                                                      color: const Color(0xffF0F3F5),
-                                                      alignment: Alignment.center,
-                                                      child: Text(
-                                                        e,
-                                                        style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
-                                                      ),
-                                                    ))
-                                              ],
-                                            )
-                                          : SizedBox(),
-                                      Row(
-                                        children: [
-                                          InkWell(
-                                            onTap: () => onUserTapped(data.myUser),
-                                            child: DataTableFixedWidthWidget(
-                                              data: data.userName,
-                                              width: 130,
-                                              isName: true,
-                                            ),
+                  child: SizedBox(
+                    width: AppSize.getDeviceWidth(context) * 1.3,
+                    child: ListView.builder(
+                        itemCount: provider.shiftAndWorkTimeByUserList.length,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (context, index) {
+                          var data = provider.shiftAndWorkTimeByUserList[index];
+                          return data.userName == ""
+                              ? const SizedBox()
+                              : Column(
+                                  children: [
+                                    index == 0
+                                        ? Row(
+                                            children: [
+                                              ...provider.rowHeaderForAttendanceManagementList.map((e) => Container(
+                                                    height: 30,
+                                                    width: provider.rowHeaderForAttendanceManagementList.indexOf(e) == 0 ? 130 : 70,
+                                                    margin: const EdgeInsets.symmetric(vertical: 1),
+                                                    color: const Color(0xffF0F3F5),
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      e,
+                                                      style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                                                    ),
+                                                  ))
+                                            ],
+                                          )
+                                        : SizedBox(),
+                                    Row(
+                                      children: [
+                                        InkWell(
+                                          onTap: () => onUserTapped(data.myUser),
+                                          child: DataTableFixedWidthWidget(
+                                            data: data.userName,
+                                            width: 130,
+                                            isName: true,
                                           ),
-                                          const DataTableFixedWidthWidget(data: "パート"),
-                                          DataTableFixedWidthWidget(
-                                              data: "${CommonUtils.totalActualWorkDay(data.shiftList ?? [], provider.dateList)}"),
-                                          DataTableFixedWidthWidget(
-                                              data: "${CommonUtils.totalWorkDay(provider.entryList, provider.dateList, data.userName!)}"),
-                                          DataTableFixedWidthWidget(
-                                              data:
-                                                  "${CommonUtils.totalPaidHoliday(provider.request, data.myUser?.nameKanJi ?? "", provider.dateList)}"),
-                                          DataTableFixedWidthWidget(
-                                              data:
-                                                  "${CommonUtils.remainingPaidHoliday(provider.request, data.myUser?.nameKanJi ?? "", provider.dateList, data.myUser?.annualLeave ?? 18)}"),
-                                          const DataTableFixedWidthWidget(data: "16"),
-                                          // const DataTableFixedWidthWidget(data: ""),
-                                          // const DataTableFixedWidthWidget(data: ""),
-                                          DataTableFixedWidthWidget(
-                                              data: "${CommonUtils.totalWorkOnHoliday(provider.entryList, provider.dateList, data.userName!)}"),
-                                          DataTableFixedWidthWidget(
-                                              data:
-                                                  "${CommonUtils.calculateTotalAbsent(data.shiftList ?? [], provider.entryList, provider.dateList, data.userName!)}"),
-                                          DataTableFixedWidthWidget(
-                                              data: "${CommonUtils.totalLateTime(provider.entryList, provider.dateList, data.userName!)}"),
-                                          // DataTableFixedWidthWidget(data: "${CommonUtils.totalLeaveEarly(provider.entryList, provider.dateList, data.userName!)}"),
-                                          // DataTableFixedWidthWidget(data: "${CommonUtils.totalUnWorkHour(provider.entryList, provider.dateList, data.userName!)}"),
-                                          DataTableFixedWidthWidget(
-                                              data: "${CommonUtils.totalOvertimeWithinLaw(provider.entryList, provider.dateList, data.userName!)}"),
-                                          DataTableFixedWidthWidget(
-                                              data:
-                                                  "${CommonUtils.totalOvertimeNonStatutory(provider.entryList, provider.dateList, data.userName!)}"),
-                                          DataTableFixedWidthWidget(
-                                              data:
-                                                  "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!, isStandard: true)}"),
-                                          DataTableFixedWidthWidget(
-                                              data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!)}"),
-                                          DataTableFixedWidthWidget(
-                                              data: "${CommonUtils.totalMidnightWork(provider.entryList, provider.dateList, data.userName!)}"),
-                                          DataTableFixedWidthWidget(
-                                              data: "${CommonUtils.totalWorkOnHoliday(provider.entryList, provider.dateList, data.userName!)}"),
-                                          DataTableFixedWidthWidget(
-                                              data: "${CommonUtils.totalActualWorkingTime(provider.entryList, provider.dateList, data.userName!)}"),
-                                          DataTableFixedWidthWidget(
-                                              data: "${CommonUtils.totalWorkingTime(provider.entryList, provider.dateList, data.userName!)}"),
-                                          DataTableFixedWidthWidget(
-                                              data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!)}"),
-                                        ],
-                                      ),
-                                    ],
-                                  );
-                          }),
-                    ),
+                                        ),
+                                        const DataTableFixedWidthWidget(data: "パート"),
+                                        DataTableFixedWidthWidget(data: "${CommonUtils.totalActualWorkDay(data.shiftList ?? [], provider.dateList)}"),
+                                        DataTableFixedWidthWidget(
+                                            data: "${CommonUtils.totalWorkDay(provider.entryList, provider.dateList, data.userName!)}"),
+                                        DataTableFixedWidthWidget(
+                                            data:
+                                                "${CommonUtils.totalPaidHoliday(provider.request, data.myUser?.nameKanJi ?? "", provider.dateList)}"),
+                                        DataTableFixedWidthWidget(
+                                            data:
+                                                "${CommonUtils.remainingPaidHoliday(provider.request, data.myUser?.nameKanJi ?? "", provider.dateList, data.myUser?.annualLeave ?? 18)}"),
+                                        const DataTableFixedWidthWidget(data: "16"),
+                                        // const DataTableFixedWidthWidget(data: ""),
+                                        // const DataTableFixedWidthWidget(data: ""),
+                                        DataTableFixedWidthWidget(
+                                            data: "${CommonUtils.totalWorkOnHoliday(provider.entryList, provider.dateList, data.userName!)}"),
+                                        DataTableFixedWidthWidget(
+                                            data:
+                                                "${CommonUtils.calculateTotalAbsent(data.shiftList ?? [], provider.entryList, provider.dateList, data.userName!)}"),
+                                        DataTableFixedWidthWidget(
+                                            data: "${CommonUtils.totalLateTime(provider.entryList, provider.dateList, data.userName!)}"),
+                                        // DataTableFixedWidthWidget(data: "${CommonUtils.totalLeaveEarly(provider.entryList, provider.dateList, data.userName!)}"),
+                                        // DataTableFixedWidthWidget(data: "${CommonUtils.totalUnWorkHour(provider.entryList, provider.dateList, data.userName!)}"),
+                                        DataTableFixedWidthWidget(
+                                            data: "${CommonUtils.totalOvertimeWithinLaw(provider.entryList, provider.dateList, data.userName!)}"),
+                                        DataTableFixedWidthWidget(
+                                            data: "${CommonUtils.totalOvertimeNonStatutory(provider.entryList, provider.dateList, data.userName!)}"),
+                                        DataTableFixedWidthWidget(
+                                            data:
+                                                "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!, isStandard: true)}"),
+                                        DataTableFixedWidthWidget(
+                                            data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!)}"),
+                                        DataTableFixedWidthWidget(
+                                            data: "${CommonUtils.totalMidnightWork(provider.entryList, provider.dateList, data.userName!)}"),
+                                        DataTableFixedWidthWidget(
+                                            data: "${CommonUtils.totalWorkOnHoliday(provider.entryList, provider.dateList, data.userName!)}"),
+                                        DataTableFixedWidthWidget(
+                                            data: "${CommonUtils.totalActualWorkingTime(provider.entryList, provider.dateList, data.userName!)}"),
+                                        DataTableFixedWidthWidget(
+                                            data: "${CommonUtils.totalWorkingTime(provider.entryList, provider.dateList, data.userName!)}"),
+                                        DataTableFixedWidthWidget(
+                                            data: "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!)}"),
+                                      ],
+                                    ),
+                                  ],
+                                );
+                        }),
                   ),
                 ),
               ),
