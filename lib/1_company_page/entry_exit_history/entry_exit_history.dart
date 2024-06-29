@@ -737,7 +737,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                                             data: "パート"),
                                         DataTableFixedWidthWidget(
                                             data:
-                                                "${CommonUtils.totalWorkDay(provider.entryList, provider.dateList, data.userName!)}"),
+                                                "${CommonUtils.totalWorkDay(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
                                                 "${CommonUtils.totalActualWorkDay(data.shiftList ?? [], provider.dateList)}"),
@@ -753,42 +753,42 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                                         // const DataTableFixedWidthWidget(data: ""),
                                         DataTableFixedWidthWidget(
                                             data:
-                                                "${CommonUtils.totalWorkOnHoliday(provider.entryList, provider.dateList, data.userName!)}"),
+                                                "${CommonUtils.totalWorkOnHoliday(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
                                                 "${CommonUtils.calculateTotalAbsent(data.shiftList ?? [], provider.entryList, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
-                                                "${CommonUtils.totalLateTime(provider.entryList, provider.dateList, data.userName!)}"),
+                                                "${CommonUtils.totalLateTime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         // DataTableFixedWidthWidget(data: "${CommonUtils.totalLeaveEarly(provider.entryList, provider.dateList, data.userName!)}"),
                                         // DataTableFixedWidthWidget(data: "${CommonUtils.totalUnWorkHour(provider.entryList, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
-                                                "${CommonUtils.totalOvertimeWithinLaw(provider.entryList, provider.dateList, data.userName!)}"),
+                                                "${CommonUtils.totalOvertimeWithinLaw(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
-                                                "${CommonUtils.totalOvertimeNonStatutory(provider.entryList, provider.dateList, data.userName!)}"),
+                                                "${CommonUtils.totalOvertimeNonStatutory(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
-                                                "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!, isStandard: true)}"),
+                                                "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, data.userName!, isStandard: true)}"),
                                         DataTableFixedWidthWidget(
                                             data:
-                                                "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!)}"),
+                                                "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
-                                                "${CommonUtils.totalMidnightWork(provider.entryList, provider.dateList, data.userName!)}"),
+                                                "${CommonUtils.totalMidnightWork(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
-                                                "${CommonUtils.totalWorkOnHoliday(provider.entryList, provider.dateList, data.userName!)}"),
+                                                "${CommonUtils.totalWorkOnHoliday(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
-                                                "${CommonUtils.totalActualWorkingTime(provider.entryList, provider.dateList, data.userName!)}"),
+                                                "${CommonUtils.totalActualWorkingTime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
-                                                "${CommonUtils.totalWorkingTime(provider.entryList, provider.dateList, data.userName!)}"),
+                                                "${CommonUtils.totalWorkingTime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
-                                                "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, data.userName!)}"),
+                                                "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                       ],
                                     ),
                                   ],
