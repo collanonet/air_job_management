@@ -293,7 +293,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                 provider: provider, onTap: () {});
             entryExitAndShiftDataByUser =
                 EntryExitAndShiftDataByUser(provider: provider, onTap: () {});
-            provider.onChangeDisplay(title);
+            provider.onChangeDisplay(title, authProvider.branch!.id.toString());
           },
           child: Center(
             child: Text(
@@ -421,8 +421,9 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                             } else {
                               index--;
                             }
-                            provider
-                                .onChangeUserName(provider.userNameList[index]);
+                            provider.onChangeUserName(
+                                provider.userNameList[index],
+                                authProvider.branch!.id.toString());
                           },
                           icon: Icon(
                             Icons.arrow_back_ios_new_rounded,
@@ -443,8 +444,9 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                             } else {
                               index++;
                             }
-                            provider
-                                .onChangeUserName(provider.userNameList[index]);
+                            provider.onChangeUserName(
+                                provider.userNameList[index],
+                                authProvider.branch!.id.toString());
                           },
                           icon: Icon(
                             color: AppColor.primaryColor,
@@ -477,18 +479,18 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                   ))
             ],
           ),
-          if (provider.entryList.isEmpty)
+          if (provider.entryListByBranch.isEmpty)
             const Padding(
               padding: EdgeInsets.all(16.0),
               child: EmptyDataWidget(),
             )
           else
             ListView.builder(
-                itemCount: provider.entryList.length,
+                itemCount: provider.entryListByBranch.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  EntryExitHistory e = provider.entryList[index];
+                  EntryExitHistory e = provider.entryListByBranch[index];
                   return provider.selectedUserName == e.myUser?.nameKanJi &&
                           provider.dateList.contains(e.workDateToDateTime)
                       ? Row(
@@ -735,10 +737,10 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                                             data: "パート"),
                                         DataTableFixedWidthWidget(
                                             data:
-                                                "${CommonUtils.totalActualWorkDay(data.shiftList ?? [], provider.dateList)}"),
+                                                "${CommonUtils.totalWorkDay(provider.entryList, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
-                                                "${CommonUtils.totalWorkDay(provider.entryList, provider.dateList, data.userName!)}"),
+                                                "${CommonUtils.totalActualWorkDay(data.shiftList ?? [], provider.dateList)}"),
                                         DataTableFixedWidthWidget(
                                             data:
                                                 "${CommonUtils.totalPaidHoliday(provider.request, data.myUser?.nameKanJi ?? "", provider.dateList)}"),
@@ -814,14 +816,14 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
             summaryCardWidget(
                 title: "実出勤日数",
                 data:
-                    "${CommonUtils.totalActualWorkDay(provider.shiftList, provider.dateList)}.00"),
+                    "${CommonUtils.totalWorkDay(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}.00"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "総出勤日数",
                 data:
-                    "${CommonUtils.totalWorkDay(provider.entryList, provider.dateList, provider.selectedUserName)}.00"),
+                    "${CommonUtils.totalActualWorkDay(provider.shiftList, provider.dateList)}.00"),
             const SizedBox(
               height: 3,
             ),
@@ -864,21 +866,21 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
             summaryCardWidget(
                 title: "欠勤日数",
                 data:
-                    "${CommonUtils.calculateTotalAbsent(provider.shiftList, provider.entryList, provider.dateList, provider.selectedUserName)}.00"),
+                    "${CommonUtils.calculateTotalAbsent(provider.shiftList, provider.entryListByBranch, provider.dateList, provider.selectedUserName)}.00"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "遅刻回数",
                 data:
-                    "${CommonUtils.totalLateTime(provider.entryList, provider.dateList, provider.selectedUserName)}.00"),
+                    "${CommonUtils.totalLateTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}.00"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "早退回数",
                 data:
-                    "${CommonUtils.totalLeaveEarly(provider.entryList, provider.dateList, provider.selectedUserName)}.00"),
+                    "${CommonUtils.totalLeaveEarly(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}.00"),
             const SizedBox(
               height: 3,
             ),
@@ -896,28 +898,28 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
             summaryCardWidget(
                 title: "法定内",
                 data:
-                    "${CommonUtils.totalOvertimeWithinLaw(provider.entryList, provider.dateList, provider.selectedUserName)}"),
+                    "${CommonUtils.totalOvertimeWithinLaw(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "法定外",
                 data:
-                    "${CommonUtils.totalOvertimeNonStatutory(provider.entryList, provider.dateList, provider.selectedUserName)}"),
+                    "${CommonUtils.totalOvertimeNonStatutory(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "基準残業",
                 data:
-                    "${CommonUtils.totalOvertimeWithinLaw(provider.entryList, provider.dateList, provider.selectedUserName)}"),
+                    "${CommonUtils.totalOvertimeWithinLaw(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "超過残業",
                 data:
-                    "${CommonUtils.totalOvertime(provider.entryList, provider.dateList, provider.selectedUserName)}")
+                    "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}")
           ],
         ),
         Column(
@@ -927,28 +929,28 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
             summaryCardWidget(
                 title: "深夜",
                 data:
-                    "${CommonUtils.totalMidnightWork(provider.entryList, provider.dateList, provider.selectedUserName)}"),
+                    "${CommonUtils.totalMidnightWork(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "休出時間",
                 data:
-                    "${CommonUtils.totalBreakTime(provider.entryList, provider.dateList, provider.selectedUserName)}"),
+                    "${CommonUtils.totalBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "実勤務時間",
                 data:
-                    "${CommonUtils.totalActualWorkingTime(provider.entryList, provider.dateList, provider.selectedUserName)}"),
+                    "${CommonUtils.totalActualWorkingTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "総勤務時間",
                 data:
-                    "${CommonUtils.totalWorkingTime(provider.entryList, provider.dateList, provider.selectedUserName)}")
+                    "${CommonUtils.totalWorkingTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}")
           ],
         ),
         summaryCardWidget(title: "公休日数", data: "16.00"),
@@ -1537,6 +1539,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
       if (user != null) {
         Company? company = await UserApiServices().getProfileCompany(user.uid);
         authProvider.onChangeCompany(company);
+        provider.setBranchId = authProvider.branch?.id ?? "";
         await provider.getEntryData(company!.uid!);
         // provider.getUserShift(company.uid!, authProvider.branch!.id!);
         entryExitHistoryDataSourceByDate =
@@ -1551,6 +1554,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
       }
     } else {
       String id = authProvider.myCompany?.uid ?? "";
+      provider.setBranchId = authProvider.branch?.id ?? "";
       await provider.getEntryData(id);
       entryExitHistoryDataSourceByDate =
           EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});

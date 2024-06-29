@@ -20,9 +20,15 @@ import '../../utils/japanese_text.dart';
 
 class EntryExitHistoryProvider with ChangeNotifier {
   List<EntryExitHistory> entryList = [];
+  List<EntryExitHistory> entryListByBranch = [];
   bool isLoading = false;
   bool overlayLoadingFilter = false;
-  List<String> displayList = [JapaneseText.byMonth, JapaneseText.perWorker, "勤怠管理一覧", "所定労働時間外一覧"];
+  List<String> displayList = [
+    JapaneseText.byMonth,
+    JapaneseText.perWorker,
+    "勤怠管理一覧",
+    "所定労働時間外一覧"
+  ];
   String selectDisplay = JapaneseText.byMonth;
 
   List<String> tabMenu = ["勤怠", "シフト"];
@@ -31,7 +37,16 @@ class EntryExitHistoryProvider with ChangeNotifier {
   DateTime startDay = DateTime.now();
   DateTime endDay = DateTime(DateTime.now().year, DateTime.now().month + 1, 0);
   List<DateTime> dateList = [];
-  List<String> moreMenuShiftAndWorkTimeByUserList = ["公休", "有休", "欠勤", "休出", "遅刻", "早退", "特休", "振休"];
+  List<String> moreMenuShiftAndWorkTimeByUserList = [
+    "公休",
+    "有休",
+    "欠勤",
+    "休出",
+    "遅刻",
+    "早退",
+    "特休",
+    "振休"
+  ];
   List<EntryExitCalendarByUser> entryExitCalendarByUser = [];
   List<ShiftAndWorkTimeByUser> shiftAndWorkTimeByUserList = [];
   List<String> userNameList = [];
@@ -92,11 +107,16 @@ class EntryExitHistoryProvider with ChangeNotifier {
   DateTime? endWorkDate;
 
   String companyId = "";
+  String branchId = "";
 
   List<Request> request = [];
 
   set setCompanyId(String id) {
     companyId = id;
+  }
+
+  set setBranchId(String id) {
+    branchId = id;
   }
 
   set setLoading(bool loading) {
@@ -145,9 +165,9 @@ class EntryExitHistoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  onChangeUserName(String name) {
+  onChangeUserName(String name, String branchId) {
     selectedUserName = name;
-    getUserShift(companyId, "");
+    getUserShift(companyId, branchId);
     notifyListeners();
   }
 
@@ -176,7 +196,8 @@ class EntryExitHistoryProvider with ChangeNotifier {
   filterEntryExitHistory(String branchId) async {
     onChangeOverlayLoading(true);
     await getEntryData(companyId);
-    var jobPostingList = await JobPostingApiService().getAllJobPostByCompanyWithoutBranch(companyId);
+    var jobPostingList = await JobPostingApiService()
+        .getAllJobPostByCompany(companyId, branchId);
 
     ///Filter application by job title
     List<EntryExitHistory> afterFilterSelectJobTitle = [];
@@ -204,7 +225,8 @@ class EntryExitHistoryProvider with ChangeNotifier {
     if (startWorkDate != null && endWorkDate != null) {
       for (var job in afterFilterSelectJobTitle) {
         DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
-        bool isWithin = CommonUtils.isDateInRange(workDate, startWorkDate!, endWorkDate!);
+        bool isWithin =
+            CommonUtils.isDateInRange(workDate, startWorkDate!, endWorkDate!);
         if (isWithin) {
           afterFilterRangeDate.add(job);
         }
@@ -214,9 +236,12 @@ class EntryExitHistoryProvider with ChangeNotifier {
     }
 
     List<EntryExitHistory> afterFilterUsername = [];
-    if (selectedUsernameForEntryExit != null && selectedUsernameForEntryExit != JapaneseText.all) {
+    if (selectedUsernameForEntryExit != null &&
+        selectedUsernameForEntryExit != JapaneseText.all) {
       for (var job in afterFilterRangeDate) {
-        if (job.myUser!.nameKanJi.toString().contains(selectedUsernameForEntryExit.toString())) {
+        if (job.myUser!.nameKanJi
+            .toString()
+            .contains(selectedUsernameForEntryExit.toString())) {
           afterFilterUsername.add(job);
         }
       }
@@ -238,7 +263,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  onChangeDisplay(String title) {
+  onChangeDisplay(String title, String branchId) {
     selectDisplay = title;
     notifyListeners();
   }
@@ -251,8 +276,10 @@ class EntryExitHistoryProvider with ChangeNotifier {
   getEntryData(String id) async {
     companyId = id;
     entryList = await EntryExitApiService().getAllEntryList(id);
-    List<String> userIdList = entryList.map((e) => e.userId!).toList().toSet().toList();
-    var userData = await Future.wait([for (var id in userIdList) UserApiServices().getProfileUser(id)]);
+    List<String> userIdList =
+        entryList.map((e) => e.userId!).toList().toSet().toList();
+    var userData = await Future.wait(
+        [for (var id in userIdList) UserApiServices().getProfileUser(id)]);
     for (var entry in entryList) {
       for (var user in userData) {
         if (user!.uid == entry.userId) {
@@ -261,7 +288,11 @@ class EntryExitHistoryProvider with ChangeNotifier {
         }
       }
     }
-    userNameList = entryList.map((e) => e.myUser?.nameKanJi ?? "").toList().toSet().toList();
+    userNameList = entryList
+        .map((e) => e.myUser?.nameKanJi ?? "")
+        .toList()
+        .toSet()
+        .toList();
     if (selectedUserName == "" || selectedUserName == null) {
       selectedUserName = userNameList.first;
     }
@@ -275,9 +306,25 @@ class EntryExitHistoryProvider with ChangeNotifier {
     }
     jobTitleList = jobTitleList.toSet().toList();
     usernameListForEntryExit = usernameListForEntryExit.toSet().toList();
-
-    getUserShift(companyId, "");
+    getUserShift(companyId, branchId);
+    mapDataForEntryByBranch();
     onChangeLoading(false);
+  }
+
+  mapDataForEntryByBranch() async {
+    entryListByBranch = [];
+    var jobPostingList = await JobPostingApiService()
+        .getAllJobPostByCompany(companyId, branchId);
+    for (var entry in entryList) {
+      for (var jobPost in jobPostingList) {
+        if (jobPost.uid == entry.jobID) {
+          entryListByBranch.add(entry);
+          break;
+        }
+      }
+    }
+    entryListByBranch = entryListByBranch.toSet().toList();
+    print("Entry by branch ${entryListByBranch.length}");
   }
 
   mapDataForCalendarByUser() {
@@ -314,10 +361,13 @@ class EntryExitHistoryProvider with ChangeNotifier {
                   workingHour: "${entry.workingHour}:${entry.workingMinute}",
                   entryId: entry.uid,
                   holidayWork: "${entry.holidayWork}",
-                  nonStatutoryOvertime: "${CommonUtils.calculateOvertimeInEntry(entry, nonSat: true)}",
-                  totalOvertime: "${CommonUtils.calculateOvertimeInEntry(entry, isOvertime: true)}",
+                  nonStatutoryOvertime:
+                      "${CommonUtils.calculateOvertimeInEntry(entry, nonSat: true)}",
+                  totalOvertime:
+                      "${CommonUtils.calculateOvertimeInEntry(entry, isOvertime: true)}",
                   userName: "${entry.myUser?.nameKanJi}",
-                  withinLegal: "${CommonUtils.calculateOvertimeInEntry(entry, withInLimit: true)}");
+                  withinLegal:
+                      "${CommonUtils.calculateOvertimeInEntry(entry, withInLimit: true)}");
             }
           }
         }
@@ -330,10 +380,13 @@ class EntryExitHistoryProvider with ChangeNotifier {
     shiftAndWorkTimeByUserList.clear();
     request.clear();
     var data = await Future.wait([
-      WorkerManagementApiService().getAllJobApplyWithoutBranch(companyId),
-      RequestApiService().getRequestBetweenDate(DateToAPIHelper.convertDateToString(startDay), DateToAPIHelper.convertDateToString(endDay))
+      WorkerManagementApiService().getAllJobApply(companyId, branchId),
+      RequestApiService().getRequestBetweenDate(
+          DateToAPIHelper.convertDateToString(startDay),
+          DateToAPIHelper.convertDateToString(endDay))
     ]);
-    List<WorkerManagement> workManagementList = data[0] as List<WorkerManagement>;
+    List<WorkerManagement> workManagementList =
+        data[0] as List<WorkerManagement>;
     request = data[1] as List<Request>;
     // print("Request between $startDay x $endDay ${request.length}");
     List<EntryExitHistory> afterFilterEntryRangeDate = [];
@@ -350,7 +403,11 @@ class EntryExitHistoryProvider with ChangeNotifier {
       List<DateTime> dateList = job.shiftList!.map((e) => e.date!).toList();
       bool isWithin = CommonUtils.containsAnyDate(dateList, dateList);
       bool approved = false;
-      if (job.shiftList!.map((e) => e.status).toList().toString().contains("approved")) {
+      if (job.shiftList!
+          .map((e) => e.status)
+          .toList()
+          .toString()
+          .contains("approved")) {
         approved = true;
       }
       if (isWithin && approved) {
@@ -363,7 +420,8 @@ class EntryExitHistoryProvider with ChangeNotifier {
     }
     nameList = nameList.toSet().toList();
     for (var name in nameList) {
-      var entryByUser = ShiftAndWorkTimeByUser(userName: name, list: [], shiftList: []);
+      var entryByUser =
+          ShiftAndWorkTimeByUser(userName: name, list: [], shiftList: []);
       for (var date in dateList) {
         entryByUser.list.add(ShiftAndWorkTimeByUserByDate(date: date));
       }
@@ -404,12 +462,18 @@ class EntryExitHistoryProvider with ChangeNotifier {
                   workingTime: "");
               if (CommonUtils.isTheSameDate(shift.date, entryDate.date)) {
                 for (var entryExit in afterFilterEntryRangeDate) {
-                  DateTime workDate = DateToAPIHelper.fromApiToLocal(entryExit.workDate!);
-                  if (entryByUser.userName == entryExit.myUser?.nameKanJi && entryDate.date == workDate) {
-                    entryDate.shiftAndWorkTime!.startWorkTime = entryExit.startWorkingTime ?? "09:00";
-                    entryDate.shiftAndWorkTime!.endWorkTime = entryExit.endWorkingTime ?? "18:00";
-                    entryDate.shiftAndWorkTime!.scheduleStartWorkTime = entryExit.scheduleStartWorkingTime ?? "09:00";
-                    entryDate.shiftAndWorkTime!.scheduleEndWorkTime = entryExit.scheduleEndWorkingTime ?? "18:00";
+                  DateTime workDate =
+                      DateToAPIHelper.fromApiToLocal(entryExit.workDate!);
+                  if (entryByUser.userName == entryExit.myUser?.nameKanJi &&
+                      entryDate.date == workDate) {
+                    entryDate.shiftAndWorkTime!.startWorkTime =
+                        entryExit.startWorkingTime ?? "09:00";
+                    entryDate.shiftAndWorkTime!.endWorkTime =
+                        entryExit.endWorkingTime ?? "18:00";
+                    entryDate.shiftAndWorkTime!.scheduleStartWorkTime =
+                        entryExit.scheduleStartWorkingTime ?? "09:00";
+                    entryDate.shiftAndWorkTime!.scheduleEndWorkTime =
+                        entryExit.scheduleEndWorkingTime ?? "18:00";
                     entryDate.shiftAndWorkTime!.workingTime =
                         "${DateToAPIHelper.formatTimeTwoDigits(entryExit.actualWorkingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(entryExit.actualWorkingMinute.toString())}";
                   }
@@ -432,7 +496,6 @@ class EntryExitHistoryProvider with ChangeNotifier {
     }
   }
 
-  calculateWorkingTime() {}
   List<ShiftModel> shiftList = [];
   int countDayOff = 0;
 
@@ -447,15 +510,18 @@ class EntryExitHistoryProvider with ChangeNotifier {
       }
     }
     var getData = await Future.wait([
-      RequestApiService()
-          .getTotalHolidayLeaveRequest(userId, DateToAPIHelper.convertDateToString(startDay), DateToAPIHelper.convertDateToString(endDay)),
-      WorkerManagementApiService().getAllJobApplyForAUSerWithoutBranch(companyId, userId)
+      RequestApiService().getTotalHolidayLeaveRequest(
+          userId,
+          DateToAPIHelper.convertDateToString(startDay),
+          DateToAPIHelper.convertDateToString(endDay)),
+      WorkerManagementApiService()
+          .getAllJobApplyForAUSer(companyId, userId, branchId)
     ]);
     countDayOff = getData[0] as int;
     workManagementList = getData[1] as List<WorkerManagement>;
     for (var apply in workManagementList) {
       for (var shift in apply.shiftList!) {
-        if (shift.status == "approved") {
+        if (shift.status == "approved" || shift.status == "completed") {
           shiftList.add(shift);
         }
       }

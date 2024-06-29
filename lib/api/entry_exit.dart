@@ -32,6 +32,30 @@ class EntryExitApiService {
     }
   }
 
+  Future<List<EntryExitHistory>> getAllEntryListByBranch(String id) async {
+    try {
+      var doc = await entryRef.where("branch_id", isEqualTo: id).get();
+      print("getAllEntryListByBranch $id ${doc.size}");
+      List<EntryExitHistory> entryList = [];
+      if (doc.size > 0) {
+        for (var data in doc.docs) {
+          EntryExitHistory entryExitHistory =
+              EntryExitHistory.fromJson(data.data());
+          entryExitHistory.uid = data.id;
+          entryList.add(entryExitHistory);
+        }
+        entryList.sort(
+            (a, b) => b.workDateToDateTime!.compareTo(a.workDateToDateTime!));
+        return entryList;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      Logger.printLog("Error =>> ${e.toString()}");
+      return [];
+    }
+  }
+
   Future<List<EntryExitHistory>> getAllEntryListByUser(String id) async {
     try {
       var doc = await entryRef.where("userId", isEqualTo: id).get();
