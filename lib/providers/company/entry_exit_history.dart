@@ -475,7 +475,8 @@ class EntryExitHistoryProvider with ChangeNotifier {
             print(
                 "Name ${entry.myUser!.nameKanJi} x ${entryByUser.userName} x ${entry.shiftList!.map((e) => e.date)}");
             for (var shift in entry.shiftList!) {
-              if (CommonUtils.isTheSameDate(shift.date, entryDate.date)) {
+              if (CommonUtils.isTheSameDate(shift.date, entryDate.date) &&
+                  (shift.status == "approved" || shift.status == "completed")) {
                 entryDate.shiftAndWorkTime!.scheduleStartWorkTime =
                     shift.startWorkTime ?? "09:00";
                 entryDate.shiftAndWorkTime!.scheduleEndWorkTime =
