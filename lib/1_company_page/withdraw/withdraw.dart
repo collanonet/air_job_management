@@ -107,7 +107,7 @@ class _UsageDetailPageState extends State<UsageDetailPage> with AfterBuildMixin 
                                         child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Padding(
-                                              padding: const EdgeInsets.only(left: 80),
+                                              padding: const EdgeInsets.only(left: 20),
                                               child: Text(
                                                 "氏名（漢字）",
                                                 style: normalTextStyle.copyWith(fontSize: 13),
@@ -138,9 +138,9 @@ class _UsageDetailPageState extends State<UsageDetailPage> with AfterBuildMixin 
                                       ),
                                       Expanded(
                                         child: Center(
-                                          child: Text("お振込先\n金融機関名", style: normalTextStyle.copyWith(fontSize: 13)),
+                                          child: Text("お振込先金融機関名", style: normalTextStyle.copyWith(fontSize: 12)),
                                         ),
-                                        flex: 1,
+                                        flex: 2,
                                       ),
                                       Expanded(
                                         child: Center(
