@@ -26,6 +26,11 @@ List<int> calculateWorkingTime(startWork, exitWork, breakTime) {
   int breakTimeMinute = int.parse(breakTime.split(':')[1]);
   int workHour = 0;
   int workMinute = 0;
+
+  ///Over a day
+  if (startWorkHour > exitWorkHour) {
+    exitWorkHour += 24;
+  }
   workHour = exitWorkHour - startWorkHour;
   if (workHour >= 0) {
     if (exitWorkMinute >= startWorkMinute) {
@@ -64,7 +69,9 @@ List<int> calculateWorkingTime(startWork, exitWork, breakTime) {
 }
 
 List<int> calculateOvertime(scheduleEndWorkTime, userExitWork, breakTime) {
-  if (scheduleEndWorkTime == null || scheduleEndWorkTime == "" || scheduleEndWorkTime == "null") {
+  if (scheduleEndWorkTime == null ||
+      scheduleEndWorkTime == "" ||
+      scheduleEndWorkTime == "null") {
     scheduleEndWorkTime = "00:00";
   }
 
@@ -80,11 +87,15 @@ List<int> calculateOvertime(scheduleEndWorkTime, userExitWork, breakTime) {
   var breakHours = int.parse(breakTime.split(":")[0]);
 
   //Convert to 2 digits
-  String firstStartWorkTime = DateToAPIHelper.formatTimeTwoDigits(scheduleEndWorkTime.split(":").first);
-  String secondStartWorkTime = DateToAPIHelper.formatTimeTwoDigits(scheduleEndWorkTime.split(":").last);
+  String firstStartWorkTime =
+      DateToAPIHelper.formatTimeTwoDigits(scheduleEndWorkTime.split(":").first);
+  String secondStartWorkTime =
+      DateToAPIHelper.formatTimeTwoDigits(scheduleEndWorkTime.split(":").last);
   scheduleEndWorkTime = "$firstStartWorkTime:$secondStartWorkTime";
-  String firstEndWorkTime = DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").first);
-  String secondEndWorkTime = DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").last);
+  String firstEndWorkTime =
+      DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").first);
+  String secondEndWorkTime =
+      DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").last);
   userExitWork = "$firstEndWorkTime:$secondEndWorkTime";
   // Convert the start and end work times to DateTime objects
   var startDateTime = DateTime.parse("2023-04-04 $scheduleEndWorkTime");
@@ -99,11 +110,10 @@ List<int> calculateOvertime(scheduleEndWorkTime, userExitWork, breakTime) {
   // Get the number of minutes in the difference
   var minutes = difference.inMinutes % 60;
 
-
   print("Hour ${difference.inHours}, Min ${difference.inMinutes}");
 
-  if(difference.inHours < 0 || difference.inMinutes < 0){
-    return [0 ,0];
+  if (difference.inHours < 0 || difference.inMinutes < 0) {
+    return [0, 0];
   }
 
   // Calculate the overtime hours
@@ -137,7 +147,10 @@ List<int> calculateOvertime(scheduleEndWorkTime, userExitWork, breakTime) {
 }
 
 List<int> calculateBreakTime(now, startBreakTime) {
-  if (startBreakTime == null || startBreakTime == "" || startBreakTime == "null" || startBreakTime == ":") {
+  if (startBreakTime == null ||
+      startBreakTime == "" ||
+      startBreakTime == "null" ||
+      startBreakTime == ":") {
     startBreakTime = "00:00";
   }
 

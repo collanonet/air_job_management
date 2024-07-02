@@ -516,7 +516,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                                     "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
                             DataTableWidget(
                                 data: CommonUtils.calculateOvertimeInEntry(e,
-                                    withInLimit: true)),
+                                    isOvertime: true)),
                             DataTableWidget(
                                 data: CommonUtils.calculateOvertimeInEntry(e,
                                     nonSat: true)),
@@ -524,7 +524,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                             const DataTableWidget(data: "00:00"),
                             DataTableWidget(
                                 data: CommonUtils.calculateOvertimeInEntry(e,
-                                    isOvertime: true)),
+                                    withInLimit: true)),
                             DataTableWidget(
                                 data:
                                     "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
@@ -816,21 +816,21 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
             summaryCardWidget(
                 title: "実出勤日数",
                 data:
-                    "${CommonUtils.totalWorkDay(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}.00"),
+                    "${CommonUtils.totalWorkDay(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "総出勤日数",
                 data:
-                    "${CommonUtils.totalActualWorkDay(provider.shiftList, provider.dateList)}.00"),
+                    "${CommonUtils.totalActualWorkDay(provider.shiftList, provider.dateList)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "有休消化",
                 data:
-                    "${CommonUtils.totalPaidHoliday(provider.request, provider.selectedUserName, provider.dateList)}.00"),
+                    "${CommonUtils.totalPaidHoliday(provider.request, provider.selectedUserName, provider.dateList)}"),
             const SizedBox(
               height: 3,
             ),
@@ -844,7 +844,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
         //   crossAxisAlignment: CrossAxisAlignment.start,
         //   mainAxisAlignment: MainAxisAlignment.start,
         //   children: [
-        //     summaryCardWidget(title: "公休日数", data: "16.00"),
+        //     summaryCardWidget(title: "公休日数", data: "16"),
         //     // const SizedBox(
         //     //   height: 3,
         //     // ),
@@ -856,7 +856,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
         //     // const SizedBox(
         //     //   height: 3,
         //     // ),
-        //     // summaryCardWidget(title: "休出日数", data: "${DateToAPIHelper.formatTimeTwoDigits(provider.countDayOff.toString())}.00")
+        //     // summaryCardWidget(title: "休出日数", data: "${DateToAPIHelper.formatTimeTwoDigits(provider.countDayOff.toString())}")
         //   ],
         // ),
         Column(
@@ -866,28 +866,28 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
             summaryCardWidget(
                 title: "欠勤日数",
                 data:
-                    "${CommonUtils.calculateTotalAbsent(provider.shiftList, provider.entryListByBranch, provider.dateList, provider.selectedUserName)}.00"),
+                    "${CommonUtils.calculateTotalAbsent(provider.shiftList, provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "遅刻回数",
                 data:
-                    "${CommonUtils.totalLateTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}.00"),
+                    "${CommonUtils.totalLateTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "早退回数",
                 data:
-                    "${CommonUtils.totalLeaveEarly(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}.00"),
+                    "${CommonUtils.totalLeaveEarly(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "休出日数",
                 data:
-                    "${DateToAPIHelper.formatTimeTwoDigits(provider.countDayOff.toString())}.00")
+                    "${DateToAPIHelper.formatTimeTwoDigits(provider.countDayOff.toString())}")
             // summaryCardWidget(title: "不労時間", data: "")
           ],
         ),
@@ -898,7 +898,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
             summaryCardWidget(
                 title: "法定内",
                 data:
-                    "${CommonUtils.totalOvertimeWithinLaw(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
+                    "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
@@ -953,7 +953,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                     "${CommonUtils.totalWorkingTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}")
           ],
         ),
-        summaryCardWidget(title: "公休日数", data: "16.00"),
+        summaryCardWidget(title: "公休日数", data: "16"),
         // summaryCardWidget(title: "所定外計", data: ""),
       ],
     );

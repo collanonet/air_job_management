@@ -10,7 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test("Calculate Over Time", () {
-    List<int> result = calculateOvertime("17:00", "17:25", "00:00");
-    expect(result, [0, 25]);
+    List<int> result = calculateWorkingTime("15:50", "00:50", "01:00");
+    expect(result, [9, 0]);
   });
 }

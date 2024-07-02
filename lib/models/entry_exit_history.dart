@@ -43,6 +43,7 @@ class EntryExitHistory {
   Review? review;
   MyUser? myUser;
   bool? isPaidLeave;
+  String? midnightOvertime;
 
   EntryExitHistory(
       {this.uid,
@@ -83,9 +84,12 @@ class EntryExitHistory {
       this.scheduleStartBreakTime,
       this.scheduleEndBreakTime,
       this.actualWorkingMinute,
-      this.actualWorkingHour});
+      this.actualWorkingHour,
+      this.midnightOvertime});
 
-  factory EntryExitHistory.fromJson(Map<String, dynamic> json) => EntryExitHistory(
+  factory EntryExitHistory.fromJson(Map<String, dynamic> json) =>
+      EntryExitHistory(
+        midnightOvertime: json["midnightOvertime"] ?? "00:00",
         isPaidLeave: json["isPaidLeave"] ?? false,
         actualWorkingHour: json["actualWorkingHour"] ?? 0,
         actualWorkingMinute: json["actualWorkingMinute"] ?? 0,
@@ -109,7 +113,10 @@ class EntryExitHistory {
         createdAt: json["createdAt"].toDate(),
         jobTitle: json["jobTitle"],
         companyName: json["companyName"],
-        endWorkingTime: json["endWorkingTime"] == null || json["endWorkingTime"] == "" ? "00:00" : json["endWorkingTime"],
+        endWorkingTime:
+            json["endWorkingTime"] == null || json["endWorkingTime"] == ""
+                ? "00:00"
+                : json["endWorkingTime"],
         startWorkingTime: json["startWorkingTime"] ?? "00:00",
         amount: json["amount"],
         isLate: json["isLate"] ?? false,
@@ -125,6 +132,7 @@ class EntryExitHistory {
       );
 
   Map<String, dynamic> toJson() => {
+        "midnightOvertime": midnightOvertime,
         "isPaidLeave": isPaidLeave,
         "endWorkDate": endWorkDate,
         "actualWorkingHour": actualWorkingHour,

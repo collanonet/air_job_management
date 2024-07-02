@@ -227,12 +227,12 @@ class CommonUtils {
   static calculateOvertimeInEntry(EntryExitHistory entry,
       {bool? isOvertime, bool? withInLimit, bool? nonSat}) {
     ///Calculate break time
-    var breakTime = calculateBreakTime(
-        entry.scheduleEndBreakTime, entry.scheduleStartBreakTime);
+    // var breakTime = calculateBreakTime(
+    //     entry.scheduleEndBreakTime, entry.scheduleStartBreakTime);
 
     ///Schedule Working
-    var scheduleWorking = calculateWorkingTime(entry.scheduleStartWorkingTime,
-        entry.scheduleEndWorkingTime, "${breakTime[0]}:${breakTime[1]}");
+    var scheduleWorking = calculateWorkingTime(
+        entry.scheduleStartWorkingTime, entry.scheduleEndWorkingTime, "0:0");
 
     ///Calculate Overtime
     List<int> overTimeData = calculateBreakTime(
@@ -276,7 +276,7 @@ class CommonUtils {
         size++;
       }
     }
-    return DateToAPIHelper.formatTimeTwoDigits(size.toString());
+    return size.toString();
   }
 
   static remainingPaidHoliday(List<Request> requestList, String username,
@@ -293,7 +293,7 @@ class CommonUtils {
       }
     }
     paidHoliday = paidHoliday - size;
-    return DateToAPIHelper.formatTimeTwoDigits(paidHoliday.toString());
+    return paidHoliday.toString();
   }
 
   static totalWorkOnHoliday(List<EntryExitHistory> entryList,
@@ -308,7 +308,7 @@ class CommonUtils {
       }
     }
     workDateList = workDateList.toSet().toList();
-    return DateToAPIHelper.formatTimeTwoDigits(workDateList.length.toString());
+    return workDateList.length.toString();
   }
 
   static totalWorkDay(List<EntryExitHistory> entryList,
@@ -321,7 +321,7 @@ class CommonUtils {
       }
     }
     workDateList = workDateList.toSet().toList();
-    return DateToAPIHelper.formatTimeTwoDigits(workDateList.length.toString());
+    return workDateList.length.toString();
   }
 
   static totalActualWorkDay(
@@ -334,7 +334,7 @@ class CommonUtils {
       }
     }
     workDateList = workDateList.toSet().toList();
-    return DateToAPIHelper.formatTimeTwoDigits(workDateList.length.toString());
+    return workDateList.length.toString();
   }
 
   static calculateTotalAbsent(List<ShiftModel> shiftList,
@@ -382,8 +382,7 @@ class CommonUtils {
         returnSchedule.add(s);
       }
     }
-    return DateToAPIHelper.formatTimeTwoDigits(
-        returnSchedule.length.toString());
+    return returnSchedule.length.toString();
   }
 
   static totalLeaveEarly(List<EntryExitHistory> entryList,
@@ -398,7 +397,7 @@ class CommonUtils {
       }
     }
     workDateList = workDateList.toSet().toList();
-    return DateToAPIHelper.formatTimeTwoDigits(workDateList.length.toString());
+    return workDateList.length.toString();
   }
 
   static totalLateTime(List<EntryExitHistory> entryList,
@@ -413,7 +412,7 @@ class CommonUtils {
       }
     }
     workDateList = workDateList.toSet().toList();
-    return DateToAPIHelper.formatTimeTwoDigits(workDateList.length.toString());
+    return workDateList.length.toString();
   }
 
   static totalOvertime(List<EntryExitHistory> entryList,
@@ -564,26 +563,28 @@ class CommonUtils {
     int minute = 0;
     for (int i = 0; i < entryList.length; i++) {
       DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
-      DateTime endWorkDate = DateToAPIHelper.fromApiToLocal(
-          entryList[i].endWorkDate ?? entryList[i].workDate!);
-      int startWorkHour =
-          int.parse(entryList[i].startWorkingTime!.split(":")[0]);
-      int startWorkMin =
-          int.parse(entryList[i].startWorkingTime!.split(":")[1]);
-      int endWorkHour = 0;
-      int endWorkMinute = 0;
-      if (entryList[i].endWorkingTime != null &&
-          entryList[i].startWorkingTime != "") {
-        endWorkHour = int.parse(entryList[i].endWorkingTime!.split(":")[0]);
-        endWorkMinute = int.parse(entryList[i].endWorkingTime!.split(":")[1]);
-      }
+      // DateTime endWorkDate = DateToAPIHelper.fromApiToLocal(
+      //     entryList[i].endWorkDate ?? entryList[i].workDate!);
+      // int startWorkHour =
+      //     int.parse(entryList[i].startWorkingTime!.split(":")[0]);
+      // int startWorkMin =
+      //     int.parse(entryList[i].startWorkingTime!.split(":")[1]);
+      // int endWorkHour = 0;
+      // int endWorkMinute = 0;
+      // if (entryList[i].endWorkingTime != null &&
+      //     entryList[i].startWorkingTime != "") {
+      //   endWorkHour = int.parse(entryList[i].endWorkingTime!.split(":")[0]);
+      //   endWorkMinute = int.parse(entryList[i].endWorkingTime!.split(":")[1]);
+      // }
       if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
-        DateTime startDate =
-            DateTime(d.year, d.month, d.day, startWorkHour, startWorkMin);
-        DateTime endDate = DateTime(endWorkDate.year, endWorkDate.month,
-            endWorkDate.day, endWorkHour, endWorkMinute);
-        hour += calculateMidnightWork(startDate, endDate)[0] as int;
-        minute += calculateMidnightWork(startDate, endDate)[1] as int;
+        // DateTime startDate =
+        //     DateTime(d.year, d.month, d.day, startWorkHour, startWorkMin);
+        // DateTime endDate = DateTime(endWorkDate.year, endWorkDate.month,
+        //     endWorkDate.day, endWorkHour, endWorkMinute);
+        // hour += calculateMidnightWork(startDate, endDate)[0] as int;
+        // minute += calculateMidnightWork(startDate, endDate)[1] as int;
+        hour += int.parse(entryList[i].midnightOvertime!.split(":")[0]);
+        minute += int.parse(entryList[i].midnightOvertime!.split(":")[1]);
       }
     }
     int totalHour = hour + (minute ~/ 60);

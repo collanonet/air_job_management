@@ -1,4 +1,3 @@
-import 'package:air_job_management/1_company_page/applicant/widget/all_shift.dart';
 import 'package:air_job_management/1_company_page/woker_management/widget/job_card.dart';
 import 'package:air_job_management/1_company_page/woker_management/worker_management_detail/basic_information.dart';
 import 'package:air_job_management/1_company_page/woker_management/worker_management_detail/chat.dart';
@@ -9,6 +8,7 @@ import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
@@ -19,6 +19,7 @@ import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';
 import '../../utils/style.dart';
 import '../../widgets/custom_loading_overlay.dart';
+import '../woker_management/worker_management_detail/application_history.dart';
 
 List<EntryExitHistory> entryForApplicant = [];
 List<Request> requestByUserList = [];
@@ -32,13 +33,15 @@ class ApplicantRootPage extends StatefulWidget {
   State<ApplicantRootPage> createState() => _ApplicantRootPageState();
 }
 
-class _ApplicantRootPageState extends State<ApplicantRootPage> with AfterBuildMixin {
+class _ApplicantRootPageState extends State<ApplicantRootPage>
+    with AfterBuildMixin {
   late AuthProvider authProvider;
   late WorkerManagementProvider provider;
 
   getJob() async {
     if (provider.selectedJob == null) {
-      WorkerManagement? job = await WorkerManagementApiService().getAJob(widget.uid);
+      WorkerManagement? job =
+          await WorkerManagementApiService().getAJob(widget.uid);
       provider.setJob = job!;
       provider.onChangeLoading(false);
     } else {}
@@ -48,7 +51,8 @@ class _ApplicantRootPageState extends State<ApplicantRootPage> with AfterBuildMi
   Widget build(BuildContext context) {
     authProvider = Provider.of<AuthProvider>(context);
     provider = Provider.of<WorkerManagementProvider>(context);
-    return CustomLoadingOverlay(isLoading: provider.isLoading, child: buildBody());
+    return CustomLoadingOverlay(
+        isLoading: provider.isLoading, child: buildBody());
   }
 
   buildBody() {
@@ -72,11 +76,14 @@ class _ApplicantRootPageState extends State<ApplicantRootPage> with AfterBuildMi
               companyName: authProvider.myCompany!.companyName,
             )
           else
-            AllShiftApplicantPage(
-              myUser: provider.selectedJob!.myUser!,
-              id: provider.selectedJob!.uid!,
-              searchJobId: provider.selectedJob!.jobId!,
+            ApplicationHistoryPage(
+              myUser: provider.selectedJob?.myUser,
             ),
+          // AllShiftApplicantPage(
+          //   myUser: provider.selectedJob!.myUser!,
+          //   id: provider.selectedJob!.uid!,
+          //   searchJobId: provider.selectedJob!.jobId!,
+          // ),
           SizedBox(
             height: widget.isView ? 20 : 0,
           ),
@@ -84,7 +91,11 @@ class _ApplicantRootPageState extends State<ApplicantRootPage> with AfterBuildMi
             Center(
                 child: SizedBox(
               width: 150,
-              child: ButtonWidget(color: Colors.white, radius: 50, title: JapaneseText.close, onPress: () => Navigator.pop(context)),
+              child: ButtonWidget(
+                  color: Colors.white,
+                  radius: 50,
+                  title: JapaneseText.close,
+                  onPress: () => Navigator.pop(context)),
             ))
           else
             const SizedBox()
@@ -106,15 +117,27 @@ class _ApplicantRootPageState extends State<ApplicantRootPage> with AfterBuildMi
                 Row(
                   children: [
                     AppSize.spaceWidth32,
-                    Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: AppColor.primaryColor),
-                      child: Center(
-                        child: Icon(
-                          Icons.person,
-                          color: AppColor.whiteColor,
-                          size: 35,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: CachedNetworkImage(
+                        width: 50,
+                        height: 50,
+                        imageUrl:
+                            provider.selectedJob?.myUser?.profileImage ?? "",
+                        fit: BoxFit.cover,
+                        errorWidget: (_, __, ___) => Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              color: AppColor.primaryColor),
+                          child: Center(
+                            child: Icon(
+                              Icons.person,
+                              color: AppColor.whiteColor,
+                              size: 50,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -125,12 +148,18 @@ class _ApplicantRootPageState extends State<ApplicantRootPage> with AfterBuildMi
                       children: [
                         Text(
                           "${provider.selectedJob?.myUser?.nameKanJi} ${provider.selectedJob?.myUser?.nameFu}",
-                          style: normalTextStyle.copyWith(fontSize: 20, color: AppColor.blackColor, fontFamily: "Bold"),
+                          style: normalTextStyle.copyWith(
+                              fontSize: 20,
+                              color: AppColor.blackColor,
+                              fontFamily: "Bold"),
                         ),
                         AppSize.spaceHeight5,
                         Text(
-                          "${provider.selectedJob?.jobLocation}               ${provider.selectedJob?.myUser?.gender}   ${calculateAge(DateToAPIHelper.fromApiToLocal(provider.selectedJob!.myUser!.dob!.replaceAll("-", "/").toString()))}",
-                          style: normalTextStyle.copyWith(fontSize: 16, color: AppColor.blackColor, fontFamily: "Normal"),
+                          "${provider.selectedJob?.myUser?.city ?? provider.selectedJob?.myUser?.province ?? provider.selectedJob?.myUser?.street}                ${provider.selectedJob?.myUser?.gender}   ${calculateAge(DateToAPIHelper.fromApiToLocal(provider.selectedJob!.myUser!.dob!.replaceAll("-", "/").toString()))}",
+                          style: normalTextStyle.copyWith(
+                              fontSize: 16,
+                              color: AppColor.blackColor,
+                              fontFamily: "Normal"),
                         ),
                       ],
                     )
@@ -156,12 +185,20 @@ class _ApplicantRootPageState extends State<ApplicantRootPage> with AfterBuildMi
                 child: Text(
                   provider.tabMenu[0],
                   style: normalTextStyle.copyWith(
-                      fontSize: 16, fontFamily: "Bold", color: provider.selectedMenu == provider.tabMenu[0] ? Colors.white : AppColor.primaryColor),
+                      fontSize: 16,
+                      fontFamily: "Bold",
+                      color: provider.selectedMenu == provider.tabMenu[0]
+                          ? Colors.white
+                          : AppColor.primaryColor),
                 ),
                 decoration: BoxDecoration(
-                    color: provider.selectedMenu == provider.tabMenu[0] ? AppColor.primaryColor : Colors.white,
+                    color: provider.selectedMenu == provider.tabMenu[0]
+                        ? AppColor.primaryColor
+                        : Colors.white,
                     border: Border.all(width: 2, color: AppColor.primaryColor),
-                    borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16))),
+                    borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(16),
+                        topLeft: Radius.circular(16))),
               ),
             ),
             AppSize.spaceWidth16,
@@ -174,12 +211,20 @@ class _ApplicantRootPageState extends State<ApplicantRootPage> with AfterBuildMi
                 child: Text(
                   provider.tabMenu[1],
                   style: normalTextStyle.copyWith(
-                      fontSize: 16, fontFamily: "Bold", color: provider.selectedMenu == provider.tabMenu[1] ? Colors.white : AppColor.primaryColor),
+                      fontSize: 16,
+                      fontFamily: "Bold",
+                      color: provider.selectedMenu == provider.tabMenu[1]
+                          ? Colors.white
+                          : AppColor.primaryColor),
                 ),
                 decoration: BoxDecoration(
-                    color: provider.selectedMenu == provider.tabMenu[1] ? AppColor.primaryColor : Colors.white,
+                    color: provider.selectedMenu == provider.tabMenu[1]
+                        ? AppColor.primaryColor
+                        : Colors.white,
                     border: Border.all(width: 2, color: AppColor.primaryColor),
-                    borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16))),
+                    borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(16),
+                        topLeft: Radius.circular(16))),
               ),
             ),
             AppSize.spaceWidth16,
@@ -192,12 +237,20 @@ class _ApplicantRootPageState extends State<ApplicantRootPage> with AfterBuildMi
                 child: Text(
                   provider.tabMenu[2],
                   style: normalTextStyle.copyWith(
-                      fontSize: 16, fontFamily: "Bold", color: provider.selectedMenu == provider.tabMenu[2] ? Colors.white : AppColor.primaryColor),
+                      fontSize: 16,
+                      fontFamily: "Bold",
+                      color: provider.selectedMenu == provider.tabMenu[2]
+                          ? Colors.white
+                          : AppColor.primaryColor),
                 ),
                 decoration: BoxDecoration(
-                    color: provider.selectedMenu == provider.tabMenu[2] ? AppColor.primaryColor : Colors.white,
+                    color: provider.selectedMenu == provider.tabMenu[2]
+                        ? AppColor.primaryColor
+                        : Colors.white,
                     border: Border.all(width: 2, color: AppColor.primaryColor),
-                    borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16))),
+                    borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(16),
+                        topLeft: Radius.circular(16))),
               ),
             )
           ],

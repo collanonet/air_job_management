@@ -53,10 +53,13 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
       if (GoRouter.of(context).location == "/") {
         if (user != null) {
           await FirebaseAuth.instance.currentUser?.reload();
-          bool isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
-          AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
+          bool isEmailVerified =
+              FirebaseAuth.instance.currentUser!.emailVerified;
+          AuthProvider authProvider =
+              Provider.of<AuthProvider>(context, listen: false);
           MyUser? users = await UserApiServices().getProfileUser(user.uid);
-          Company? company = await UserApiServices().getProfileCompany(user.uid);
+          Company? company =
+              await UserApiServices().getProfileCompany(user.uid);
           authProvider.setProfile = users;
           if (company != null) {
             authProvider.setCompany = company;
@@ -65,7 +68,8 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
           } else {
             if (users!.role == RoleHelper.admin) {
               context.go(MyRoute.dashboard);
-            } else if (users.role == RoleHelper.worker && isEmailVerified == true) {
+            } else if (users.role == RoleHelper.worker &&
+                isEmailVerified == true) {
               if (users.isFullTimeStaff == true) {
                 isFullTime = true;
                 context.go(MyRoute.workerSearchJobPage);
@@ -73,7 +77,8 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                 isFullTime = false;
                 context.go(MyRoute.workerSearchJobPage);
               }
-            } else if (users.role == RoleHelper.worker && isEmailVerified == false) {
+            } else if (users.role == RoleHelper.worker &&
+                isEmailVerified == false) {
               MyPageRoute.goToReplace(
                   context,
                   VerifyUserEmailPage(
@@ -90,10 +95,11 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
       } else {
         if (user != null) {
           MyUser? users = await UserApiServices().getProfileUser(user.uid);
-          AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
+          AuthProvider authProvider =
+              Provider.of<AuthProvider>(context, listen: false);
           if (users?.role == null) {
             if (GoRouter.of(context).location.toString().contains("company")) {
-              context.go(GoRouter.of(context).location);
+              context.go(MyRoute.companyInformationManagement);
             } else {
               authProvider.branch = mainBranch;
               context.go(MyRoute.companyInformationManagement);
@@ -163,19 +169,29 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                     tooltip: "Menu",
                     onSelected: (MenuEnum result) async {
                       if (result == MenuEnum.worker) {
-                        toastMessageError("このオプションは利用できません。モバイルアプリのシーカーを使用してください。", context);
+                        toastMessageError(
+                            "このオプションは利用できません。モバイルアプリのシーカーを使用してください。", context);
                       } else if (result == MenuEnum.home) {
-                        scrollController.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
+                        scrollController.animateTo(0,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.bounceIn);
                       } else if (result == MenuEnum.aboutUs) {
-                        scrollController.animateTo(1050, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
+                        scrollController.animateTo(1050,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.bounceIn);
                       } else if (result == MenuEnum.contactUs) {
-                        scrollController.animateTo(scrollController.position.maxScrollExtent - 340,
-                            duration: const Duration(milliseconds: 500), curve: Curves.bounceIn);
+                        scrollController.animateTo(
+                            scrollController.position.maxScrollExtent - 340,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.bounceIn);
                       } else {
-                        toastMessageError("This options is not available for mobile", context);
+                        toastMessageError(
+                            "This options is not available for mobile",
+                            context);
                       }
                     },
-                    itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuEnum>>[
+                    itemBuilder: (BuildContext context) =>
+                        <PopupMenuEntry<MenuEnum>>[
                       PopupMenuItem<MenuEnum>(
                         value: MenuEnum.home,
                         child: Text(
@@ -233,7 +249,8 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                         child: Column(children: [
                           Text(
                             JapaneseText.home,
-                            style: kTitleText.copyWith(fontSize: 30, color: Colors.black),
+                            style: kTitleText.copyWith(
+                                fontSize: 30, color: Colors.black),
                           ),
                           AppSize.spaceHeight16,
                           Padding(
@@ -244,26 +261,37 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                               children: [
                                 Text(
                                   "いつでも働き、\n今すぐ報酬を得る",
-                                  style: kTitleText.copyWith(fontSize: 30, color: Colors.black),
+                                  style: kTitleText.copyWith(
+                                      fontSize: 30, color: Colors.black),
                                 ),
                                 AppSize.spaceHeight16,
                                 Text(
                                   "Air Jobなら、もう厳しいスケジュールに縛られることはありません。\n自分の都合に合わせて働き、20分以内に報酬を受け取る。\n面接も履歴書も必要ありません。",
-                                  style: kNormalText.copyWith(fontSize: 16, color: Colors.black),
+                                  style: kNormalText.copyWith(
+                                      fontSize: 16, color: Colors.black),
                                 ),
                                 AppSize.spaceHeight16,
                                 InkWell(
                                   onTap: () {
-                                    String userAgent = html.window.navigator.userAgent;
+                                    String userAgent =
+                                        html.window.navigator.userAgent;
                                     if (userAgent.contains('Mac OS')) {
-                                      js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
+                                      js.context.callMethod('open', [
+                                        "https://testflight.apple.com/join/hT4uZGwr"
+                                      ]);
                                     } else if (userAgent.contains('Windows')) {
-                                      js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
+                                      js.context.callMethod('open', [
+                                        "https://play.google.com/store/apps/details?id=com.collabonet.airjob"
+                                      ]);
                                     } else {
                                       if (userAgent.contains('iOS')) {
-                                        js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
+                                        js.context.callMethod('open', [
+                                          "https://testflight.apple.com/join/hT4uZGwr"
+                                        ]);
                                       } else {
-                                        js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
+                                        js.context.callMethod('open', [
+                                          "https://play.google.com/store/apps/details?id=com.collabonet.airjob"
+                                        ]);
                                       }
                                     }
                                   },
@@ -315,12 +343,15 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                 AppSize.spaceHeight30,
                                 Text(
                                   JapaneseText.aboutUs,
-                                  style: kTitleText.copyWith(fontSize: 30, color: Colors.black),
+                                  style: kTitleText.copyWith(
+                                      fontSize: 30, color: Colors.black),
                                 ),
                                 AppSize.spaceHeight30,
                                 Container(
                                   width: 700,
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.white),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      color: Colors.white),
                                   padding: const EdgeInsets.all(32),
                                   margin: const EdgeInsets.all(32),
                                   child: Center(
@@ -335,7 +366,10 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                   children: [
                                     Text(
                                       "好きなだけ働く",
-                                      style: kNormalText.copyWith(fontSize: 30, color: Colors.black, fontFamily: "Bold"),
+                                      style: kNormalText.copyWith(
+                                          fontSize: 30,
+                                          color: Colors.black,
+                                          fontFamily: "Bold"),
                                     ),
                                     AppSize.spaceHeight16,
                                     Padding(
@@ -344,7 +378,9 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                         width: 400,
                                         child: Text(
                                           "あなたの仕事のシフトは完全にあなた次第です-それはあなたが1時間と短いギグから稼ぎ始めることができることを意味します。Air Job を使用すると、もはや厳格なスケジュールに拘束されることはありません。あなたの都合に合わせて仕事のシフトの期間、時間、場所を調整します。縛られない、あなただけの働き方を発見してください。",
-                                          style: kNormalText.copyWith(fontSize: 20, color: Colors.black),
+                                          style: kNormalText.copyWith(
+                                              fontSize: 20,
+                                              color: Colors.black),
                                           overflow: TextOverflow.fade,
                                         ),
                                       ),
@@ -354,7 +390,9 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                 AppSize.spaceHeight30,
                                 Container(
                                   width: 700,
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.white),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      color: Colors.white),
                                   padding: const EdgeInsets.all(32),
                                   margin: const EdgeInsets.all(32),
                                   child: Center(
@@ -369,7 +407,10 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                   children: [
                                     Text(
                                       "好きなだけ働く",
-                                      style: kNormalText.copyWith(fontSize: 30, color: Colors.black, fontFamily: "Bold"),
+                                      style: kNormalText.copyWith(
+                                          fontSize: 30,
+                                          color: Colors.black,
+                                          fontFamily: "Bold"),
                                     ),
                                     AppSize.spaceHeight16,
                                     Padding(
@@ -378,7 +419,9 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                         width: 400,
                                         child: Text(
                                           "あなたの仕事のシフトは完全にあなた次第です-それはあなたが1時間と短いギグから稼ぎ始めることができることを意味します。Air Job を使用すると、もはや厳格なスケジュールに拘束されることはありません。あなたの都合に合わせて仕事のシフトの期間、時間、場所を調整します。縛られない、あなただけの働き方を発見してください。",
-                                          style: kNormalText.copyWith(fontSize: 20, color: Colors.black),
+                                          style: kNormalText.copyWith(
+                                              fontSize: 20,
+                                              color: Colors.black),
                                           overflow: TextOverflow.fade,
                                         ),
                                       ),
@@ -396,13 +439,15 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                 AppSize.spaceHeight30,
                                 Text(
                                   JapaneseText.contactUs,
-                                  style: kTitleText.copyWith(fontSize: 30, color: Colors.black),
+                                  style: kTitleText.copyWith(
+                                      fontSize: 30, color: Colors.black),
                                 ),
                                 AppSize.spaceHeight30,
                                 Column(
                                   children: [
                                     SizedBox(
-                                      width: AppSize.getDeviceWidth(context) * 0.9,
+                                      width:
+                                          AppSize.getDeviceWidth(context) * 0.9,
                                       child: PrimaryTextField(
                                         hint: JapaneseText.email,
                                         controller: emailController,
@@ -411,7 +456,8 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                     ),
                                     AppSize.spaceHeight16,
                                     SizedBox(
-                                      width: AppSize.getDeviceWidth(context) * 0.9,
+                                      width:
+                                          AppSize.getDeviceWidth(context) * 0.9,
                                       child: PrimaryTextField(
                                         hint: JapaneseText.message,
                                         controller: contentController,
@@ -421,13 +467,17 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                     ),
                                     AppSize.spaceHeight16,
                                     SizedBox(
-                                      width: AppSize.getDeviceWidth(context) * 0.9,
+                                      width:
+                                          AppSize.getDeviceWidth(context) * 0.9,
                                       child: ButtonWidget(
                                         onPress: () {
-                                          if (emailController.text.isEmpty || contentController.text.isEmpty) {
-                                            toastMessageError("Eメールとメッセージが必要です", context);
+                                          if (emailController.text.isEmpty ||
+                                              contentController.text.isEmpty) {
+                                            toastMessageError(
+                                                "Eメールとメッセージが必要です", context);
                                           } else {
-                                            toastMessageSuccess("送信成功", context);
+                                            toastMessageSuccess(
+                                                "送信成功", context);
                                           }
                                         },
                                         title: "送信",
@@ -443,28 +493,34 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                   padding: const EdgeInsets.only(left: 16),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Center(
                                         child: Text(
                                           "Air Job Co,. TD Japan",
-                                          style: kTitleText.copyWith(fontSize: 30, color: Colors.black),
+                                          style: kTitleText.copyWith(
+                                              fontSize: 30,
+                                              color: Colors.black),
                                         ),
                                       ),
                                       AppSize.spaceHeight16,
                                       Text(
                                         "1-chōme-6-9 Kitashinjuku, Shinjuku City, Tokyo 169-0074, Japan",
-                                        style: kNormalText.copyWith(fontSize: 18),
+                                        style:
+                                            kNormalText.copyWith(fontSize: 18),
                                       ),
                                       AppSize.spaceHeight16,
                                       Text(
                                         "${JapaneseText.phoneNumber}: 9999-9999-999",
-                                        style: kNormalText.copyWith(fontSize: 18),
+                                        style:
+                                            kNormalText.copyWith(fontSize: 18),
                                       ),
                                       AppSize.spaceHeight16,
                                       Text(
                                         "${JapaneseText.email}: support@airjob.com",
-                                        style: kNormalText.copyWith(fontSize: 18),
+                                        style:
+                                            kNormalText.copyWith(fontSize: 18),
                                       ),
                                       AppSize.spaceHeight30,
                                     ],
@@ -474,12 +530,20 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                 SizedBox(
                                   width: AppSize.getDeviceWidth(context),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       menuWidget(
-                                          title: "プライバシーポリシー", onTap: () => MyPageRoute.goTo(context, const PrivatePolicy()), color: Colors.black),
-                                      menuWidget(title: "サービス期間", onTap: () => MyPageRoute.goTo(context, const TermOfUse()), color: Colors.black)
+                                          title: "プライバシーポリシー",
+                                          onTap: () => MyPageRoute.goTo(
+                                              context, const PrivatePolicy()),
+                                          color: Colors.black),
+                                      menuWidget(
+                                          title: "サービス期間",
+                                          onTap: () => MyPageRoute.goTo(
+                                              context, const TermOfUse()),
+                                          color: Colors.black)
                                     ],
                                   ),
                                 ),
@@ -523,22 +587,35 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                     children: [
                       menuWidget(
                           title: JapaneseText.home,
-                          onTap: () => scrollController.animateTo(0, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn)),
+                          onTap: () => scrollController.animateTo(0,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.bounceIn)),
                       AppSize.spaceWidth5,
                       menuWidget(
                           title: JapaneseText.contactUs,
-                          onTap: () => scrollController.animateTo(contactUs, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn)),
+                          onTap: () => scrollController.animateTo(contactUs,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.bounceIn)),
                       AppSize.spaceWidth5,
                       menuWidget(
                           title: JapaneseText.aboutUs,
-                          onTap: () => scrollController.animateTo(aboutUs, duration: const Duration(milliseconds: 500), curve: Curves.bounceIn)),
+                          onTap: () => scrollController.animateTo(aboutUs,
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.bounceIn)),
                       AppSize.spaceWidth5,
                       menuWidget(
-                          title: JapaneseText.jobSeekerPage, onTap: () => toastMessageError("このオプションは利用できません。モバイルアプリのシーカーを使用してください。", context)),
+                          title: JapaneseText.jobSeekerPage,
+                          onTap: () => toastMessageError(
+                              "このオプションは利用できません。モバイルアプリのシーカーを使用してください。",
+                              context)),
                       AppSize.spaceWidth5,
-                      menuWidget(title: JapaneseText.companyPage, onTap: () => context.go(MyRoute.companyLogin)),
+                      menuWidget(
+                          title: JapaneseText.companyPage,
+                          onTap: () => context.go(MyRoute.companyLogin)),
                       AppSize.spaceWidth5,
-                      menuWidget(title: JapaneseText.adminPage, onTap: () => context.go(MyRoute.login)),
+                      menuWidget(
+                          title: JapaneseText.adminPage,
+                          onTap: () => context.go(MyRoute.login)),
                     ],
                   )
                 ],
@@ -553,7 +630,8 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                         child: Column(children: [
                           Text(
                             JapaneseText.home,
-                            style: kTitleText.copyWith(fontSize: 50, color: Colors.black),
+                            style: kTitleText.copyWith(
+                                fontSize: 50, color: Colors.black),
                           ),
                           AppSize.spaceHeight30,
                           SizedBox(
@@ -565,30 +643,43 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                   padding: const EdgeInsets.only(top: 100),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Text(
                                         "いつでも働き、\n今すぐ報酬を得る",
-                                        style: kTitleText.copyWith(fontSize: 50, color: Colors.black),
+                                        style: kTitleText.copyWith(
+                                            fontSize: 50, color: Colors.black),
                                       ),
                                       AppSize.spaceHeight16,
                                       Text(
                                         "Air Jobなら、もう厳しいスケジュールに縛られることはありません。\n自分の都合に合わせて働き、20分以内に報酬を受け取る。\n面接も履歴書も必要ありません。",
-                                        style: kNormalText.copyWith(fontSize: 20, color: Colors.black),
+                                        style: kNormalText.copyWith(
+                                            fontSize: 20, color: Colors.black),
                                       ),
                                       AppSize.spaceHeight16,
                                       InkWell(
                                         onTap: () {
-                                          String userAgent = html.window.navigator.userAgent;
+                                          String userAgent =
+                                              html.window.navigator.userAgent;
                                           if (userAgent.contains('Mac OS')) {
-                                            js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
-                                          } else if (userAgent.contains('Windows')) {
-                                            js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
+                                            js.context.callMethod('open', [
+                                              "https://testflight.apple.com/join/hT4uZGwr"
+                                            ]);
+                                          } else if (userAgent
+                                              .contains('Windows')) {
+                                            js.context.callMethod('open', [
+                                              "https://play.google.com/store/apps/details?id=com.collabonet.airjob"
+                                            ]);
                                           } else {
                                             if (userAgent.contains('iOS')) {
-                                              js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
+                                              js.context.callMethod('open', [
+                                                "https://testflight.apple.com/join/hT4uZGwr"
+                                              ]);
                                             } else {
-                                              js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
+                                              js.context.callMethod('open', [
+                                                "https://play.google.com/store/apps/details?id=com.collabonet.airjob"
+                                              ]);
                                             }
                                           }
                                         },
@@ -605,27 +696,35 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                   clipBehavior: Clip.none,
                                   children: [
                                     Positioned(
-                                      top: AppSize.getDeviceHeight(context) * 0.1,
+                                      top: AppSize.getDeviceHeight(context) *
+                                          0.1,
                                       left: 0,
-                                      bottom: AppSize.getDeviceHeight(context) * 0.1,
+                                      bottom: AppSize.getDeviceHeight(context) *
+                                          0.1,
                                       child: Image.asset(
                                         "assets/home.png",
                                       ),
                                     ),
                                     Positioned(
-                                      top: AppSize.getDeviceHeight(context) * 0.15,
+                                      top: AppSize.getDeviceHeight(context) *
+                                          0.15,
                                       right: 20,
                                       child: Image.asset(
                                         "assets/calendar.png",
-                                        height: AppSize.getDeviceHeight(context) * 0.6,
+                                        height:
+                                            AppSize.getDeviceHeight(context) *
+                                                0.6,
                                       ),
                                     ),
                                     Positioned(
-                                      top: AppSize.getDeviceHeight(context) * 0.15,
+                                      top: AppSize.getDeviceHeight(context) *
+                                          0.15,
                                       left: 100,
                                       child: SvgPicture.asset(
                                         "assets/person.svg",
-                                        height: AppSize.getDeviceHeight(context) * 0.6,
+                                        height:
+                                            AppSize.getDeviceHeight(context) *
+                                                0.6,
                                       ),
                                     ),
                                   ],
@@ -641,7 +740,8 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                 AppSize.spaceHeight30,
                                 Text(
                                   JapaneseText.aboutUs,
-                                  style: kTitleText.copyWith(fontSize: 50, color: Colors.black),
+                                  style: kTitleText.copyWith(
+                                      fontSize: 50, color: Colors.black),
                                 ),
                                 AppSize.spaceHeight30,
                                 AppSize.spaceHeight16,
@@ -653,7 +753,10 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                       child: Container(
                                         width: 400,
                                         height: 400,
-                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.white),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                            color: Colors.white),
                                         padding: const EdgeInsets.all(32),
                                         child: Center(
                                           child: Image.asset(
@@ -666,19 +769,26 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                     AppSize.spaceWidth32,
                                     Expanded(
                                         child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
                                         Text(
                                           "好きなだけ働く",
-                                          style: kNormalText.copyWith(fontSize: 50, color: Colors.black, fontFamily: "Bold"),
+                                          style: kNormalText.copyWith(
+                                              fontSize: 50,
+                                              color: Colors.black,
+                                              fontFamily: "Bold"),
                                         ),
                                         AppSize.spaceHeight16,
                                         SizedBox(
                                           width: 400,
                                           child: Text(
                                             "あなたの仕事のシフトは完全にあなた次第です-それはあなたが1時間と短いギグから稼ぎ始めることができることを意味します。Air Job を使用すると、もはや厳格なスケジュールに拘束されることはありません。あなたの都合に合わせて仕事のシフトの期間、時間、場所を調整します。縛られない、あなただけの働き方を発見してください。",
-                                            style: kNormalText.copyWith(fontSize: 20, color: Colors.black),
+                                            style: kNormalText.copyWith(
+                                                fontSize: 20,
+                                                color: Colors.black),
                                             overflow: TextOverflow.fade,
                                           ),
                                         ),
@@ -691,19 +801,25 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                   children: [
                                     Expanded(
                                         child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         Text(
                                           "好きなだけ働く",
-                                          style: kNormalText.copyWith(fontSize: 50, color: Colors.black, fontFamily: "Bold"),
+                                          style: kNormalText.copyWith(
+                                              fontSize: 50,
+                                              color: Colors.black,
+                                              fontFamily: "Bold"),
                                         ),
                                         AppSize.spaceHeight16,
                                         SizedBox(
                                           width: 400,
                                           child: Text(
                                             "あなたの仕事のシフトは完全にあなた次第です-それはあなたが1時間と短いギグから稼ぎ始めることができることを意味します。Air Job を使用すると、もはや厳格なスケジュールに拘束されることはありません。あなたの都合に合わせて仕事のシフトの期間、時間、場所を調整します。縛られない、あなただけの働き方を発見してください。",
-                                            style: kNormalText.copyWith(fontSize: 20, color: Colors.black),
+                                            style: kNormalText.copyWith(
+                                                fontSize: 20,
+                                                color: Colors.black),
                                             overflow: TextOverflow.fade,
                                           ),
                                         ),
@@ -717,7 +833,10 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                       child: Container(
                                         width: 400,
                                         height: 400,
-                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), color: Colors.white),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                            color: Colors.white),
                                         padding: const EdgeInsets.all(32),
                                         child: Center(
                                           child: Image.asset(
@@ -739,7 +858,8 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                 AppSize.spaceHeight30,
                                 Text(
                                   JapaneseText.contactUs,
-                                  style: kTitleText.copyWith(fontSize: 50, color: Colors.black),
+                                  style: kTitleText.copyWith(
+                                      fontSize: 50, color: Colors.black),
                                 ),
                                 AppSize.spaceHeight30,
                                 Row(
@@ -749,7 +869,9 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                       child: Column(
                                         children: [
                                           SizedBox(
-                                            width: AppSize.getDeviceWidth(context) * 0.4,
+                                            width: AppSize.getDeviceWidth(
+                                                    context) *
+                                                0.4,
                                             child: PrimaryTextField(
                                               hint: JapaneseText.email,
                                               controller: emailController,
@@ -758,7 +880,9 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                           ),
                                           AppSize.spaceHeight16,
                                           SizedBox(
-                                            width: AppSize.getDeviceWidth(context) * 0.4,
+                                            width: AppSize.getDeviceWidth(
+                                                    context) *
+                                                0.4,
                                             child: PrimaryTextField(
                                               hint: JapaneseText.message,
                                               controller: contentController,
@@ -768,13 +892,21 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                           ),
                                           AppSize.spaceHeight16,
                                           SizedBox(
-                                            width: AppSize.getDeviceWidth(context) * 0.4,
+                                            width: AppSize.getDeviceWidth(
+                                                    context) *
+                                                0.4,
                                             child: ButtonWidget(
                                               onPress: () {
-                                                if (emailController.text.isEmpty || contentController.text.isEmpty) {
-                                                  toastMessageError("Eメールとメッセージが必要です", context);
+                                                if (emailController
+                                                        .text.isEmpty ||
+                                                    contentController
+                                                        .text.isEmpty) {
+                                                  toastMessageError(
+                                                      "Eメールとメッセージが必要です",
+                                                      context);
                                                 } else {
-                                                  toastMessageSuccess("送信成功", context);
+                                                  toastMessageSuccess(
+                                                      "送信成功", context);
                                                 }
                                               },
                                               title: "送信",
@@ -792,32 +924,40 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                     Expanded(
                                         child: Padding(
                                       padding: EdgeInsets.only(
-                                        left: AppSize.getDeviceWidth(context) * 0.04,
+                                        left: AppSize.getDeviceWidth(context) *
+                                            0.04,
                                       ),
                                       child: SizedBox(
                                         height: 400,
                                         child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               "Air Job Co,. TD Japan",
-                                              style: kTitleText.copyWith(fontSize: 40, color: Colors.black),
+                                              style: kTitleText.copyWith(
+                                                  fontSize: 40,
+                                                  color: Colors.black),
                                             ),
                                             AppSize.spaceHeight16,
                                             Text(
                                               "1-chōme-6-9 Kitashinjuku, Shinjuku City, Tokyo 169-0074, Japan",
-                                              style: kNormalText.copyWith(fontSize: 18),
+                                              style: kNormalText.copyWith(
+                                                  fontSize: 18),
                                             ),
                                             AppSize.spaceHeight16,
                                             Text(
                                               "${JapaneseText.phoneNumber}: 9999-9999-999",
-                                              style: kNormalText.copyWith(fontSize: 18),
+                                              style: kNormalText.copyWith(
+                                                  fontSize: 18),
                                             ),
                                             AppSize.spaceHeight16,
                                             Text(
                                               "${JapaneseText.email}: support@airjob.com",
-                                              style: kNormalText.copyWith(fontSize: 18),
+                                              style: kNormalText.copyWith(
+                                                  fontSize: 18),
                                             ),
                                             AppSize.spaceHeight30,
                                           ],
@@ -830,12 +970,20 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                 SizedBox(
                                   width: AppSize.getDeviceWidth(context),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       menuWidget(
-                                          title: "プライバシーポリシー", onTap: () => MyPageRoute.goTo(context, const PrivatePolicy()), color: Colors.black),
-                                      menuWidget(title: "サービス期間", onTap: () => MyPageRoute.goTo(context, const TermOfUse()), color: Colors.black)
+                                          title: "プライバシーポリシー",
+                                          onTap: () => MyPageRoute.goTo(
+                                              context, const PrivatePolicy()),
+                                          color: Colors.black),
+                                      menuWidget(
+                                          title: "サービス期間",
+                                          onTap: () => MyPageRoute.goTo(
+                                              context, const TermOfUse()),
+                                          color: Colors.black)
                                     ],
                                   ),
                                 ),
@@ -876,7 +1024,8 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
             children: [
               Text(
                 title,
-                style: kNormalText.copyWith(color: color ?? AppColor.whiteColor, fontSize: 16),
+                style: kNormalText.copyWith(
+                    color: color ?? AppColor.whiteColor, fontSize: 16),
               ),
               AnimatedContainer(
                 duration: const Duration(milliseconds: 100),
