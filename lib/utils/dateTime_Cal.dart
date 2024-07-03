@@ -69,9 +69,7 @@ List<int> calculateWorkingTime(startWork, exitWork, breakTime) {
 }
 
 List<int> calculateOvertime(scheduleEndWorkTime, userExitWork, breakTime) {
-  if (scheduleEndWorkTime == null ||
-      scheduleEndWorkTime == "" ||
-      scheduleEndWorkTime == "null") {
+  if (scheduleEndWorkTime == null || scheduleEndWorkTime == "" || scheduleEndWorkTime == "null") {
     scheduleEndWorkTime = "00:00";
   }
 
@@ -87,15 +85,11 @@ List<int> calculateOvertime(scheduleEndWorkTime, userExitWork, breakTime) {
   var breakHours = int.parse(breakTime.split(":")[0]);
 
   //Convert to 2 digits
-  String firstStartWorkTime =
-      DateToAPIHelper.formatTimeTwoDigits(scheduleEndWorkTime.split(":").first);
-  String secondStartWorkTime =
-      DateToAPIHelper.formatTimeTwoDigits(scheduleEndWorkTime.split(":").last);
+  String firstStartWorkTime = DateToAPIHelper.formatTimeTwoDigits(scheduleEndWorkTime.split(":").first);
+  String secondStartWorkTime = DateToAPIHelper.formatTimeTwoDigits(scheduleEndWorkTime.split(":").last);
   scheduleEndWorkTime = "$firstStartWorkTime:$secondStartWorkTime";
-  String firstEndWorkTime =
-      DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").first);
-  String secondEndWorkTime =
-      DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").last);
+  String firstEndWorkTime = DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").first);
+  String secondEndWorkTime = DateToAPIHelper.formatTimeTwoDigits(userExitWork.split(":").last);
   userExitWork = "$firstEndWorkTime:$secondEndWorkTime";
   // Convert the start and end work times to DateTime objects
   var startDateTime = DateTime.parse("2023-04-04 $scheduleEndWorkTime");
@@ -147,10 +141,7 @@ List<int> calculateOvertime(scheduleEndWorkTime, userExitWork, breakTime) {
 }
 
 List<int> calculateBreakTime(now, startBreakTime) {
-  if (startBreakTime == null ||
-      startBreakTime == "" ||
-      startBreakTime == "null" ||
-      startBreakTime == ":") {
+  if (startBreakTime == null || startBreakTime == "" || startBreakTime == "null" || startBreakTime == ":") {
     startBreakTime = "00:00";
   }
 
@@ -163,6 +154,7 @@ List<int> calculateBreakTime(now, startBreakTime) {
   int nowMinute = int.parse(now.split(':')[1]);
   int breakTimeHour = 0;
   int breakTimeMinute = 0;
+
   if (nowHour >= startBreakTimeHour) {
     breakTimeHour = nowHour - startBreakTimeHour;
     if (nowMinute >= startBreakTimeMinute) {

@@ -87,8 +87,7 @@ class EntryExitHistory {
       this.actualWorkingHour,
       this.midnightOvertime});
 
-  factory EntryExitHistory.fromJson(Map<String, dynamic> json) =>
-      EntryExitHistory(
+  factory EntryExitHistory.fromJson(Map<String, dynamic> json) => EntryExitHistory(
         midnightOvertime: json["midnightOvertime"] ?? "00:00",
         isPaidLeave: json["isPaidLeave"] ?? false,
         actualWorkingHour: json["actualWorkingHour"] ?? 0,
@@ -113,10 +112,7 @@ class EntryExitHistory {
         createdAt: json["createdAt"].toDate(),
         jobTitle: json["jobTitle"],
         companyName: json["companyName"],
-        endWorkingTime:
-            json["endWorkingTime"] == null || json["endWorkingTime"] == ""
-                ? "00:00"
-                : json["endWorkingTime"],
+        endWorkingTime: json["endWorkingTime"] == null || json["endWorkingTime"] == "" ? "00:00" : json["endWorkingTime"],
         startWorkingTime: json["startWorkingTime"] ?? "00:00",
         amount: json["amount"],
         isLate: json["isLate"] ?? false,
@@ -125,8 +121,8 @@ class EntryExitHistory {
         scheduleEndWorkingTime: json["scheduleEndWorkingTime"] ?? "09:00",
         scheduleStartWorkingTime: json["scheduleStartWorkingTime"] ?? "18:00",
         workDate: json["workDate"],
-        breakingTimeHour: json["breakingTimeHour"] ?? 0,
-        breakingTimeMinute: json["breakingTimeMinute"] ?? 0,
+        breakingTimeHour: json["break_time_hour"] ?? 0,
+        breakingTimeMinute: json["break_time_minute"] ?? 0,
         workingHour: json["workingHour"] ?? 0,
         workingMinute: json["workingMinute"] ?? 0,
       );
@@ -165,8 +161,8 @@ class EntryExitHistory {
         "scheduleStartBreakTime": scheduleStartBreakTime,
         "scheduleEndBreakTime": scheduleEndBreakTime,
         "workDate": workDate,
-        "breakingTimeHour": breakingTimeHour,
-        "breakingTimeMinute": breakingTimeMinute,
+        "break_time_hour": breakingTimeHour,
+        "break_time_minute": breakingTimeMinute,
         "workingHour": workingHour,
         "workingMinute": workingMinute,
       };

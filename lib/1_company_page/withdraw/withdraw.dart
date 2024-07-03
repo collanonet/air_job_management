@@ -116,13 +116,14 @@ class _UsageDetailPageState extends State<UsageDetailPage> with AfterBuildMixin 
                                         flex: 2,
                                       ),
                                       Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(left: 40),
-                                          child: Center(
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: 30),
                                             child: Text("金額", style: normalTextStyle.copyWith(fontSize: 13)),
                                           ),
                                         ),
-                                        flex: 1,
+                                        flex: 2,
                                       ),
                                       Expanded(
                                         child: Center(
