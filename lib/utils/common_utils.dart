@@ -212,12 +212,12 @@ class CommonUtils {
     // var breakTime = calculateBreakTime(entry.scheduleEndBreakTime, entry.scheduleStartBreakTime);
 
     ///Schedule Working
-    var scheduleWorking = calculateWorkingTime(entry.scheduleStartWorkingTime, entry.scheduleEndWorkingTime, "0:0");
-
-    ///Calculate Overtime
-    List<int> overTimeData = calculateBreakTime("${entry.workingHour}:${entry.workingMinute}", "${scheduleWorking[0]}:${scheduleWorking[1]}");
-    entry.overtime =
-        "${DateToAPIHelper.formatTimeTwoDigits(overTimeData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(overTimeData[1].toString())}";
+    // var scheduleWorking = calculateWorkingTime(entry.scheduleStartWorkingTime, entry.scheduleEndWorkingTime, "0:0");
+    //
+    // ///Calculate Overtime
+    // List<int> overTimeData = calculateBreakTime("${entry.workingHour}:${entry.workingMinute}", "${scheduleWorking[0]}:${scheduleWorking[1]}");
+    // entry.overtime =
+    //     "${DateToAPIHelper.formatTimeTwoDigits(overTimeData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(overTimeData[1].toString())}";
 
     ///non statutory
     List<int> nonStatutoryDataWithoutBreak = calculateBreakTime("${entry.workingHour}:${entry.workingMinute}", "$overTimeLegalLimit:00");
