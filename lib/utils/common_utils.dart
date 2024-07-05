@@ -209,26 +209,26 @@ class CommonUtils {
 
   static calculateOvertimeInEntry(EntryExitHistory entry, {bool? isOvertime, bool? withInLimit, bool? nonSat}) {
     ///Calculate break time
-    // var breakTime = calculateBreakTime(entry.scheduleEndBreakTime, entry.scheduleStartBreakTime);
+    var breakTime = calculateBreakTime(entry.scheduleEndBreakTime, entry.scheduleStartBreakTime);
 
     ///Schedule Working
-    // var scheduleWorking = calculateWorkingTime(entry.scheduleStartWorkingTime, entry.scheduleEndWorkingTime, "0:0");
-    //
-    // ///Calculate Overtime
-    // List<int> overTimeData = calculateBreakTime("${entry.workingHour}:${entry.workingMinute}", "${scheduleWorking[0]}:${scheduleWorking[1]}");
-    // entry.overtime =
-    //     "${DateToAPIHelper.formatTimeTwoDigits(overTimeData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(overTimeData[1].toString())}";
+    var scheduleWorking = calculateWorkingTime(entry.scheduleStartWorkingTime, entry.scheduleEndWorkingTime, "${breakTime[0]}:${breakTime[1]}");
 
-    ///non statutory
-    List<int> nonStatutoryDataWithoutBreak = calculateBreakTime("${entry.workingHour}:${entry.workingMinute}", "$overTimeLegalLimit:00");
-    List<int> nonStatutoryData = calculateBreakTime(
-        "${nonStatutoryDataWithoutBreak[0]}:${nonStatutoryDataWithoutBreak[1]}", "${entry.breakingTimeHour}:${entry.breakingTimeMinute}");
-    entry.nonStatutoryOvertime =
-        "${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(nonStatutoryData[1].toString())}";
+    print("Date ${entry.workDate} - $scheduleWorking x ${entry.scheduleStartWorkingTime} x ${entry.scheduleEndWorkingTime}");
+
+    ///Non Sat normally equal to overtimes
+    entry.nonStatutoryOvertime = entry.overtime;
+
+    double workHours = convertTimeStringToHours("${entry.workingHour}:${entry.workingMinute}");
+    if (workHours >= 8) {
+      workHours = 8;
+    }
+    String workingToString = convertToHoursAndMinutes(workHours);
 
     ///within statutory
-    List<int> withinStatutoryData = calculateBreakTime(entry.overtime, entry.nonStatutoryOvertime);
-    if (entry.workingHour! >= 8) {
+    List<int> withinStatutoryData = calculateBreakTime(workingToString, "${scheduleWorking[0]}:${scheduleWorking[1]}");
+    print("withinStatutoryData is $withinStatutoryData");
+    if (withinStatutoryData[0] >= 8) {
       entry.overtimeWithinLegalLimit = "00:00";
     } else {
       entry.overtimeWithinLegalLimit =
@@ -242,6 +242,35 @@ class CommonUtils {
     } else {
       return entry.nonStatutoryOvertime;
     }
+  }
+
+  static String displayOnly8Hours(EntryExitHistory entry) {
+    double workHours = convertTimeStringToHours("${entry.workingHour}:${entry.workingMinute}");
+    if (workHours >= 8) {
+      workHours = 8;
+    }
+    String workingToString = convertToHoursAndMinutes(workHours);
+    return workingToString;
+  }
+
+  static String convertToHoursAndMinutes(double totalHours) {
+    int hours = totalHours.floor();
+    int minutes = ((totalHours - hours) * 60).round();
+    return "${DateToAPIHelper.formatTimeTwoDigits(hours.toString())}:${DateToAPIHelper.formatTimeTwoDigits(minutes.toString())}";
+  }
+
+  static List<int> convertToHoursAndMinutesAsInt(double totalHours) {
+    int hours = totalHours.floor();
+    int minutes = ((totalHours - hours) * 60).round();
+    return [hours, minutes];
+  }
+
+  static double convertTimeStringToHours(String time) {
+    List<String> parts = time.split(':');
+    int hours = int.parse(parts[0]);
+    int minutes = int.parse(parts[1]);
+
+    return hours + (minutes / 60.0);
   }
 
   static totalPaidHoliday(List<Request> requestList, String username, List<DateTime> dateList) {
@@ -440,14 +469,19 @@ class CommonUtils {
     return "${DateToAPIHelper.formatTimeTwoDigits(totalHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(totalMinute.toString())}";
   }
 
-  static totalActualWorkingTime(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+  static total8WorkingHours(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
     int hour = 0;
     int minute = 0;
     for (int i = 0; i < entryList.length; i++) {
       DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
       if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
-        hour += entryList[i].actualWorkingHour!;
-        minute += entryList[i].actualWorkingMinute!;
+        double time = convertTimeStringToHours("${entryList[i].workingHour}:${entryList[i].workingMinute}");
+        if (time >= 8) {
+          time = 8;
+        }
+        String workingToString = convertToHoursAndMinutes(time);
+        hour += int.parse(workingToString.split(":")[0]);
+        minute += int.parse(workingToString.split(":")[1]);
       }
     }
     int totalHour = hour + (minute ~/ 60);

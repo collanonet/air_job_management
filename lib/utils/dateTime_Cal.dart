@@ -155,6 +155,10 @@ List<int> calculateBreakTime(now, startBreakTime) {
   int breakTimeHour = 0;
   int breakTimeMinute = 0;
 
+  if (startBreakTimeHour > nowHour) {
+    nowHour += 24;
+  }
+
   if (nowHour >= startBreakTimeHour) {
     breakTimeHour = nowHour - startBreakTimeHour;
     if (nowMinute >= startBreakTimeMinute) {
