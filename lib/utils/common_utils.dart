@@ -244,13 +244,9 @@ class CommonUtils {
     }
   }
 
-  static String displayOnly8Hours(EntryExitHistory entry) {
-    double workHours = convertTimeStringToHours("${entry.workingHour}:${entry.workingMinute}");
-    if (workHours >= 8) {
-      workHours = 8;
-    }
-    String workingToString = convertToHoursAndMinutes(workHours);
-    return workingToString;
+  static String displayWorkingWithBreakTime(EntryExitHistory entry) {
+    var data = calculateBreakTime(entry.endWorkingTime, entry.startWorkingTime);
+    return "${DateToAPIHelper.formatTimeTwoDigits(data[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(data[1].toString())}";
   }
 
   static String convertToHoursAndMinutes(double totalHours) {
@@ -469,19 +465,26 @@ class CommonUtils {
     return "${DateToAPIHelper.formatTimeTwoDigits(totalHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(totalMinute.toString())}";
   }
 
-  static total8WorkingHours(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+  static totalOfWorkedDayCount(List<ShiftModel> shiftList, List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+    ///Working days count - absence days count
+    int count = 0;
+    String absent = calculateTotalAbsent(shiftList, entryList, dateTimeList, name);
+    String workDay = totalWorkDay(entryList, dateTimeList, name);
+    int workDayCount = int.parse(workDay);
+    int absentCount = int.parse(workDay);
+    count = workDayCount - absentCount;
+    return count.toString();
+  }
+
+  static totalWorkingWithBreakTime(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
     int hour = 0;
     int minute = 0;
     for (int i = 0; i < entryList.length; i++) {
       DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
       if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
-        double time = convertTimeStringToHours("${entryList[i].workingHour}:${entryList[i].workingMinute}");
-        if (time >= 8) {
-          time = 8;
-        }
-        String workingToString = convertToHoursAndMinutes(time);
-        hour += int.parse(workingToString.split(":")[0]);
-        minute += int.parse(workingToString.split(":")[1]);
+        var data = calculateWorkingTime(entryList[i].startWorkingTime, entryList[i].endWorkingTime, "00:00");
+        hour += data[0];
+        minute += data[1];
       }
     }
     int totalHour = hour + (minute ~/ 60);
@@ -489,7 +492,7 @@ class CommonUtils {
     return "${DateToAPIHelper.formatTimeTwoDigits(totalHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(totalMinute.toString())}";
   }
 
-  static totalWorkingTime(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+  static totalWorkingTimeCutBreakTime(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
     int hour = 0;
     int minute = 0;
     for (int i = 0; i < entryList.length; i++) {

@@ -449,15 +449,15 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                             DataTableWidget(
                                 data:
                                     "${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyMinute.toString())}"),
-                            DataTableWidget(data: CommonUtils.displayOnly8Hours(e)),
+                            DataTableWidget(
+                                data:
+                                    "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
                             DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, withInLimit: true)),
                             DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, isOvertime: true)),
                             DataTableWidget(data: e.holidayWork),
                             DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, nonSat: true)),
                             DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, isOvertime: true)),
-                            DataTableWidget(
-                                data:
-                                    "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
+                            DataTableWidget(data: CommonUtils.displayWorkingWithBreakTime(e)),
                           ],
                         )
                       : const SizedBox();
@@ -633,7 +633,9 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                                         const DataTableFixedWidthWidget(data: "パート"),
                                         DataTableFixedWidthWidget(
                                             data: "${CommonUtils.totalWorkDay(provider.entryListByBranch, provider.dateList, data.userName!)}"),
-                                        DataTableFixedWidthWidget(data: "${CommonUtils.totalActualWorkDay(data.shiftList ?? [], provider.dateList)}"),
+                                        DataTableFixedWidthWidget(
+                                            data:
+                                                "${CommonUtils.totalOfWorkedDayCount(data.shiftList ?? [], provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
                                                 "${CommonUtils.totalPaidHoliday(provider.request, data.myUser?.nameKanJi ?? "", provider.dateList)}"),
@@ -668,9 +670,11 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                                         DataTableFixedWidthWidget(
                                             data: "${CommonUtils.totalWorkOnHoliday(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
-                                            data: "${CommonUtils.totalWorkingTime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
+                                            data:
+                                                "${CommonUtils.totalWorkingTimeCutBreakTime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
-                                            data: "${CommonUtils.total8WorkingHours(provider.entryListByBranch, provider.dateList, data.userName!)}"),
+                                            data:
+                                                "${CommonUtils.totalWorkingWithBreakTime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data: "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                       ],
@@ -702,7 +706,10 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "総出勤日数", data: "${CommonUtils.totalActualWorkDay(provider.shiftList, provider.dateList)}"),
+            summaryCardWidget(
+                title: "総出勤日数",
+                data:
+                    "${CommonUtils.totalOfWorkedDayCount(provider.shiftList, provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
@@ -779,12 +786,14 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
               height: 3,
             ),
             summaryCardWidget(
-                title: "実勤務時間", data: "${CommonUtils.total8WorkingHours(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
+                title: "実勤務時間",
+                data: "${CommonUtils.totalWorkingTimeCutBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
-                title: "総勤務時間", data: "${CommonUtils.totalWorkingTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}")
+                title: "総勤務時間",
+                data: "${CommonUtils.totalWorkingWithBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}")
           ],
         ),
         summaryCardWidget(title: "公休日数", data: "16"),
