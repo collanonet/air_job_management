@@ -41,6 +41,7 @@ class HomeProvider with ChangeNotifier {
     JapaneseText.allBranch,
     JapaneseText.usageDetail,
     JapaneseText.workerCompany,
+    JapaneseText.workingTimeManagement,
   ];
 
   List<IconData> menuIconListForCompanyMainBranch = const [
@@ -48,6 +49,7 @@ class HomeProvider with ChangeNotifier {
     Icons.dashboard,
     FontAwesome.calculator,
     Icons.person_pin_rounded,
+    Icons.history_rounded,
   ];
 
   List<String> menuListForCompany = [
@@ -90,6 +92,7 @@ class HomeProvider with ChangeNotifier {
     ),
     UsageDetailPage(),
     WorkerManagementPage(),
+    EntryExitHistoryPage(),
   ];
   String selectedItem = JapaneseText.analysis;
   String selectedItemForCompany = JapaneseText.companyInformationManagement;

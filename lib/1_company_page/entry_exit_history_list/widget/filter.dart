@@ -41,15 +41,15 @@ class FilterEntryExitList extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "店舗・支店",
+                    "役職",
                     style: kNormalText.copyWith(fontSize: 12, fontFamily: "Normal"),
                   ),
                   AppSize.spaceHeight5,
                   CustomDropDownWidget(
                       radius: 5,
                       width: AppSize.getDeviceWidth(context) * 0.3,
-                      selectItem: provider.selectedBranch,
-                      list: provider.branchList,
+                      selectItem: provider.selectedJobTitle,
+                      list: provider.jobTitleList,
                       onChange: (v) => provider.onChangeTitle(v, auth.branch?.id ?? ""))
                 ],
               ),

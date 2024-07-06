@@ -5,7 +5,6 @@ import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/models/company/request.dart';
-import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/models/shift_and_work_time.dart';
 import 'package:air_job_management/models/worker_model/shift.dart';
 import 'package:air_job_management/providers/auth.dart';
@@ -128,7 +127,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
   }
 
   onChangeTitle(String? val, String branchId) {
-    selectedBranch = val;
+    selectedJobTitle = val;
     filterEntryExitHistory(branchId);
     notifyListeners();
   }
@@ -186,24 +185,26 @@ class EntryExitHistoryProvider with ChangeNotifier {
 
     ///Filter application by job title
     List<EntryExitHistory> afterFilterSelectJobTitle = [];
-    if (selectedBranch != null && selectedBranch != "企業") {
-      for (var entry in entryList) {
-        JobPosting? jobPost;
-        for (var job in jobPostingList) {
-          if (job.uid == entry.jobID) {
-            jobPost = job;
-            break;
+    if (selectedJobTitle != null && selectedJobTitle != jobTitleList[0]) {
+      if (branchId == "") {
+        for (var job in entryList) {
+          if (job.jobTitle == selectedJobTitle) {
+            afterFilterSelectJobTitle.add(job);
           }
         }
-        if (jobPost != null) {
-          Branch? branch = getBranch(selectedBranch!);
-          if (branch?.id == jobPost.branchId) {
-            afterFilterSelectJobTitle.add(entry);
+      } else {
+        for (var job in entryListByBranch) {
+          if (job.jobTitle == selectedJobTitle) {
+            afterFilterSelectJobTitle.add(job);
           }
         }
       }
     } else {
-      afterFilterSelectJobTitle = entryList;
+      if (branchId == "") {
+        afterFilterSelectJobTitle = entryList;
+      } else {
+        afterFilterSelectJobTitle = entryListByBranch;
+      }
     }
 
     List<EntryExitHistory> afterFilterRangeDate = [];
@@ -229,7 +230,11 @@ class EntryExitHistoryProvider with ChangeNotifier {
     } else {
       afterFilterUsername = afterFilterRangeDate;
     }
-    entryList = afterFilterUsername;
+    if (branchId == "") {
+      entryList = afterFilterUsername;
+    } else {
+      entryListByBranch = afterFilterUsername;
+    }
     onChangeOverlayLoading(false);
   }
 
@@ -256,6 +261,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
 
   getEntryData(String id) async {
     companyId = id;
+    branchId = branchId;
     entryList = await EntryExitApiService().getAllEntryList(id);
     List<String> userIdList = entryList.map((e) => e.userId!).toList().toSet().toList();
     var userData = await Future.wait([for (var id in userIdList) UserApiServices().getProfileUser(id)]);
@@ -267,18 +273,29 @@ class EntryExitHistoryProvider with ChangeNotifier {
         }
       }
     }
-    userNameList = entryList.map((e) => e.myUser?.nameKanJi ?? "").toList().toSet().toList();
+    await mapDataForEntryByBranch();
+    if (branchId == "") {
+      userNameList = entryList.map((e) => e.myUser?.nameKanJi ?? "").toList().toSet().toList();
+    } else {
+      userNameList = entryListByBranch.map((e) => e.myUser?.nameKanJi ?? "").toList().toSet().toList();
+    }
     if (selectedUserName == "" || selectedUserName == null) {
       selectedUserName = userNameList.first;
     }
     mapDataForCalendarByUser();
-    await mapDataForEntryByBranch();
     await mapDataForShiftAndWorkTime();
     jobTitleList = [JapaneseText.all];
     usernameListForEntryExit = [JapaneseText.all];
-    for (var job in entryList) {
-      jobTitleList.add(job.jobTitle.toString());
-      usernameListForEntryExit.add(job.myUser?.nameKanJi ?? "");
+    if (branchId == "") {
+      for (var job in entryList) {
+        jobTitleList.add(job.jobTitle.toString());
+        usernameListForEntryExit.add(job.myUser?.nameKanJi ?? "");
+      }
+    } else {
+      for (var job in entryListByBranch) {
+        jobTitleList.add(job.jobTitle.toString());
+        usernameListForEntryExit.add(job.myUser?.nameKanJi ?? "");
+      }
     }
     jobTitleList = jobTitleList.toSet().toList();
     usernameListForEntryExit = usernameListForEntryExit.toSet().toList();
@@ -288,12 +305,16 @@ class EntryExitHistoryProvider with ChangeNotifier {
 
   mapDataForEntryByBranch() async {
     entryListByBranch = [];
-    var jobPostingList = await JobPostingApiService().getAllJobPostByCompany(companyId, branchId);
-    for (var entry in entryList) {
-      for (var jobPost in jobPostingList) {
-        if (jobPost.uid == entry.jobID) {
-          entryListByBranch.add(entry);
-          break;
+    if (branchId == "") {
+      entryListByBranch = entryList;
+    } else {
+      var jobPostingList = await JobPostingApiService().getAllJobPostByCompany(companyId, branchId);
+      for (var entry in entryList) {
+        for (var jobPost in jobPostingList) {
+          if (jobPost.uid == entry.jobID) {
+            entryListByBranch.add(entry);
+            break;
+          }
         }
       }
     }
@@ -304,11 +325,21 @@ class EntryExitHistoryProvider with ChangeNotifier {
   mapDataForCalendarByUser() {
     entryExitCalendarByUser.clear();
     List<EntryExitHistory> afterFilterRangeDate = [];
-    for (var job in entryList) {
-      DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
-      bool isWithin = CommonUtils.isDateInRange(workDate, startDay, endDay);
-      if (isWithin) {
-        afterFilterRangeDate.add(job);
+    if (branchId == "") {
+      for (var job in entryList) {
+        DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
+        bool isWithin = CommonUtils.isDateInRange(workDate, startDay, endDay);
+        if (isWithin) {
+          afterFilterRangeDate.add(job);
+        }
+      }
+    } else {
+      for (var job in entryListByBranch) {
+        DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
+        bool isWithin = CommonUtils.isDateInRange(workDate, startDay, endDay);
+        if (isWithin) {
+          afterFilterRangeDate.add(job);
+        }
       }
     }
     List<String> nameList = [];

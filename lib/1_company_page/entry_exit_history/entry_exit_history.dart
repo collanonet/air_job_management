@@ -141,19 +141,21 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
   int _currentPage = 1;
   int _pageSize = 10;
 
+  refreshData() async {
+    setState(() {
+      provider.startWorkDate = null;
+      provider.endWorkDate = null;
+      provider.selectedUsernameForEntryExit = null;
+      provider.selectedJobTitle = null;
+    });
+    await onGetData();
+  }
+
   buildEntryExitList() {
     return Column(
       children: [
         FilterEntryExitList(
-          onRefreshData: () async {
-            setState(() {
-              provider.startWorkDate = null;
-              provider.endWorkDate = null;
-              provider.selectedUsernameForEntryExit = null;
-              provider.selectedJobTitle = null;
-            });
-            await onGetData();
-          },
+          onRefreshData: () => refreshData(),
         ),
         SizedBox(
           child: Padding(
@@ -215,7 +217,10 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                 )),
               ],
               source: EntryListDataSource(
-                  context: context, data: provider.entryList, ratting: (entry) => showRatingDialog(entry), onUserTap: (user) => onUserTapped(user)),
+                  context: context,
+                  data: authProvider.branch!.id!.isEmpty ? provider.entryList : provider.entryListByBranch,
+                  ratting: (entry) => showRatingDialog(entry),
+                  onUserTap: (user) => onUserTapped(user)),
             ),
           ),
         ),
@@ -261,6 +266,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
             entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
             entryExitAndShiftDataByUser = EntryExitAndShiftDataByUser(provider: provider, onTap: () {});
             provider.onChangeDisplay(title, authProvider.branch!.id.toString());
+            refreshData();
           },
           child: Center(
             child: Text(
