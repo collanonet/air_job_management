@@ -723,7 +723,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
               height: 3,
             ),
             //Hide, wait for full time job
-            summaryCardWidget(title: "有休消化", data: ""),
+            summaryCardWidget(title: "有休消化", data: "0"),
             // summaryCardWidget(title: "有休消化", data: "${CommonUtils.totalPaidHoliday(provider.request, provider.selectedUserName, provider.dateList)}"),
             const SizedBox(
               height: 3,
