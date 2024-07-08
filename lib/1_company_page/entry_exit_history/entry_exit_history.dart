@@ -722,12 +722,16 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "有休消化", data: "${CommonUtils.totalPaidHoliday(provider.request, provider.selectedUserName, provider.dateList)}"),
+            //Hide, wait for full time job
+            summaryCardWidget(title: "有休消化", data: ""),
+            // summaryCardWidget(title: "有休消化", data: "${CommonUtils.totalPaidHoliday(provider.request, provider.selectedUserName, provider.dateList)}"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(
-                title: "有休残数", data: "${CommonUtils.remainingPaidHoliday(provider.request, provider.selectedUserName ?? "", provider.dateList, 18)}")
+            //Hide, wait for full time job
+            summaryCardWidget(title: "有休残数", data: "18")
+            // summaryCardWidget(
+            //     title: "有休残数", data: "${CommonUtils.remainingPaidHoliday(provider.request, provider.selectedUserName ?? "", provider.dateList, 18)}")
           ],
         ),
         Column(
