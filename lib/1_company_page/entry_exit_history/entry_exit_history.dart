@@ -45,8 +45,7 @@ class EntryExitHistoryPage extends StatefulWidget {
   State<EntryExitHistoryPage> createState() => _EntryExitHistoryPageState();
 }
 
-class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
-    with AfterBuildMixin {
+class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterBuildMixin {
   late EntryExitHistoryProvider provider;
   late EntryExitHistoryDataSourceByDate entryExitHistoryDataSourceByDate;
   late EntryExitAndShiftDataByUser entryExitAndShiftDataByUser;
@@ -56,16 +55,11 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
 
   @override
   void initState() {
-    Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading =
-        true;
-    Provider.of<EntryExitHistoryProvider>(context, listen: false)
-        .initData(context);
-    entryExitAndShiftDataByUser = EntryExitAndShiftDataByUser(
-        provider: Provider.of<EntryExitHistoryProvider>(context, listen: false),
-        onTap: () {});
-    entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(
-        provider: Provider.of<EntryExitHistoryProvider>(context, listen: false),
-        onTap: () {});
+    Provider.of<EntryExitHistoryProvider>(context, listen: false).setLoading = true;
+    Provider.of<EntryExitHistoryProvider>(context, listen: false).initData(context);
+    entryExitAndShiftDataByUser = EntryExitAndShiftDataByUser(provider: Provider.of<EntryExitHistoryProvider>(context, listen: false), onTap: () {});
+    entryExitHistoryDataSourceByDate =
+        EntryExitHistoryDataSourceByDate(provider: Provider.of<EntryExitHistoryProvider>(context, listen: false), onTap: () {});
     super.initState();
   }
 
@@ -107,14 +101,11 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                               ],
                             ),
                             AppSize.spaceHeight16,
-                            if (provider.selectDisplay ==
-                                provider.displayList[0])
+                            if (provider.selectDisplay == provider.displayList[0])
                               buildEntryExitList()
-                            else if (provider.selectDisplay ==
-                                provider.displayList[2])
+                            else if (provider.selectDisplay == provider.displayList[2])
                               buildAttendanceListByMonth()
-                            else if (provider.selectDisplay ==
-                                provider.displayList[3])
+                            else if (provider.selectDisplay == provider.displayList[3])
                               buildDataTableOvertimeByDay()
                             else
                               buildMonthDisplay(),
@@ -134,11 +125,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                               ],
                             ),
                             AppSize.spaceHeight16,
-                            if (provider.selectDisplay ==
-                                provider.displayList[0])
-                              buildDataTableListOfShiftByUser()
-                            else
-                              buildMonthDisplay(),
+                            if (provider.selectDisplay == provider.displayList[0]) buildDataTableListOfShiftByUser() else buildMonthDisplay(),
                           ],
                         ),
                       )
@@ -231,9 +218,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
               ],
               source: EntryListDataSource(
                   context: context,
-                  data: authProvider.branch!.id!.isEmpty
-                      ? provider.entryList
-                      : provider.entryListByBranch,
+                  data: authProvider.branch!.id!.isEmpty ? provider.entryList : provider.entryListByBranch,
                   ratting: (entry) => showRatingDialog(entry),
                   onUserTap: (user) => onUserTapped(user)),
             ),
@@ -251,13 +236,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
               entryExitHistory: entryExitHistory,
               onRate: (rate, comment) async {
                 Navigator.pop(context);
-                Review review = Review(
-                    rate: rate.toString(),
-                    comment: comment,
-                    id: entryExitHistory.companyId,
-                    name: entryExitHistory.companyName);
-                await EntryExitApiService().updateReview(entryExitHistory.uid!,
-                    entryExitHistory.userId ?? "", review);
+                Review review = Review(rate: rate.toString(), comment: comment, id: entryExitHistory.companyId, name: entryExitHistory.companyName);
+                await EntryExitApiService().updateReview(entryExitHistory.uid!, entryExitHistory.userId ?? "", review);
                 onGetData();
               });
         });
@@ -268,35 +248,23 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
       width: 200,
       height: 40,
       decoration: BoxDecoration(
-          color: title == provider.selectDisplay
-              ? AppColor.primaryColor
-              : const Color(0xffFFF7E5),
+          color: title == provider.selectDisplay ? AppColor.primaryColor : const Color(0xffFFF7E5),
           borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(
-                  provider.selectDisplay == provider.displayList[0] ? 6 : 0),
-              bottomLeft: Radius.circular(
-                  provider.selectDisplay == provider.displayList[0] ? 6 : 0),
-              bottomRight: Radius.circular(
-                  provider.selectDisplay == provider.displayList[1] ? 6 : 0),
-              topRight: Radius.circular(
-                  provider.selectDisplay == provider.displayList[1] ? 6 : 0))),
+              topLeft: Radius.circular(provider.selectDisplay == provider.displayList[0] ? 6 : 0),
+              bottomLeft: Radius.circular(provider.selectDisplay == provider.displayList[0] ? 6 : 0),
+              bottomRight: Radius.circular(provider.selectDisplay == provider.displayList[1] ? 6 : 0),
+              topRight: Radius.circular(provider.selectDisplay == provider.displayList[1] ? 6 : 0))),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(
-                  provider.selectDisplay == provider.displayList[0] ? 6 : 0),
-              bottomLeft: Radius.circular(
-                  provider.selectDisplay == provider.displayList[0] ? 6 : 0),
-              bottomRight: Radius.circular(
-                  provider.selectDisplay == provider.displayList[1] ? 6 : 0),
-              topRight: Radius.circular(
-                  provider.selectDisplay == provider.displayList[1] ? 6 : 0)),
+              topLeft: Radius.circular(provider.selectDisplay == provider.displayList[0] ? 6 : 0),
+              bottomLeft: Radius.circular(provider.selectDisplay == provider.displayList[0] ? 6 : 0),
+              bottomRight: Radius.circular(provider.selectDisplay == provider.displayList[1] ? 6 : 0),
+              topRight: Radius.circular(provider.selectDisplay == provider.displayList[1] ? 6 : 0)),
           onTap: () {
-            entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(
-                provider: provider, onTap: () {});
-            entryExitAndShiftDataByUser =
-                EntryExitAndShiftDataByUser(provider: provider, onTap: () {});
+            entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
+            entryExitAndShiftDataByUser = EntryExitAndShiftDataByUser(provider: provider, onTap: () {});
             provider.onChangeDisplay(title, authProvider.branch!.id.toString());
             refreshData();
           },
@@ -304,11 +272,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
             child: Text(
               title,
               style: kNormalText.copyWith(
-                  fontSize: 13,
-                  fontFamily: "Bold",
-                  color: title == provider.selectDisplay
-                      ? Colors.white
-                      : AppColor.primaryColor),
+                  fontSize: 13, fontFamily: "Bold", color: title == provider.selectDisplay ? Colors.white : AppColor.primaryColor),
             ),
           ),
         ),
@@ -327,8 +291,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
                     border: Border.all(width: 1, color: AppColor.primaryColor),
@@ -340,10 +303,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                     children: [
                       IconButton(
                           onPressed: () async {
-                            provider.onChangeMonth(DateTime(
-                                provider.startDay.year,
-                                provider.startDay.month - 1,
-                                provider.startDay.day));
+                            provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month - 1, provider.startDay.day));
                             onGetData();
                           },
                           icon: Icon(
@@ -358,13 +318,11 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                             children: [
                               Text(
                                 "${provider.startDay.year}年",
-                                style: titleStyle.copyWith(
-                                    fontFamily: "Medium", fontSize: 10),
+                                style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 10),
                               ),
                               Text(
                                 "${toJapanMonthDayWeekday(provider.startDay)}",
-                                style: titleStyle.copyWith(
-                                    fontFamily: "Medium", fontSize: 14),
+                                style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
                               ),
                             ],
                           ),
@@ -375,14 +333,12 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                                 padding: const EdgeInsets.only(left: 28),
                                 child: Text(
                                   "${provider.startDay.year}年",
-                                  style: titleStyle.copyWith(
-                                      fontFamily: "Medium", fontSize: 10),
+                                  style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 10),
                                 ),
                               ),
                               Text(
                                 "〜　${toJapanMonthDayWeekday(provider.endDay)}",
-                                style: titleStyle.copyWith(
-                                    fontFamily: "Medium", fontSize: 14),
+                                style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
                               ),
                             ],
                           )
@@ -390,10 +346,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                       ),
                       IconButton(
                           onPressed: () async {
-                            provider.onChangeMonth(DateTime(
-                                provider.startDay.year,
-                                provider.startDay.month + 1,
-                                provider.startDay.day));
+                            provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month + 1, provider.startDay.day));
                             onGetData();
                           },
                           icon: Icon(
@@ -406,8 +359,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                 ),
                 AppSize.spaceWidth32,
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
                     border: Border.all(width: 1, color: AppColor.primaryColor),
@@ -419,16 +371,13 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                     children: [
                       IconButton(
                           onPressed: () async {
-                            int index = provider.userNameList
-                                .indexOf(provider.selectedUserName);
+                            int index = provider.userNameList.indexOf(provider.selectedUserName);
                             if (index == 0) {
                               index = provider.userNameList.length - 1;
                             } else {
                               index--;
                             }
-                            provider.onChangeUserName(
-                                provider.userNameList[index],
-                                authProvider.branch!.id.toString());
+                            provider.onChangeUserName(provider.userNameList[index], authProvider.branch!.id.toString());
                           },
                           icon: Icon(
                             Icons.arrow_back_ios_new_rounded,
@@ -437,21 +386,17 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                           )),
                       Text(
                         "     ${provider.selectedUserName}     ",
-                        style:
-                            kTitleText.copyWith(color: AppColor.primaryColor),
+                        style: kTitleText.copyWith(color: AppColor.primaryColor),
                       ),
                       IconButton(
                           onPressed: () async {
-                            int index = provider.userNameList
-                                .indexOf(provider.selectedUserName);
+                            int index = provider.userNameList.indexOf(provider.selectedUserName);
                             if (index + 1 == provider.userNameList.length) {
                               index = 0;
                             } else {
                               index++;
                             }
-                            provider.onChangeUserName(
-                                provider.userNameList[index],
-                                authProvider.branch!.id.toString());
+                            provider.onChangeUserName(provider.userNameList[index], authProvider.branch!.id.toString());
                           },
                           icon: Icon(
                             color: AppColor.primaryColor,
@@ -477,8 +422,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                       alignment: Alignment.center,
                       child: Text(
                         e,
-                        style: kNormalText.copyWith(
-                            fontSize: 12, fontFamily: "Bold"),
+                        style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
                       ),
                     ),
                   ))
@@ -496,20 +440,15 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   EntryExitHistory e = provider.entryListByBranch[index];
-                  return provider.selectedUserName == e.myUser?.nameKanJi &&
-                          provider.dateList.contains(e.workDateToDateTime)
+                  return provider.selectedUserName == e.myUser?.nameKanJi && provider.dateList.contains(e.workDateToDateTime)
                       ? Row(
                           children: [
                             DataTableWidget(data: e.workDate),
-                            DataTableWidget(
-                                data: toJapanWeekDayWithInt(
-                                    DateToAPIHelper.fromApiToLocal(e.workDate!)
-                                        .weekday)),
+                            DataTableWidget(data: toJapanWeekDayWithInt(DateToAPIHelper.fromApiToLocal(e.workDate!).weekday)),
                             const DataTableWidget(data: "出"),
                             DataTableWidget(data: e.startWorkingTime),
                             DataTableWidget(data: e.endWorkingTime),
-                            DataTableWidget(
-                                data: e.isPaidLeave == true ? "" : ""),
+                            DataTableWidget(data: e.isPaidLeave == true ? "" : ""),
                             DataTableWidget(
                                 data:
                                     "${DateToAPIHelper.formatTimeTwoDigits(e.latHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.lateMinute.toString())}"),
@@ -519,22 +458,12 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                             DataTableWidget(
                                 data:
                                     "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
-                            DataTableWidget(
-                                data: CommonUtils.calculateOvertimeInEntry(e,
-                                    withInLimit: true)),
-                            DataTableWidget(
-                                data: CommonUtils.calculateOvertimeInEntry(e,
-                                    isOvertime: true)),
+                            DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, withInLimit: true)),
+                            DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, isOvertime: true)),
                             DataTableWidget(data: e.holidayWork),
-                            DataTableWidget(
-                                data: CommonUtils.calculateOvertimeInEntry(e,
-                                    nonSat: true)),
-                            DataTableWidget(
-                                data: CommonUtils.calculateOvertimeInEntry(e,
-                                    isOvertime: true)),
-                            DataTableWidget(
-                                data:
-                                    CommonUtils.displayWorkingWithBreakTime(e)),
+                            DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, nonSat: true)),
+                            DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, isOvertime: true)),
+                            DataTableWidget(data: CommonUtils.displayWorkingWithBreakTime(e)),
                           ],
                         )
                       : const SizedBox();
@@ -559,8 +488,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
           children: [
             Center(
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(width: 1, color: AppColor.primaryColor),
@@ -572,12 +500,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                   children: [
                     IconButton(
                         onPressed: () async {
-                          provider.onChangeMonth(DateTime(
-                              provider.startDay.year,
-                              provider.startDay.month - 1,
-                              provider.startDay.day));
-                          await provider
-                              .getEntryData(authProvider.myCompany?.uid ?? "");
+                          provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month - 1, provider.startDay.day));
+                          await provider.getEntryData(authProvider.myCompany?.uid ?? "");
                           provider.mapDataForShiftAndWorkTime();
                         },
                         icon: Icon(
@@ -592,13 +516,11 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                           children: [
                             Text(
                               "${provider.startDay.year}年",
-                              style: titleStyle.copyWith(
-                                  fontFamily: "Medium", fontSize: 10),
+                              style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 10),
                             ),
                             Text(
                               "${toJapanMonthDayWeekday(provider.startDay)}",
-                              style: titleStyle.copyWith(
-                                  fontFamily: "Medium", fontSize: 14),
+                              style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
                             ),
                           ],
                         ),
@@ -609,14 +531,12 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                               padding: const EdgeInsets.only(left: 28),
                               child: Text(
                                 "${provider.startDay.year}年",
-                                style: titleStyle.copyWith(
-                                    fontFamily: "Medium", fontSize: 10),
+                                style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 10),
                               ),
                             ),
                             Text(
                               "〜　${toJapanMonthDayWeekday(provider.endDay)}",
-                              style: titleStyle.copyWith(
-                                  fontFamily: "Medium", fontSize: 14),
+                              style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
                             ),
                           ],
                         )
@@ -624,12 +544,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                     ),
                     IconButton(
                         onPressed: () async {
-                          provider.onChangeMonth(DateTime(
-                              provider.startDay.year,
-                              provider.startDay.month + 1,
-                              provider.startDay.day));
-                          await provider
-                              .getEntryData(authProvider.myCompany?.uid ?? "");
+                          provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month + 1, provider.startDay.day));
+                          await provider.getEntryData(authProvider.myCompany?.uid ?? "");
                           provider.mapDataForShiftAndWorkTime();
                         },
                         icon: Icon(
@@ -647,14 +563,12 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
               SizedBox(
                 height: 30,
                 child: ListView.builder(
-                    itemCount:
-                        provider.rowHeaderForAttendanceManagementList.length,
+                    itemCount: provider.rowHeaderForAttendanceManagementList.length,
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     controller: controllerIndex3,
                     itemBuilder: (context, index) {
-                      var e =
-                          provider.rowHeaderForAttendanceManagementList[index];
+                      var e = provider.rowHeaderForAttendanceManagementList[index];
                       return Container(
                         height: 30,
                         width: index == 0 ? 130 : 70,
@@ -663,8 +577,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                         alignment: Alignment.center,
                         child: Text(
                           e,
-                          style: kNormalText.copyWith(
-                              fontSize: 12, fontFamily: "Bold"),
+                          style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
                         ),
                       );
                     }),
@@ -699,52 +612,33 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                                     index == 0
                                         ? Row(
                                             children: [
-                                              ...provider
-                                                  .rowHeaderForAttendanceManagementList
-                                                  .map((e) => Container(
-                                                        height: 30,
-                                                        width: provider
-                                                                    .rowHeaderForAttendanceManagementList
-                                                                    .indexOf(
-                                                                        e) ==
-                                                                0
-                                                            ? 130
-                                                            : 70,
-                                                        margin: const EdgeInsets
-                                                                .symmetric(
-                                                            vertical: 1),
-                                                        color: const Color(
-                                                            0xffF0F3F5),
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: Text(
-                                                          e,
-                                                          style: kNormalText
-                                                              .copyWith(
-                                                                  fontSize: 12,
-                                                                  fontFamily:
-                                                                      "Bold"),
-                                                        ),
-                                                      ))
+                                              ...provider.rowHeaderForAttendanceManagementList.map((e) => Container(
+                                                    height: 30,
+                                                    width: provider.rowHeaderForAttendanceManagementList.indexOf(e) == 0 ? 130 : 70,
+                                                    margin: const EdgeInsets.symmetric(vertical: 1),
+                                                    color: const Color(0xffF0F3F5),
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      e,
+                                                      style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
+                                                    ),
+                                                  ))
                                             ],
                                           )
                                         : SizedBox(),
                                     Row(
                                       children: [
                                         InkWell(
-                                          onTap: () =>
-                                              onUserTapped(data.myUser),
+                                          onTap: () => onUserTapped(data.myUser),
                                           child: DataTableFixedWidthWidget(
                                             data: data.userName,
                                             width: 130,
                                             isName: true,
                                           ),
                                         ),
-                                        const DataTableFixedWidthWidget(
-                                            data: "パート"),
+                                        const DataTableFixedWidthWidget(data: "パート"),
                                         DataTableFixedWidthWidget(
-                                            data:
-                                                "${CommonUtils.totalWorkDay(provider.entryListByBranch, provider.dateList, data.userName!)}"),
+                                            data: "${CommonUtils.totalWorkDay(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
                                                 "${CommonUtils.totalOfWorkedDayCount(data.shiftList ?? [], provider.entryListByBranch, provider.dateList, data.userName!)}"),
@@ -754,19 +648,16 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                                         DataTableFixedWidthWidget(
                                             data:
                                                 "${CommonUtils.remainingPaidHoliday(provider.request, data.myUser?.nameKanJi ?? "", provider.dateList, data.myUser?.annualLeave ?? 18)}"),
-                                        const DataTableFixedWidthWidget(
-                                            data: "16"),
+                                        const DataTableFixedWidthWidget(data: "16"),
                                         // const DataTableFixedWidthWidget(data: ""),
                                         // const DataTableFixedWidthWidget(data: ""),
                                         DataTableFixedWidthWidget(
-                                            data:
-                                                "${CommonUtils.totalWorkOnHoliday(provider.entryListByBranch, provider.dateList, data.userName!)}"),
+                                            data: "${CommonUtils.totalWorkOnHoliday(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
                                                 "${CommonUtils.calculateTotalAbsent(data.shiftList ?? [], provider.entryList, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
-                                            data:
-                                                "${CommonUtils.totalLateTime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
+                                            data: "${CommonUtils.totalLateTime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         // DataTableFixedWidthWidget(data: "${CommonUtils.totalLeaveEarly(provider.entryList, provider.dateList, data.userName!)}"),
                                         // DataTableFixedWidthWidget(data: "${CommonUtils.totalUnWorkHour(provider.entryList, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
@@ -779,14 +670,11 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                                             data:
                                                 "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, data.userName!, isStandard: true)}"),
                                         DataTableFixedWidthWidget(
-                                            data:
-                                                "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
+                                            data: "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
-                                            data:
-                                                "${CommonUtils.totalMidnightWork(provider.entryListByBranch, provider.dateList, data.userName!)}"),
+                                            data: "${CommonUtils.totalMidnightWork(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
-                                            data:
-                                                "${CommonUtils.totalWorkOnHoliday(provider.entryListByBranch, provider.dateList, data.userName!)}"),
+                                            data: "${CommonUtils.totalWorkOnHoliday(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
                                                 "${CommonUtils.totalWorkingTimeCutBreakTime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
@@ -794,8 +682,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                                             data:
                                                 "${CommonUtils.totalWorkingWithBreakTime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
-                                            data:
-                                                "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
+                                            data: "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                       ],
                                     ),
                                   ],
@@ -823,7 +710,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
             summaryCardWidget(
                 title: "実出勤日数",
                 data:
-                    "${CommonUtils.totalWorkDay(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
+                    "${CommonUtils.totalOfWorkedDayCount(provider.shiftList, provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
+            // "${CommonUtils.totalWorkDay(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
@@ -834,17 +722,12 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(
-                title: "有休消化",
-                data:
-                    "${CommonUtils.totalPaidHoliday(provider.request, provider.selectedUserName, provider.dateList)}"),
+            summaryCardWidget(title: "有休消化", data: "${CommonUtils.totalPaidHoliday(provider.request, provider.selectedUserName, provider.dateList)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
-                title: "有休残数",
-                data:
-                    "${CommonUtils.remainingPaidHoliday(provider.request, provider.selectedUserName ?? "", provider.dateList, 18)}")
+                title: "有休残数", data: "${CommonUtils.remainingPaidHoliday(provider.request, provider.selectedUserName ?? "", provider.dateList, 18)}")
           ],
         ),
         Column(
@@ -859,21 +742,16 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
               height: 3,
             ),
             summaryCardWidget(
-                title: "遅刻回数",
-                data:
-                    "${CommonUtils.totalLateTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
+                title: "遅刻回数", data: "${CommonUtils.totalLateTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
-                title: "早退回数",
-                data:
-                    "${CommonUtils.totalLeaveEarly(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
+                title: "早退回数", data: "${CommonUtils.totalLeaveEarly(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(
-                title: "休出日数", data: provider.countDayOff.toString())
+            summaryCardWidget(title: "休出日数", data: provider.countDayOff.toString())
             // summaryCardWidget(title: "不労時間", data: "")
           ],
         ),
@@ -883,29 +761,23 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
           children: [
             summaryCardWidget(
                 title: "法定内",
-                data:
-                    "${CommonUtils.totalOvertimeWithinLaw(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
+                data: "${CommonUtils.totalOvertimeWithinLaw(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
-                title: "法定外",
-                data:
-                    "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
+                title: "法定外", data: "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "所労外",
-                data:
-                    "${CommonUtils.totalOvertimeNonStatutory(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
+                data: "${CommonUtils.totalOvertimeNonStatutory(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
-                title: "超過残業",
-                data:
-                    "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}")
+                title: "超過残業", data: "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}")
           ],
         ),
         Column(
@@ -913,30 +785,24 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             summaryCardWidget(
-                title: "深夜",
-                data:
-                    "${CommonUtils.totalMidnightWork(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
+                title: "深夜", data: "${CommonUtils.totalMidnightWork(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
-                title: "休出時間",
-                data:
-                    "${CommonUtils.totalBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
+                title: "休出時間", data: "${CommonUtils.totalBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "実勤務時間",
-                data:
-                    "${CommonUtils.totalWorkingTimeCutBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
+                data: "${CommonUtils.totalWorkingTimeCutBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
                 title: "総勤務時間",
-                data:
-                    "${CommonUtils.totalWorkingWithBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}")
+                data: "${CommonUtils.totalWorkingWithBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}")
           ],
         ),
         summaryCardWidget(title: "公休日数", data: "16"),
@@ -964,9 +830,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
         Container(
           width: 100,
           height: 30,
-          decoration: BoxDecoration(
-              color: data == "" ? Colors.redAccent : Colors.transparent,
-              border: Border.all(width: 1, color: const Color(0xffF0F3F5))),
+          decoration:
+              BoxDecoration(color: data == "" ? Colors.redAccent : Colors.transparent, border: Border.all(width: 1, color: const Color(0xffF0F3F5))),
           child: Center(
             child: Text(
               data ?? "",
@@ -998,8 +863,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
               children: [
                 IconButton(
                     onPressed: () async {
-                      provider.onChangeMonth(DateTime(provider.startDay.year,
-                          provider.startDay.month - 1, provider.startDay.day));
+                      provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month - 1, provider.startDay.day));
                       onGetData();
                     },
                     icon: Icon(
@@ -1014,13 +878,11 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                       children: [
                         Text(
                           "${provider.startDay.year}年",
-                          style: titleStyle.copyWith(
-                              fontFamily: "Medium", fontSize: 10),
+                          style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 10),
                         ),
                         Text(
                           "${toJapanMonthDayWeekday(provider.startDay)}",
-                          style: titleStyle.copyWith(
-                              fontFamily: "Medium", fontSize: 14),
+                          style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
                         ),
                       ],
                     ),
@@ -1031,14 +893,12 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                           padding: const EdgeInsets.only(left: 28),
                           child: Text(
                             "${provider.startDay.year}年",
-                            style: titleStyle.copyWith(
-                                fontFamily: "Medium", fontSize: 10),
+                            style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 10),
                           ),
                         ),
                         Text(
                           "〜　${toJapanMonthDayWeekday(provider.endDay)}",
-                          style: titleStyle.copyWith(
-                              fontFamily: "Medium", fontSize: 14),
+                          style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
                         ),
                       ],
                     )
@@ -1046,8 +906,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                 ),
                 IconButton(
                     onPressed: () async {
-                      provider.onChangeMonth(DateTime(provider.startDay.year,
-                          provider.startDay.month + 1, provider.startDay.day));
+                      provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month + 1, provider.startDay.day));
                       onGetData();
                     },
                     icon: Icon(
@@ -1082,15 +941,12 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                               onTap: () async {
                                 MyUser? user;
                                 for (var entry in provider.entryList) {
-                                  if (entry.myUser!.nameKanJi!.contains(provider
-                                      .entryExitCalendarByUser[index]
-                                      .userName!)) {
+                                  if (entry.myUser!.nameKanJi!.contains(provider.entryExitCalendarByUser[index].userName!)) {
                                     user = entry.myUser;
                                     break;
                                   }
                                 }
-                                await Future.delayed(
-                                    const Duration(milliseconds: 300));
+                                await Future.delayed(const Duration(milliseconds: 300));
                                 onUserTapped(user);
                               },
                               child: Container(
@@ -1100,9 +956,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                                 alignment: Alignment.topCenter,
                                 child: Text(
                                   "${provider.entryExitCalendarByUser[index].userName}",
-                                  style: kTitleText.copyWith(
-                                      color: AppColor.primaryColor,
-                                      fontSize: 14),
+                                  style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 14),
                                 ),
                               ),
                             ),
@@ -1137,27 +991,23 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                                       Container(
                                         width: 48,
                                         height: 30,
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 1),
+                                        margin: const EdgeInsets.symmetric(vertical: 1),
                                         color: const Color(0xffF0F3F5),
                                         alignment: Alignment.center,
                                         child: Text(
                                           e.day.toString(),
-                                          style: kNormalText.copyWith(
-                                              fontSize: 12, fontFamily: "Bold"),
+                                          style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
                                         ),
                                       ),
                                       Container(
                                         width: 48,
                                         height: 30,
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 1),
+                                        margin: const EdgeInsets.symmetric(vertical: 1),
                                         color: const Color(0xffF0F3F5),
                                         alignment: Alignment.center,
                                         child: Text(
                                           toJapanWeekDayWithInt(e.weekday),
-                                          style: kNormalText.copyWith(
-                                              fontSize: 12, fontFamily: "Bold"),
+                                          style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
                                         ),
                                       ),
                                     ],
@@ -1170,8 +1020,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                       ],
                     )
                   : ScrollConfiguration(
-                      behavior: ScrollConfiguration.of(context)
-                          .copyWith(dragDevices: {
+                      behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
                         PointerDeviceKind.touch,
                         PointerDeviceKind.mouse,
                       }),
@@ -1190,12 +1039,9 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                               shrinkWrapRows: true,
                               shrinkWrapColumns: true,
                               gridLinesVisibility: GridLinesVisibility.none,
-                              headerGridLinesVisibility:
-                                  GridLinesVisibility.none,
-                              horizontalScrollPhysics:
-                                  const AlwaysScrollableScrollPhysics(),
-                              verticalScrollPhysics:
-                                  const AlwaysScrollableScrollPhysics(),
+                              headerGridLinesVisibility: GridLinesVisibility.none,
+                              horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+                              verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
                               columns: provider.dateList.map((e) {
                                 return GridColumn(
                                     width: 48,
@@ -1205,29 +1051,23 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                                         Container(
                                           width: 48,
                                           height: 30,
-                                          margin: const EdgeInsets.symmetric(
-                                              vertical: 1),
+                                          margin: const EdgeInsets.symmetric(vertical: 1),
                                           color: const Color(0xffF0F3F5),
                                           alignment: Alignment.center,
                                           child: Text(
                                             e.day.toString(),
-                                            style: kNormalText.copyWith(
-                                                fontSize: 12,
-                                                fontFamily: "Bold"),
+                                            style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
                                           ),
                                         ),
                                         Container(
                                           width: 48,
                                           height: 30,
-                                          margin: const EdgeInsets.symmetric(
-                                              vertical: 1),
+                                          margin: const EdgeInsets.symmetric(vertical: 1),
                                           color: const Color(0xffF0F3F5),
                                           alignment: Alignment.center,
                                           child: Text(
                                             toJapanWeekDayWithInt(e.weekday),
-                                            style: kNormalText.copyWith(
-                                                fontSize: 12,
-                                                fontFamily: "Bold"),
+                                            style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
                                           ),
                                         ),
                                       ],
@@ -1261,8 +1101,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
               children: [
                 IconButton(
                     onPressed: () async {
-                      provider.onChangeMonth(DateTime(provider.startDay.year,
-                          provider.startDay.month - 1, provider.startDay.day));
+                      provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month - 1, provider.startDay.day));
                       onGetData();
                     },
                     icon: Icon(
@@ -1277,13 +1116,11 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                       children: [
                         Text(
                           "${provider.startDay.year}年",
-                          style: titleStyle.copyWith(
-                              fontFamily: "Medium", fontSize: 10),
+                          style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 10),
                         ),
                         Text(
                           "${toJapanMonthDayWeekday(provider.startDay)}",
-                          style: titleStyle.copyWith(
-                              fontFamily: "Medium", fontSize: 14),
+                          style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
                         ),
                       ],
                     ),
@@ -1294,14 +1131,12 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                           padding: const EdgeInsets.only(left: 28),
                           child: Text(
                             "${provider.startDay.year}年",
-                            style: titleStyle.copyWith(
-                                fontFamily: "Medium", fontSize: 10),
+                            style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 10),
                           ),
                         ),
                         Text(
                           "〜　${toJapanMonthDayWeekday(provider.endDay)}",
-                          style: titleStyle.copyWith(
-                              fontFamily: "Medium", fontSize: 14),
+                          style: titleStyle.copyWith(fontFamily: "Medium", fontSize: 14),
                         ),
                       ],
                     )
@@ -1309,8 +1144,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                 ),
                 IconButton(
                     onPressed: () async {
-                      provider.onChangeMonth(DateTime(provider.startDay.year,
-                          provider.startDay.month + 1, provider.startDay.day));
+                      provider.onChangeMonth(DateTime(provider.startDay.year, provider.startDay.month + 1, provider.startDay.day));
                       onGetData();
                     },
                     icon: Icon(
@@ -1343,8 +1177,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                           children: [
                             InkWell(
                               onTap: () => onUserTapped(
-                                provider
-                                    .shiftAndWorkTimeByUserList[index].myUser,
+                                provider.shiftAndWorkTimeByUserList[index].myUser,
                               ),
                               child: Container(
                                 height: 70,
@@ -1353,9 +1186,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                                 alignment: Alignment.topCenter,
                                 child: Text(
                                   "${provider.shiftAndWorkTimeByUserList[index].userName}",
-                                  style: kTitleText.copyWith(
-                                      color: AppColor.primaryColor,
-                                      fontSize: 14),
+                                  style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 14),
                                 ),
                               ),
                             ),
@@ -1374,8 +1205,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
             ),
             Expanded(
               child: ScrollConfiguration(
-                behavior:
-                    ScrollConfiguration.of(context).copyWith(dragDevices: {
+                behavior: ScrollConfiguration.of(context).copyWith(dragDevices: {
                   PointerDeviceKind.touch,
                   PointerDeviceKind.mouse,
                 }),
@@ -1395,10 +1225,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                         shrinkWrapColumns: true,
                         gridLinesVisibility: GridLinesVisibility.none,
                         headerGridLinesVisibility: GridLinesVisibility.none,
-                        horizontalScrollPhysics:
-                            const AlwaysScrollableScrollPhysics(),
-                        verticalScrollPhysics:
-                            const AlwaysScrollableScrollPhysics(),
+                        horizontalScrollPhysics: const AlwaysScrollableScrollPhysics(),
+                        verticalScrollPhysics: const AlwaysScrollableScrollPhysics(),
                         columns: provider.dateList.map((e) {
                           return GridColumn(
                               width: 48,
@@ -1408,27 +1236,23 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                                   Container(
                                     width: 48,
                                     height: 30,
-                                    margin:
-                                        const EdgeInsets.symmetric(vertical: 1),
+                                    margin: const EdgeInsets.symmetric(vertical: 1),
                                     color: const Color(0xffF0F3F5),
                                     alignment: Alignment.center,
                                     child: Text(
                                       e.day.toString(),
-                                      style: kNormalText.copyWith(
-                                          fontSize: 12, fontFamily: "Bold"),
+                                      style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
                                     ),
                                   ),
                                   Container(
                                     width: 48,
                                     height: 30,
-                                    margin:
-                                        const EdgeInsets.symmetric(vertical: 1),
+                                    margin: const EdgeInsets.symmetric(vertical: 1),
                                     color: const Color(0xffF0F3F5),
                                     alignment: Alignment.center,
                                     child: Text(
                                       toJapanWeekDayWithInt(e.weekday),
-                                      style: kNormalText.copyWith(
-                                          fontSize: 12, fontFamily: "Bold"),
+                                      style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
                                     ),
                                   ),
                                 ],
@@ -1494,9 +1318,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TitleWidget(title: JapaneseText.basicInformation),
-                  IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.close))
+                  IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(Icons.close))
                 ],
               ),
               content: SizedBox(
@@ -1528,10 +1350,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
         provider.setBranchId = authProvider.branch?.id ?? "";
         await provider.getEntryData(company!.uid!);
         // provider.getUserShift(company.uid!, authProvider.branch!.id!);
-        entryExitHistoryDataSourceByDate =
-            EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
-        entryExitAndShiftDataByUser =
-            EntryExitAndShiftDataByUser(provider: provider, onTap: () {});
+        entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
+        entryExitAndShiftDataByUser = EntryExitAndShiftDataByUser(provider: provider, onTap: () {});
         if (authProvider.myCompany?.branchList != []) {
           branch = authProvider.myCompany?.branchList!.first;
         }
@@ -1542,10 +1362,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
       String id = authProvider.myCompany?.uid ?? "";
       provider.setBranchId = authProvider.branch?.id ?? "";
       await provider.getEntryData(id);
-      entryExitHistoryDataSourceByDate =
-          EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
-      entryExitAndShiftDataByUser =
-          EntryExitAndShiftDataByUser(provider: provider, onTap: () {});
+      entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
+      entryExitAndShiftDataByUser = EntryExitAndShiftDataByUser(provider: provider, onTap: () {});
       // provider.getUserShift(id, authProvider.branch!.id!);
       if (authProvider.myCompany?.branchList != []) {
         branch = authProvider.myCompany?.branchList!.first;
