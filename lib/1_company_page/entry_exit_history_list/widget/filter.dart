@@ -41,7 +41,7 @@ class FilterEntryExitList extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "役職",
+                    "求人タイトル",
                     style: kNormalText.copyWith(fontSize: 12, fontFamily: "Normal"),
                   ),
                   AppSize.spaceHeight5,
