@@ -15,6 +15,7 @@ import '../../api/job_posting.dart';
 import '../../models/company/worker_management.dart';
 import '../../models/entry_calendar_by_user.dart';
 import '../../models/entry_exit_history.dart';
+import '../../models/job_posting.dart';
 import '../../utils/japanese_text.dart';
 
 class EntryExitHistoryProvider with ChangeNotifier {
@@ -118,7 +119,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
       dateList.add(date);
     }
     var auth = AuthProvider.getProvider(context, listen: false);
-    branchList = [];
+    branchList = [JapaneseText.all];
     for (var branch in auth.myCompany!.branchList!) {
       branchList.add(branch.name.toString());
     }
@@ -127,7 +128,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
   }
 
   onChangeTitle(String? val, String branchId) {
-    selectedJobTitle = val;
+    selectedBranch = val;
     filterEntryExitHistory(branchId);
     notifyListeners();
   }
@@ -185,17 +186,37 @@ class EntryExitHistoryProvider with ChangeNotifier {
 
     ///Filter application by job title
     List<EntryExitHistory> afterFilterSelectJobTitle = [];
-    if (selectedJobTitle != null && selectedJobTitle != jobTitleList[0]) {
+    if (selectedBranch != null && selectedBranch != "企業" && selectedBranch != JapaneseText.all) {
       if (branchId == "") {
-        for (var job in entryList) {
-          if (job.jobTitle == selectedJobTitle) {
-            afterFilterSelectJobTitle.add(job);
+        for (var entry in entryList) {
+          JobPosting? jobPost;
+          for (var job in jobPostingList) {
+            if (job.uid == entry.jobID) {
+              jobPost = job;
+              break;
+            }
+          }
+          if (jobPost != null) {
+            Branch? branch = getBranch(selectedBranch!);
+            if (branch?.id == jobPost.branchId) {
+              afterFilterSelectJobTitle.add(entry);
+            }
           }
         }
       } else {
-        for (var job in entryListByBranch) {
-          if (job.jobTitle == selectedJobTitle) {
-            afterFilterSelectJobTitle.add(job);
+        for (var entry in entryListByBranch) {
+          JobPosting? jobPost;
+          for (var job in jobPostingList) {
+            if (job.uid == entry.jobID) {
+              jobPost = job;
+              break;
+            }
+          }
+          if (jobPost != null) {
+            Branch? branch = getBranch(selectedBranch!);
+            if (branch?.id == jobPost.branchId) {
+              afterFilterSelectJobTitle.add(entry);
+            }
           }
         }
       }

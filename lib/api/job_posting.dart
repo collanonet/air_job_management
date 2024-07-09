@@ -93,6 +93,8 @@ class JobPostingApiService {
       var doc;
       if (isFromCalendar) {
         doc = await jobPostingRef.where("company_id", isEqualTo: companyId).where("branch_id", isEqualTo: branchId).get();
+      } else if (branchId == "") {
+        doc = await jobPostingRef.where("company_id", isEqualTo: companyId).get();
       } else {
         doc = await jobPostingRef
             .where("company_id", isEqualTo: companyId)

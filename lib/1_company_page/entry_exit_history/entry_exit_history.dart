@@ -707,6 +707,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            // If has paid day, it should minus paid day
             summaryCardWidget(
                 title: "実出勤日数",
                 data:
