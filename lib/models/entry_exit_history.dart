@@ -44,6 +44,13 @@ class EntryExitHistory {
   MyUser? myUser;
   bool? isPaidLeave;
   String? midnightOvertime;
+  EntryExitHistoryCorrection? entryExitHistoryCorrection;
+  double? hourlyWage;
+  double? totalWage;
+  double? transportationFee;
+  bool? isConfirm;
+  bool? isRequestReview;
+  String? correctionStatus;
 
   EntryExitHistory(
       {this.uid,
@@ -85,9 +92,24 @@ class EntryExitHistory {
       this.scheduleEndBreakTime,
       this.actualWorkingMinute,
       this.actualWorkingHour,
-      this.midnightOvertime});
+      this.midnightOvertime,
+      this.entryExitHistoryCorrection,
+      this.totalWage,
+      this.hourlyWage,
+      this.isRequestReview,
+      this.transportationFee,
+      this.isConfirm,
+      this.correctionStatus});
 
   factory EntryExitHistory.fromJson(Map<String, dynamic> json) => EntryExitHistory(
+        correctionStatus: json["correctionStatus"] ?? "pending",
+        isConfirm: json["isConfirm"] ?? false,
+        isRequestReview: json["isRequestReview"] ?? false,
+        totalWage: json["totalWage"] != null ? double.parse(json["totalWage"].toString()) : 0.0,
+        hourlyWage: double.parse(json["amount"].toString()),
+        transportationFee: json["transportationFee"] != null ? double.parse(json["transportationFee"].toString()) : 0.0,
+        entryExitHistoryCorrection:
+            json["entryExitHistoryCorrection"] != null ? EntryExitHistoryCorrection.fromJson(json["entryExitHistoryCorrection"]) : null,
         midnightOvertime: json["midnightOvertime"] ?? "00:00",
         isPaidLeave: json["isPaidLeave"] ?? false,
         actualWorkingHour: json["actualWorkingHour"] ?? 0,
@@ -128,6 +150,13 @@ class EntryExitHistory {
       );
 
   Map<String, dynamic> toJson() => {
+        "correctionStatus": correctionStatus,
+        "isRequestReview": isRequestReview ?? false,
+        "isConfirm": isConfirm ?? false,
+        "totalWage": totalWage ?? 0.0,
+        "hourlyWage": hourlyWage ?? 0.0,
+        "transportationFee": transportationFee ?? 0.0,
+        "entryExitHistoryCorrection": entryExitHistoryCorrection,
         "midnightOvertime": midnightOvertime,
         "isPaidLeave": isPaidLeave,
         "endWorkDate": endWorkDate,
@@ -165,5 +194,64 @@ class EntryExitHistory {
         "break_time_minute": breakingTimeMinute,
         "workingHour": workingHour,
         "workingMinute": workingMinute,
+      };
+}
+
+class EntryExitHistoryCorrection {
+  String? startWorkingTime;
+  String? endWorkingTime;
+  String? breakTime;
+  String? startDate;
+  String? endDate;
+  String? totalWage;
+  String? hourlyWage;
+  String? transportFee;
+  String? overtime;
+  String? midnightOverTime;
+  String? overtimePay;
+  String? midnightOverTimePay;
+
+  EntryExitHistoryCorrection(
+      {this.breakTime,
+      this.startDate,
+      this.endDate,
+      this.endWorkingTime,
+      this.startWorkingTime,
+      this.totalWage,
+      this.overtime,
+      this.hourlyWage,
+      this.transportFee,
+      this.midnightOverTime,
+      this.midnightOverTimePay,
+      this.overtimePay});
+
+  factory EntryExitHistoryCorrection.fromJson(Map<String, dynamic> json) => EntryExitHistoryCorrection(
+        endDate: json["endDate"],
+        startDate: json["startDate"],
+        startWorkingTime: json["startWorkingTime"],
+        endWorkingTime: json["endWorkingTime"],
+        breakTime: json["breakTime"],
+        hourlyWage: json["hourlyWage"],
+        midnightOverTime: json["midnightOverTime"],
+        midnightOverTimePay: json["midnightOverTimePay"],
+        overtime: json["overtime"],
+        overtimePay: json["overtimePay"],
+        totalWage: json["totalWage"],
+        transportFee: json["transportFee"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "endDate": endDate,
+        "startDate": startDate,
+        "startWorkingTime": startWorkingTime,
+        "endWorkingTime": endWorkingTime,
+        "breakTime": breakTime,
+        "hourlyWage": hourlyWage,
+        "midnightOverTime": midnightOverTime,
+        "midnightOverTimePay": midnightOverTimePay,
+        "overtime": overtime,
+        "overtimePay": overtimePay,
+        "totalWage": totalWage,
+        "transportFee": transportFee,
       };
 }

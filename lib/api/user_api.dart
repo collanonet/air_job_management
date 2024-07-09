@@ -35,6 +35,19 @@ class UserApiServices {
     }
   }
 
+  updateUserWage({required MyUser myUser, required String totalWage, required double oldWage}) async {
+    try {
+      double newBalance = double.parse(totalWage) + double.parse(myUser.balance.toString()) - oldWage;
+      await userRef
+          .doc(myUser.uid)
+          .update({"before_correction_balance": myUser.balance.toString(), "correction_balance": totalWage, "balance": "$newBalance"});
+      return "success";
+    } catch (e) {
+      print("Error update =>> ${e.toString()}");
+      return e.toString();
+    }
+  }
+
   updateUserAField({required String uid, required String value, required String field}) async {
     try {
       await userRef.doc(uid).update({field: value});

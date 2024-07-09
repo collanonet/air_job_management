@@ -1,4 +1,5 @@
 import '../helper/date_to_api.dart';
+import 'common_utils.dart';
 
 int overTimeLegalLimit = 8;
 
@@ -206,4 +207,101 @@ List<int> calculateLateTime(scheduleStartWorkTime, now) {
     }
   }
   return [lateHrs, lateMinute];
+}
+
+String convertToHoursAndMinutes(double totalHours) {
+  int hours = totalHours.floor();
+  int minutes = ((totalHours - hours) * 60).round();
+  if (minutes == 60) {
+    minutes = 0;
+    hours += 1;
+  }
+  return "${CommonUtils.formatTimeTwoDigits(hours.toString())}:${CommonUtils.formatTimeTwoDigits(minutes.toString())}";
+}
+
+List<int> convertToHoursAndMinutesAsInt(double totalHours) {
+  int hours = totalHours.floor();
+  int minutes = ((totalHours - hours) * 60).round();
+  return [hours, minutes];
+}
+
+double convertTimeStringToHours(String time) {
+  List<String> parts = time.split(':');
+  int hours = int.parse(parts[0]);
+  int minutes = int.parse(parts[1]);
+
+  return hours + (minutes / 60.0);
+}
+
+List<String> calculateOvertimeAndMidNight(double workedHours, double hourlyWage, double hourlyWageNoTF, String overtime, String midNightOvertime) {
+  double overtimeHours = convertTimeStringToHours(overtime);
+  double midnightOvertimeHours = convertTimeStringToHours(midNightOvertime);
+  String midNightPay = "${midnightOvertimeHours * hourlyWage * 0.25}";
+  String overtimePay = "${overtimeHours * hourlyWage * 1.25}";
+  String workingPay = "${hourlyWageNoTF * (workedHours - overtimeHours)}";
+
+  ///Overtime pay and midnight
+  return [workingPay, overtimePay, midNightPay];
+}
+
+class ExtraWageCalculator {
+  List<dynamic> calculateExtraWage(DateTime startTime, DateTime endTime, double hourlyWage, double breakTimeHours, double transportFee) {
+    const extraRate = 0.25;
+    const int legalWorkHours = 8;
+    const lateNightStartHour = 22; // 10 PM
+    const lateNightEndHour = 5;
+
+    // Calculate total worked hours
+    final Duration workedDuration = endTime.difference(startTime);
+    double workedHours = workedDuration.inMinutes / 60.0;
+    workedHours = workedHours - breakTimeHours;
+    double overtimeHours = 0;
+    // Calculate overtime
+    if (workedHours > legalWorkHours) {
+      overtimeHours = workedHours - legalWorkHours;
+    }
+    hourlyWage = calculateWageWithTransportFee(hourlyWage, transportFee, workedHours - overtimeHours);
+
+    print("hourlyWage $hourlyWage");
+    print("Working $workedHours");
+
+    double extraWage = hourlyWage * workedHours;
+    // Calculate overtime wage
+    if (overtimeHours > 0) {
+      extraWage += overtimeHours * hourlyWage * extraRate;
+    }
+    print("wage hourly $extraWage");
+    double lateNightHours = 0;
+    // Calculate late-night work hours
+    DateTime current = startTime;
+    while (current.isBefore(endTime)) {
+      if ((current.hour >= lateNightStartHour && current.hour < 24) || (current.hour >= 0 && current.hour < lateNightEndHour)) {
+        lateNightHours += 1 / 60.0; // Add 1 minute in hours
+      }
+      current = current.add(const Duration(minutes: 1));
+    }
+
+    if (lateNightHours > 0) {
+      extraWage += lateNightHours * hourlyWage * extraRate;
+    }
+    print("overtimeHours ${convertToHoursAndMinutes(overtimeHours)}");
+    print("lateNightHours ${convertToHoursAndMinutes(lateNightHours)}");
+    print("total wage $extraWage");
+
+    return [extraWage, convertToHoursAndMinutes(overtimeHours), convertToHoursAndMinutes(lateNightHours), convertToHoursAndMinutes(workedHours)];
+  }
+
+  double calculateWageWithTransportFee(double? wage, double? transportFee, double actualWork) {
+    transportFee ??= 0.0;
+    wage ??= 0.0;
+    if (actualWork == 0) {
+      actualWork = 1;
+    }
+    print("$wage, $transportFee, $actualWork");
+    if (transportFee > 0) {
+      wage += transportFee / actualWork;
+      return wage;
+    }
+    return wage;
+  }
 }

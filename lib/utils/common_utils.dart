@@ -14,6 +14,15 @@ class CommonUtils {
     await Future.delayed(Duration(milliseconds: mili));
   }
 
+  static String formatTimeTwoDigits(String time) {
+    if (time == null || time == "null" || time.isEmpty) {
+      return "";
+    } else if (time.length == 1) {
+      return "0" + time;
+    }
+    return time;
+  }
+
   static String normalize(String input) {
     input = input.toLowerCase().replaceAll('が', 'か゛').replaceAll('ぎ', 'き゛').replaceAll('ぐ', 'く゛').replaceAll('げ', 'け゛').replaceAll('ご', 'こ゛');
     // Normalize full-width characters to half-width
