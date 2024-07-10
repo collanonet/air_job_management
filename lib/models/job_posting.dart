@@ -1,4 +1,5 @@
 import 'package:air_job_management/utils/date_time_utils.dart';
+import 'package:air_job_management/utils/japanese_text.dart';
 
 class JobPostingDataTable {
   String recruitNumber;
@@ -252,9 +253,11 @@ class JobPosting {
 
   List<UpdateHistory>? updateList;
   bool? isDelete;
+  String? transportationFeeOptions;
 
   JobPosting(
       {this.isAllowSmokingInArea,
+      this.transportationFeeOptions,
       this.isDelete,
       this.isSelect = false,
       this.branchId,
@@ -456,6 +459,7 @@ class JobPosting {
       identical(this, other) || other is JobPosting && runtimeType == other.runtimeType && uid == other.uid && title == other.title;
 
   factory JobPosting.fromJson(Map<String, dynamic> json) => JobPosting(
+      transportationFeeOptions: json["transportationFeeOptions"] ?? JapaneseText.providedTF,
       isDelete: json["is_delete"] ?? false,
       updateList: json["updateList"] == null ? [] : List<UpdateHistory>.from(json["updateList"]!.map((x) => UpdateHistory.fromJson(x))),
       postedStartDate: json["postedStartDate"] ?? json["startDate"],
@@ -648,6 +652,7 @@ class JobPosting {
       endBreakTimeHour: json["end_break_time_hour"]);
 
   Map<String, dynamic> toJson() => {
+        "transportationFeeOptions": transportationFeeOptions,
         "postedStartDate": postedStartDate,
         "postedEndDate": postedEndDate,
         "is_delete": isDelete ?? false,

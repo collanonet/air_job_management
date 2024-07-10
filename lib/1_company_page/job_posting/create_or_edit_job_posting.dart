@@ -176,17 +176,21 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
             }
           } else {
             var update = UpdateHistory(
-              recruitment: provider.numberOfRecruitPeople.text.toString(),
-              postStartDate: DateToAPIHelper.convertDateToString(provider.startPostDate),
-              postEndDate: DateToAPIHelper.convertDateToString(provider.endPostDate),
-              startDate: DateToAPIHelper.convertDateToString(provider.startWorkDate),
-              endDate: DateToAPIHelper.convertDateToString(provider.endWorkDate),
-              title: provider.title.text.toString(),
-              startTime: dateTimeToHourAndMinute(provider.startWorkingTime),
-              endTime: dateTimeToHourAndMinute(provider.endWorkingTime),
-              isClose: provider.selectedPublicSetting == JapaneseText.privatePost ? true : false
-            );
+                recruitment: provider.numberOfRecruitPeople.text.toString(),
+                postStartDate: DateToAPIHelper.convertDateToString(provider.startPostDate),
+                postEndDate: DateToAPIHelper.convertDateToString(provider.endPostDate),
+                startDate: DateToAPIHelper.convertDateToString(provider.startWorkDate),
+                endDate: DateToAPIHelper.convertDateToString(provider.endWorkDate),
+                title: provider.title.text.toString(),
+                startTime: dateTimeToHourAndMinute(provider.startWorkingTime),
+                endTime: dateTimeToHourAndMinute(provider.endWorkingTime),
+                isClose: provider.selectedPublicSetting == JapaneseText.privatePost ? true : false);
             provider.jobPosting?.updateList!.add(update);
+          }
+          if (provider.jobPosting?.transportationFeeOptions == JapaneseText.notProvidedTF) {
+            provider.jobPosting?.transportExpenseFee = "0";
+          } else {
+            provider.jobPosting?.transportExpenseFee = provider.transportExp.text;
           }
           provider.jobPosting?.postedStartDate = DateToAPIHelper.convertDateToString(provider.startPostDate);
           provider.jobPosting?.postedEndDate = DateToAPIHelper.convertDateToString(provider.endPostDate);
@@ -212,7 +216,6 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
           provider.jobPosting?.location?.lng = provider.latLong.text.split(", ")[1].toString();
           provider.jobPosting?.numberOfRecruit = provider.numberOfRecruitPeople.text;
           provider.jobPosting?.hourlyWag = provider.hourlyWag.text;
-          provider.jobPosting?.transportExpenseFee = provider.transportExp.text;
           provider.jobPosting?.emergencyContact = provider.emergencyContact.text;
           provider.jobPosting?.expAndQualifiedPeopleWelcome = provider.expWelcome;
           provider.jobPosting?.mealsAssAvailable = provider.mealsAvailable;

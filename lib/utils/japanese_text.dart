@@ -1,4 +1,8 @@
 class JapaneseText {
+  static String providedTF = "一律固定";
+  static String notProvidedTF = "交通費支給なし";
+  static String providedTFOver = "実費上限";
+
   static String attendance = "勤怠";
   static String byMonth = "月ごと";
   static String perWorker = "ワーカーごと";

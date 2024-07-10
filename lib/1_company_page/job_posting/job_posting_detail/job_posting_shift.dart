@@ -323,6 +323,7 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                   AppSize.spaceHeight20,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -359,6 +360,25 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                         children: [
                           Text(
                             JapaneseText.transportExpense,
+                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
+                          ),
+                          AppSize.spaceHeight5,
+                          CustomDropDownWidget(
+                            radius: 5,
+                            selectItem: provider.selectedTFOptions,
+                            list: provider.transportationFeeOptions,
+                            onChange: (v) => provider.onChangeTFOptions(v),
+                            width: 300,
+                          ),
+                          AppSize.spaceHeight5,
+                        ],
+                      ),
+                      AppSize.spaceWidth32,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "交通費（1日につき）",
                             style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
                           ),
                           AppSize.spaceHeight5,
@@ -786,6 +806,7 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                       AppSize.spaceHeight20,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -825,27 +846,48 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                                 style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
                               ),
                               AppSize.spaceHeight5,
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: 150,
-                                    child: PrimaryTextField(
-                                      hint: "",
-                                      controller: provider.transportExp,
-                                      isRequired: true,
-                                    ),
-                                  ),
-                                  AppSize.spaceWidth5,
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 5),
-                                    child: Text("円", style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16)),
-                                  )
-                                ],
+                              CustomDropDownWidget(
+                                radius: 5,
+                                selectItem: provider.selectedTFOptions,
+                                list: provider.transportationFeeOptions,
+                                onChange: (v) => provider.onChangeTFOptions(v),
+                                width: 300,
                               ),
                             ],
-                          )
+                          ),
+                          AppSize.spaceWidth32,
+                          provider.selectedTFOptions == JapaneseText.notProvidedTF
+                              ? const SizedBox()
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "交通費（1日につき）",
+                                      style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 12),
+                                    ),
+                                    AppSize.spaceHeight5,
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: 150,
+                                          child: PrimaryTextField(
+                                            hint: "",
+                                            controller: provider.transportExp,
+                                            isRequired: true,
+                                          ),
+                                        ),
+                                        AppSize.spaceWidth5,
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 5),
+                                          child: Text("円", style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16)),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                          AppSize.spaceHeight5,
                         ],
                       ),
                       AppSize.spaceHeight20,
@@ -924,6 +966,7 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
   }
 
   updateShiftFrameJob() async {
+    provider.jobPosting?.transportationFeeOptions = provider.selectedTFOptions;
     provider.jobPosting?.isAllowSmokingInArea = provider.isAllowSmokingInArea;
     provider.jobPosting?.selectSmokingInDoor = provider.selectSmokingInDoor;
     provider.jobPosting?.motorCycleCarCommutingPossible = provider.motorCycleCarCommutingPossible;

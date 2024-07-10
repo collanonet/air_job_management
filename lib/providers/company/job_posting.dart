@@ -109,6 +109,9 @@ class JobPostingForCompanyProvider with ChangeNotifier {
 
   bool isAllowSmokingInArea = false;
 
+  List<String> transportationFeeOptions = [JapaneseText.notProvidedTF, JapaneseText.providedTF, JapaneseText.providedTFOver];
+  String? selectedTFOptions = JapaneseText.notProvidedTF;
+
   onChangeAllowSmokingInDoor(String menu) {
     selectSmokingInDoor = menu;
     notifyListeners();
@@ -116,6 +119,12 @@ class JobPostingForCompanyProvider with ChangeNotifier {
 
   onChangeAllowSmokingInArea(bool val) {
     isAllowSmokingInArea = val;
+    notifyListeners();
+  }
+
+  onChangeTFOptions(String menu) {
+    selectedTFOptions = menu;
+    jobPosting?.transportationFeeOptions = selectedTFOptions;
     notifyListeners();
   }
 
@@ -305,6 +314,7 @@ class JobPostingForCompanyProvider with ChangeNotifier {
       selectedPublicSetting = jobPosting?.selectedPublicSetting ?? JapaneseText.openToPublic;
       selectSmokingInDoor = jobPosting?.selectSmokingInDoor ?? allowSmokingInDoor[0];
       isAllowSmokingInArea = jobPosting?.isAllowSmokingInArea ?? false;
+      selectedTFOptions = jobPosting?.transportationFeeOptions ?? JapaneseText.providedTF;
       if (occupationType.contains(jobPosting?.occupationType)) {
         selectedOccupationType = jobPosting?.occupationType;
       }

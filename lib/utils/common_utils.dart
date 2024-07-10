@@ -262,12 +262,20 @@ class CommonUtils {
   static String convertToHoursAndMinutes(double totalHours) {
     int hours = totalHours.floor();
     int minutes = ((totalHours - hours) * 60).round();
+    if (minutes == 60) {
+      minutes = 0;
+      hours += 1;
+    }
     return "${DateToAPIHelper.formatTimeTwoDigits(hours.toString())}:${DateToAPIHelper.formatTimeTwoDigits(minutes.toString())}";
   }
 
   static List<int> convertToHoursAndMinutesAsInt(double totalHours) {
     int hours = totalHours.floor();
     int minutes = ((totalHours - hours) * 60).round();
+    if (minutes == 60) {
+      minutes = 0;
+      hours += 1;
+    }
     return [hours, minutes];
   }
 
