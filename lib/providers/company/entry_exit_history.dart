@@ -43,15 +43,15 @@ class EntryExitHistoryProvider with ChangeNotifier {
     "シフト", //"Shift", 3
     "出勤", //"Attend", 4
     "退勤", //"Leave", 5
-    "有休", //"Paid leave", 6
-    "遅刻", //"Late", 7
-    "早退", //"Leave early", 8
+    "休憩", //"Paid leave", 6
+    // "遅刻", //"Late", 7
+    // "早退", //"Leave early", 8
     "実働", //"Actual work", 9
     "法定内", //"Within legal limits", 10
     "法定外", //"Overtime",
     "休日出勤", //"Working on holidays",
-    "所労外", //"Outside legal limits",
-    "所労外累計", //"Cumulative total outside legal limits",
+    // "所労外", //"Outside legal limits",
+    // "所労外累計", //"Cumulative total outside legal limits",
     "総勤務時間", //"Total working hours",
   ];
 
@@ -110,6 +110,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
   }
 
   initData(BuildContext context) {
+    selectedJobTitle = null;
     overlayLoadingFilter = false;
     dateList = [];
     startDay = DateTime(DateTime.now().year, DateTime.now().month, 1);
@@ -128,7 +129,11 @@ class EntryExitHistoryProvider with ChangeNotifier {
   }
 
   onChangeTitle(String? val, String branchId) {
-    selectedBranch = val;
+    if (branchId.isEmpty) {
+      selectedBranch = val;
+    } else {
+      selectedJobTitle = val;
+    }
     filterEntryExitHistory(branchId);
     notifyListeners();
   }
@@ -182,12 +187,16 @@ class EntryExitHistoryProvider with ChangeNotifier {
   filterEntryExitHistory(String branchId) async {
     onChangeOverlayLoading(true);
     await getEntryData(companyId);
-    var jobPostingList = await JobPostingApiService().getAllJobPostByCompany(companyId, branchId);
+    var jobPostingList = [];
+    if (branchId == "") {
+      jobPostingList = await JobPostingApiService().getAllJobPostByCompany(companyId, branchId);
+    }
 
     ///Filter application by job title
     List<EntryExitHistory> afterFilterSelectJobTitle = [];
-    if (selectedBranch != null && selectedBranch != "企業" && selectedBranch != JapaneseText.all) {
-      if (branchId == "") {
+    if (branchId == "") {
+      //for main branch
+      if (selectedBranch != null && selectedBranch != "企業" && selectedBranch != JapaneseText.all) {
         for (var entry in entryList) {
           JobPosting? jobPost;
           for (var job in jobPostingList) {
@@ -204,25 +213,16 @@ class EntryExitHistoryProvider with ChangeNotifier {
           }
         }
       } else {
-        for (var entry in entryListByBranch) {
-          JobPosting? jobPost;
-          for (var job in jobPostingList) {
-            if (job.uid == entry.jobID) {
-              jobPost = job;
-              break;
-            }
-          }
-          if (jobPost != null) {
-            Branch? branch = getBranch(selectedBranch!);
-            if (branch?.id == jobPost.branchId) {
-              afterFilterSelectJobTitle.add(entry);
-            }
-          }
-        }
+        afterFilterSelectJobTitle = entryList;
       }
     } else {
-      if (branchId == "") {
-        afterFilterSelectJobTitle = entryList;
+      //for branch
+      if (selectedJobTitle != null && selectedJobTitle != jobTitleList[0]) {
+        for (var job in entryListByBranch) {
+          if (job.jobTitle == selectedJobTitle) {
+            afterFilterSelectJobTitle.add(job);
+          }
+        }
       } else {
         afterFilterSelectJobTitle = entryListByBranch;
       }

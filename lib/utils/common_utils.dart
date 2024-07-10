@@ -253,8 +253,10 @@ class CommonUtils {
   }
 
   static String displayWorkingWithBreakTime(EntryExitHistory entry) {
-    var data = calculateBreakTime(entry.endWorkingTime, entry.startWorkingTime);
-    return "${DateToAPIHelper.formatTimeTwoDigits(data[0].toString())}:${DateToAPIHelper.formatTimeTwoDigits(data[1].toString())}";
+    double breakTime = convertTimeStringToHours("${entry.breakingTimeHour}:${entry.breakingTimeMinute}");
+    double workingHours = convertTimeStringToHours("${entry.workingHour}:${entry.workingMinute}");
+    double total = breakTime + workingHours;
+    return workingHours == 0 ? "00:00" : convertToHoursAndMinutes(total);
   }
 
   static String convertToHoursAndMinutes(double totalHours) {

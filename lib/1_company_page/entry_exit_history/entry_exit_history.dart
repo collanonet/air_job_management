@@ -448,21 +448,23 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                             const DataTableWidget(data: "出"),
                             DataTableWidget(data: e.startWorkingTime),
                             DataTableWidget(data: e.endWorkingTime),
-                            DataTableWidget(data: e.isPaidLeave == true ? "" : ""),
                             DataTableWidget(
                                 data:
-                                    "${DateToAPIHelper.formatTimeTwoDigits(e.latHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.lateMinute.toString())}"),
-                            DataTableWidget(
-                                data:
-                                    "${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyMinute.toString())}"),
+                                    "${DateToAPIHelper.formatTimeTwoDigits(e.breakingTimeHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.breakingTimeMinute.toString())}"),
+                            // DataTableWidget(
+                            //     data:
+                            //         "${DateToAPIHelper.formatTimeTwoDigits(e.latHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.lateMinute.toString())}"),
+                            // DataTableWidget(
+                            //     data:
+                            //         "${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.leaveEarlyMinute.toString())}"),
                             DataTableWidget(
                                 data:
                                     "${DateToAPIHelper.formatTimeTwoDigits(e.workingHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(e.workingMinute.toString())}"),
                             DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, withInLimit: true)),
                             DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, isOvertime: true)),
                             DataTableWidget(data: e.holidayWork),
-                            DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, nonSat: true)),
-                            DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, isOvertime: true)),
+                            // DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, nonSat: true)),
+                            // DataTableWidget(data: CommonUtils.calculateOvertimeInEntry(e, isOvertime: true)),
                             DataTableWidget(data: CommonUtils.displayWorkingWithBreakTime(e)),
                           ],
                         )
@@ -756,7 +758,8 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(title: "休出日数", data: provider.countDayOff.toString())
+            summaryCardWidget(title: "公休日数", data: "16"),
+            // summaryCardWidget(title: "休出日数", data: provider.countDayOff.toString())
             // summaryCardWidget(title: "不労時間", data: "")
           ],
         ),
@@ -775,14 +778,23 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
             const SizedBox(
               height: 3,
             ),
+            // summaryCardWidget(
+            //     title: "所労外",
+            //     data: "${CommonUtils.totalOvertimeNonStatutory(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
+            // const SizedBox(
+            //   height: 3,
+            // ),
+            // summaryCardWidget(
+            //     title: "超過残業", data: "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}")
             summaryCardWidget(
-                title: "所労外",
-                data: "${CommonUtils.totalOvertimeNonStatutory(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
+                title: "実勤務時間",
+                data: "${CommonUtils.totalWorkingTimeCutBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
             const SizedBox(
               height: 3,
             ),
             summaryCardWidget(
-                title: "超過残業", data: "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}")
+                title: "総勤務時間",
+                data: "${CommonUtils.totalWorkingTimeCutBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}")
           ],
         ),
         Column(
@@ -794,23 +806,14 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
             const SizedBox(
               height: 3,
             ),
-            summaryCardWidget(
-                title: "休出時間", data: "${CommonUtils.totalBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
-            const SizedBox(
-              height: 3,
-            ),
-            summaryCardWidget(
-                title: "実勤務時間",
-                data: "${CommonUtils.totalWorkingTimeCutBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
-            const SizedBox(
-              height: 3,
-            ),
-            summaryCardWidget(
-                title: "総勤務時間",
-                data: "${CommonUtils.totalWorkingWithBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}")
+            // summaryCardWidget(
+            //     title: "休出時間", data: "${CommonUtils.totalBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}"),
+            // const SizedBox(
+            //   height: 3,
+            // ),
+            ///0 for paid days 実勤務時間 + (0 * 8)
           ],
         ),
-        summaryCardWidget(title: "公休日数", data: "16"),
         // summaryCardWidget(title: "所定外計", data: ""),
       ],
     );
