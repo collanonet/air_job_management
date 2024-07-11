@@ -108,7 +108,7 @@ class WithdrawCardWidget extends StatelessWidget {
             Expanded(
               child: Center(
                 child: Text(
-                  withdrawModel.reason ?? "",
+                  CurrencyFormatHelper.displayData(withdrawModel.moreTransportationFee.toString()),
                   style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 14),
                   overflow: TextOverflow.fade,
                 ),

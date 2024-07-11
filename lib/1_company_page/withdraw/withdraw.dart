@@ -151,7 +151,7 @@ class _UsageDetailPageState extends State<UsageDetailPage> with AfterBuildMixin 
                                       ),
                                       Expanded(
                                         child: Center(
-                                          child: Text(JapaneseText.remark, style: normalTextStyle.copyWith(fontSize: 13)),
+                                          child: Text("交通費", style: normalTextStyle.copyWith(fontSize: 13)),
                                         ),
                                         flex: 2,
                                       ),

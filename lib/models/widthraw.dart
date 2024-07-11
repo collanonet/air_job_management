@@ -11,6 +11,7 @@ class WithdrawModel {
   BankModel? bankModel;
   String? reason;
   String? transactionImageUrl;
+  String? moreTransportationFee;
   WithdrawModel(
       {this.uid,
       this.bankModel,
@@ -23,9 +24,11 @@ class WithdrawModel {
       this.workerID,
       this.workerName,
       this.reason,
-      this.transactionImageUrl});
+      this.transactionImageUrl,
+      this.moreTransportationFee});
 
   factory WithdrawModel.fromJson(Map<String, dynamic> json) => WithdrawModel(
+        moreTransportationFee: json["more_transportation_fee"] ?? "0",
         transactionImageUrl: json["transactionImageUrl"],
         reason: json["reason"],
         createdAt: json["created_at"].toDate(),
