@@ -185,7 +185,6 @@ class EntryExitHistoryProvider with ChangeNotifier {
   }
 
   filterEntryExitHistory(String branchId) async {
-    onChangeOverlayLoading(true);
     await getEntryData(companyId);
     var jobPostingList = [];
     if (branchId == "") {
@@ -281,6 +280,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
   }
 
   getEntryData(String id) async {
+    onChangeOverlayLoading(true);
     companyId = id;
     branchId = branchId;
     entryList = await EntryExitApiService().getAllEntryList(id);
@@ -321,7 +321,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
     jobTitleList = jobTitleList.toSet().toList();
     usernameListForEntryExit = usernameListForEntryExit.toSet().toList();
     getUserShift(companyId, branchId);
-    onChangeLoading(false);
+    onChangeOverlayLoading(false);
   }
 
   mapDataForEntryByBranch() async {
