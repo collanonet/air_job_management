@@ -45,6 +45,7 @@ class EntryExitApiService {
       });
       UserApiServices().updateUserWage(
           myUser: myUser!, totalWage: entryExitHistory.entryExitHistoryCorrection!.totalWage!, oldWage: entryExitHistory.totalWage ?? 0);
+      UserApiServices().updateUserAField(uid: myUser.uid ?? "", value: myUser.balance ?? "0", field: "old_balance");
       return true;
     } catch (e) {
       Logger.printLog("Error =>> ${e.toString()}");

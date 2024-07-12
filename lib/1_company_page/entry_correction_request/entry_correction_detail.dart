@@ -130,25 +130,10 @@ class _EntryCorrectionRequestDetailPageState extends State<EntryCorrectionReques
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                            width: 200,
-                            child: ButtonWidget(
-                              radius: 25,
-                              color: entryExitHistory!.correctionStatus == "approved" ? Colors.grey : AppColor.whiteColor,
-                              title: "拒否する",
-                              onPress: () {
-                                if (entryExitHistory!.correctionStatus == "approved") {
-                                  toastMessageError("アクションはすでに完了しています", context);
-                                } else {
-                                  onUpdateData("rejected");
-                                }
-                              },
-                            )),
-                        AppSize.spaceWidth16,
-                        SizedBox(
                           width: 200,
                           child: ButtonWidget(
                               radius: 25,
-                              title: "保存",
+                              title: "確定する",
                               color: entryExitHistory!.correctionStatus == "approved" ? Colors.grey : AppColor.primaryColor,
                               onPress: () {
                                 if (entryExitHistory!.correctionStatus == "approved") {
@@ -157,7 +142,22 @@ class _EntryCorrectionRequestDetailPageState extends State<EntryCorrectionReques
                                   onUpdateData("approved");
                                 }
                               }),
-                        )
+                        ),
+                        AppSize.spaceWidth16,
+                        SizedBox(
+                            width: 200,
+                            child: ButtonWidget(
+                              radius: 25,
+                              color: entryExitHistory!.correctionStatus == "approved" ? Colors.grey : AppColor.whiteColor,
+                              title: "不承認にする",
+                              onPress: () {
+                                if (entryExitHistory!.correctionStatus == "approved") {
+                                  toastMessageError("アクションはすでに完了しています", context);
+                                } else {
+                                  onUpdateData("rejected");
+                                }
+                              },
+                            )),
                       ],
                     ),
                   )
@@ -177,13 +177,17 @@ class _EntryCorrectionRequestDetailPageState extends State<EntryCorrectionReques
           });
           bool isSuccess = await EntryExitApiService()
               .updateEntryExitData(entryExitHistory!, convertToHoursAndMinutes(actualWorkingHoursForUpdate), status, myUser);
-          setState(() {
-            isLoading = false;
-          });
+
           if (isSuccess) {
+            setState(() {
+              isLoading = false;
+            });
             Navigator.pop(context);
             toastMessageSuccess(JapaneseText.successUpdate, context);
           } else {
+            setState(() {
+              isLoading = false;
+            });
             toastMessageError(JapaneseText.failUpdate, context);
           }
         });
@@ -235,11 +239,15 @@ class _EntryCorrectionRequestDetailPageState extends State<EntryCorrectionReques
             children: [
               Text(
                 "${entryExitHistory!.startWorkingTime}",
-                style: kNormalText.copyWith(fontWeight: FontWeight.w600),
+                style: kNormalText.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: statusColor(entryExitHistory!.entryExitHistoryCorrection!.startWorkingTime!, entryExitHistory!.startWorkingTime!)),
               ),
               Text(
                 "${entryExitHistory!.endWorkingTime}",
-                style: kNormalText.copyWith(fontWeight: FontWeight.w600),
+                style: kNormalText.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: statusColor(entryExitHistory!.entryExitHistoryCorrection!.endWorkingTime!, entryExitHistory!.endWorkingTime!)),
               ),
             ],
           ),
@@ -256,7 +264,10 @@ class _EntryCorrectionRequestDetailPageState extends State<EntryCorrectionReques
             children: [
               Text(
                 "${entryExitHistory!.breakingTimeHour}時間${entryExitHistory!.breakingTimeMinute}分",
-                style: kNormalText.copyWith(fontWeight: FontWeight.w600),
+                style: kNormalText.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: statusColor(entryExitHistory!.entryExitHistoryCorrection!.breakTime!,
+                        "${entryExitHistory!.breakingTimeHour.toString()}:${entryExitHistory!.breakingTimeMinute.toString()}")),
               ),
               Text(
                 "",
@@ -377,6 +388,15 @@ class _EntryCorrectionRequestDetailPageState extends State<EntryCorrectionReques
     );
   }
 
+  statusColor(String oldData, String newData) {
+    print("Old data $oldData x New data $newData");
+    if (oldData == newData) {
+      return Colors.black;
+    } else {
+      return Colors.red;
+    }
+  }
+
   correctionWidget() {
     return SizedBox(
       width: AppSize.getDeviceWidth(context) * 0.25,
@@ -423,11 +443,15 @@ class _EntryCorrectionRequestDetailPageState extends State<EntryCorrectionReques
             children: [
               Text(
                 "${entryExitHistory!.entryExitHistoryCorrection?.startWorkingTime}",
-                style: kNormalText.copyWith(fontWeight: FontWeight.w600),
+                style: kNormalText.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: statusColor(entryExitHistory!.entryExitHistoryCorrection!.startWorkingTime!, entryExitHistory!.startWorkingTime!)),
               ),
               Text(
                 "${entryExitHistory!.entryExitHistoryCorrection?.endWorkingTime}",
-                style: kNormalText.copyWith(fontWeight: FontWeight.w600),
+                style: kNormalText.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: statusColor(entryExitHistory!.entryExitHistoryCorrection!.startWorkingTime!, entryExitHistory!.startWorkingTime!)),
               ),
             ],
           ),
@@ -444,7 +468,10 @@ class _EntryCorrectionRequestDetailPageState extends State<EntryCorrectionReques
             children: [
               Text(
                 "${entryExitHistory!.entryExitHistoryCorrection!.breakTime!.split(":")[0]}時間${entryExitHistory!.entryExitHistoryCorrection!.breakTime!.split(":")[1]}分",
-                style: kNormalText.copyWith(fontWeight: FontWeight.w600),
+                style: kNormalText.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: statusColor(entryExitHistory!.entryExitHistoryCorrection!.breakTime!,
+                        "${entryExitHistory!.breakingTimeHour.toString()}:${entryExitHistory!.breakingTimeMinute.toString()}")),
               ),
               Text(
                 "",
