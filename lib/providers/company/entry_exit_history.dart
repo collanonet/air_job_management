@@ -304,7 +304,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
       selectedUserName = userNameList.first;
     }
     mapDataForCalendarByUser();
-    await mapDataForShiftAndWorkTime();
+    // await mapDataForShiftAndWorkTime();
     jobTitleList = [JapaneseText.all];
     usernameListForEntryExit = [JapaneseText.all];
     if (branchId == "") {
@@ -503,9 +503,8 @@ class EntryExitHistoryProvider with ChangeNotifier {
         }
       }
     }
-
     shiftAndWorkTimeByUserList = shiftAndWorkTimeByUserList.toSet().toList();
-    notifyListeners();
+    onChangeOverlayLoading(false);
   }
 
   Iterable<T> removeDuplicates<T>(Iterable<T> iterable) sync* {

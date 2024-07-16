@@ -148,7 +148,19 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
       provider.selectedUsernameForEntryExit = null;
       provider.selectedJobTitle = null;
     });
-    await onGetData();
+    String id = authProvider.myCompany?.uid ?? "";
+    provider.setBranchId = authProvider.branch?.id ?? "";
+    await provider.getEntryData(id);
+    entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
+    entryExitAndShiftDataByUser = EntryExitAndShiftDataByUser(provider: provider, onTap: () {});
+    if (provider.selectedMenu == provider.tabMenu[1] && provider.selectDisplay == provider.displayList[0]) {
+      provider.onChangeOverlayLoading(true);
+      await provider.mapDataForShiftAndWorkTime();
+    }
+    if (provider.selectDisplay == provider.displayList[2]) {
+      provider.onChangeOverlayLoading(true);
+      await provider.mapDataForShiftAndWorkTime();
+    }
   }
 
   buildEntryExitList() {
@@ -644,12 +656,10 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                                         DataTableFixedWidthWidget(
                                             data:
                                                 "${CommonUtils.totalOfWorkedDayCount(data.shiftList ?? [], provider.entryListByBranch, provider.dateList, data.userName!)}"),
-                                        DataTableFixedWidthWidget(
-                                            data:
-                                                "${CommonUtils.totalPaidHoliday(provider.request, data.myUser?.nameKanJi ?? "", provider.dateList)}"),
-                                        DataTableFixedWidthWidget(
-                                            data:
-                                                "${CommonUtils.remainingPaidHoliday(provider.request, data.myUser?.nameKanJi ?? "", provider.dateList, data.myUser?.annualLeave ?? 18)}"),
+                                        DataTableFixedWidthWidget(data: "0"),
+                                        // "${CommonUtils.totalPaidHoliday(provider.request, data.myUser?.nameKanJi ?? "", provider.dateList)}"),
+                                        DataTableFixedWidthWidget(data: "18"),
+                                        // "${CommonUtils.remainingPaidHoliday(provider.request, data.myUser?.nameKanJi ?? "", provider.dateList, data.myUser?.annualLeave ?? 18)}"),
                                         const DataTableFixedWidthWidget(data: "16"),
                                         // const DataTableFixedWidthWidget(data: ""),
                                         // const DataTableFixedWidthWidget(data: ""),
