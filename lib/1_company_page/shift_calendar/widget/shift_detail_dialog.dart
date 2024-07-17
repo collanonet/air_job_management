@@ -35,10 +35,12 @@ class ShiftDetailDialogWidget extends StatefulWidget {
   final DateTime date;
   final Function onSuccess;
   final bool isRequest;
+  final String? userId;
   const ShiftDetailDialogWidget(
       {super.key,
       required this.jobId,
       required this.date,
+      this.userId,
       required this.onSuccess,
       required this.endTime,
       required this.startTime,
@@ -71,6 +73,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
   @override
   Widget build(BuildContext context) {
     authProvider = Provider.of<AuthProvider>(context);
+    print("User id is ${widget.userId}");
     return AlertDialog(
       insetPadding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -296,158 +299,160 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
         itemCount: requestList.length,
         itemBuilder: (context, index) {
           var request = requestList[index];
-          return Container(
-            width: AppSize.getDeviceWidth(context),
-            padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
-            margin: const EdgeInsets.only(bottom: 8, left: 0, right: 0),
-            decoration: BoxDecoration(
-                color: Colors.transparent, borderRadius: BorderRadius.circular(16), border: Border.all(width: 1, color: AppColor.primaryColor)),
-            child: Row(
-              children: [
-                Expanded(
+          return (widget.userId != null && widget.userId != request.userId)
+              ? const SizedBox()
+              : Container(
+                  width: AppSize.getDeviceWidth(context),
+                  padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
+                  margin: const EdgeInsets.only(bottom: 8, left: 0, right: 0),
+                  decoration: BoxDecoration(
+                      color: Colors.transparent, borderRadius: BorderRadius.circular(16), border: Border.all(width: 1, color: AppColor.primaryColor)),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(25),
-                        child: CachedNetworkImage(
-                          width: 48,
-                          height: 48,
-                          imageUrl: request.myUser?.profileImage ?? "",
-                          fit: BoxFit.cover,
-                          errorWidget: (_, __, ___) => Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
-                            child: Center(
-                              child: Icon(
-                                Icons.person,
-                                color: AppColor.whiteColor,
-                                size: 35,
+                      Expanded(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(25),
+                              child: CachedNetworkImage(
+                                width: 48,
+                                height: 48,
+                                imageUrl: request.myUser?.profileImage ?? "",
+                                fit: BoxFit.cover,
+                                errorWidget: (_, __, ___) => Container(
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.person,
+                                      color: AppColor.whiteColor,
+                                      size: 35,
+                                    ),
+                                  ),
+                                ),
                               ),
+                            ),
+                            AppSize.spaceWidth16,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          request.username ?? "",
+                                          style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                                          overflow: TextOverflow.fade,
+                                        ),
+                                      ),
+                                      AppSize.spaceWidth16,
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        flex: 3,
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 32),
+                          child: Center(
+                            child: Text(
+                              calculateAge(DateToAPIHelper.fromApiToLocal(request.myUser!.dob!.replaceAll("-", "/").toString())) +
+                                  "   ${request.myUser?.gender}",
+                              style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                              overflow: TextOverflow.fade,
                             ),
                           ),
                         ),
+                        flex: 2,
                       ),
-                      AppSize.spaceWidth16,
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    request.username ?? "",
-                                    style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
-                                    overflow: TextOverflow.fade,
-                                  ),
-                                ),
-                                AppSize.spaceWidth16,
-                              ],
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  flex: 3,
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 32),
-                    child: Center(
-                      child: Text(
-                        calculateAge(DateToAPIHelper.fromApiToLocal(request.myUser!.dob!.replaceAll("-", "/").toString())) +
-                            "   ${request.myUser?.gender}",
-                        style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
-                        overflow: TextOverflow.fade,
-                      ),
-                    ),
-                  ),
-                  flex: 2,
-                ),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      request.reason ?? "",
-                      style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
-                      overflow: TextOverflow.fade,
-                    ),
-                  ),
-                  flex: 2,
-                ),
-                Expanded(
-                  child: Center(child: CommonUtils.displayRequestType(request)),
-                  flex: 2,
-                ),
-                Expanded(
-                  child: request.isHoliday == true
-                      ? Center(
+                        child: Center(
                           child: Text(
-                            request.date.toString(),
+                            request.reason ?? "",
                             style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                             overflow: TextOverflow.fade,
                           ),
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              request.isUpdateShift == true ? "${request.shiftModel?.startWorkTime}" : "${request.shiftModel?.endWorkTime}",
-                              style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 3, right: 3, top: 3),
-                              child: Icon(
-                                Icons.arrow_forward_ios_sharp,
-                                color: AppColor.seaColor,
-                                size: 17,
+                        ),
+                        flex: 2,
+                      ),
+                      Expanded(
+                        child: Center(child: CommonUtils.displayRequestType(request)),
+                        flex: 2,
+                      ),
+                      Expanded(
+                        child: request.isHoliday == true
+                            ? Center(
+                                child: Text(
+                                  request.date.toString(),
+                                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                                  overflow: TextOverflow.fade,
+                                ),
+                              )
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    request.isUpdateShift == true ? "${request.shiftModel?.startWorkTime}" : "${request.shiftModel?.endWorkTime}",
+                                    style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 3, right: 3, top: 3),
+                                    child: Icon(
+                                      Icons.arrow_forward_ios_sharp,
+                                      color: AppColor.seaColor,
+                                      size: 17,
+                                    ),
+                                  ),
+                                  Text(
+                                    request.isUpdateShift == true ? "${request.fromTime}" : "${request.toTime}",
+                                    style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                                  ),
+                                ],
                               ),
-                            ),
-                            Text(
-                              request.isUpdateShift == true ? "${request.fromTime}" : "${request.toTime}",
-                              style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
-                            ),
-                          ],
-                        ),
-                  flex: 2,
-                ),
-                Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 140,
-                          child: ButtonWidget(
-                            radius: 25,
-                            borderColor: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.primaryColor,
-                            color: request.status == "approved" ? AppColor.seaColor : AppColor.whiteColor,
-                            title: "確定する",
-                            onPress: () => updateRequestStatus("確定する", request),
+                        flex: 2,
+                      ),
+                      Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 140,
+                                child: ButtonWidget(
+                                  radius: 25,
+                                  borderColor: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.primaryColor,
+                                  color: request.status == "approved" ? AppColor.seaColor : AppColor.whiteColor,
+                                  title: "確定する",
+                                  onPress: () => updateRequestStatus("確定する", request),
+                                ),
+                              ),
+                              AppSize.spaceWidth8,
+                              SizedBox(
+                                width: 145,
+                                child: ButtonWidget(
+                                  radius: 25,
+                                  borderColor: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.primaryColor,
+                                  color: request.status == "rejected" ? AppColor.seaColor : AppColor.whiteColor,
+                                  title: "不承認にする",
+                                  onPress: () => updateRequestStatus("キャンセル", request),
+                                ),
+                              )
+                            ],
                           ),
-                        ),
-                        AppSize.spaceWidth8,
-                        SizedBox(
-                          width: 145,
-                          child: ButtonWidget(
-                            radius: 25,
-                            borderColor: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.primaryColor,
-                            color: request.status == "rejected" ? AppColor.seaColor : AppColor.whiteColor,
-                            title: "不承認にする",
-                            onPress: () => updateRequestStatus("キャンセル", request),
-                          ),
-                        )
-                      ],
-                    ),
-                    flex: 5),
-              ],
-            ),
-          );
+                          flex: 5),
+                    ],
+                  ),
+                );
         });
   }
 

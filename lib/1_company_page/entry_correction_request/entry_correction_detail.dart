@@ -201,7 +201,7 @@ class _EntryCorrectionRequestDetailPageState extends State<EntryCorrectionReques
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            "報酬額の最終確認",
+            "修正前の確認画面",
             style: kTitleText,
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.justify,

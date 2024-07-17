@@ -343,6 +343,7 @@ class _DashboardPageForCompanyState extends State<DashboardPageForCompany> with 
                                   isRequest: notification.isJobApply == true ? false : true,
                                   startTime: "",
                                   endTime: "",
+                                  userId: notification.userId,
                                   jobId: notification.jobId!,
                                   date: notification.applyDate!,
                                   onSuccess: () => getData(),
