@@ -537,6 +537,22 @@ class CommonUtils {
     return "${DateToAPIHelper.formatTimeTwoDigits(totalHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(totalMinute.toString())}";
   }
 
+  static totalWorkingTimeCutBreakTimeIncludePaidHoliday(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
+    //If has paid holiday 総勤務時間, total will be + (paid holiday * 8)
+    int hour = 0;
+    int minute = 0;
+    for (int i = 0; i < entryList.length; i++) {
+      DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
+      if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
+        hour += entryList[i].workingHour!;
+        minute += entryList[i].workingMinute!;
+      }
+    }
+    int totalHour = hour + (minute ~/ 60);
+    int totalMinute = minute % 60;
+    return "${DateToAPIHelper.formatTimeTwoDigits(totalHour.toString())}:${DateToAPIHelper.formatTimeTwoDigits(totalMinute.toString())}";
+  }
+
   static totalBreakTime(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
     int hour = 0;
     int minute = 0;
@@ -574,19 +590,6 @@ class CommonUtils {
     int minute = 0;
     for (int i = 0; i < entryList.length; i++) {
       DateTime d = DateToAPIHelper.fromApiToLocal(entryList[i].workDate!);
-      // DateTime endWorkDate = DateToAPIHelper.fromApiToLocal(
-      //     entryList[i].endWorkDate ?? entryList[i].workDate!);
-      // int startWorkHour =
-      //     int.parse(entryList[i].startWorkingTime!.split(":")[0]);
-      // int startWorkMin =
-      //     int.parse(entryList[i].startWorkingTime!.split(":")[1]);
-      // int endWorkHour = 0;
-      // int endWorkMinute = 0;
-      // if (entryList[i].endWorkingTime != null &&
-      //     entryList[i].startWorkingTime != "") {
-      //   endWorkHour = int.parse(entryList[i].endWorkingTime!.split(":")[0]);
-      //   endWorkMinute = int.parse(entryList[i].endWorkingTime!.split(":")[1]);
-      // }
       if (dateTimeList.contains(d) && entryList[i].myUser!.nameKanJi == name) {
         // DateTime startDate =
         //     DateTime(d.year, d.month, d.day, startWorkHour, startWorkMin);

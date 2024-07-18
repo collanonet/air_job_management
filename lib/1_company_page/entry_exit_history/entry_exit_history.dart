@@ -692,7 +692,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                                                 "${CommonUtils.totalWorkingTimeCutBreakTime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data:
-                                                "${CommonUtils.totalWorkingWithBreakTime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
+                                                "${CommonUtils.totalWorkingTimeCutBreakTimeIncludePaidHoliday(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
                                             data: "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                       ],
