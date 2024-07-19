@@ -279,7 +279,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  getEntryData(String id) async {
+  getEntryData(String id, {bool shiftAndWork = false}) async {
     onChangeOverlayLoading(true);
     companyId = id;
     branchId = branchId;
@@ -304,7 +304,11 @@ class EntryExitHistoryProvider with ChangeNotifier {
       selectedUserName = userNameList.first;
     }
     mapDataForCalendarByUser();
-    // await mapDataForShiftAndWorkTime();
+
+    ///Improve performance
+    if (shiftAndWork) {
+      await mapDataForShiftAndWorkTime();
+    }
     jobTitleList = [JapaneseText.all];
     usernameListForEntryExit = [JapaneseText.all];
     if (branchId == "") {
@@ -505,14 +509,6 @@ class EntryExitHistoryProvider with ChangeNotifier {
     }
     shiftAndWorkTimeByUserList = shiftAndWorkTimeByUserList.toSet().toList();
     onChangeOverlayLoading(false);
-  }
-
-  Iterable<T> removeDuplicates<T>(Iterable<T> iterable) sync* {
-    Set<T> items = {};
-    for (T item in iterable) {
-      if (!items.contains(item)) yield item;
-      items.add(item);
-    }
   }
 
   List<ShiftModel> shiftList = [];

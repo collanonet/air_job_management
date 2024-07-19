@@ -7,7 +7,8 @@ import '../../../utils/app_size.dart';
 import '../../../utils/style.dart';
 
 class TabSelectionWidget extends StatelessWidget {
-  const TabSelectionWidget({super.key});
+  final Function? onRefresh;
+  const TabSelectionWidget({super.key, this.onRefresh});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,9 @@ class TabSelectionWidget extends StatelessWidget {
     return Row(
       children: [
         InkWell(
-          onTap: () => provider.onChangeSelectMenu(provider.tabMenu[0]),
+          onTap: () {
+            provider.onChangeSelectMenu(provider.tabMenu[0]);
+          },
           child: Container(
             width: 300,
             height: 39,
@@ -33,7 +36,12 @@ class TabSelectionWidget extends StatelessWidget {
         ),
         AppSize.spaceWidth16,
         InkWell(
-          onTap: () => provider.onChangeSelectMenu(provider.tabMenu[1]),
+          onTap: () {
+            provider.onChangeSelectMenu(provider.tabMenu[1]);
+            if (onRefresh != null) {
+              onRefresh!();
+            }
+          },
           child: Container(
             width: 300,
             height: 39,

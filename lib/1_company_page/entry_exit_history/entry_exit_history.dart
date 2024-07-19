@@ -85,7 +85,9 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                   children: [
                     const EntryFilterWidget(),
                     AppSize.spaceHeight16,
-                    const TabSelectionWidget(),
+                    TabSelectionWidget(
+                      onRefresh: () => refreshData(fromShiftAndWork: true),
+                    ),
                     if (provider.selectedMenu == provider.tabMenu[0])
                       Container(
                         decoration: boxDecoration,
@@ -138,10 +140,9 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
   }
 
   ScrollController scrollController = ScrollController();
-  int _currentPage = 1;
   int _pageSize = 10;
 
-  refreshData() async {
+  refreshData({bool fromShiftAndWork = false}) async {
     setState(() {
       provider.startWorkDate = null;
       provider.endWorkDate = null;
@@ -150,24 +151,24 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
     });
     String id = authProvider.myCompany?.uid ?? "";
     provider.setBranchId = authProvider.branch?.id ?? "";
-    await provider.getEntryData(id);
+    await provider.getEntryData(id, shiftAndWork: fromShiftAndWork);
     entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
     entryExitAndShiftDataByUser = EntryExitAndShiftDataByUser(provider: provider, onTap: () {});
-    if (provider.selectedMenu == provider.tabMenu[1] && provider.selectDisplay == provider.displayList[0]) {
-      provider.onChangeOverlayLoading(true);
-      await provider.mapDataForShiftAndWorkTime();
-    }
-    if (provider.selectDisplay == provider.displayList[2]) {
-      provider.onChangeOverlayLoading(true);
-      await provider.mapDataForShiftAndWorkTime();
-    }
+    // if (provider.selectedMenu == provider.tabMenu[1] && provider.selectDisplay == provider.displayList[0]) {
+    //   provider.onChangeOverlayLoading(true);
+    //   await provider.mapDataForShiftAndWorkTime();
+    // }
+    // if (provider.selectDisplay == provider.displayList[2]) {
+    //   provider.onChangeOverlayLoading(true);
+    //   await provider.mapDataForShiftAndWorkTime();
+    // }
   }
 
   buildEntryExitList() {
     return Column(
       children: [
         FilterEntryExitList(
-          onRefreshData: () => refreshData(),
+          onRefreshData: () => refreshData(fromShiftAndWork: true),
         ),
         SizedBox(
           child: Padding(
@@ -278,7 +279,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
             entryExitHistoryDataSourceByDate = EntryExitHistoryDataSourceByDate(provider: provider, onTap: () {});
             entryExitAndShiftDataByUser = EntryExitAndShiftDataByUser(provider: provider, onTap: () {});
             provider.onChangeDisplay(title, authProvider.branch!.id.toString());
-            refreshData();
+            refreshData(fromShiftAndWork: provider.selectDisplay == provider.displayList[2] ? true : false);
           },
           child: Center(
             child: Text(
