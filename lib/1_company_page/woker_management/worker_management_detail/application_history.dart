@@ -3,6 +3,7 @@ import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/providers/auth.dart';
+import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_dialog.dart';
@@ -274,7 +275,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                                 title: "確定する",
                                 onPress: () {
                                   if (shift.status != "completed" && shift.status != "canceled") {
-                                    updateJobStatus(index, shift, "確定する", widget.myUser!);
+                                    updateJobStatus(index, shift, "確定する", widget.myUser!, shift.status!);
                                   } else {
                                     toastMessageError("このアクションは完了またはキャンセルされたため、編集できません。", context);
                                   }
@@ -294,7 +295,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                                 title: "不承認にする",
                                 onPress: () {
                                   if (shift.status != "completed" && shift.status != "canceled") {
-                                    updateJobStatus(index, shift, "キャンセル", widget.myUser!);
+                                    updateJobStatus(index, shift, "キャンセル", widget.myUser!, shift.status!);
                                   } else {
                                     toastMessageError("このアクションは完了またはキャンセルされたため、編集できません。", context);
                                   }
@@ -343,7 +344,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
     });
   }
 
-  updateJobStatus(int index, ShiftModel shiftModel, String action, MyUser myUser) {
+  updateJobStatus(int index, ShiftModel shiftModel, String action, MyUser myUser, String lastStatus) {
     CustomDialog.confirmDialog(
         context: context,
         onApprove: () async {
@@ -352,27 +353,51 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
           } else {
             shiftModel.status = "rejected";
           }
+          List<ShiftModel> shiftListForUpdate = [];
           shiftList[index] = shiftModel;
+
+          ///check shift by job id
+          for (var s in shiftList) {
+            if (s.jobId == shiftModel.jobId) {
+              shiftListForUpdate.add(s);
+            }
+          }
           Navigator.pop(context);
-          setState(() {
-            isLoading = true;
-          });
-          bool isSuccess = await WorkerManagementApiService().updateShiftStatus(
-              branch: authProvider.branch,
-              shiftList,
-              shiftList[index].jobId!,
-              shiftModel: shiftModel,
-              company: authProvider.myCompany!,
-              myUser: myUser,
-              isFromWorkerManagement: true);
-          if (isSuccess) {
-            await getData();
-            toastMessageSuccess(JapaneseText.successUpdate, context);
-          } else {
+          print("Shift ${shiftListForUpdate.length}");
+          int checkDuplicateApprove = 0;
+
+          /// if 2 duplicated
+          for (var s in shiftList) {
+            if (CommonUtils.isDuplicateShift(s, shiftModel)) {
+              checkDuplicateApprove++;
+            }
+          }
+          print("checkDuplicateApprove $checkDuplicateApprove");
+          if (checkDuplicateApprove == 0 || checkDuplicateApprove == 1) {
             setState(() {
-              isLoading = false;
+              isLoading = true;
             });
-            toastMessageSuccess(JapaneseText.failUpdate, context);
+            bool isSuccess = await WorkerManagementApiService().updateShiftStatus(
+                branch: authProvider.branch,
+                shiftListForUpdate,
+                shiftList[index].jobId!,
+                shiftModel: shiftModel,
+                company: authProvider.myCompany!,
+                myUser: myUser,
+                isFromWorkerManagement: true);
+            if (isSuccess) {
+              await getData();
+              toastMessageSuccess(JapaneseText.successUpdate, context);
+            } else {
+              setState(() {
+                isLoading = false;
+              });
+              toastMessageSuccess(JapaneseText.failUpdate, context);
+            }
+          } else {
+            shiftModel.status = lastStatus;
+            toastMessageError("当日のシフト承認はできません (${DateToAPIHelper.convertDateToString(shiftModel.date!)})。", context);
+            setState(() {});
           }
         },
         title: "本当に確定しますか？",

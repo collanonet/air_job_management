@@ -1,6 +1,12 @@
 import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/worker_model/search_job.dart';
 
+class ShiftGroup {
+  String id;
+  List<ShiftModel> shiftList;
+  ShiftGroup({required this.id, required this.shiftList});
+}
+
 class ShiftModel {
   String? jobId; //For applicant download
   String? fullName; //For applicant download

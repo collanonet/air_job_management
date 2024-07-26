@@ -14,6 +14,14 @@ class CommonUtils {
     await Future.delayed(Duration(milliseconds: mili));
   }
 
+  static isDuplicateShift(ShiftModel s1, ShiftModel s2) {
+    if (s1.status == "approved" && s1.date == s2.date && s1.startWorkTime == s2.startWorkTime && s1.endWorkTime == s2.endWorkTime) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   static String formatTimeTwoDigits(String time) {
     if (time == null || time == "null" || time.isEmpty) {
       return "";
