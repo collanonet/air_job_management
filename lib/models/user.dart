@@ -51,6 +51,7 @@ class MyUser {
   String? basic_resident_register_url;
   String? driver_license_url;
   String? passport_url;
+  String? passport_url_back;
   String? resident_record_url;
   String? number_card_url;
   List<Review>? reviews;
@@ -59,6 +60,7 @@ class MyUser {
 
   MyUser(
       {this.affiliation,
+      this.passport_url_back,
       this.reviews,
       this.annualLeave,
       this.qualificationFields,
@@ -113,6 +115,7 @@ class MyUser {
 
   factory MyUser.fromJson(Map<String, dynamic> json) {
     return MyUser(
+      passport_url_back: json["passport_url_back"],
       street: json["street"],
       fcmToken: json["fcmToken"] ?? "",
       annualLeave: json["annualLeave"] ?? 18,
@@ -168,6 +171,7 @@ class MyUser {
   }
 
   Map<String, dynamic> toJson() => {
+        "passport_url_back": passport_url_back,
         "street": street,
         "fcmToken": fcmToken,
         "annualLeave": annualLeave,

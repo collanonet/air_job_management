@@ -541,6 +541,7 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
   buildIdentificationCard() {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       const TitleWidget(title: "本人確認"),
+      AppSize.spaceHeight16,
       SizedBox(
         width: AppSize.getDeviceWidth(context),
         height: 250,
@@ -552,15 +553,17 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                displayImage("${myUser?.number_card_url}"),
+                displayImage("${myUser?.number_card_url}", "マイナンバーカード"),
                 AppSize.spaceWidth32,
-                displayImage("${myUser?.passport_url}"),
+                displayImage("${myUser?.passport_url}", "パスポート (フロント)"),
                 AppSize.spaceWidth32,
-                displayImage("${myUser?.resident_record_url}"),
+                displayImage("${myUser?.passport_url_back}", "パスポート (戻る)"),
                 AppSize.spaceWidth32,
-                displayImage("${myUser?.driver_license_url}"),
+                displayImage("${myUser?.resident_record_url}", "住民票"),
                 AppSize.spaceWidth32,
-                displayImage("${myUser?.basic_resident_register_url}"),
+                displayImage("${myUser?.driver_license_url}", "運転免許証"),
+                AppSize.spaceWidth32,
+                displayImage("${myUser?.basic_resident_register_url}", "住民基本台帳"),
               ],
             ),
           ),
@@ -569,15 +572,24 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
     ]);
   }
 
-  displayImage(String? url) {
+  displayImage(String? url, String title) {
     if (url == null || url == "") {
       return const SizedBox();
     }
-    return Container(
-      width: 320,
-      height: 200,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Color(0xffF0F3F5)),
-      child: Image.network(url),
+    return Column(
+      children: [
+        Text(
+          title,
+          style: kNormalText,
+        ),
+        AppSize.spaceHeight5,
+        Container(
+          width: 320,
+          height: 200,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: Color(0xffF0F3F5)),
+          child: Image.network(url),
+        ),
+      ],
     );
   }
 

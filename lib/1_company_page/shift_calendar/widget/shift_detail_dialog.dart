@@ -739,11 +739,16 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
       jobPosting = await JobPostingApiService().getAJobPosting(workerManagement?.jobId ?? "");
       applicantList = await WorkerManagementApiService().getAllApplicantByJobId(workerManagement?.jobId ?? "");
       requestList = await RequestApiService().getRequestByDate(DateToAPIHelper.convertDateToString(widget.date), workerManagement?.jobId ?? "");
-      print("Request Length ${requestList.length}");
       for (var job in applicantList) {
-        var dateList = job.shiftList!.map((e) => e.date).toList();
-        if (job.myUser != null && dateList.contains(widget.date)) {
-          countApplyPeople++;
+        // var dateList = job.shiftList!.map((e) => e.date).toList();
+        // if (job.myUser != null && dateList.contains(widget.date)) {
+        //   countApplyPeople++;
+        // }
+        ///count only approved shift
+        for (var shift in job.shiftList!) {
+          if (shift.status == "approved" && job.myUser != null && CommonUtils.isTheSameDate(shift.date, widget.date)) {
+            countApplyPeople++;
+          }
         }
       }
       setState(() {
