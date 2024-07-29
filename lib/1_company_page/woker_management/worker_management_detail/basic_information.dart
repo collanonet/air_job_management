@@ -555,9 +555,9 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
               children: [
                 displayImage("${myUser?.number_card_url}", "マイナンバーカード"),
                 AppSize.spaceWidth32,
-                displayImage("${myUser?.passport_url}", "パスポート (フロント)"),
+                displayImage("${myUser?.passport_url}", "パスポート (表面)"),
                 AppSize.spaceWidth32,
-                displayImage("${myUser?.passport_url_back}", "パスポート (戻る)"),
+                displayImage("${myUser?.passport_url_back}", "パスポート (裏面)"),
                 AppSize.spaceWidth32,
                 displayImage("${myUser?.resident_record_url}", "住民票"),
                 AppSize.spaceWidth32,
