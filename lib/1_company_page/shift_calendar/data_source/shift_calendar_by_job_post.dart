@@ -28,10 +28,10 @@ class ShiftCalendarDataSourceByJobPosting extends DataGridSource {
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>((e) {
       CountByDate job = e.value;
+      print("Job job.date ${job.date} ${job.countOnlyApprove}/${job.recruitNumber}");
       if (job.recruitNumber == null || job.recruitNumber == "") {
         job.recruitNumber = "5";
       }
-      // print("Job ${job.date} ${job.count}/${job.recruitNumber}");
       return job.recruitNumber == "0" || job.count == 0
           ? Container(
               margin: const EdgeInsets.all(1),
@@ -43,15 +43,15 @@ class ShiftCalendarDataSourceByJobPosting extends DataGridSource {
                 alignment: Alignment.center,
                 margin: const EdgeInsets.all(1),
                 decoration: BoxDecoration(
-                    color: int.parse(job.recruitNumber) <= job.count ? Colors.green : Colors.orange.withOpacity(0.2),
+                    color: int.parse(job.recruitNumber) <= job.countOnlyApprove ? Colors.green : Colors.orange.withOpacity(0.2),
                     border: Border.all(
-                        width: int.parse(job.recruitNumber) <= job.count ? 0 : 2,
-                        color: int.parse(job.recruitNumber) <= job.count ? Colors.green : AppColor.secondaryColor)),
+                        width: int.parse(job.recruitNumber) <= job.countOnlyApprove ? 0 : 2,
+                        color: int.parse(job.recruitNumber) <= job.countOnlyApprove ? Colors.green : AppColor.secondaryColor)),
                 child: Text(
-                  "${job.count}/${job.recruitNumber}",
+                  "${job.countOnlyApprove}/${job.recruitNumber}",
                   textAlign: TextAlign.center,
-                  style:
-                      kNormalText.copyWith(fontSize: 11, color: int.parse(job.recruitNumber) <= job.count ? Colors.white : Colors.black, height: 1),
+                  style: kNormalText.copyWith(
+                      fontSize: 11, color: int.parse(job.recruitNumber) <= job.countOnlyApprove ? Colors.white : Colors.black, height: 1),
                 ),
               ),
             );

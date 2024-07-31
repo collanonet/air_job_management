@@ -23,12 +23,14 @@ class ShiftModel {
   String? status;
   String? image;
   int applicantCount;
+  int applicantCountOnApprove;
   String recruitmentCount;
   List<String>? userNameList;
   String? isAbsent;
   ShiftModel(
       {this.date,
       this.isAbsent,
+      this.applicantCountOnApprove = 0,
       this.status,
       this.price,
       this.endBreakTime,

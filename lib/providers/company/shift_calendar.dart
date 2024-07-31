@@ -149,6 +149,7 @@ class ShiftCalendarProvider with ChangeNotifier {
   List<WorkerManagement> jobApplyList = [];
 
   getApplicantList(String companyId, String branchId) async {
+    print("Get applicant by $companyId x $branchId");
     jobApplyList = await WorkerManagementApiService().getAllJobApply(companyId, branchId);
     await initializeJobPosting();
     jobTitleList = [ItemSelectModel(title: JapaneseText.all, id: "")];
@@ -184,7 +185,7 @@ class ShiftCalendarProvider with ChangeNotifier {
     for (var job in jobApplyList) {
       for (var shift in job.shiftList!) {
         //For Apply Job List
-        shift.applicantCount = 1;
+        shift.applicantCount = shift.status == "approved" || shift.status == "completed" ? 1 : 0;
         for (var data in rangeDateList) {
           if (CommonUtils.isTheSameDate(data.date, shift.date)) {
             shift.jobId = job.uid;
@@ -215,7 +216,11 @@ class ShiftCalendarProvider with ChangeNotifier {
       data.shiftModelList!.removeWhere((shift) {
         String key = "${shift.date}-${shift.startWorkTime}-${shift.endWorkTime}-${shift.myJob?.uid ?? ""}";
         if (shiftCountMap.containsKey(key)) {
-          shiftCountMap[key] = shiftCountMap[key]! + shift.applicantCount;
+          if (shift.status == "approved" || shift.status == "completed") {
+            shiftCountMap[key] = shiftCountMap[key]! + shift.applicantCount;
+          } else {
+            shiftCountMap[key] = shiftCountMap[key]!;
+          }
           return true;
         } else {
           shiftCountMap[key] = shift.applicantCount;
@@ -282,7 +287,8 @@ class ShiftCalendarProvider with ChangeNotifier {
           for (var seeker in groupData.calendarModels!) {
             for (var shift in shiftList) {
               // print("Shift ${job.userId} - ${shift.date} x ${seeker.date}");
-              if (CommonUtils.isTheSameDate(shift.date!, seeker.date)) {
+              if (CommonUtils.isTheSameDate(shift.date!, seeker.date) &&
+                  (shift.status == "approved" || shift.status == "completed" || shift.status == "pending")) {
                 seeker.shiftModelList = [shift];
                 seeker.jobId = job.jobId;
                 seeker.searchJobId = job.uid;
@@ -311,6 +317,7 @@ class ShiftCalendarProvider with ChangeNotifier {
                 .map((e) => CountByDate(
                     date: DateTime(e.year, e.month, e.day, 0, 0, 0),
                     count: 0,
+                    countOnlyApprove: 0,
                     recruitNumber: j.numberOfRecruit.toString(),
                     jobId: j.uid ?? "",
                     jobApplyId: ""))
@@ -321,6 +328,7 @@ class ShiftCalendarProvider with ChangeNotifier {
         int count = 0;
         for (var date in jobPostingDataTable.countByDate) {
           date.count = 0;
+          date.countOnlyApprove = 0;
           for (var job in jobApplyList) {
             var dateList = job.shiftList!.map((e) => e.date).toList();
             if (job.jobId == date.jobId && dateList.contains(date.date)) {
@@ -328,8 +336,15 @@ class ShiftCalendarProvider with ChangeNotifier {
               date.count++;
               // break;
             }
+            for (var shift in job.shiftList!) {
+              if (CommonUtils.isTheSameDate(date.date, shift.date!) &&
+                  job.jobId == date.jobId &&
+                  (shift.status == "approved" || shift.status == "completed")) {
+                date.countOnlyApprove++;
+              }
+            }
           }
-          // print("Count by date ${date.date} x ${date.count}");
+          // print("Count by date ${date.date} x ${date.countOnlyApprove}");
         }
         jobPostingDataTable.job = j.majorOccupation ?? "Empty";
         jobPostingDataTable.applyCount = count;

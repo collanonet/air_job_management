@@ -22,10 +22,17 @@ class JobPostingDataTable {
 class CountByDate {
   DateTime date;
   int count;
+  int countOnlyApprove;
   String recruitNumber;
   String jobApplyId;
   String jobId;
-  CountByDate({required this.date, required this.count, required this.recruitNumber, required this.jobId, required this.jobApplyId});
+  CountByDate(
+      {required this.date,
+      required this.count,
+      required this.recruitNumber,
+      required this.jobId,
+      required this.jobApplyId,
+      required this.countOnlyApprove});
 }
 
 class JobPosting {

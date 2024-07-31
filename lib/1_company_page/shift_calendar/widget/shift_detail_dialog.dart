@@ -735,6 +735,7 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
 
   getData() async {
     try {
+      countApplyPeople = 0;
       workerManagement = await WorkerManagementApiService().getAJob(widget.jobId);
       jobPosting = await JobPostingApiService().getAJobPosting(workerManagement?.jobId ?? "");
       applicantList = await WorkerManagementApiService().getAllApplicantByJobId(workerManagement?.jobId ?? "");

@@ -29,15 +29,20 @@ class ShiftCalendarDataSource extends DataGridSource {
         cells: row.getCells().map<Widget>((e) {
       CalendarModel calendarModel = e.value;
       ShiftModel? shiftModel;
+      ShiftModel? secondShift;
       for (var shift in calendarModel.shiftModelList!) {
+        print("calendarModel.shiftModelList ${e.columnName} x ${calendarModel.shiftModelList!.length}");
         if (CommonUtils.isTheSameDate(shift.date, DateTime.parse(e.columnName))) {
           ///Add more second shift, because there 2 shift a day, one is reject and one is approve
-          if (shiftModel != null && shift.status == "approved") {
-            shiftModel = shift;
+          if (shiftModel != null) {
+            secondShift = shift;
           } else {
             shiftModel = shift;
           }
         }
+      }
+      if (secondShift?.status == "approved" || secondShift?.status == "completed") {
+        shiftModel = secondShift;
       }
       return shiftModel == null
           ? Container(
