@@ -5,7 +5,6 @@ import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
 import 'package:air_job_management/utils/style.dart';
-import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -498,49 +497,51 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
       // ),
       AppSize.spaceHeight8,
       buildMap(false),
+
+      ///Hide edit map location
       AppSize.spaceHeight16,
-      Center(
-        child: ButtonWidget(
-          title: "地図上で選択",
-          onPress: () {
-            showDialog(
-                context: context,
-                builder: (_) {
-                  return AlertDialog(
-                    content: buildMap(true),
-                    actions: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
-                          SizedBox(
-                              width: 200,
-                              child: ButtonWidget(
-                                radius: 25,
-                                color: AppColor.whiteColor,
-                                title: "キャンセル",
-                                onPress: () => Navigator.pop(context),
-                              )),
-                          AppSize.spaceWidth16,
-                          SizedBox(
-                              width: 200,
-                              child: ButtonWidget(
-                                  radius: 25,
-                                  title: "保存",
-                                  color: AppColor.primaryColor,
-                                  onPress: () {
-                                    Navigator.pop(_);
-                                    provider.latLong.text = selectedLatLng;
-                                    onChangeCamera(provider.latLong.text);
-                                  })),
-                        ]),
-                      )
-                    ],
-                  );
-                });
-          },
-          height: 49,
-        ),
-      )
+      // Center(
+      //   child: ButtonWidget(
+      //     title: "地図上で選択",
+      //     onPress: () {
+      //       showDialog(
+      //           context: context,
+      //           builder: (_) {
+      //             return AlertDialog(
+      //               content: buildMap(true),
+      //               actions: [
+      //                 Padding(
+      //                   padding: const EdgeInsets.all(8.0),
+      //                   child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+      //                     SizedBox(
+      //                         width: 200,
+      //                         child: ButtonWidget(
+      //                           radius: 25,
+      //                           color: AppColor.whiteColor,
+      //                           title: "キャンセル",
+      //                           onPress: () => Navigator.pop(context),
+      //                         )),
+      //                     AppSize.spaceWidth16,
+      //                     SizedBox(
+      //                         width: 200,
+      //                         child: ButtonWidget(
+      //                             radius: 25,
+      //                             title: "保存",
+      //                             color: AppColor.primaryColor,
+      //                             onPress: () {
+      //                               Navigator.pop(_);
+      //                               provider.latLong.text = selectedLatLng;
+      //                               onChangeCamera(provider.latLong.text);
+      //                             })),
+      //                   ]),
+      //                 )
+      //               ],
+      //             );
+      //           });
+      //     },
+      //     height: 49,
+      //   ),
+      // )
     ]);
   }
 

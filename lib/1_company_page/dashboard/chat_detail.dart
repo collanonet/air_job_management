@@ -113,6 +113,7 @@ class _DashboardChatPageState extends State<DashboardChatPage> with AfterBuildMi
           child: ListView.separated(
             controller: scrollController,
             cacheExtent: 10000,
+            reverse: true,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             itemCount: snapshot.data?.docs.length ?? 0,
             itemBuilder: (context, index) {
@@ -124,7 +125,7 @@ class _DashboardChatPageState extends State<DashboardChatPage> with AfterBuildMi
                 oldData = snapshot.data!.docs[index - 1].data()! as Map<String, dynamic>;
               }
               bool isRead = data["isSeen"] ?? false;
-              if(!isMe && !isRead){
+              if (!isMe && !isRead) {
                 //Seen Chat in detail screen
                 MessageApi(widget.myUser.uid!, widget.companyID).updateSeen(snapshot.data!.docs[index].id);
               }
@@ -437,14 +438,14 @@ class _DashboardChatPageState extends State<DashboardChatPage> with AfterBuildMi
     }
   }
 
-  animateListToLatest(){
-    scrollController.animateTo(scrollController.position.maxScrollExtent, duration: const Duration(seconds: 1), curve: Curves.ease);
+  animateListToLatest() {
+    scrollController.animateTo(0, duration: const Duration(seconds: 1), curve: Curves.ease);
   }
 
   @override
   void afterBuild(BuildContext context) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    animateListToLatest();
+    // await Future.delayed(const Duration(milliseconds: 500));
+    // animateListToLatest();
   }
 }
 

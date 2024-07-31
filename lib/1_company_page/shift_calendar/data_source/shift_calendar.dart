@@ -31,7 +31,12 @@ class ShiftCalendarDataSource extends DataGridSource {
       ShiftModel? shiftModel;
       for (var shift in calendarModel.shiftModelList!) {
         if (CommonUtils.isTheSameDate(shift.date, DateTime.parse(e.columnName))) {
-          shiftModel = shift;
+          ///Add more second shift, because there 2 shift a day, one is reject and one is approve
+          if (shiftModel != null && shift.status == "approved") {
+            shiftModel = shift;
+          } else {
+            shiftModel = shift;
+          }
         }
       }
       return shiftModel == null
@@ -43,11 +48,7 @@ class ShiftCalendarDataSource extends DataGridSource {
               alignment: Alignment.center,
               margin: const EdgeInsets.all(1),
               decoration: BoxDecoration(
-                  color: shiftModel.status == "completed"
-                      ? Colors.grey
-                      : shiftModel.status == "approved"
-                          ? AppColor.primaryColor
-                          : Colors.orange.withOpacity(0.2),
+                  color: displayColor(shiftModel)[0],
                   border: Border.all(
                       width: shiftModel.status == "approved" ? 0 : 2,
                       color: shiftModel.status == "completed"
@@ -58,12 +59,28 @@ class ShiftCalendarDataSource extends DataGridSource {
               child: Text(
                 "${shiftModel.startWorkTime}\n~\n${shiftModel.endWorkTime}",
                 textAlign: TextAlign.center,
-                style: kNormalText.copyWith(
-                    fontSize: 11,
-                    color: shiftModel.status == "approved" || shiftModel.status == "completed" ? Colors.white : Colors.black,
-                    height: 1),
+                style: kNormalText.copyWith(fontSize: 11, color: displayColor(shiftModel)[1], height: 1),
               ),
             );
     }).toList());
+  }
+
+  displayColor(ShiftModel shiftModel) {
+    Color textColor = Colors.white;
+    Color bgColor = Colors.white;
+    if (shiftModel.status == "completed") {
+      bgColor = Colors.grey;
+      textColor = Colors.white;
+    } else if (shiftModel.status == "approved") {
+      bgColor = AppColor.primaryColor;
+      textColor = Colors.white;
+    } else if (shiftModel.status == "rejected") {
+      bgColor = Colors.red;
+      textColor = Colors.white;
+    } else {
+      bgColor = Colors.orange.withOpacity(0.2);
+      textColor = Colors.black;
+    }
+    return [bgColor, textColor];
   }
 }

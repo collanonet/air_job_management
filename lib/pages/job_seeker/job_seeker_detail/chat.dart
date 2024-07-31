@@ -170,7 +170,7 @@ class MessageApi {
   }
 
   Stream<QuerySnapshot> get getConversationMessage {
-    return messageRef.orderBy("created_at", descending: false).snapshots();
+    return messageRef.orderBy("created_at", descending: true).snapshots();
   }
 }
 
