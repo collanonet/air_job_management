@@ -144,7 +144,7 @@ class Branch {
       postalCode: json["postalCode"],
       location: json["location"],
       contactNumber: json["contactNumber"],
-      createdAt: json["createdAt"].toDate());
+      createdAt: json["createdAt"] != null ? json["createdAt"].toDate() : DateTime.now());
 
   Map<String, dynamic> toJson() => {
         "lat": lat,
