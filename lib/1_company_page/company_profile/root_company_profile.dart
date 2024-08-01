@@ -4,8 +4,10 @@ import 'package:air_job_management/const/status.dart';
 import 'package:air_job_management/models/company.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company.dart';
+import 'package:air_job_management/utils/my_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
@@ -73,9 +75,18 @@ class _RootCompanyPageState extends State<RootCompanyPage> with AfterBuildMixin 
             AppSize.spaceHeight20,
             tabSelection(),
             AppSize.spaceHeight16,
-            Text(
-              "ホーム　＞　${authProvider.selectedMenu}",
-              style: kNormalText.copyWith(fontSize: 12, color: AppColor.primaryColor),
+            InkWell(
+              onTap: () {
+                if (authProvider.branch?.id != "") {
+                  context.go(MyRoute.companyDashboard);
+                } else {
+                  toastMessageError("You already at home of company profile", context);
+                }
+              },
+              child: Text(
+                "ホーム　＞　${authProvider.selectedMenu}",
+                style: kNormalText.copyWith(fontSize: 12, color: AppColor.primaryColor),
+              ),
             ),
             AppSize.spaceHeight16,
             if (authProvider.selectedMenu == authProvider.tabMenu[0]) CompanyProfilePage() else CompanyBranchPage(),

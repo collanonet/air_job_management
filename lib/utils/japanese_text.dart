@@ -32,12 +32,12 @@ class JapaneseText {
   static String rejected = "キャンセル";
   static String pending = "保留中";
 
-  static String expWelcome = "未経験歓迎";
+  static String expWelcome = "車通勤可";
   static String mealsAvailable = "まかないあり";
   static String freeClothing = "服装自由";
   static String freeHairStyleAndColor = "髪型/ヘアカラー自由";
   static String transportationProvided = "交通費支給";
-  static String motorCycleCarCommutingPossible = "バイク/車通勤可";
+  static String motorCycleCarCommutingPossible = "バイク通勤可";
   static String bicycleCommutingPossible = "自転車通勤可";
 
   static String jobDescription = "仕事内容";

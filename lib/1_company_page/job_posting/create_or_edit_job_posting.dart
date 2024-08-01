@@ -323,9 +323,17 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "ホーム　＞　求人一覧",
-          style: kNormalText.copyWith(fontSize: 12, color: AppColor.primaryColor),
+        Row(
+          children: [
+            InkWell(
+              onTap: () => context.go(MyRoute.companyJobPosting),
+              child: Text(
+                "ホーム　＞　",
+                style: kNormalText.copyWith(fontSize: 12, color: AppColor.primaryColor),
+              ),
+            ),
+            Text(provider.selectedMenu, style: kNormalText.copyWith(fontSize: 12, color: AppColor.primaryColor))
+          ],
         ),
         AppSize.spaceHeight5,
         Stack(
