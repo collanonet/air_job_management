@@ -112,6 +112,10 @@ class JobPostingForCompanyProvider with ChangeNotifier {
   List<String> transportationFeeOptions = [JapaneseText.notProvidedTF, JapaneseText.providedTF, JapaneseText.providedTFOver];
   String? selectedTFOptions = JapaneseText.notProvidedTF;
 
+  initData() {
+    selectedMenu = JapaneseText.companyJobInformation;
+  }
+
   onChangeAllowSmokingInDoor(String menu) {
     selectSmokingInDoor = menu;
     notifyListeners();

@@ -417,6 +417,7 @@ class _CreateOrEditJobPostingPageForCompanyState extends State<CreateOrEditJobPo
 
   @override
   void initState() {
+    Provider.of<JobPostingForCompanyProvider>(context, listen: false).initData();
     Provider.of<JobPostingForCompanyProvider>(context, listen: false).setLoading = true;
     Provider.of<JobPostingForCompanyProvider>(context, listen: false).setAllController = [];
     super.initState();

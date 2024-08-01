@@ -58,7 +58,15 @@ class CompanyApiServices {
 
   Future<String?> updateCompanyBranchInfo(String companyId, List<Branch> branhList) async {
     try {
-      await companyRef.doc(companyId).update({"branch": branhList.map((e) => e.toJson()).toList()});
+      List<Branch> branchs = [];
+      for (var b in branhList) {
+        if (b.createdAt == null && b.id == "") {
+          ///Not add
+        } else {
+          branchs.add(b);
+        }
+      }
+      await companyRef.doc(companyId).update({"branch": branchs.map((e) => e.toJson()).toList()});
       return ConstValue.success;
     } catch (e) {
       print("Error updateCompanyBranchInfo =>> ${e.toString()}");
