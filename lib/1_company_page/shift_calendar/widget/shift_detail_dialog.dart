@@ -47,10 +47,12 @@ class ShiftDetailDialogWidget extends StatefulWidget {
       this.isRequest = false});
 
   @override
-  State<ShiftDetailDialogWidget> createState() => _ShiftDetailDialogWidgetState();
+  State<ShiftDetailDialogWidget> createState() =>
+      _ShiftDetailDialogWidgetState();
 }
 
-class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with AfterBuildMixin {
+class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget>
+    with AfterBuildMixin {
   bool isLoading = true;
   List<WorkerManagement> applicantList = [];
   List<Request> requestList = [];
@@ -82,7 +84,10 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
         child: SizedBox(
           width: AppSize.getDeviceWidth(context) * 0.9,
           height: AppSize.getDeviceHeight(context) * 0.9,
-          child: applicantList.isEmpty && isLoading ? SizedBox(height: 150, child: LoadingWidget(AppColor.primaryColor)) : buildJobDetail(),
+          child: applicantList.isEmpty && isLoading
+              ? SizedBox(
+                  height: 150, child: LoadingWidget(AppColor.primaryColor))
+              : buildJobDetail(),
         ),
       ),
     );
@@ -105,12 +110,20 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
               child: Text(
                 menuTab[0],
                 style: normalTextStyle.copyWith(
-                    fontSize: 16, fontFamily: "Bold", color: selectedTab == menuTab[0] ? Colors.white : AppColor.primaryColor),
+                    fontSize: 16,
+                    fontFamily: "Bold",
+                    color: selectedTab == menuTab[0]
+                        ? Colors.white
+                        : AppColor.primaryColor),
               ),
               decoration: BoxDecoration(
-                  color: selectedTab == menuTab[0] ? AppColor.primaryColor : Colors.white,
+                  color: selectedTab == menuTab[0]
+                      ? AppColor.primaryColor
+                      : Colors.white,
                   border: Border.all(width: 2, color: AppColor.primaryColor),
-                  borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16))),
+                  borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(16),
+                      topLeft: Radius.circular(16))),
             ),
           ),
         ),
@@ -128,13 +141,21 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
               alignment: Alignment.center,
               child: Text(
                 menuTab[1],
-                style:
-                    normalTextStyle.copyWith(fontSize: 16, fontFamily: "Bold", color: selectedTab == menuTab[1] ? Colors.white : AppColor.seaColor),
+                style: normalTextStyle.copyWith(
+                    fontSize: 16,
+                    fontFamily: "Bold",
+                    color: selectedTab == menuTab[1]
+                        ? Colors.white
+                        : AppColor.seaColor),
               ),
               decoration: BoxDecoration(
-                  color: selectedTab == menuTab[1] ? AppColor.seaColor : Colors.white,
+                  color: selectedTab == menuTab[1]
+                      ? AppColor.seaColor
+                      : Colors.white,
                   border: Border.all(width: 2, color: AppColor.seaColor),
-                  borderRadius: const BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16))),
+                  borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(16),
+                      topLeft: Radius.circular(16))),
             ),
           ),
         ),
@@ -168,17 +189,23 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
               children: [
                 Text(
                   jobPosting?.title ?? "",
-                  style: kNormalText.copyWith(fontSize: 16, fontFamily: "Bold", color: AppColor.primaryColor),
+                  style: kNormalText.copyWith(
+                      fontSize: 16,
+                      fontFamily: "Bold",
+                      color: AppColor.primaryColor),
                 ),
                 AppSize.spaceHeight16,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    displayColumn("時間", "${jobPosting?.startTimeHour}－${jobPosting?.endTimeHour}"),
+                    displayColumn("時間",
+                        "${jobPosting?.startTimeHour}－${jobPosting?.endTimeHour}"),
                     horizontalDivider(),
-                    displayColumn("求人の状態", now.isBefore(widget.date) ? "求人中" : "終了した"),
+                    displayColumn(
+                        "求人の状態", now.isBefore(widget.date) ? "求人中" : "終了した"),
                     horizontalDivider(),
-                    displayColumn("公開設定", "${jobPosting?.selectedPublicSetting}"),
+                    displayColumn(
+                        "公開設定", "${jobPosting?.selectedPublicSetting}"),
                     horizontalDivider(),
                     displayColumn("募集人数", "${jobPosting?.numberOfRecruit}"),
                     horizontalDivider(),
@@ -202,7 +229,9 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                       width: 130,
                       child: ButtonWidget(
                         radius: 25,
-                        borderColor: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.primaryColor,
+                        borderColor: selectedTab == menuTab[1]
+                            ? AppColor.seaColor
+                            : AppColor.primaryColor,
                         color: AppColor.whiteColor,
                         title: "確定する",
                         onPress: () {},
@@ -213,7 +242,9 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                       width: 150,
                       child: ButtonWidget(
                         radius: 25,
-                        borderColor: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.primaryColor,
+                        borderColor: selectedTab == menuTab[1]
+                            ? AppColor.seaColor
+                            : AppColor.primaryColor,
                         color: AppColor.whiteColor,
                         title: "不承認にする",
                         onPress: () {},
@@ -238,31 +269,37 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                     ),
                     Expanded(
                       child: Center(
-                        child: Text("年齢/性別", style: normalTextStyle.copyWith(fontSize: 13)),
+                        child: Text("年齢/性別",
+                            style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
                       flex: 2,
                     ),
                     Expanded(
                       child: Center(
-                        child: Text(selectedTab == menuTab[0] ? "電話番号" : "申請理由", style: normalTextStyle.copyWith(fontSize: 13)),
+                        child: Text(selectedTab == menuTab[0] ? "電話番号" : "申請理由",
+                            style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
                       flex: 2,
                     ),
                     Expanded(
                       child: Center(
-                        child: Text(selectedTab == menuTab[0] ? "Good率" : "申請カテゴリ", style: normalTextStyle.copyWith(fontSize: 13)),
+                        child: Text(
+                            selectedTab == menuTab[0] ? "Good率" : "申請カテゴリ",
+                            style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
                       flex: selectedTab == menuTab[0] ? 1 : 2,
                     ),
                     Expanded(
                       child: Center(
-                        child: Text(selectedTab == menuTab[0] ? "稼働回数" : "詳細", style: normalTextStyle.copyWith(fontSize: 13)),
+                        child: Text(selectedTab == menuTab[0] ? "稼働回数" : "詳細",
+                            style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
                       flex: selectedTab == menuTab[0] ? 1 : 2,
                     ),
                     Expanded(
                       child: Center(
-                        child: Text("状態", style: normalTextStyle.copyWith(fontSize: 13)),
+                        child: Text("状態",
+                            style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
                       flex: selectedTab == menuTab[0] ? 4 : 5,
                     ),
@@ -276,8 +313,12 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         var job = applicantList[index];
-                        var dateList = job.shiftList!.map((e) => e.date).toList();
-                        return job.myUser == null || !dateList.contains(widget.date) ? const SizedBox() : buildUserApplyList(job, index);
+                        var dateList =
+                            job.shiftList!.map((e) => e.date).toList();
+                        return job.myUser == null ||
+                                !dateList.contains(widget.date)
+                            ? const SizedBox()
+                            : buildUserApplyList(job, index);
                       })
                 else if (requestList.isEmpty)
                   const Center(
@@ -303,10 +344,14 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
               ? const SizedBox()
               : Container(
                   width: AppSize.getDeviceWidth(context),
-                  padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
+                  padding: const EdgeInsets.only(
+                      top: 16, bottom: 16, left: 32, right: 16),
                   margin: const EdgeInsets.only(bottom: 8, left: 0, right: 0),
                   decoration: BoxDecoration(
-                      color: Colors.transparent, borderRadius: BorderRadius.circular(16), border: Border.all(width: 1, color: AppColor.primaryColor)),
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(16),
+                      border:
+                          Border.all(width: 1, color: AppColor.primaryColor)),
                   child: Row(
                     children: [
                       Expanded(
@@ -324,7 +369,9 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                 errorWidget: (_, __, ___) => Container(
                                   width: 48,
                                   height: 48,
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      color: AppColor.primaryColor),
                                   child: Center(
                                     child: Icon(
                                       Icons.person,
@@ -347,7 +394,9 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                       Expanded(
                                         child: Text(
                                           request.username ?? "",
-                                          style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                                          style: kTitleText.copyWith(
+                                              color: AppColor.primaryColor,
+                                              fontSize: 15),
                                           overflow: TextOverflow.fade,
                                         ),
                                       ),
@@ -366,9 +415,13 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                           padding: const EdgeInsets.only(right: 32),
                           child: Center(
                             child: Text(
-                              calculateAge(DateToAPIHelper.fromApiToLocal(request.myUser!.dob!.replaceAll("-", "/").toString())) +
+                              calculateAge(DateToAPIHelper.fromApiToLocal(
+                                      request.myUser!.dob!
+                                          .replaceAll("-", "/")
+                                          .toString())) +
                                   "   ${request.myUser?.gender}",
-                              style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                              style: kNormalText.copyWith(
+                                  color: AppColor.darkGrey, fontSize: 16),
                               overflow: TextOverflow.fade,
                             ),
                           ),
@@ -379,14 +432,16 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                         child: Center(
                           child: Text(
                             request.reason ?? "",
-                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                            style: kNormalText.copyWith(
+                                color: AppColor.darkGrey, fontSize: 16),
                             overflow: TextOverflow.fade,
                           ),
                         ),
                         flex: 2,
                       ),
                       Expanded(
-                        child: Center(child: CommonUtils.displayRequestType(request)),
+                        child: Center(
+                            child: CommonUtils.displayRequestType(request)),
                         flex: 2,
                       ),
                       Expanded(
@@ -394,7 +449,8 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                             ? Center(
                                 child: Text(
                                   request.date.toString(),
-                                  style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                                  style: kNormalText.copyWith(
+                                      color: AppColor.darkGrey, fontSize: 16),
                                   overflow: TextOverflow.fade,
                                 ),
                               )
@@ -403,11 +459,15 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    request.isUpdateShift == true ? "${request.shiftModel?.startWorkTime}" : "${request.shiftModel?.endWorkTime}",
-                                    style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                                    request.isUpdateShift == true
+                                        ? "${request.shiftModel?.startWorkTime}"
+                                        : "${request.shiftModel?.endWorkTime}",
+                                    style: kNormalText.copyWith(
+                                        color: AppColor.darkGrey, fontSize: 16),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 3, right: 3, top: 3),
+                                    padding: const EdgeInsets.only(
+                                        left: 3, right: 3, top: 3),
                                     child: Icon(
                                       Icons.arrow_forward_ios_sharp,
                                       color: AppColor.seaColor,
@@ -415,8 +475,11 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                     ),
                                   ),
                                   Text(
-                                    request.isUpdateShift == true ? "${request.fromTime}" : "${request.toTime}",
-                                    style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                                    request.isUpdateShift == true
+                                        ? "${request.fromTime}"
+                                        : "${request.toTime}",
+                                    style: kNormalText.copyWith(
+                                        color: AppColor.darkGrey, fontSize: 16),
                                   ),
                                 ],
                               ),
@@ -430,10 +493,15 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                 width: 140,
                                 child: ButtonWidget(
                                   radius: 25,
-                                  borderColor: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.primaryColor,
-                                  color: request.status == "approved" ? AppColor.seaColor : AppColor.whiteColor,
+                                  borderColor: selectedTab == menuTab[1]
+                                      ? AppColor.seaColor
+                                      : AppColor.primaryColor,
+                                  color: request.status == "approved"
+                                      ? AppColor.seaColor
+                                      : AppColor.whiteColor,
                                   title: "確定する",
-                                  onPress: () => updateRequestStatus("確定する", request),
+                                  onPress: () =>
+                                      updateRequestStatus("確定する", request),
                                 ),
                               ),
                               AppSize.spaceWidth8,
@@ -441,10 +509,15 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                 width: 145,
                                 child: ButtonWidget(
                                   radius: 25,
-                                  borderColor: selectedTab == menuTab[1] ? AppColor.seaColor : AppColor.primaryColor,
-                                  color: request.status == "rejected" ? AppColor.seaColor : AppColor.whiteColor,
+                                  borderColor: selectedTab == menuTab[1]
+                                      ? AppColor.seaColor
+                                      : AppColor.primaryColor,
+                                  color: request.status == "rejected"
+                                      ? AppColor.seaColor
+                                      : AppColor.whiteColor,
                                   title: "不承認にする",
-                                  onPress: () => updateRequestStatus("キャンセル", request),
+                                  onPress: () =>
+                                      updateRequestStatus("キャンセル", request),
                                 ),
                               )
                             ],
@@ -465,7 +538,8 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
           setState(() {
             isLoading = true;
           });
-          bool isSuccess = await RequestApiService().updateRequestStatus(request, status, authProvider.myCompany!, authProvider?.branch);
+          bool isSuccess = await RequestApiService().updateRequestStatus(
+              request, status, authProvider.myCompany!, authProvider?.branch);
           if (isSuccess) {
             await getData();
             setState(() {
@@ -495,12 +569,16 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
               ? const SizedBox()
               : Container(
                   width: AppSize.getDeviceWidth(context),
-                  padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
+                  padding: const EdgeInsets.only(
+                      top: 16, bottom: 16, left: 32, right: 16),
                   margin: const EdgeInsets.only(bottom: 8, left: 0, right: 0),
                   decoration: BoxDecoration(
-                      color: job.isSelect == true ? Colors.orange.withOpacity(0.1) : Colors.transparent,
+                      color: job.isSelect == true
+                          ? Colors.orange.withOpacity(0.1)
+                          : Colors.transparent,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(width: 1, color: AppColor.primaryColor)),
+                      border:
+                          Border.all(width: 1, color: AppColor.primaryColor)),
                   child: Row(
                     children: [
                       Expanded(
@@ -518,7 +596,9 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                 errorWidget: (_, __, ___) => Container(
                                   width: 48,
                                   height: 48,
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      color: AppColor.primaryColor),
                                   child: Center(
                                     child: Icon(
                                       Icons.person,
@@ -540,10 +620,13 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          (job.myUser?.nameKanJi != null && job.myUser?.nameKanJi != "")
+                                          (job.myUser?.nameKanJi != null &&
+                                                  job.myUser?.nameKanJi != "")
                                               ? "${job.myUser?.nameKanJi}"
                                               : JapaneseText.empty,
-                                          style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                                          style: kTitleText.copyWith(
+                                              color: AppColor.primaryColor,
+                                              fontSize: 15),
                                           overflow: TextOverflow.fade,
                                         ),
                                       ),
@@ -558,7 +641,8 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                   ),
                                   Text(
                                     job.jobLocation ?? "",
-                                    style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 15),
+                                    style: kNormalText.copyWith(
+                                        color: AppColor.darkGrey, fontSize: 15),
                                     overflow: TextOverflow.fade,
                                   ),
                                 ],
@@ -573,9 +657,13 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                           padding: const EdgeInsets.only(right: 32),
                           child: Center(
                             child: Text(
-                              calculateAge(DateToAPIHelper.fromApiToLocal(job.myUser!.dob!.replaceAll("-", "/").toString())) +
+                              calculateAge(DateToAPIHelper.fromApiToLocal(job
+                                      .myUser!.dob!
+                                      .replaceAll("-", "/")
+                                      .toString())) +
                                   "   ${job.myUser?.gender}",
-                              style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                              style: kNormalText.copyWith(
+                                  color: AppColor.darkGrey, fontSize: 16),
                               overflow: TextOverflow.fade,
                             ),
                           ),
@@ -586,7 +674,8 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                         child: Center(
                           child: Text(
                             "${job.myUser?.phone}",
-                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                            style: kNormalText.copyWith(
+                                color: AppColor.darkGrey, fontSize: 16),
                             overflow: TextOverflow.fade,
                           ),
                         ),
@@ -596,7 +685,8 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                         child: Center(
                           child: Text(
                             "${job.myUser?.rating ?? "95"}%",
-                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                            style: kNormalText.copyWith(
+                                color: AppColor.darkGrey, fontSize: 16),
                             overflow: TextOverflow.fade,
                           ),
                         ),
@@ -606,7 +696,8 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                         child: Center(
                           child: Text(
                             "${job.applyCount}回",
-                            style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                            style: kNormalText.copyWith(
+                                color: AppColor.darkGrey, fontSize: 16),
                             overflow: TextOverflow.fade,
                           ),
                         ),
@@ -620,17 +711,22 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                 width: 140,
                                 child: ButtonWidget(
                                   radius: 25,
-                                  color: shift.status == "completed" || shift.status == "canceled"
+                                  color: shift.status == "completed" ||
+                                          shift.status == "canceled"
                                       ? Colors.grey
                                       : shift.status == "approved"
                                           ? AppColor.primaryColor
                                           : AppColor.whiteColor,
                                   title: "確定する",
                                   onPress: () {
-                                    if (shift.status != "completed" && shift.status != "canceled") {
-                                      updateJobStatus(job.shiftList!, shift, "確定する", index, job.uid!, job.myUser!);
+                                    if (shift.status != "completed" &&
+                                        shift.status != "canceled") {
+                                      updateJobStatus(job.shiftList!, shift,
+                                          "確定する", index, job.uid!, job.myUser!);
                                     } else {
-                                      toastMessageError("このアクションは完了またはキャンセルされたため、編集できません。", context);
+                                      toastMessageError(
+                                          "このアクションは完了またはキャンセルされたため、編集できません。",
+                                          context);
                                     }
                                   },
                                 ),
@@ -640,17 +736,27 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
                                 width: 145,
                                 child: ButtonWidget(
                                   radius: 25,
-                                  color: shift.status == "completed" || shift.status == "canceled"
+                                  color: shift.status == "completed" ||
+                                          shift.status == "canceled"
                                       ? Colors.grey
                                       : shift.status == "rejected"
                                           ? AppColor.primaryColor
                                           : AppColor.whiteColor,
                                   title: "不承認にする",
                                   onPress: () {
-                                    if (shift.status != "completed" && shift.status != "canceled") {
-                                      updateJobStatus(job.shiftList!, shift, "キャンセル", index, job.uid!, job.myUser!);
+                                    if (shift.status != "completed" &&
+                                        shift.status != "canceled") {
+                                      updateJobStatus(
+                                          job.shiftList!,
+                                          shift,
+                                          "キャンセル",
+                                          index,
+                                          job.uid!,
+                                          job.myUser!);
                                     } else {
-                                      toastMessageError("このアクションは完了またはキャンセルされたため、編集できません。", context);
+                                      toastMessageError(
+                                          "このアクションは完了またはキャンセルされたため、編集できません。",
+                                          context);
                                     }
                                   },
                                 ),
@@ -664,7 +770,8 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
         });
   }
 
-  updateJobStatus(List<ShiftModel> shiftList, ShiftModel shiftModel, String action, int index, String jobId, MyUser myUser) {
+  updateJobStatus(List<ShiftModel> shiftList, ShiftModel shiftModel,
+      String action, int index, String jobId, MyUser myUser) {
     shiftModel.status = action == "確定する" ? "approved" : "rejected";
     shiftList[index] = shiftModel;
     CustomDialog.confirmDialog(
@@ -675,7 +782,12 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
             isLoading = true;
           });
           bool isSuccess = await WorkerManagementApiService().updateShiftStatus(
-              branch: authProvider.branch, shiftList, jobId, myUser: myUser, company: authProvider.myCompany!, shiftModel: shiftModel);
+              branch: authProvider.branch,
+              shiftList,
+              jobId,
+              myUser: myUser,
+              company: authProvider.myCompany!,
+              shiftModel: shiftModel);
           if (isSuccess) {
             await getData();
             setState(() {
@@ -736,10 +848,15 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
   getData() async {
     try {
       countApplyPeople = 0;
-      workerManagement = await WorkerManagementApiService().getAJob(widget.jobId);
-      jobPosting = await JobPostingApiService().getAJobPosting(workerManagement?.jobId ?? "");
-      applicantList = await WorkerManagementApiService().getAllApplicantByJobId(workerManagement?.jobId ?? "");
-      requestList = await RequestApiService().getRequestByDate(DateToAPIHelper.convertDateToString(widget.date), workerManagement?.jobId ?? "");
+      workerManagement =
+          await WorkerManagementApiService().getAJob(widget.jobId);
+      jobPosting = await JobPostingApiService()
+          .getAJobPosting(workerManagement?.jobId ?? "");
+      applicantList = await WorkerManagementApiService()
+          .getAllApplicantByJobId(workerManagement?.jobId ?? "");
+      requestList = await RequestApiService().getRequestByDate(
+          DateToAPIHelper.convertDateToString(widget.date),
+          workerManagement?.jobId ?? "");
       for (var job in applicantList) {
         // var dateList = job.shiftList!.map((e) => e.date).toList();
         // if (job.myUser != null && dateList.contains(widget.date)) {
@@ -747,7 +864,9 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
         // }
         ///count only approved shift
         for (var shift in job.shiftList!) {
-          if (shift.status == "approved" && job.myUser != null && CommonUtils.isTheSameDate(shift.date, widget.date)) {
+          if ((shift.status == "approved" || shift.status == "completed") &&
+              job.myUser != null &&
+              CommonUtils.isTheSameDate(shift.date, widget.date)) {
             countApplyPeople++;
           }
         }
@@ -759,7 +878,8 @@ class _ShiftDetailDialogWidgetState extends State<ShiftDetailDialogWidget> with 
       setState(() {
         isLoading = false;
       });
-      toastMessageError("Shift not found, this shift may deleted in somewhere.", context);
+      toastMessageError(
+          "Shift not found, this shift may deleted in somewhere.", context);
     }
   }
 }
