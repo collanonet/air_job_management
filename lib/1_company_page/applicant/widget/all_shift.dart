@@ -24,23 +24,18 @@ class AllShiftApplicantPage extends StatefulWidget {
   final String id;
   final MyUser myUser;
   final String searchJobId;
-  const AllShiftApplicantPage(
-      {super.key,
-      required this.id,
-      required this.myUser,
-      required this.searchJobId});
+  const AllShiftApplicantPage({super.key, required this.id, required this.myUser, required this.searchJobId});
 
   @override
   State<AllShiftApplicantPage> createState() => _AllShiftApplicantPageState();
 }
 
-class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
-    with AfterBuildMixin {
+class _AllShiftApplicantPageState extends State<AllShiftApplicantPage> with AfterBuildMixin {
   WorkerManagement? workerManagement;
   bool isLoading = true;
   late AuthProvider authProvider;
   List<ShiftModel> shiftList = [];
-  List<DateTime> selectedShift = [];
+  List<int> selectedShift = [];
 
   @override
   void initState() {
@@ -94,11 +89,9 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
                                     title: "確定する",
                                     onPress: () {
                                       if (selectedShift.isNotEmpty) {
-                                        updateMultipleJobStatus(
-                                            "確定する", widget.myUser);
+                                        updateMultipleJobStatus("確定する", widget.myUser);
                                       } else {
-                                        toastMessageError(
-                                            "少なくとも1つ選択してください。", context);
+                                        toastMessageError("少なくとも1つ選択してください。", context);
                                       }
                                     },
                                   ),
@@ -112,11 +105,9 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
                                     title: "不承認にする",
                                     onPress: () {
                                       if (selectedShift.isNotEmpty) {
-                                        updateMultipleJobStatus(
-                                            "キャンセル", widget.myUser);
+                                        updateMultipleJobStatus("キャンセル", widget.myUser);
                                       } else {
-                                        toastMessageError(
-                                            "少なくとも1つ選択してください。", context);
+                                        toastMessageError("少なくとも1つ選択してください。", context);
                                       }
                                     },
                                   ),
@@ -144,22 +135,19 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
                   children: [
                     Expanded(
                       child: Center(
-                        child: Text("求人タイトル",
-                            style: normalTextStyle.copyWith(fontSize: 13)),
+                        child: Text("求人タイトル", style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
                       flex: 3,
                     ),
                     Expanded(
                       child: Center(
-                        child: Text("応募稼働日",
-                            style: normalTextStyle.copyWith(fontSize: 13)),
+                        child: Text("応募稼働日", style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
                       flex: 2,
                     ),
                     Expanded(
                       child: Center(
-                        child: Text("状態",
-                            style: normalTextStyle.copyWith(fontSize: 13)),
+                        child: Text("状態", style: normalTextStyle.copyWith(fontSize: 13)),
                       ),
                       flex: 3,
                     ),
@@ -185,33 +173,27 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
         return ListView.separated(
             itemCount: shiftList.length,
             shrinkWrap: true,
-            separatorBuilder: (context, index) => Padding(
-                padding: EdgeInsets.only(
-                    top: 10, bottom: index + 1 == shiftList.length ? 20 : 0)),
+            separatorBuilder: (context, index) => Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == shiftList.length ? 20 : 0)),
             itemBuilder: (context, index) {
               ShiftModel shift = shiftList[index];
               return InkWell(
                 onTap: () {
-                  if (selectedShift.contains(shift.date)) {
-                    selectedShift.remove(shift.date);
+                  if (selectedShift.contains(index)) {
+                    selectedShift.remove(index);
                   } else {
-                    selectedShift.add(shift.date!);
+                    selectedShift.add(index);
                   }
                   setState(() {});
                 },
                 child: Container(
                   // height: 110,
                   width: AppSize.getDeviceWidth(context),
-                  padding: const EdgeInsets.only(
-                      top: 16, bottom: 16, left: 32, right: 16),
+                  padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
                   margin: const EdgeInsets.only(bottom: 4, left: 0, right: 0),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      color: selectedShift.contains(shift.date)
-                          ? AppColor.primaryColor.withOpacity(0.1)
-                          : Colors.transparent,
-                      border:
-                          Border.all(width: 1, color: AppColor.primaryColor)),
+                      color: selectedShift.contains(shift.date) ? AppColor.primaryColor.withOpacity(0.1) : Colors.transparent,
+                      border: Border.all(width: 1, color: AppColor.primaryColor)),
                   child: Row(
                     children: [
                       Expanded(
@@ -222,9 +204,7 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
                             Container(
                               width: 48,
                               height: 48,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25),
-                                  color: AppColor.primaryColor),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
                               child: Center(
                                 child: Icon(
                                   Icons.folder_outlined,
@@ -243,17 +223,14 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
                                     onTap: () => showDialog(
                                         context: context,
                                         builder: (context) => AlertDialog(
-                                              content:
-                                                  CreateOrEditJobPostingPageForCompany(
+                                              content: CreateOrEditJobPostingPageForCompany(
                                                 isView: true,
                                                 jobPosting: shift.myJob?.uid,
                                               ),
                                             )),
                                     child: Text(
                                       shift.myJob?.title ?? "",
-                                      style: kTitleText.copyWith(
-                                          color: AppColor.primaryColor,
-                                          fontSize: 16),
+                                      style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
                                       overflow: TextOverflow.fade,
                                     ),
                                   ),
@@ -275,8 +252,7 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
                           child: Center(
                             child: Text(
                               "${DateToAPIHelper.convertDateToString(shift.date!)}  ${shift.startWorkTime}〜${shift.endWorkTime}",
-                              style: kNormalText.copyWith(
-                                  color: AppColor.darkGrey, fontSize: 16),
+                              style: kNormalText.copyWith(color: AppColor.darkGrey, fontSize: 16),
                               overflow: TextOverflow.fade,
                             ),
                           ),
@@ -291,22 +267,17 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
                               width: 150,
                               child: ButtonWidget(
                                 radius: 25,
-                                color: shift.status == "completed" ||
-                                        shift.status == "canceled"
+                                color: shift.status == "completed" || shift.status == "canceled"
                                     ? Colors.grey
                                     : shift.status == "approved"
                                         ? AppColor.primaryColor
                                         : AppColor.whiteColor,
                                 title: "確定する",
                                 onPress: () {
-                                  if (shift.status != "completed" &&
-                                      shift.status != "canceled") {
-                                    updateJobStatus(
-                                        index, shift, "確定する", widget.myUser!);
+                                  if (shift.status != "completed" && shift.status != "canceled") {
+                                    updateJobStatus(index, shift, "確定する", widget.myUser!);
                                   } else {
-                                    toastMessageError(
-                                        "このアクションは完了またはキャンセルされたため、編集できません。",
-                                        context);
+                                    toastMessageError("このアクションは完了またはキャンセルされたため、編集できません。", context);
                                   }
                                 },
                               ),
@@ -316,22 +287,17 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
                               width: 150,
                               child: ButtonWidget(
                                 radius: 25,
-                                color: shift.status == "completed" ||
-                                        shift.status == "canceled"
+                                color: shift.status == "completed" || shift.status == "canceled"
                                     ? Colors.grey
                                     : shift.status == "rejected"
                                         ? AppColor.primaryColor
                                         : AppColor.whiteColor,
                                 title: "不承認にする",
                                 onPress: () {
-                                  if (shift.status != "completed" &&
-                                      shift.status != "canceled") {
-                                    updateJobStatus(
-                                        index, shift, "キャンセル", widget.myUser!);
+                                  if (shift.status != "completed" && shift.status != "canceled") {
+                                    updateJobStatus(index, shift, "キャンセル", widget.myUser!);
                                   } else {
-                                    toastMessageError(
-                                        "このアクションは完了またはキャンセルされたため、編集できません。",
-                                        context);
+                                    toastMessageError("このアクションは完了またはキャンセルされたため、編集できません。", context);
                                   }
                                 },
                               ),
@@ -381,8 +347,7 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
     }
   }
 
-  updateJobStatus(
-      int index, ShiftModel shiftModel, String action, MyUser myUser) {
+  updateJobStatus(int index, ShiftModel shiftModel, String action, MyUser myUser) {
     CustomDialog.confirmDialog(
         context: context,
         onApprove: () async {
@@ -397,12 +362,7 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
             isLoading = true;
           });
           bool isSuccess = await WorkerManagementApiService().updateShiftStatus(
-              branch: authProvider.branch,
-              shiftList,
-              widget.id,
-              shiftModel: shiftModel,
-              company: authProvider.myCompany!,
-              myUser: myUser);
+              branch: authProvider.branch, shiftList, widget.id, shiftModel: shiftModel, company: authProvider.myCompany!, myUser: myUser);
           if (isSuccess) {
             await getData();
             toastMessageSuccess(JapaneseText.successUpdate, context);
@@ -431,15 +391,14 @@ class _AllShiftApplicantPageState extends State<AllShiftApplicantPage>
           setState(() {
             isLoading = true;
           });
-          bool isSuccess = await WorkerManagementApiService()
-              .updateShiftStatusForMultipleShift(
-                  branch: authProvider.branch,
-                  shiftList,
-                  widget.id,
-                  status: status,
-                  dateList: selectedShift,
-                  company: authProvider.myCompany!,
-                  myUser: myUser);
+          bool isSuccess = await WorkerManagementApiService().updateShiftStatusForMultipleShift(
+              branch: authProvider.branch,
+              shiftList,
+              widget.id,
+              status: status,
+              selectShiftList: selectedShift,
+              company: authProvider.myCompany!,
+              myUser: myUser);
           if (isSuccess) {
             selectedShift = [];
             await getData();

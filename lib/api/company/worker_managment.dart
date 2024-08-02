@@ -312,8 +312,13 @@ class WorkerManagementApiService {
   }
 
   Future<bool> updateShiftStatusForMultipleShift(List<ShiftModel> shiftList, String jobId,
-      {Branch? branch, Company? company, List<DateTime>? dateList, String? status, MyUser? myUser, bool? isFromWorkerManagement}) async {
+      {Branch? branch, Company? company, List<int>? selectShiftList, String? status, MyUser? myUser, bool? isFromWorkerManagement}) async {
     try {
+      for (int i = 0; i < shiftList.length; i++) {
+        if (selectShiftList!.contains(i) && shiftList[i].status != "completed" && shiftList[i].status != "canceled") {
+          shiftList[i].status = status;
+        }
+      }
       List<String> iDs = shiftList.map((e) => e.jobId.toString()).toList();
       List<ShiftGroup> shiftGroupList = [];
       for (var id in iDs) {
@@ -333,22 +338,24 @@ class WorkerManagementApiService {
         if (company.manager!.isNotEmpty) {
           managerName = company.manager!.first.kanji ?? "";
         }
-        for (var date in dateList!) {
-          await NotificationService.sendEmailApplyShift(
-              token: myUser.fcmToken ?? "",
-              startTime: shiftList.first.startWorkTime ?? "",
-              endTime: shiftList.first.endWorkTime ?? "",
-              branchName: branch?.name ?? "",
-              managerName: managerName,
-              email: myUser.email ?? "",
-              msg: "Your Shift Apply",
-              name: myUser.nameKanJi ?? "",
-              userId: myUser.uid ?? "",
-              companyId: company.uid ?? "",
-              companyName: company.companyName ?? "",
-              branchId: branch?.id ?? "",
-              status: status!,
-              date: DateToAPIHelper.convertDateToString(date));
+        for (int i = 0; i < shiftList.length; i++) {
+          if (selectShiftList!.contains(i)) {
+            await NotificationService.sendEmailApplyShift(
+                token: myUser.fcmToken ?? "",
+                startTime: shiftList.first.startWorkTime ?? "",
+                endTime: shiftList.first.endWorkTime ?? "",
+                branchName: branch?.name ?? "",
+                managerName: managerName,
+                email: myUser.email ?? "",
+                msg: "Your Shift Apply",
+                name: myUser.nameKanJi ?? "",
+                userId: myUser.uid ?? "",
+                companyId: company.uid ?? "",
+                companyName: company.companyName ?? "",
+                branchId: branch?.id ?? "",
+                status: status!,
+                date: DateToAPIHelper.convertDateToString(shiftList[i].date!));
+          }
         }
       }
       return true;

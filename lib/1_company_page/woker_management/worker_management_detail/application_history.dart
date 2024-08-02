@@ -35,7 +35,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
   bool isLoading = true;
   late AuthProvider authProvider;
   List<ShiftModel> shiftList = [];
-  List<DateTime> selectedShift = [];
+  List<int> selectedShift = [];
 
   @override
   void initState() {
@@ -178,10 +178,10 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
               ShiftModel shift = shiftList[index];
               return InkWell(
                 onTap: () {
-                  if (selectedShift.contains(shift.date)) {
-                    selectedShift.remove(shift.date);
+                  if (selectedShift.contains(index)) {
+                    selectedShift.remove(index);
                   } else {
-                    selectedShift.add(shift.date!);
+                    selectedShift.add(index);
                   }
                   setState(() {});
                 },
@@ -191,7 +191,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
                   padding: const EdgeInsets.only(top: 16, bottom: 16, left: 32, right: 16),
                   margin: const EdgeInsets.only(bottom: 4, left: 0, right: 0),
                   decoration: BoxDecoration(
-                      color: selectedShift.contains(shift.date) ? AppColor.primaryColor.withOpacity(0.1) : Colors.transparent,
+                      color: selectedShift.contains(index) ? AppColor.primaryColor.withOpacity(0.1) : Colors.transparent,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(width: 1, color: AppColor.primaryColor)),
                   child: Row(
@@ -423,7 +423,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with Af
               shiftList,
               shiftList.first.jobId ?? "",
               status: status,
-              dateList: selectedShift,
+              selectShiftList: selectedShift,
               company: authProvider.myCompany!,
               myUser: myUser,
               isFromWorkerManagement: true);
