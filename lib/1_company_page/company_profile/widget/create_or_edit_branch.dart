@@ -18,10 +18,12 @@ import '../../../widgets/custom_textfield.dart';
 class CreateOrEditBranchWidget extends StatefulWidget {
   final Branch? branch;
   final int? index;
-  const CreateOrEditBranchWidget({super.key, required this.branch, required this.index});
+  const CreateOrEditBranchWidget(
+      {super.key, required this.branch, required this.index});
 
   @override
-  State<CreateOrEditBranchWidget> createState() => _CreateOrEditBranchWidgetState();
+  State<CreateOrEditBranchWidget> createState() =>
+      _CreateOrEditBranchWidgetState();
 }
 
 class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
@@ -67,19 +69,25 @@ class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
       child: CustomLoadingOverlay(
         isLoading: isLoading,
         child: AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           content: SizedBox(
             width: AppSize.getDeviceHeight(context) * 0.8,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                TitleWidget(title: widget.branch != null ? "支店情報を更新しました" : "新しいブランチを作成する"),
+                TitleWidget(
+                    title:
+                        widget.branch != null ? "支店情報を更新しました" : "新しいブランチを作成する"),
                 AppSize.spaceHeight16,
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.name, style: kNormalText.copyWith(fontSize: 12))),
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(JapaneseText.name,
+                            style: kNormalText.copyWith(fontSize: 12))),
                     AppSize.spaceHeight5,
                     SizedBox(
                       width: AppSize.getDeviceHeight(context) * 0.8,
@@ -98,7 +106,10 @@ class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.postalCode, style: kNormalText.copyWith(fontSize: 12))),
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(JapaneseText.postalCode,
+                                style: kNormalText.copyWith(fontSize: 12))),
                         AppSize.spaceHeight5,
                         SizedBox(
                           width: 150,
@@ -114,7 +125,10 @@ class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Align(alignment: Alignment.centerLeft, child: Text(JapaneseText.location, style: kNormalText.copyWith(fontSize: 12))),
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(JapaneseText.location,
+                                style: kNormalText.copyWith(fontSize: 12))),
                         AppSize.spaceHeight5,
                         SizedBox(
                           width: AppSize.getDeviceHeight(context) * 0.8 - 166,
@@ -131,7 +145,10 @@ class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Align(alignment: Alignment.centerLeft, child: Text("TEL", style: kNormalText.copyWith(fontSize: 12))),
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("TEL",
+                            style: kNormalText.copyWith(fontSize: 12))),
                     AppSize.spaceHeight5,
                     SizedBox(
                       width: 200,
@@ -146,7 +163,8 @@ class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Latitude and Longitude (Ex: 34.xxxxxxxx, 135.xxxxxxxx)", style: kNormalText.copyWith(fontSize: 12)),
+                    Text("L緯度と経度 (例: 34.xxxxxxxx, 135.xxxxxxxx)",
+                        style: kNormalText.copyWith(fontSize: 12)),
                     AppSize.spaceHeight5,
                     SizedBox(
                       width: AppSize.getDeviceWidth(context) * 0.8,
@@ -164,23 +182,30 @@ class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
           actions: [
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
-                SizedBox(
-                    width: 200,
-                    child: ButtonWidget(
-                      radius: 25,
-                      color: AppColor.whiteColor,
-                      title: "キャンセル",
-                      onPress: () {
-                        Navigator.pop(context);
-                      },
-                    )),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 200,
-                  child: ButtonWidget(radius: 25, title: "保存", color: AppColor.primaryColor, onPress: () => onSaveData()),
-                ),
-              ]),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        width: 200,
+                        child: ButtonWidget(
+                          radius: 25,
+                          color: AppColor.whiteColor,
+                          title: "キャンセル",
+                          onPress: () {
+                            Navigator.pop(context);
+                          },
+                        )),
+                    AppSize.spaceWidth16,
+                    SizedBox(
+                      width: 200,
+                      child: ButtonWidget(
+                          radius: 25,
+                          title: "保存",
+                          color: AppColor.primaryColor,
+                          onPress: () => onSaveData()),
+                    ),
+                  ]),
             )
           ],
         ),
@@ -191,9 +216,12 @@ class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
   onSaveData() async {
     if (_formKey.currentState!.validate()) {
       try {
-        bool isInvalid = (latlng.text.isNotEmpty && !latlng.text.contains(", "));
+        bool isInvalid =
+            (latlng.text.isNotEmpty && !latlng.text.contains(", "));
         if (isInvalid) {
-          toastMessageError("無効な緯度と経度 (形式は \"34.xxxxxxxx、135.xxxxxxxx\" である必要があります)", context);
+          toastMessageError(
+              "無効な緯度と経度 (形式は \"34.xxxxxxxx、135.xxxxxxxx\" である必要があります)",
+              context);
         } else {
           setState(() {
             isLoading = true;
@@ -210,29 +238,45 @@ class _CreateOrEditBranchWidgetState extends State<CreateOrEditBranchWidget> {
               lng: latlng.text.isEmpty ? null : latlng.text.split(", ")[1],
               id: DateTime.now().millisecondsSinceEpoch.toString());
           if (widget.branch != null) {
-            branch.id = widget.branch?.id ?? widget.branch!.createdAt!.millisecondsSinceEpoch.toString();
+            branch.id = widget.branch?.id ??
+                widget.branch!.createdAt!.millisecondsSinceEpoch.toString();
             branchList[widget.index!] = branch;
           } else {
             branchList.add(branch);
           }
-          String? isSuccess = await CompanyApiServices().updateCompanyBranchInfo(companyId, branchList);
+          String? isSuccess = await CompanyApiServices()
+              .updateCompanyBranchInfo(companyId, branchList);
           setState(() {
             isLoading = false;
           });
           if (isSuccess == ConstValue.success) {
-            Company? company = await CompanyApiServices().getACompany(companyId);
-            authProvider.onChangeCompany(company, branch: widget.branch != null ? branch : null);
-            toastMessageSuccess(widget.branch != null ? JapaneseText.successUpdate : JapaneseText.successCreate, context);
+            Company? company =
+                await CompanyApiServices().getACompany(companyId);
+            authProvider.onChangeCompany(company,
+                branch: widget.branch != null ? branch : null);
+            toastMessageSuccess(
+                widget.branch != null
+                    ? JapaneseText.successUpdate
+                    : JapaneseText.successCreate,
+                context);
             Navigator.pop(context, true);
           } else {
-            toastMessageSuccess(widget.branch != null ? JapaneseText.failUpdate : JapaneseText.failCreate, context);
+            toastMessageSuccess(
+                widget.branch != null
+                    ? JapaneseText.failUpdate
+                    : JapaneseText.failCreate,
+                context);
           }
         }
       } catch (e) {
         setState(() {
           isLoading = false;
         });
-        toastMessageSuccess(widget.branch != null ? JapaneseText.failUpdate : JapaneseText.failCreate, context);
+        toastMessageSuccess(
+            widget.branch != null
+                ? JapaneseText.failUpdate
+                : JapaneseText.failCreate,
+            context);
       }
     }
   }

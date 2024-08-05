@@ -1,5 +1,7 @@
 import 'package:air_job_management/models/job_posting.dart';
 
+import '../../utils/japanese_text.dart';
+
 class SearchJob {
   String? uid;
   DateTime? createdAt;
@@ -222,9 +224,12 @@ class SearchJob {
 
   List<String>? limitGroupEmail;
 
+  String? transportationFeeOptions;
+
   SearchJob(
       {this.favorite = false,
       this.jobLocation,
+      this.transportationFeeOptions,
       this.applicationDateline,
       this.majorOccupation,
       this.motorCycleCarCommutingPossible,
@@ -408,13 +413,19 @@ class SearchJob {
       this.limitGroupEmail});
 
   factory SearchJob.fromJson(Map<String, dynamic> json) => SearchJob(
-        limitGroupEmail: json["limit_group_email"] != null ? List<String>.from(json["limit_group_email"].map((e) => e)) : [],
+        transportationFeeOptions:
+            json["transportationFeeOptions"] ?? JapaneseText.providedTF,
+        limitGroupEmail: json["limit_group_email"] != null
+            ? List<String>.from(json["limit_group_email"].map((e) => e))
+            : [],
         belongings: json["belongings"] ?? "",
         notes: json["notes"] ?? "",
         jobLocation: json["jobLocation"] ?? "",
         startBreakTimeHour: json["start_break_time_hour"],
         endBreakTimeHour: json["end_break_time_hour"],
-        coverList: json["cover_list"] != null ? List<String>.from(json["cover_list"].map((e) => e)) : [],
+        coverList: json["cover_list"] != null
+            ? List<String>.from(json["cover_list"].map((e) => e))
+            : [],
         applicationDateline: json["applicationDateline"],
         majorOccupation: json["majorOccupation"],
         motorCycleCarCommutingPossible: json["motorCycleCarCommutingPossible"],
@@ -424,7 +435,8 @@ class SearchJob {
         transportExpenseFee: json["transportExpenseFee"],
         emergencyContact: json["emergencyContact"],
         favorite: json["favorite"],
-        createdAt: json["created_at"] != null ? json["created_at"].toDate() : null,
+        createdAt:
+            json["created_at"] != null ? json["created_at"].toDate() : null,
         form: json["form"],
         employment: json["employment"],
         industrialAccident: json["industrial_accident"],
@@ -439,11 +451,14 @@ class SearchJob {
         startDate: json["start_date"],
         endDate: json["end_date"],
         image: json["image"],
-        location: json["location"] == null ? null : Location.fromJson(json["location"]),
+        location: json["location"] == null
+            ? null
+            : Location.fromJson(json["location"]),
         numberOfRecruit: json["number_of_recruit"],
         occupationType: json["occupation_type"],
         occupation: json["occupation"],
-        employmentContractProvisioning: json["employment_contract_provisioning"],
+        employmentContractProvisioning:
+            json["employment_contract_provisioning"],
         employmentType: json["employment_type"],
         trailPeriod: json["trail_period"],
         salaryType: json["salary_type"],
@@ -461,12 +476,20 @@ class SearchJob {
         meals: json["meals"],
         transportExpense: json["transport_expense"],
         isRemoteInterview: json["is_remote_interview"],
-        interviewLocation: json["interview_location"] == null ? null : Location.fromJson(json["interview_location"]),
-        contentOfTheTest: json["content_of_the_test"] != null ? List<String>.from(json["content_of_the_test"].map((e) => e)) : [],
-        statusOfResidence: json["status_of_residence"] != null ? List<String>.from(json["status_of_residence"].map((e) => e)) : [],
+        interviewLocation: json["interview_location"] == null
+            ? null
+            : Location.fromJson(json["interview_location"]),
+        contentOfTheTest: json["content_of_the_test"] != null
+            ? List<String>.from(json["content_of_the_test"].map((e) => e))
+            : [],
+        statusOfResidence: json["status_of_residence"] != null
+            ? List<String>.from(json["status_of_residence"].map((e) => e))
+            : [],
         otherQualification: json["other_qualification"],
-        hotelCleaningLearningItem:
-            json["hotel_cleaning_learning_item"] != null ? List<String>.from(json["hotel_cleaning_learning_item"].map((e) => e)) : [],
+        hotelCleaningLearningItem: json["hotel_cleaning_learning_item"] != null
+            ? List<String>.from(
+                json["hotel_cleaning_learning_item"].map((e) => e))
+            : [],
         desiredGender: json["desired_gender"],
         desiredNationality: json["desired_nationality"],
         necessaryJapanSkill: json["necessary_japan_skill"],
@@ -477,11 +500,15 @@ class SearchJob {
         rehire: json["rehire"],
         severancePay: json["severance_pay"],
         title: json["title"],
-        reviews: json["reviews"] == null ? [] : List<Review>.from(json["reviews"]!.map((x) => Review.fromJson(x))),
+        reviews: json["reviews"] == null
+            ? []
+            : List<Review>.from(
+                json["reviews"]!.map((x) => Review.fromJson(x))),
         salaryRange: json["salaryRange"] ?? "",
         amountOfPayrollFrom: json["amountOfPayrollFrom"] ?? "",
         amountOfPayrollTo: json["amountOfPayrollTo"] ?? "",
-        supplementaryExplanationOfSalary: json["supplementaryExplanationOfSalary"] ?? "",
+        supplementaryExplanationOfSalary:
+            json["supplementaryExplanationOfSalary"] ?? "",
         examinationOfTraining: json["examinationOfTraining"] ?? "",
         eligibilityForApplication: json["eligibilityForApplication"] ?? "",
         offHours: json["offHours"] ?? "",
@@ -499,7 +526,8 @@ class SearchJob {
         winterVacation: json["holiday_winterVacation"] ?? false,
         nurseCareLeave: json["holiday_nurseCareLeave"] ?? false,
         childCareLeave: json["holiday_childCareLeave"] ?? false,
-        prenatalAndPostnatalLeave: json["holiday_prenatalAndPostnatalLeave"] ?? false,
+        prenatalAndPostnatalLeave:
+            json["holiday_prenatalAndPostnatalLeave"] ?? false,
         accordingToOurCalendar: json["holiday_accordingToOurCalendar"] ?? false,
         sundayAndPublicHoliday: json["holiday_sundayAndPublicHoliday"] ?? false,
         fourTwoFiveTwoOff: json["holiday_fourTwoFiveTwoOff"] ?? false,
@@ -509,15 +537,20 @@ class SearchJob {
         socialInsurance2: json["bonus_socialInsurance2"] ?? false,
         bonuses: json["bonus_bonuses"] ?? false,
         mealsAssAvailable: json["bonus_mealsAssAvailable"] ?? false,
-        companyDiscountAvailable: json["bonus_companyDiscountAvailable"] ?? false,
-        employeePromotionAvailable: json["bonus_employeePromotionAvailable"] ?? false,
-        qualificationAcqSupportSystem: json["bonus_qualificationAcqSupportSystem"] ?? false,
+        companyDiscountAvailable:
+            json["bonus_companyDiscountAvailable"] ?? false,
+        employeePromotionAvailable:
+            json["bonus_employeePromotionAvailable"] ?? false,
+        qualificationAcqSupportSystem:
+            json["bonus_qualificationAcqSupportSystem"] ?? false,
         overtimeAllowance: json["bonus_overtimeAllowance"] ?? false,
         lateNightAllowance: json["bonus_lateNightAllowance"] ?? false,
         holidayAllowance: json["bonus_holidayAllowance"] ?? false,
-        dormCompanyHouseHousingAllowanceAvailable: json["bonus_dormCompanyHouseHousingAllowanceAvailable"] ?? false,
+        dormCompanyHouseHousingAllowanceAvailable:
+            json["bonus_dormCompanyHouseHousingAllowanceAvailable"] ?? false,
         qualificationAllowance: json["bonus_qualificationAllowance"] ?? false,
-        perfectAttendanceAllowance: json["bonus_perfectAttendanceAllowance"] ?? false,
+        perfectAttendanceAllowance:
+            json["bonus_perfectAttendanceAllowance"] ?? false,
         familyAllowance: json["bonus_familyAllowance"] ?? false,
         transportRemark: json["transportRemark"] ?? "",
         minimumWorkTerm: json["minimumWorkTerm"] ?? "",
@@ -526,17 +559,21 @@ class SearchJob {
         shiftCycle: json["shiftCycle"] ?? "",
         shiftSubPeriod: json["shiftSubPeriod"] ?? "",
         shiftFixingPeriod: json["shiftFixingPeriod"] ?? "",
-        houseWivesHouseHusbandsWelcome: json["occ_exp_WivesHouseHusbandsWelcome"] ?? false,
+        houseWivesHouseHusbandsWelcome:
+            json["occ_exp_WivesHouseHusbandsWelcome"] ?? false,
         partTimeWelcome: json["occ_exp_partTimeWelcome"] ?? false,
-        universityStudentWelcome: json["occ_exp_universityStudentWelcome"] ?? false,
+        universityStudentWelcome:
+            json["occ_exp_universityStudentWelcome"] ?? false,
         highSchoolStudent: json["occ_exp_highSchoolStudent"] ?? false,
         seniorSupport: json["occ_exp_seniorSupport"] ?? false,
         noEducationRequire: json["occ_exp_noEducationRequire"] ?? false,
         noExpBeginnerIsOk: json["occ_exp_noExpBeginnerIsOk"] ?? false,
         blankOk: json["occ_exp_blankOk"] ?? false,
-        expAndQualifiedPeopleWelcome: json["occ_exp_expAndQualifiedPeopleWelcome"] ?? false,
+        expAndQualifiedPeopleWelcome:
+            json["occ_exp_expAndQualifiedPeopleWelcome"] ?? false,
         shiftSystem2: json["shift_shiftSystem2"] ?? false,
-        youCanChooseTheTimeAndDayOfTheWeek: json["shift_youCanChooseTheTimeAndDayOfTheWeek"] ?? false,
+        youCanChooseTheTimeAndDayOfTheWeek:
+            json["shift_youCanChooseTheTimeAndDayOfTheWeek"] ?? false,
         onlyOnWeekDayOK: json["shift_onlyOnWeekDayOK"] ?? false,
         satSunHolidayOK: json["shift_satSunHolidayOK"] ?? false,
         fourAndMoreDayAWeekOK: json["shift_fourAndMoreDayAWeekOK"] ?? false,
@@ -565,24 +602,34 @@ class SearchJob {
         atmosphereRemark: json["atmosphereRemark"] ?? "",
         livelyWorkplace: json["atmosphere_livelyWorkplace"] ?? false,
         calmWorkplace: json["atmosphere_calmWorkplace"] ?? false,
-        manyInteractionsOutsideOfWork: json["atmosphere_manyInteractionsOutsideOfWork"] ?? false,
-        fewInteractionsOutsideOfWork: json["atmosphere_fewInteractionsOutsideOfWork"] ?? false,
+        manyInteractionsOutsideOfWork:
+            json["atmosphere_manyInteractionsOutsideOfWork"] ?? false,
+        fewInteractionsOutsideOfWork:
+            json["atmosphere_fewInteractionsOutsideOfWork"] ?? false,
         atHome: json["atmosphere_atHome"] ?? false,
         businessLike: json["atmosphere_businessLike"] ?? false,
-        beginnersAreActivelyWorking: json["atmosphere_beginnersAreActivelyWorking"] ?? false,
-        youCanWorkForAlongTime: json["atmosphere_youCanWorkForAlongTime"] ?? false,
-        easyToAdjustToYourConvenience: json["atmosphere_easyToAdjustToYourConvenience"] ?? false,
+        beginnersAreActivelyWorking:
+            json["atmosphere_beginnersAreActivelyWorking"] ?? false,
+        youCanWorkForAlongTime:
+            json["atmosphere_youCanWorkForAlongTime"] ?? false,
+        easyToAdjustToYourConvenience:
+            json["atmosphere_easyToAdjustToYourConvenience"] ?? false,
         scheduledTimeExactly: json["atmosphere_scheduledTimeExactly"] ?? false,
         collaborative: json["atmosphere_collaborative"] ?? false,
-        individualityCanBeUtilized: json["atmosphere_individualityCanBeUtilized"] ?? false,
+        individualityCanBeUtilized:
+            json["atmosphere_individualityCanBeUtilized"] ?? false,
         standingWork: json["atmosphere_standingWork"] ?? false,
         deskWork: json["atmosphere_deskWork"] ?? false,
-        tooMuchInteractionWithCustomers: json["atmosphere_tooMuchInteractionWithCustomers"] ?? false,
-        lessInteractionWithCustomers: json["atmosphere_lessInteractionWithCustomers"] ?? false,
+        tooMuchInteractionWithCustomers:
+            json["atmosphere_tooMuchInteractionWithCustomers"] ?? false,
+        lessInteractionWithCustomers:
+            json["atmosphere_lessInteractionWithCustomers"] ?? false,
         lotsOfManualLabor: json["atmosphere_lotsOfManualLabor"] ?? false,
         littleOfManualLabor: json["atmosphere_littleOfManualLabor"] ?? false,
-        knowledgeAndExperience: json["atmosphere_knowledgeAndExperience"] ?? false,
-        noKnowledgeOrExperienceRequired: json["atmosphere_noKnowledgeOrExperienceRequired"] ?? false,
+        knowledgeAndExperience:
+            json["atmosphere_knowledgeAndExperience"] ?? false,
+        noKnowledgeOrExperienceRequired:
+            json["atmosphere_noKnowledgeOrExperienceRequired"] ?? false,
         dailyWorkFlow: json["dailyWorkFlow"] ?? "",
         exampleOfShiftAndIncome: json["exampleOfShiftAndIncome"] ?? "",
         messageFromSeniorStaff: json["messageFromSeniorStaff"] ?? "",

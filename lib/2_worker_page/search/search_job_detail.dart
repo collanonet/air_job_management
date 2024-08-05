@@ -25,7 +25,14 @@ import 'package:provider/provider.dart';
 import '../../pages/login.dart';
 
 class SearchScreenDetial extends StatefulWidget {
-  SearchScreenDetial({key, required this.info, this.docId, this.index, required this.isFullTime, this.isViewDetail}) : super(key: key);
+  SearchScreenDetial(
+      {key,
+      required this.info,
+      this.docId,
+      this.index,
+      required this.isFullTime,
+      this.isViewDetail})
+      : super(key: key);
   SearchJob info;
   bool? isViewDetail;
   var docId;
@@ -42,11 +49,31 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
   double ratingg = 0.0;
   ScrollController scrollController = ScrollController();
   List<dynamic> conditionList = [
-    {"title": "交通機関", "icon": Icon(Icons.car_crash_rounded)},
-    {"title": "服", "icon": Icon(FontAwesome5Brands.shirtsinbulk)},
-    {"title": "自転車", "icon": Icon(FontAwesome.bicycle)},
-    {"title": "バイク", "icon": Icon(Icons.directions_bike)},
-    {"title": "保険", "icon": Icon(Icons.shield_outlined)}
+    {"title": JapaneseText.expWelcome, "icon": const Icon(FontAwesome.car)},
+    {
+      "title": JapaneseText.mealsAvailable,
+      "icon": const Icon(Icons.fastfood_outlined)
+    },
+    {
+      "title": JapaneseText.freeClothing,
+      "icon": const Icon(FontAwesome.shirtsinbulk)
+    },
+    {
+      "title": JapaneseText.freeHairStyleAndColor,
+      "icon": const Icon(Icons.check_circle)
+    },
+    {
+      "title": JapaneseText.transportationProvided,
+      "icon": const Icon(Icons.directions_bus_rounded)
+    },
+    {
+      "title": JapaneseText.motorCycleCarCommutingPossible,
+      "icon": const Icon(Icons.motorcycle_rounded)
+    },
+    {
+      "title": JapaneseText.bicycleCommutingPossible,
+      "icon": const Icon(Icons.directions_bike)
+    }
   ];
   List<ShiftModel> shiftList = [];
   List<ShiftModel> selectedShiftList = [];
@@ -63,9 +90,13 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
     getCompany();
     DateTime startDate = DateToAPIHelper.fromApiToLocal(widget.info.startDate!);
     DateTime endDate = DateToAPIHelper.fromApiToLocal(widget.info.endDate!);
-    List<DateTime> dateList = [DateToAPIHelper.timeToDateTime(widget.info.startTimeHour!, dateTime: startDate)];
+    List<DateTime> dateList = [
+      DateToAPIHelper.timeToDateTime(widget.info.startTimeHour!,
+          dateTime: startDate)
+    ];
     for (var i = 1; i <= (startDate.difference(endDate).inDays * -1); ++i) {
-      dateList.add(DateTime(startDate.year, startDate.month, startDate.day + i));
+      dateList
+          .add(DateTime(startDate.year, startDate.month, startDate.day + i));
     }
     for (var date in dateList) {
       if (date.isAfter(DateTime.now())) {
@@ -78,12 +109,14 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
             startWorkTime: widget.info.startTimeHour!));
       }
     }
-    companyLatLng = LatLng(double.parse(widget.info.location!.lat!), double.parse(widget.info.location!.lng!));
+    companyLatLng = LatLng(double.parse(widget.info.location!.lat!),
+        double.parse(widget.info.location!.lng!));
     _addMarker(companyLatLng!, "origin", BitmapDescriptor.defaultMarker);
   }
 
   getCompany() async {
-    company = await CompanyApiServices().getACompany(widget.info.companyId ?? "");
+    company =
+        await CompanyApiServices().getACompany(widget.info.companyId ?? "");
     if (mounted) {
       setState(() {});
     }
@@ -112,20 +145,24 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
         backgroundColor: AppColor.primaryColor,
         leadingWidth: 120,
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: InkWell(
-              onTap: () => setState(() {
-                fa.onfav(widget.info.uid);
-                fa.ontap(widget.docId, widget.info);
-              }),
-              child: Icon(
-                Icons.favorite,
-                size: 30,
-                color: fa.lists.contains(widget.info.uid) ? Colors.yellow : Colors.white,
-              ),
-            ),
-          )
+          widget.isViewDetail == true
+              ? const SizedBox()
+              : Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: InkWell(
+                    onTap: () => setState(() {
+                      fa.onfav(widget.info.uid);
+                      fa.ontap(widget.docId, widget.info);
+                    }),
+                    child: Icon(
+                      Icons.favorite,
+                      size: 30,
+                      color: fa.lists.contains(widget.info.uid)
+                          ? Colors.yellow
+                          : Colors.white,
+                    ),
+                  ),
+                )
         ],
       ),
       body: Scrollbar(
@@ -143,8 +180,10 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                       height: AppSize.getDeviceHeight(context) * 0.3,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                            image:
-                                NetworkImage(widget.info.image != null && widget.info.image != "" ? widget.info.image! : ConstValue.defaultBgImage),
+                            image: NetworkImage(widget.info.image != null &&
+                                    widget.info.image != ""
+                                ? widget.info.image!
+                                : ConstValue.defaultBgImage),
                             fit: BoxFit.cover),
                       ),
                     ),
@@ -155,11 +194,17 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                         height: 45,
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         decoration: BoxDecoration(
-                            border: Border.all(color: AppColor.greyColor, width: 1), borderRadius: BorderRadius.circular(16), color: Colors.white),
+                            border:
+                                Border.all(color: AppColor.greyColor, width: 1),
+                            borderRadius: BorderRadius.circular(16),
+                            color: Colors.white),
                         child: Center(
                           child: Text(
-                            CurrencyFormatHelper.displayData(widget.info.hourlyWag),
-                            style: kTitleText.copyWith(fontWeight: FontWeight.w600, color: AppColor.greyColor),
+                            CurrencyFormatHelper.displayData(
+                                widget.info.hourlyWag),
+                            style: kTitleText.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: AppColor.greyColor),
                           ),
                         ),
                       ),
@@ -177,50 +222,55 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                       Center(
                         child: Text(
                           widget.info.title.toString(),
-                          style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 15),
+                          style: kNormalText.copyWith(
+                              color: AppColor.primaryColor, fontSize: 15),
                         ),
                       ),
                       AppSize.spaceHeight8,
                       Text(widget.info.notes.toString()),
-                      AppSize.spaceHeight16,
-                      buildShiftList(),
                       title("待遇"),
                       condition(),
                       divider(),
                       title(JapaneseText.jobDescription),
                       Text(
                         widget.info.description.toString(),
-                        style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                        style: kNormalText.copyWith(
+                            fontSize: 15, fontFamily: "Normal"),
                       ),
                       divider(),
                       title(JapaneseText.belongings),
                       Text(
                         widget.info.belongings.toString(),
-                        style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                        style: kNormalText.copyWith(
+                            fontSize: 15, fontFamily: "Normal"),
                       ),
                       divider(),
                       title("注意事項"),
                       Text(
                         widget.info.notes.toString(),
-                        style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                        style: kNormalText.copyWith(
+                            fontSize: 15, fontFamily: "Normal"),
                       ),
                       divider(),
                       title("持ち物"),
                       Text(
                         "${widget.info.occupationType.toString()}   ${widget.info.majorOccupation.toString()}",
-                        style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                        style: kNormalText.copyWith(
+                            fontSize: 15, fontFamily: "Normal"),
                       ),
                       divider(),
                       title("働くための条件"),
                       Text(
                         "${widget.info.workCatchPhrase}",
-                        style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                        style: kNormalText.copyWith(
+                            fontSize: 15, fontFamily: "Normal"),
                       ),
                       divider(),
                       title('働く場所'),
                       Text(
                         "${widget.info.location?.postalCode}   ${widget.info.jobLocation}\n${widget.info.location?.street} ${widget.info.location?.building}\n${widget.info.location?.accessAddress}",
-                        style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                        style: kNormalText.copyWith(
+                            fontSize: 15, fontFamily: "Normal"),
                       ),
                       divider(),
                       googlemap(context),
@@ -228,6 +278,16 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                       title('アクセス'),
                       Text(widget.info.remarkOfRequirement.toString()),
                       divider(),
+                      Center(
+                        child: Text(
+                          "時給: ${CurrencyFormatHelper.displayDataRightYen(widget.info.hourlyWag)}     交通費: ${widget.info.transportExpenseFee == "0" ? "" : widget.info.transportationFeeOptions}${widget.info.transportExpenseFee == "0" ? "無し" : CurrencyFormatHelper.displayDataRightYen(widget.info.transportExpenseFee)}",
+                          style: kTitleText.copyWith(
+                              color: AppColor.primaryColor, fontSize: 16),
+                        ),
+                      ),
+                      AppSize.spaceHeight16,
+                      AppSize.spaceHeight16,
+                      buildShiftList(),
                       title("評価"),
                       rattingstar(),
                       divider(),
@@ -263,7 +323,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
           : Visibility(
               visible: shiftList.isEmpty ? false : true,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: InkWell(
                   onTap: () async {
                     if (auth.myUser != null) {
@@ -302,7 +363,10 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
   }
 
   showConfirmOrderDialog() {
-    showDialog(context: context, builder: (context) => ConfirmApplyJobDialog(selectedShiftList: selectedShiftList, info: widget.info));
+    showDialog(
+        context: context,
+        builder: (context) => ConfirmApplyJobDialog(
+            selectedShiftList: selectedShiftList, info: widget.info));
   }
 
   buildShiftList() {
@@ -324,9 +388,14 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                       ),
                     ],
                     borderRadius: BorderRadius.circular(5),
-                    border:
-                        Border.all(width: 1, color: selectedShiftList.contains(shiftList[index]) ? AppColor.secondaryColor : AppColor.bgPageColor),
-                    color: selectedShiftList.contains(shiftList[index]) ? const Color(0xffFAFFD3) : AppColor.whiteColor),
+                    border: Border.all(
+                        width: 1,
+                        color: selectedShiftList.contains(shiftList[index])
+                            ? AppColor.secondaryColor
+                            : AppColor.bgPageColor),
+                    color: selectedShiftList.contains(shiftList[index])
+                        ? const Color(0xffFAFFD3)
+                        : AppColor.whiteColor),
                 child: InkWell(
                   onTap: () {
                     setState(() {
@@ -353,13 +422,21 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                                   children: [
                                     Text(
                                       dateTimeToMonthDay(shiftList[index].date),
-                                      style: kNormalText.copyWith(fontFamily: "Bold", fontSize: 13, color: AppColor.primaryColor),
+                                      style: kNormalText.copyWith(
+                                          fontFamily: "Bold",
+                                          fontSize: 13,
+                                          color: AppColor.primaryColor),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(top: 3, left: 5),
+                                      padding: const EdgeInsets.only(
+                                          top: 3, left: 5),
                                       child: Text(
-                                        toJapanWeekDayWithInt(shiftList[index].date!.weekday),
-                                        style: kNormalText.copyWith(fontFamily: "Normal", fontSize: 9, color: AppColor.primaryColor),
+                                        toJapanWeekDayWithInt(
+                                            shiftList[index].date!.weekday),
+                                        style: kNormalText.copyWith(
+                                            fontFamily: "Normal",
+                                            fontSize: 9,
+                                            color: AppColor.primaryColor),
                                       ),
                                     )
                                   ],
@@ -368,12 +445,14 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                               AppSize.spaceWidth16,
                               Text(
                                 "${shiftList[index].startWorkTime} 〜 ${shiftList[index].endWorkTime}",
-                                style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                                style: kNormalText.copyWith(
+                                    fontSize: 15, fontFamily: "Normal"),
                               ),
                               AppSize.spaceWidth16,
                               Text(
                                 "${CurrencyFormatHelper.displayDataRightYen(shiftList[index].price)}",
-                                style: kNormalText.copyWith(fontSize: 15, fontFamily: "Normal"),
+                                style: kNormalText.copyWith(
+                                    fontSize: 15, fontFamily: "Normal"),
                               ),
                             ],
                           ),
@@ -409,7 +488,9 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
-          Text(title, style: kNormalText.copyWith(color: AppColor.primaryColor, fontSize: 15)),
+          Text(title,
+              style: kNormalText.copyWith(
+                  color: AppColor.primaryColor, fontSize: 15)),
         ],
       ),
     );
@@ -445,17 +526,26 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                 AppSize.spaceHeight16,
                 Text(
                   "${company?.companyName}",
-                  style: kNormalText.copyWith(fontFamily: "Bold", fontSize: 20, color: AppColor.primaryColor),
+                  style: kNormalText.copyWith(
+                      fontFamily: "Bold",
+                      fontSize: 20,
+                      color: AppColor.primaryColor),
                 ),
                 AppSize.spaceHeight16,
                 Container(
                   width: 56,
                   height: 26,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), border: Border.all(width: 2, color: AppColor.secondaryColor)),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      border:
+                          Border.all(width: 2, color: AppColor.secondaryColor)),
                   child: Center(
                       child: Text(
                     "GOLD",
-                    style: kNormalText.copyWith(fontFamily: "Bold", fontSize: 12, color: AppColor.secondaryColor),
+                    style: kNormalText.copyWith(
+                        fontFamily: "Bold",
+                        fontSize: 12,
+                        color: AppColor.secondaryColor),
                   )),
                 ),
                 // Text(
@@ -517,38 +607,69 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
           itemCount: conditionList.length,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
-            return Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 5,
-                  ),
-                  child: Card(
-                    child: Container(
-                      width: 80,
-                      // height: 100,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: AppColor.whiteColor, boxShadow: [
-                        BoxShadow(
-                          offset: const Offset(-1, -1),
-                          color: Colors.grey.withOpacity(0.2),
-                          blurRadius: 10,
+            bool isAllow = false;
+            if (index == 0) {
+              isAllow = widget.info.expAndQualifiedPeopleWelcome!;
+            }
+            if (index == 1) {
+              isAllow = widget.info.mealsAssAvailable!;
+            }
+            if (index == 2) {
+              isAllow = widget.info.clothFree!;
+            }
+            if (index == 3) {
+              isAllow = widget.info.hairStyleColorFree!;
+            }
+            if (index == 4) {
+              isAllow = widget.info.transportExpense!;
+            }
+            if (index == 5) {
+              isAllow = widget.info.motorCycleCarCommutingPossible!;
+            }
+            if (index == 6) {
+              isAllow = widget.info.bicycleCommutingPossible!;
+            }
+            return !isAllow
+                ? const SizedBox()
+                : Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 5,
                         ),
-                        BoxShadow(
-                          offset: const Offset(1, 1),
-                          color: Colors.grey.withOpacity(0.2),
-                          blurRadius: 10,
-                        )
-                      ]),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [conditionList[index]["icon"], Text(conditionList[index]["title"])],
+                        child: Card(
+                          child: Container(
+                            // width: 80,
+                            // height: 100,
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: AppColor.whiteColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: const Offset(-1, -1),
+                                    color: Colors.grey.withOpacity(0.2),
+                                    blurRadius: 10,
+                                  ),
+                                  BoxShadow(
+                                    offset: const Offset(1, 1),
+                                    color: Colors.grey.withOpacity(0.2),
+                                    blurRadius: 10,
+                                  )
+                                ]),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                conditionList[index]["icon"],
+                                Text(conditionList[index]["title"])
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              ],
-            );
+                    ],
+                  );
           },
         ),
       ),
@@ -576,7 +697,8 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
 
   _addMarker(LatLng position, String id, BitmapDescriptor descriptor) {
     MarkerId markerId = MarkerId(id);
-    Marker marker = Marker(markerId: markerId, icon: descriptor, position: position);
+    Marker marker =
+        Marker(markerId: markerId, icon: descriptor, position: position);
     markers[markerId] = marker;
   }
 }

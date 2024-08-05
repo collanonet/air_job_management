@@ -1,18 +1,26 @@
+import 'package:air_job_management/api/worker_api/search_api.dart';
 import 'package:air_job_management/providers/company/job_posting.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
+import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../../2_worker_page/search/search_job_detail.dart';
 import '../../../models/job_posting.dart';
+import '../../../models/worker_model/search_job.dart';
 import '../../../utils/style.dart';
 
 class JobPostingCardForCompanyWidget extends StatelessWidget {
   final JobPosting jobPosting;
   final JobPosting? selectedJobPosting;
   final Function onClick;
-  const JobPostingCardForCompanyWidget({super.key, required this.jobPosting, required this.selectedJobPosting, required this.onClick});
+  const JobPostingCardForCompanyWidget(
+      {super.key,
+      required this.jobPosting,
+      required this.selectedJobPosting,
+      required this.onClick});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +30,9 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 4, left: 0, right: 0),
       decoration: BoxDecoration(
-          color: selectedJobPosting == jobPosting ? Colors.orange.withOpacity(0.1) : Colors.transparent,
+          color: selectedJobPosting == jobPosting
+              ? Colors.orange.withOpacity(0.1)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(width: 2, color: AppColor.primaryColor)),
       child: InkWell(
@@ -37,7 +47,9 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
                   Container(
                     width: 48,
                     height: 48,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        color: AppColor.primaryColor),
                     child: Center(
                       child: Icon(
                         Icons.folder_rounded,
@@ -48,10 +60,32 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
                   ),
                   AppSize.spaceWidth16,
                   Expanded(
-                    child: Text(
-                      jobPosting.title ?? "",
-                      style: kTitleText.copyWith(color: AppColor.primaryColor, fontSize: 16),
-                      overflow: TextOverflow.fade,
+                    child: InkWell(
+                      onTap: () async {
+                        SearchJob? searchJob =
+                            await SearchJobApi().getASearchJob(jobPosting.uid!);
+                        if (searchJob != null) {
+                          showDialog(
+                              context: context,
+                              builder: (_) => Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 100, vertical: 32),
+                                    child: SearchScreenDetial(
+                                      info: searchJob,
+                                      isFullTime: false,
+                                      isViewDetail: true,
+                                    ),
+                                  ));
+                        } else {
+                          toastMessageError("Job not found", context);
+                        }
+                      },
+                      child: Text(
+                        jobPosting.title ?? "",
+                        style: kTitleText.copyWith(
+                            color: AppColor.primaryColor, fontSize: 16),
+                        overflow: TextOverflow.fade,
+                      ),
                     ),
                   )
                 ],
@@ -62,7 +96,8 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
               child: Center(
                 child: Text(
                   "${jobPosting.startDate}~${jobPosting.endDate}",
-                  style: kTitleText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                  style: kTitleText.copyWith(
+                      color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),
               ),
@@ -72,7 +107,8 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
               child: Center(
                 child: Text(
                   (jobPosting.majorOccupation ?? ""),
-                  style: kTitleText.copyWith(color: AppColor.darkGrey, fontSize: 16),
+                  style: kTitleText.copyWith(
+                      color: AppColor.darkGrey, fontSize: 16),
                   overflow: TextOverflow.fade,
                 ),
               ),
@@ -81,7 +117,9 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
             Container(
                 width: 190,
                 height: 36,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), color: AppColor.primaryColor),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    color: AppColor.primaryColor),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
@@ -93,7 +131,8 @@ class JobPostingCardForCompanyWidget extends StatelessWidget {
                     child: Center(
                       child: Text(
                         "編集",
-                        style: kTitleText.copyWith(color: AppColor.whiteColor, fontSize: 13),
+                        style: kTitleText.copyWith(
+                            color: AppColor.whiteColor, fontSize: 13),
                         overflow: TextOverflow.fade,
                       ),
                     ),
