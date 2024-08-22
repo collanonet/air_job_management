@@ -358,19 +358,12 @@ class CommonUtils {
     return workDateList.length.toString();
   }
 
-  static calculateTotalAbsent(List<ShiftModel> shiftList, List<EntryExitHistory> entryList, List<DateTime> dateList, String name) {
-    DateTime now = DateTime.now();
-    List<DateTime> dateTimeList = [];
-    for (var date in dateList) {
-      if (CommonUtils.isDateInRange(date, dateList.first, now)) {
-        dateTimeList.add(date);
-      }
-    }
+  static calculateTotalAbsent(List<ShiftModel> shiftList, List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
     List<ShiftModel> scheduleList = shiftList;
     List<ShiftModel> scheduleList2 = [];
     scheduleList2 = [];
     for (var s in scheduleList) {
-      if (dateTimeList.contains(s.date) && s.status == "approved") {
+      if (dateTimeList.contains(s.date) && (s.status == "approved" || s.status == "completed")) {
         scheduleList2.add(s);
       }
     }
@@ -396,13 +389,13 @@ class CommonUtils {
       }
     }
     scheduleList2 = scheduleList2.toSet().toList();
-    List<ShiftModel> returnSchedule = [];
+    List<DateTime> returnSchedule = [];
     for (var s in scheduleList2) {
       if (s.isAbsent == "TRUE") {
-        returnSchedule.add(s);
+        returnSchedule.add(s.date!);
       }
     }
-    return returnSchedule.length.toString();
+    return returnSchedule.toSet().toList().length.toString();
   }
 
   static totalLeaveEarly(List<EntryExitHistory> entryList, List<DateTime> dateTimeList, String name) {
@@ -495,15 +488,15 @@ class CommonUtils {
     ///Working days count - absence days count
     int count = 0;
     String absent = calculateTotalAbsent(shiftList, entryList, dateTimeList, name);
-    List<ShiftModel> filterShift = [];
+    List<String> filterShift = [];
     DateTime startData = dateTimeList.first;
     DateTime endDate = DateTime.now();
     int absentCount = int.parse(absent);
     int shiftCount = 0;
     List<DateTime> dateList = getDateRange(startData, endDate);
-    for (var shift in shiftList) {
-      if (isArrayOfDateContainDate(dateList, shift.date!)) {
-        filterShift.add(shift);
+    for (var entry in entryList) {
+      if (isArrayOfDateContainDate(dateList, DateToAPIHelper.fromApiToLocal(entry.workDate!)) && entry.myUser?.nameKanJi == name) {
+        filterShift.add(entry.workDate!);
       }
     }
     filterShift = filterShift.toSet().toList();
@@ -511,6 +504,9 @@ class CommonUtils {
       shiftCount++;
     }
     count = shiftCount - absentCount;
+    if (count < 0) {
+      count = 0;
+    }
     return count.toString();
   }
 
