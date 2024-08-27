@@ -18,17 +18,30 @@ class ApproveOrRejectWithdrawDialog extends StatefulWidget {
   final String status;
   final WithdrawModel withdrawModel;
   final Function onRefreshData;
-  const ApproveOrRejectWithdrawDialog({super.key, required this.withdrawModel, required this.status, required this.onRefreshData});
+  const ApproveOrRejectWithdrawDialog(
+      {super.key,
+      required this.withdrawModel,
+      required this.status,
+      required this.onRefreshData});
 
   @override
-  State<ApproveOrRejectWithdrawDialog> createState() => _ApproveOrRejectWithdrawDialogState();
+  State<ApproveOrRejectWithdrawDialog> createState() =>
+      _ApproveOrRejectWithdrawDialogState();
 }
 
-class _ApproveOrRejectWithdrawDialogState extends State<ApproveOrRejectWithdrawDialog> {
+class _ApproveOrRejectWithdrawDialogState
+    extends State<ApproveOrRejectWithdrawDialog> {
   bool isLoading = false;
   TextEditingController controller = TextEditingController();
   FilePickerResult? selectedFile;
   String imageUrl = "";
+
+  @override
+  void initState() {
+    imageUrl = widget.withdrawModel.transactionImageUrl ?? "";
+    controller.text = widget.withdrawModel.reason ?? "";
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +111,8 @@ class _ApproveOrRejectWithdrawDialogState extends State<ApproveOrRejectWithdrawD
         ),
         actions: [
           TextButton(
-              onPressed: () => onUpdateRequestStatus(widget.status, widget.withdrawModel),
+              onPressed: () =>
+                  onUpdateRequestStatus(widget.status, widget.withdrawModel),
               child: const Text(
                 "はい",
               )),
@@ -113,8 +127,10 @@ class _ApproveOrRejectWithdrawDialogState extends State<ApproveOrRejectWithdrawD
   }
 
   onSelectFile() async {
-    var file =
-        await FilePicker.platform.pickFiles(type: FileType.custom, allowMultiple: false, allowedExtensions: ["pdf", "jpg", "png", "jpeg", "db"]);
+    var file = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowMultiple: false,
+        allowedExtensions: ["pdf", "jpg", "png", "jpeg", "db"]);
     if (file != null) {
       setState(() {
         selectedFile = file;
@@ -123,24 +139,27 @@ class _ApproveOrRejectWithdrawDialogState extends State<ApproveOrRejectWithdrawD
   }
 
   onUpdateRequestStatus(String status, WithdrawModel withdrawModel) async {
-    if (status == "approved" && selectedFile == null) {
-      toastMessageError("Please pay to worker first after that upload bank transaction here before you can do this action.", context);
+    if (status == "approved" && selectedFile == null || imageUrl == "") {
+      toastMessageError(
+          "このアクションを実行する前に、ここに銀行取引をアップロードした後、まず労働者に支払いを行ってください。", context);
       return;
     }
     if (status == "rejected" && controller.text.isEmpty) {
-      toastMessageError("Please input remark, we need to know why to reject this withdraw request", context);
+      toastMessageError("備考を入力してください。この出金リクエストを拒否する理由を知る必要があります。", context);
       return;
     }
     setState(() {
       isLoading = true;
     });
     if (status == "approved") {
-      imageUrl = await fileToUrl(selectedFile!.files.first.bytes!, "bank_transaction");
+      imageUrl =
+          await fileToUrl(selectedFile!.files.first.bytes!, "bank_transaction");
     }
     widget.withdrawModel.status = status;
     widget.withdrawModel.transactionImageUrl = imageUrl;
     widget.withdrawModel.reason = controller.text;
-    String? success = await WithdrawApiService().approveOrRejectWithdraw(withdrawModel);
+    String? success =
+        await WithdrawApiService().approveOrRejectWithdraw(withdrawModel);
     setState(() {
       isLoading = false;
     });

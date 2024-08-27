@@ -98,9 +98,11 @@ class PrimaryTextField extends StatelessWidget {
                   ]
                 : [],
         decoration: InputDecoration(
+          border: InputBorder.none, // Removes the underline
           hintText: hint,
           prefixIcon: prefix,
-          hintStyle: kNormalText.copyWith(fontFamily: "Normal", fontSize: 16, color: AppColor.greyColor),
+          hintStyle: kNormalText.copyWith(
+              fontFamily: "Normal", fontSize: 16, color: AppColor.greyColor),
           suffixIcon: readOnly
               ? SizedBox()
               : suffix == null
@@ -140,17 +142,19 @@ class PrimaryTextField extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(4),
-            borderSide: BorderSide(color: AppColor.primaryColor, width: borderWidth),
+            borderSide:
+                BorderSide(color: AppColor.primaryColor, width: borderWidth),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(4),
             borderSide: BorderSide(color: Colors.red, width: borderWidth),
           ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(4),
-            borderSide: BorderSide(color: Colors.red, width: borderWidth),
-          ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+          // border: OutlineInputBorder(
+          //   borderRadius: BorderRadius.circular(4),
+          //   borderSide: BorderSide(color: Colors.red, width: borderWidth),
+          // ),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
         ),
       ),
     );
@@ -176,7 +180,9 @@ class FormValidator {
 
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) return "無効な電子メール";
-    bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
+    bool emailValid = RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(value);
     return emailValid ? null : "無効な電子メール";
   }
 }
