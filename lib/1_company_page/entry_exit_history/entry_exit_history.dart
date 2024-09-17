@@ -1076,7 +1076,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
             Padding(
               padding: const EdgeInsets.only(top: 80),
               child: SizedBox(
-                width: 180,
+                width: 240,
                 height: provider.entryExitCalendarByUser.length * 125,
                 child: ListView.builder(
                     itemCount: provider.entryExitCalendarByUser.length,
@@ -1086,7 +1086,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                       return Container(
                         padding: const EdgeInsets.only(bottom: 5),
                         height: 125,
-                        width: 180,
+                        width: 240,
                         child: Row(
                           children: [
                             InkWell(
@@ -1120,10 +1120,10 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                             AppSize.spaceWidth5,
                             Column(
                               children: [
-                                displayDateWidget("所定外", width: 60),
-                                displayDateWidget("法定外", width: 60),
-                                displayDateWidget("法定内", width: 60),
-                                displayDateWidget("休日出勤", width: 60)
+                                displayDateWidget("残業時間合計", width: 120),
+                                displayDateWidget("法定外", width: 120),
+                                displayDateWidget("法定内", width: 120),
+                                displayDateWidget("休日出勤", width: 120)
                               ],
                             )
                           ],
@@ -1278,7 +1278,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                     onPressed: () async {
                       provider.onChangeMonth(DateTime(provider.startDay.year,
                           provider.startDay.month - 1, provider.startDay.day));
-                      onGetData();
+                      refreshData(fromShiftAndWork: true);
                     },
                     icon: Icon(
                       Icons.arrow_back_ios_new_rounded,
@@ -1326,7 +1326,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
                     onPressed: () async {
                       provider.onChangeMonth(DateTime(provider.startDay.year,
                           provider.startDay.month + 1, provider.startDay.day));
-                      onGetData();
+                      refreshData(fromShiftAndWork: true);
                     },
                     icon: Icon(
                       color: AppColor.primaryColor,
@@ -1570,47 +1570,5 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage>
         branch = authProvider.myCompany?.branchList!.first;
       }
     }
-  }
-}
-
-class TwoDimensionalScrollWidget extends StatelessWidget {
-  final Widget child;
-
-  final ScrollController _verticalController = ScrollController();
-  final ScrollController _horizontalController = ScrollController();
-
-  TwoDimensionalScrollWidget({
-    super.key,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scrollbar(
-      thickness: 12.0,
-      trackVisibility: true,
-      interactive: true,
-      controller: _verticalController,
-      scrollbarOrientation: ScrollbarOrientation.right,
-      thumbVisibility: true,
-      child: Scrollbar(
-        thickness: 12.0,
-        trackVisibility: true,
-        interactive: true,
-        controller: _horizontalController,
-        scrollbarOrientation: ScrollbarOrientation.bottom,
-        thumbVisibility: true,
-        notificationPredicate: (ScrollNotification notif) => notif.depth == 1,
-        child: SingleChildScrollView(
-          controller: _verticalController,
-          child: SingleChildScrollView(
-            primary: false,
-            controller: _horizontalController,
-            scrollDirection: Axis.horizontal,
-            child: child,
-          ),
-        ),
-      ),
-    );
   }
 }

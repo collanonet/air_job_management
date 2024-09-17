@@ -252,9 +252,9 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
                             fontSize: 15, fontFamily: "Normal"),
                       ),
                       divider(),
-                      title("持ち物"),
+                      title("職種"),
                       Text(
-                        "${widget.info.occupationType.toString()}   ${widget.info.majorOccupation.toString()}",
+                        widget.info.majorOccupation.toString(),
                         style: kNormalText.copyWith(
                             fontSize: 15, fontFamily: "Normal"),
                       ),

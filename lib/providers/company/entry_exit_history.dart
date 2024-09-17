@@ -27,7 +27,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
     JapaneseText.byMonth,
     JapaneseText.perWorker,
     "勤怠管理一覧",
-    "所定労働時間外一覧"
+    "残業時間一覧"
   ];
   String selectDisplay = JapaneseText.byMonth;
 
@@ -86,9 +86,9 @@ class EntryExitHistoryProvider with ChangeNotifier {
     "超過残業", // Excessive overtime
     "深夜時間", // Midnight
     "休出時間", // Number of holiday work times
-    "実勤務時間", // Actual work hours
-    "総勤務時間", // Total working hours
-    "所定外計", // Total of overtime working hours
+    "実労働時間", // Actual work hours
+    "勤務時間", // Total working hours
+    "残業時間合計", // Total of overtime working hours
   ];
 
   List<WorkerManagement> workManagementList = [];
@@ -301,62 +301,67 @@ class EntryExitHistoryProvider with ChangeNotifier {
   }
 
   getEntryData(String id, {bool shiftAndWork = false}) async {
-    onChangeOverlayLoading(true);
-    companyId = id;
-    branchId = branchId;
-    entryList = await EntryExitApiService().getAllEntryList(id);
-    List<String> userIdList =
-        entryList.map((e) => e.userId!).toList().toSet().toList();
-    var userData = await Future.wait(
-        [for (var id in userIdList) UserApiServices().getProfileUser(id)]);
-    for (var entry in entryList) {
-      for (var user in userData) {
-        if (user!.uid == entry.userId) {
-          entry.myUser = user;
-          break;
+    try {
+      onChangeOverlayLoading(true);
+      companyId = id;
+      branchId = branchId;
+      entryList = await EntryExitApiService().getAllEntryList(id);
+      List<String> userIdList =
+          entryList.map((e) => e.userId!).toList().toSet().toList();
+      var userData = await Future.wait(
+          [for (var id in userIdList) UserApiServices().getProfileUser(id)]);
+      for (var entry in entryList) {
+        for (var user in userData) {
+          if (user!.uid == entry.userId) {
+            entry.myUser = user;
+            break;
+          }
         }
       }
-    }
-    await mapDataForEntryByBranch();
-    if (branchId == "") {
-      userNameList = entryList
-          .map((e) => e.myUser?.nameKanJi ?? "")
-          .toList()
-          .toSet()
-          .toList();
-    } else {
-      userNameList = entryListByBranch
-          .map((e) => e.myUser?.nameKanJi ?? "")
-          .toList()
-          .toSet()
-          .toList();
-    }
-    if (selectedUserName == "" || selectedUserName == null) {
-      selectedUserName = userNameList.first;
-    }
-    mapDataForCalendarByUser();
+      await mapDataForEntryByBranch();
+      if (branchId == "") {
+        userNameList = entryList
+            .map((e) => e.myUser?.nameKanJi ?? "")
+            .toList()
+            .toSet()
+            .toList();
+      } else {
+        userNameList = entryListByBranch
+            .map((e) => e.myUser?.nameKanJi ?? "")
+            .toList()
+            .toSet()
+            .toList();
+      }
+      if (selectedUserName == "" || selectedUserName == null) {
+        selectedUserName = userNameList.first;
+      }
+      mapDataForCalendarByUser();
 
-    ///Improve performance
-    if (shiftAndWork) {
-      await mapDataForShiftAndWorkTime();
-    }
-    jobTitleList = [JapaneseText.all];
-    usernameListForEntryExit = [JapaneseText.all];
-    if (branchId == "") {
-      for (var job in entryList) {
-        jobTitleList.add(job.jobTitle.toString());
-        usernameListForEntryExit.add(job.myUser?.nameKanJi ?? "");
+      ///Improve performance
+      if (shiftAndWork) {
+        await mapDataForShiftAndWorkTime();
       }
-    } else {
-      for (var job in entryListByBranch) {
-        jobTitleList.add(job.jobTitle.toString());
-        usernameListForEntryExit.add(job.myUser?.nameKanJi ?? "");
+      jobTitleList = [JapaneseText.all];
+      usernameListForEntryExit = [JapaneseText.all];
+      if (branchId == "") {
+        for (var job in entryList) {
+          jobTitleList.add(job.jobTitle.toString());
+          usernameListForEntryExit.add(job.myUser?.nameKanJi ?? "");
+        }
+      } else {
+        for (var job in entryListByBranch) {
+          jobTitleList.add(job.jobTitle.toString());
+          usernameListForEntryExit.add(job.myUser?.nameKanJi ?? "");
+        }
       }
+      jobTitleList = jobTitleList.toSet().toList();
+      usernameListForEntryExit = usernameListForEntryExit.toSet().toList();
+      getUserShift(companyId, branchId);
+      onChangeOverlayLoading(false);
+    } catch (e) {
+      print("Error $e");
+      onChangeOverlayLoading(false);
     }
-    jobTitleList = jobTitleList.toSet().toList();
-    usernameListForEntryExit = usernameListForEntryExit.toSet().toList();
-    getUserShift(companyId, branchId);
-    onChangeOverlayLoading(false);
   }
 
   mapDataForEntryByBranch() async {
@@ -439,6 +444,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
   }
 
   mapDataForShiftAndWorkTime() async {
+    print("mapDataForShiftAndWorkTime");
     shiftAndWorkTimeByUserList.clear();
     request.clear();
     var data = await Future.wait([
@@ -452,11 +458,21 @@ class EntryExitHistoryProvider with ChangeNotifier {
     request = data[1] as List<Request>;
     // print("Request between $startDay x $endDay ${request.length}");
     List<EntryExitHistory> afterFilterEntryRangeDate = [];
-    for (var job in entryListByBranch) {
-      DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
-      bool isWithin = CommonUtils.isDateInRange(workDate, startDay, endDay);
-      if (isWithin) {
-        afterFilterEntryRangeDate.add(job);
+    if (branchId == "") {
+      for (var job in entryList) {
+        DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
+        bool isWithin = CommonUtils.isDateInRange(workDate, startDay, endDay);
+        if (isWithin) {
+          afterFilterEntryRangeDate.add(job);
+        }
+      }
+    } else {
+      for (var job in entryListByBranch) {
+        DateTime workDate = DateToAPIHelper.fromApiToLocal(job.workDate!);
+        bool isWithin = CommonUtils.isDateInRange(workDate, startDay, endDay);
+        if (isWithin) {
+          afterFilterEntryRangeDate.add(job);
+        }
       }
     }
 
