@@ -656,7 +656,10 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                                             children: [
                                               ...provider.rowHeaderForAttendanceManagementList.map((e) => Container(
                                                     height: 30,
-                                                    width: provider.rowHeaderForAttendanceManagementList.indexOf(e) == 0 ? 130 : 70,
+                                                    width: provider.rowHeaderForAttendanceManagementList.indexOf(e) == 0 ||
+                                                            e == provider.rowHeaderForAttendanceManagementList.last
+                                                        ? 130
+                                                        : 70,
                                                     margin: const EdgeInsets.symmetric(vertical: 1),
                                                     color: const Color(0xffF0F3F5),
                                                     alignment: Alignment.center,
@@ -722,7 +725,9 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                                             data:
                                                 "${CommonUtils.totalWorkingTimeCutBreakTimeIncludePaidHoliday(provider.entryListByBranch, provider.dateList, data.userName!)}"),
                                         DataTableFixedWidthWidget(
-                                            data: "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, data.userName!)}"),
+                                          data: "${CommonUtils.totalOvertime(provider.entryListByBranch, provider.dateList, data.userName!)}",
+                                          width: 130,
+                                        ),
                                       ],
                                     ),
                                   ],
@@ -831,7 +836,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
               height: 3,
             ),
             summaryCardWidget(
-                title: "総勤務時間",
+                title: "実労働時間",
                 data: "${CommonUtils.totalWorkingTimeCutBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}")
           ],
         ),
