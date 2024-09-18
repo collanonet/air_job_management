@@ -245,7 +245,7 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
 
   void generateApplicantListCSV() {
     // we will declare the list of headers that we want
-    List<String> rowHeader = ["Job Id", "Full Name", "Status", "Job Title", "Rate", "Total Apply Time", "Date"];
+    List<String> rowHeader = ["ジョブID", "氏名", "応募状況", "求人タイトル", "応募回数", "応募日時"];
     // here we will make a 2D array to handle a row
     List<List<dynamic>> rows = [];
     //First add entire row header into our first row
@@ -270,7 +270,7 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
       dataRow.add(shift.fullName.toString());
       dataRow.add(shift.status);
       dataRow.add(shift.jobTitle);
-      dataRow.add("95%");
+      // dataRow.add("95%");
       dataRow.add(shift.applyCount);
       dataRow.add(DateToAPIHelper.convertDateToString(shift.date!));
       rows.add(dataRow);
