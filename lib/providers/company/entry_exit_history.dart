@@ -52,7 +52,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
     "休日出勤", //"Working on holidays",
     // "所労外", //"Outside legal limits",
     // "所労外累計", //"Cumulative total outside legal limits",
-    "実労働時間", //"Total working hours",
+    "勤務時間", //"Total working hours",
   ];
 
   List<String> rowHeaderForAttendanceManagementList = [

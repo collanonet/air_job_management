@@ -836,7 +836,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
               height: 3,
             ),
             summaryCardWidget(
-                title: "実労働時間",
+                title: "勤務時間",
                 data: "${CommonUtils.totalWorkingTimeCutBreakTime(provider.entryListByBranch, provider.dateList, provider.selectedUserName)}")
           ],
         ),
