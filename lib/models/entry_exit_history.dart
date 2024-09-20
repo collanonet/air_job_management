@@ -1,6 +1,7 @@
 import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/user.dart';
 
+import '../utils/japanese_text.dart';
 import 'job_posting.dart';
 
 class EntryExitHistory {
@@ -48,6 +49,7 @@ class EntryExitHistory {
   double? hourlyWage;
   double? totalWage;
   double? transportationFee;
+  String? transportationFeeOptions;
   bool? isConfirm;
   bool? isRequestReview;
   String? correctionStatus;
@@ -56,6 +58,7 @@ class EntryExitHistory {
       {this.uid,
       this.myUser,
       this.isPaidLeave,
+      this.transportationFeeOptions,
       this.workDateToDateTime,
       this.review,
       this.companyId,
@@ -102,6 +105,7 @@ class EntryExitHistory {
       this.correctionStatus});
 
   factory EntryExitHistory.fromJson(Map<String, dynamic> json) => EntryExitHistory(
+        transportationFeeOptions: json["transportationFeeOptions"] ?? JapaneseText.providedTF,
         correctionStatus: json["correctionStatus"] ?? "pending",
         isConfirm: json["isConfirm"] ?? false,
         isRequestReview: json["isRequestReview"] ?? false,
@@ -150,6 +154,7 @@ class EntryExitHistory {
       );
 
   Map<String, dynamic> toJson() => {
+        "transportationFeeOptions": transportationFeeOptions,
         "correctionStatus": correctionStatus,
         "isRequestReview": isRequestReview ?? false,
         "isConfirm": isConfirm ?? false,

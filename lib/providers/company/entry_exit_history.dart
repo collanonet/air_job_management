@@ -58,8 +58,9 @@ class EntryExitHistoryProvider with ChangeNotifier {
   List<String> rowHeaderForAttendanceManagementList = [
     "氏名", //Name
     "職種", //Type Of Work
-    "実出勤日数", //Total of actual work day
-    "総出勤日数", //Total number of day worked
+    "出勤日数",
+    // "実出勤日数", //Total of actual work day
+    // "総出勤日数", //Total number of day worked
     "有休消化", //Paid Leave
     "有休残数", // Remaining number of paid holidays
     "公休日数", // Public Holiday

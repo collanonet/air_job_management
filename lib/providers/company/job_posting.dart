@@ -283,7 +283,6 @@ class JobPostingForCompanyProvider with ChangeNotifier {
     endBreakTime = DateTime(now.year, now.month, now.day, 13, 0, 0);
     jobPosterProfile = [null];
     if (authProvider != null) {
-      print("LatLng ${authProvider.branch?.lat}, ${authProvider.branch?.lng}");
       if (authProvider.branch != null) {
         if (authProvider.branch?.lat != null && authProvider.branch?.lat != null) {
           latLong.text = "${authProvider.branch?.lat}, ${authProvider.branch?.lng}";
@@ -304,6 +303,7 @@ class JobPostingForCompanyProvider with ChangeNotifier {
       building.text = jobPosting?.location?.building ?? "";
       accessAddress.text = jobPosting?.location?.accessAddress ?? "";
       latLong.text = jobPosting!.location!.lat.toString() + ", " + jobPosting!.location!.lng.toString();
+      print("Job Post LatLng ${latLong.text}");
       numberOfRecruitPeople.text = jobPosting?.numberOfRecruit ?? "0";
       hourlyWag.text = jobPosting?.hourlyWag ?? "";
       transportExp.text = jobPosting?.transportExpenseFee ?? "";

@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../pages/job_posting/create_or_edit_job_for_japanese.dart';
+import '../../../widgets/custom_button.dart';
 import '../../../widgets/custom_dropdown_string.dart';
 import '../../../widgets/custom_textfield.dart';
 
@@ -434,67 +435,67 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
           isRequired: true,
         ),
       ),
-      // Align(
-      //     alignment: Alignment.centerLeft,
-      //     child: Text("Latitude and Longitude (Ex: 34.xxxxxxxx, 135.xxxxxxxx)", style: kNormalText.copyWith(fontSize: 12))),
-      // AppSize.spaceHeight5,
-      // Row(
-      //   crossAxisAlignment: CrossAxisAlignment.center,
-      //   children: [
-      // SizedBox(
-      //   width: AppSize.getDeviceWidth(context) * 0.4,
-      //   child: PrimaryTextField(
-      //     hint: "",
-      //     controller: provider.latLong,
-      //     isRequired: true,
-      //     onChange: (v) {
-      //       onChangeCamera(v);
-      //     },
-      //   ),
-      // ),
-      // AppSize.spaceWidth32,
-      //     ButtonWidget(
-      //       title: "地図上で選択",
-      //       onPress: () {
-      //         showDialog(
-      //             context: context,
-      //             builder: (_) {
-      //               return AlertDialog(
-      //                 content: buildMap(true),
-      //                 actions: [
-      //                   Padding(
-      //                     padding: const EdgeInsets.all(8.0),
-      //                     child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
-      //                       SizedBox(
-      //                           width: 200,
-      //                           child: ButtonWidget(
-      //                             radius: 25,
-      //                             color: AppColor.whiteColor,
-      //                             title: "キャンセル",
-      //                             onPress: () => Navigator.pop(context),
-      //                           )),
-      //                       AppSize.spaceWidth16,
-      //                       SizedBox(
-      //                           width: 200,
-      //                           child: ButtonWidget(
-      //                               radius: 25,
-      //                               title: "保存",
-      //                               color: AppColor.primaryColor,
-      //                               onPress: () {
-      //                                 Navigator.pop(_);
-      //                                 provider.latLong.text = selectedLatLng;
-      //                                 onChangeCamera(provider.latLong.text);
-      //                               })),
-      //                     ]),
-      //                   )
-      //                 ],
-      //               );
-      //             });
-      //       },
-      //       height: 49,
-      //     )
-      //   ],
-      // ),
+      Align(
+          alignment: Alignment.centerLeft,
+          child: Text("Latitude and Longitude (Ex: 34.xxxxxxxx, 135.xxxxxxxx)", style: kNormalText.copyWith(fontSize: 12))),
+      AppSize.spaceHeight5,
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: AppSize.getDeviceWidth(context) * 0.4,
+            child: PrimaryTextField(
+              hint: "",
+              controller: provider.latLong,
+              isRequired: true,
+              onChange: (v) {
+                onChangeCamera(v);
+              },
+            ),
+          ),
+          AppSize.spaceWidth32,
+          ButtonWidget(
+            title: "地図上で選択",
+            onPress: () {
+              showDialog(
+                  context: context,
+                  builder: (_) {
+                    return AlertDialog(
+                      content: buildMap(true),
+                      actions: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                            SizedBox(
+                                width: 200,
+                                child: ButtonWidget(
+                                  radius: 25,
+                                  color: AppColor.whiteColor,
+                                  title: "キャンセル",
+                                  onPress: () => Navigator.pop(context),
+                                )),
+                            AppSize.spaceWidth16,
+                            SizedBox(
+                                width: 200,
+                                child: ButtonWidget(
+                                    radius: 25,
+                                    title: "保存",
+                                    color: AppColor.primaryColor,
+                                    onPress: () {
+                                      Navigator.pop(_);
+                                      provider.latLong.text = selectedLatLng;
+                                      onChangeCamera(provider.latLong.text);
+                                    })),
+                          ]),
+                        )
+                      ],
+                    );
+                  });
+            },
+            height: 49,
+          )
+        ],
+      ),
       AppSize.spaceHeight8,
       buildMap(false),
 
@@ -548,6 +549,7 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
   String selectedLatLng = "";
 
   onChangeCamera(String v) async {
+    print("On move $v");
     if (v.toString().contains(", ")) {
       setState(() {
         scanScroll = true;
@@ -567,13 +569,8 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
   final Completer<GoogleMapController> _controller2 = Completer<GoogleMapController>();
   bool scanScroll = false;
   buildMap(bool isScroll) {
-    var latLng;
-    if (provider.latLong.text.isNotEmpty) {
-      var v = provider.latLong.text;
-      latLng = LatLng(double.parse(v.split(", ")[0]), double.parse(v.split(", ")[1]));
-    } else {
-      latLng = LatLng(35.6779346605152, 139.7681053353878);
-    }
+    var v = provider.latLong.text;
+    var latLng = LatLng(double.parse(v.split(", ")[0]), double.parse(v.split(", ")[1]));
     print("LatLng is $latLng");
     return Stack(
       children: [
@@ -621,7 +618,8 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
   }
 
   @override
-  void afterBuild(BuildContext context) {
+  void afterBuild(BuildContext context) async {
+    await Future.delayed(const Duration(seconds: 1));
     if (provider.latLong.text.isNotEmpty) {
       onChangeCamera(provider.latLong.text);
     }
