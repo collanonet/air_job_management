@@ -1321,41 +1321,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                                   ],
                                 )),
                                 columnName: e.toString());
-                          }).toList()
-                          // +
-                          // provider.moreMenuShiftAndWorkTimeByUserList
-                          //     .map((e) => GridColumn(
-                          //         width: 48,
-                          //         label: Center(
-                          //             child: Column(
-                          //           children: [
-                          //             Container(
-                          //               width: 48,
-                          //               height: 30,
-                          //               margin: const EdgeInsets.symmetric(vertical: 1),
-                          //               color: Colors.transparent,
-                          //               alignment: Alignment.center,
-                          //               child: Text(
-                          //                 "",
-                          //                 style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
-                          //               ),
-                          //             ),
-                          //             Container(
-                          //               width: 48,
-                          //               height: 30,
-                          //               margin: const EdgeInsets.symmetric(vertical: 1),
-                          //               color: const Color(0xffF0F3F5),
-                          //               alignment: Alignment.center,
-                          //               child: Text(
-                          //                 e,
-                          //                 style: kNormalText.copyWith(fontSize: 12, fontFamily: "Bold"),
-                          //               ),
-                          //             ),
-                          //           ],
-                          //         )),
-                          //         columnName: e.toString()))
-                          //     .toList()
-                          ),
+                          }).toList()),
                     ),
                   ),
                 ),

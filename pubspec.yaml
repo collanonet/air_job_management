@@ -101,6 +101,8 @@ dependencies:
   firebase_messaging: ^14.6.7
   googleapis_auth: ^1.4.1
 
+  flutter_sticky_widgets: ^0.0.3
+
 dependency_overrides:
   firebase_core_platform_interface: 4.8.0
   intl: ^0.18.0
