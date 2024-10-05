@@ -319,7 +319,7 @@ class EntryExitHistoryProvider with ChangeNotifier {
           }
         }
       }
-      entryList.sort((a, b) => b.myUser!.nameFu!.compareTo(a.myUser!.nameFu!));
+      entryList.sort((a, b) => a.myUser!.nameFu!.compareTo(b.myUser!.nameFu!));
       await mapDataForEntryByBranch();
       if (branchId == "") {
         userNameList = entryList

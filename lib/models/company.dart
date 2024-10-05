@@ -87,10 +87,17 @@ class Company {
         publicDate: json["public_date"],
         homePage: json["home_page"],
         affiliate: json["affiliate"],
-        rePresentative: json["re_presentative"] == null ? null : RePresentative.fromJson(json["re_presentative"]),
-        manager: json["manager"] == null ? [] : List<RePresentative>.from(json["manager"]!.map((x) => RePresentative.fromJson(x))),
+        rePresentative: json["re_presentative"] == null
+            ? null
+            : RePresentative.fromJson(json["re_presentative"]),
+        manager: json["manager"] == null
+            ? []
+            : List<RePresentative>.from(
+                json["manager"]!.map((x) => RePresentative.fromJson(x))),
         content: json["content"],
-        branchList: json["branch"] == null ? [] : List<Branch>.from(json["branch"]!.map((x) => Branch.fromJson(x))),
+        branchList: json["branch"] == null
+            ? []
+            : List<Branch>.from(json["branch"]!.map((x) => Branch.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -118,8 +125,12 @@ class Company {
         "home_page": homePage,
         "affiliate": affiliate,
         "re_presentative": rePresentative?.toJson(),
-        "manager": manager == null ? [] : List<dynamic>.from(manager!.map((x) => x.toJson())),
-        "branch": branchList == null ? [] : List<dynamic>.from(branchList!.map((x) => x.toJson())),
+        "manager": manager == null
+            ? []
+            : List<dynamic>.from(manager!.map((x) => x.toJson())),
+        "branch": branchList == null
+            ? []
+            : List<dynamic>.from(branchList!.map((x) => x.toJson())),
         "content": content,
       };
 }
@@ -133,10 +144,21 @@ class Branch {
   DateTime? createdAt;
   String? lat;
   String? lng;
+  bool? isDelete;
 
-  Branch({this.name, this.postalCode, this.location, this.createdAt, this.contactNumber, this.id, this.lat, this.lng});
+  Branch(
+      {this.name,
+      this.postalCode,
+      this.location,
+      this.createdAt,
+      this.contactNumber,
+      this.id,
+      this.lat,
+      this.lng,
+      this.isDelete});
 
   factory Branch.fromJson(Map<String, dynamic> json) => Branch(
+      isDelete: json["isDelete"] ?? false,
       lat: json["lat"],
       lng: json["lng"],
       id: json["id"],
@@ -144,9 +166,12 @@ class Branch {
       postalCode: json["postalCode"],
       location: json["location"],
       contactNumber: json["contactNumber"],
-      createdAt: json["createdAt"] != null ? json["createdAt"].toDate() : DateTime.now());
+      createdAt: json["createdAt"] != null
+          ? json["createdAt"].toDate()
+          : DateTime.now());
 
   Map<String, dynamic> toJson() => {
+        "isDelete": isDelete ?? false,
         "lat": lat,
         "lng": lng,
         "id": id,

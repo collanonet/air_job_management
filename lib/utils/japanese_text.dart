@@ -9,7 +9,7 @@ class JapaneseText {
 
   static String jobStatusSeekerApproved = "確定済";
   static String jobStatusSeekerCanceled = "不承諾";
-  static String jobStatusSeekerRejected = "辞退済";
+  static String jobStatusSeekerRejected = "不承認"; //辞退済→不承認 Mrs. Takigawa
   static String jobStatusSeekerPending = "確認中";
   static String jobStatusSeekerCompleted = "稼働済";
 
@@ -109,6 +109,8 @@ class JapaneseText {
   static String failCreate = "作成に失敗しました。";
   static String successUpdate = "更新しました。";
   static String failUpdate = "更新に失敗しました。";
+  static String successDelete = "削除成功。";
+  static String failDelete = "削除に失敗しました。";
   static String save = "保存";
   static String add = "追加";
   static String delete = "削除";
