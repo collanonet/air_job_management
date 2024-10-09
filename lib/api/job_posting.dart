@@ -10,8 +10,10 @@ import '../models/worker_model/search_job.dart';
 class JobPostingApiService {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final db = FirebaseFirestore.instance;
-  final CollectionReference jobPostingRef = FirebaseFirestore.instance.collection('search_job');
-  final CollectionReference notificationRef = FirebaseFirestore.instance.collection('mail');
+  final CollectionReference jobPostingRef =
+      FirebaseFirestore.instance.collection('search_job');
+  final CollectionReference notificationRef =
+      FirebaseFirestore.instance.collection('mail');
 
   Future<bool> updateAllJobPosting() async {
     List<String> idList = [
@@ -32,13 +34,15 @@ class JobPostingApiService {
       "yboXYWJaiEXzUkBsohxj",
       "yyknsz0kHr083k1xUAlO",
     ];
-    await Future.wait(idList.map((e) => jobPostingRef.doc(e).update({"is_delete": false})));
+    await Future.wait(
+        idList.map((e) => jobPostingRef.doc(e).update({"is_delete": false})));
     return true;
   }
 
   Future<bool> restorePosting(List<String> restoreId) async {
     try {
-      await Future.wait(restoreId.map((e) => jobPostingRef.doc(e).update({"is_delete": false})));
+      await Future.wait(restoreId
+          .map((e) => jobPostingRef.doc(e).update({"is_delete": false})));
       return true;
     } catch (e) {
       debugPrint("Error restorePosting =>> ${e.toString()}");
@@ -58,15 +62,20 @@ class JobPostingApiService {
 
   Future<List<NotificationModel>> getAllNotification(String branchId) async {
     try {
-      var doc = await notificationRef.where("company_branch", isEqualTo: branchId).where("isSeeker", isEqualTo: true).get();
+      var doc = await notificationRef
+          .where("company_branch", isEqualTo: branchId)
+          .where("isSeeker", isEqualTo: true)
+          .get();
       if (doc.docs.isNotEmpty) {
         List<NotificationModel> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
-          NotificationModel jobPosting = NotificationModel.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          NotificationModel jobPosting = NotificationModel.fromJson(
+              doc.docs[i].data() as Map<String, dynamic>);
           jobPosting.uid = doc.docs[i].id;
           list.add(jobPosting);
         }
         list.sort((a, b) => b.date!.compareTo(a.date!));
+        print("notification list ${list.length}");
         return list;
       } else {
         return [];
@@ -87,14 +96,20 @@ class JobPostingApiService {
     }
   }
 
-  Future<List<JobPosting>> getAllJobPostByCompany(String companyId, String branchId, {bool isFromCalendar = false}) async {
+  Future<List<JobPosting>> getAllJobPostByCompany(
+      String companyId, String branchId,
+      {bool isFromCalendar = false}) async {
     try {
       print("Get all job post $companyId, $branchId, $isFromCalendar");
       var doc;
       if (isFromCalendar) {
-        doc = await jobPostingRef.where("company_id", isEqualTo: companyId).where("branch_id", isEqualTo: branchId).get();
+        doc = await jobPostingRef
+            .where("company_id", isEqualTo: companyId)
+            .where("branch_id", isEqualTo: branchId)
+            .get();
       } else if (branchId == "") {
-        doc = await jobPostingRef.where("company_id", isEqualTo: companyId).get();
+        doc =
+            await jobPostingRef.where("company_id", isEqualTo: companyId).get();
       } else {
         doc = await jobPostingRef
             .where("company_id", isEqualTo: companyId)
@@ -106,7 +121,8 @@ class JobPostingApiService {
       if (doc.docs.isNotEmpty) {
         List<JobPosting> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
-          JobPosting jobPosting = JobPosting.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          JobPosting jobPosting =
+              JobPosting.fromJson(doc.docs[i].data() as Map<String, dynamic>);
           jobPosting.uid = doc.docs[i].id;
           list.add(jobPosting);
         }
@@ -120,7 +136,8 @@ class JobPostingApiService {
     }
   }
 
-  Future<List<JobPosting>> getAllDeletedJobPostByCompany(String companyId, String branchId) async {
+  Future<List<JobPosting>> getAllDeletedJobPostByCompany(
+      String companyId, String branchId) async {
     try {
       var doc = await jobPostingRef
           .where("company_id", isEqualTo: companyId)
@@ -130,7 +147,8 @@ class JobPostingApiService {
       if (doc.docs.isNotEmpty) {
         List<JobPosting> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
-          JobPosting jobPosting = JobPosting.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          JobPosting jobPosting =
+              JobPosting.fromJson(doc.docs[i].data() as Map<String, dynamic>);
           jobPosting.uid = doc.docs[i].id;
           list.add(jobPosting);
         }
@@ -150,7 +168,8 @@ class JobPostingApiService {
       if (doc.docs.isNotEmpty) {
         List<JobPosting> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
-          JobPosting jobPosting = JobPosting.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          JobPosting jobPosting =
+              JobPosting.fromJson(doc.docs[i].data() as Map<String, dynamic>);
           jobPosting.uid = doc.docs[i].id;
           list.add(jobPosting);
         }
@@ -164,13 +183,16 @@ class JobPostingApiService {
     }
   }
 
-  Future<List<JobPosting>> getAllJobPostByCompanyWithoutBranch(String companyId) async {
+  Future<List<JobPosting>> getAllJobPostByCompanyWithoutBranch(
+      String companyId) async {
     try {
-      var doc = await jobPostingRef.where("company_id", isEqualTo: companyId).get();
+      var doc =
+          await jobPostingRef.where("company_id", isEqualTo: companyId).get();
       if (doc.docs.isNotEmpty) {
         List<JobPosting> list = [];
         for (int i = 0; i < doc.docs.length; i++) {
-          JobPosting jobPosting = JobPosting.fromJson(doc.docs[i].data() as Map<String, dynamic>);
+          JobPosting jobPosting =
+              JobPosting.fromJson(doc.docs[i].data() as Map<String, dynamic>);
           jobPosting.uid = doc.docs[i].id;
           list.add(jobPosting);
         }
@@ -189,7 +211,8 @@ class JobPostingApiService {
     try {
       DocumentSnapshot doc = await jobPostingRef.doc(uid).get();
       if (doc.exists) {
-        JobPosting jobPosting = JobPosting.fromJson(doc.data() as Map<String, dynamic>);
+        JobPosting jobPosting =
+            JobPosting.fromJson(doc.data() as Map<String, dynamic>);
         jobPosting.uid = uid;
         return jobPosting;
       } else {
@@ -205,7 +228,8 @@ class JobPostingApiService {
     try {
       DocumentSnapshot doc = await jobPostingRef.doc(uid).get();
       if (doc.exists) {
-        SearchJob jobPosting = SearchJob.fromJson(doc.data() as Map<String, dynamic>);
+        SearchJob jobPosting =
+            SearchJob.fromJson(doc.data() as Map<String, dynamic>);
         jobPosting.uid = uid;
         return jobPosting;
       } else {
@@ -238,10 +262,13 @@ class JobPostingApiService {
     }
   }
 
-  Future<String?> updateJobHistory(String uid, List<UpdateHistory> updateHistoryList) async {
+  Future<String?> updateJobHistory(
+      String uid, List<UpdateHistory> updateHistoryList) async {
     print("UID is $uid");
     try {
-      await jobPostingRef.doc(uid).update({"updateList": updateHistoryList.map((e) => e.toJson())});
+      await jobPostingRef
+          .doc(uid)
+          .update({"updateList": updateHistoryList.map((e) => e.toJson())});
       return ConstValue.success;
     } catch (e) {
       debugPrint("Error updateJobPostingInfo =>> ${e.toString()}");

@@ -37,24 +37,31 @@ class NotificationModel {
       this.entryId});
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
     String shortDes = JapaneseText.empty;
-    DateTime applyDate = json["applyDate"] != null ? json["applyDate"].toDate() : DateTime.now();
+    DateTime applyDate =
+        json["applyDate"] != null ? json["applyDate"].toDate() : DateTime.now();
     if (json["isJobApply"] == true) {
-      shortDes = "応募者の${json["username"] ?? ""}さん ${DateToAPIHelper.convertDateToString(applyDate)}から求人応募がありました。";
+      shortDes =
+          "応募者の${json["username"] ?? ""}さん ${DateToAPIHelper.convertDateToString(applyDate)}から求人応募がありました。";
     }
     if (json["isStartTime"] == true) {
-      shortDes = "ワーカーの${json["username"] ?? ""}さん　${DateToAPIHelper.convertDateToString(applyDate)}のシフトの就業開始時間の変更申請がありました。";
+      shortDes =
+          "ワーカーの${json["username"] ?? ""}さん　${DateToAPIHelper.convertDateToString(applyDate)}のシフトの就業開始時間の変更申請がありました。";
     }
     if (json["isLeaveEarly"] == true) {
-      shortDes = "ワーカーの${json["username"] ?? ""}さん　${DateToAPIHelper.convertDateToString(applyDate)}のシフトの早退申請がありました。";
+      shortDes =
+          "ワーカーの${json["username"] ?? ""}さん　${DateToAPIHelper.convertDateToString(applyDate)}のシフトの早退申請がありました。";
     }
     if (json["isHoliday"] == true) {
-      shortDes = "ワーカーの${json["username"] ?? ""}さん　${DateToAPIHelper.convertDateToString(applyDate)}のシフトの休日申請がありました。";
+      shortDes =
+          "ワーカーの${json["username"] ?? ""}さん　${DateToAPIHelper.convertDateToString(applyDate)}のシフトの休日申請がありました。";
     }
     if (json["entry_correction"] == true) {
       shortDes = json["message"]["text"].toString();
     }
     return NotificationModel(
-        applyDate: json["applyDate"] != null ? json["applyDate"].toDate() : DateTime.now(),
+        applyDate: json["applyDate"] != null
+            ? json["applyDate"].toDate()
+            : DateTime.now(),
         jobId: json["jobId"] ?? "",
         entryId: json["entryId"] ?? "",
         jobPostingId: json["jobPostingId"] ?? "",
@@ -70,6 +77,8 @@ class NotificationModel {
                 : json["message"]["text"].toString(),
         shortDes: shortDes,
         des: json["message"]["text"],
-        date: json["delivery"]["startTime"].toDate());
+        date: json["created_at"] != null
+            ? DateTime.now()
+            : json["created_at"].toDate());
   }
 }
