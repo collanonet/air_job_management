@@ -78,7 +78,7 @@ class NotificationModel {
         shortDes: shortDes,
         des: json["message"]["text"],
         date: json["created_at"] != null
-            ? DateTime.now()
-            : json["created_at"].toDate());
+            ? json["created_at"].toDate()
+            : DateTime.now());
   }
 }
