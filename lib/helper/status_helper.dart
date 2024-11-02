@@ -34,8 +34,10 @@ class StatusHelper {
   static englishToJapan(String status) {
     if (status.contains("approved")) {
       return JapaneseText.hired;
-    } else if (status.contains("canceled") || status.contains("rejected")) {
+    } else if (status.contains("canceled")) {
       return JapaneseText.canceled;
+    } else if (status.contains("rejected")) {
+      return JapaneseText.rejected;
     } else if (status.contains("pending")) {
       return JapaneseText.pending;
     } else {
@@ -48,6 +50,8 @@ class StatusHelper {
       return "approved";
     } else if (status == JapaneseText.canceled) {
       return "canceled";
+    } else if (status == JapaneseText.rejected) {
+      return "rejected";
     } else if (status == JapaneseText.pending) {
       return "pending";
     } else {

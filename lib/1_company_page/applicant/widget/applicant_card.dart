@@ -111,7 +111,9 @@ class ApplicantCardWidget extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Center(
-                  child: job.shiftList!.isNotEmpty ? StatusHelper().displayStatus(job.shiftList!.map((e) => e.status).toString()) : SizedBox(),
+                  child: provider.selectedJobStatus == JapaneseText.all
+                      ? StatusHelper().displayStatus(job.shiftList!.map((e) => e.status).toString())
+                      : StatusHelper().displayStatus(StatusHelper.japanToEnglish(provider.selectedJobStatus).toString()),
                 ),
               ),
               flex: 1,

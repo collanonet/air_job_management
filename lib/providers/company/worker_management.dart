@@ -18,7 +18,7 @@ class WorkerManagementProvider with ChangeNotifier {
   String companyId = "";
   TextEditingController searchController = TextEditingController();
 
-  List<String> jobStatus = [JapaneseText.all, JapaneseText.canceled, JapaneseText.hired, JapaneseText.pending];
+  List<String> jobStatus = [JapaneseText.all, JapaneseText.canceled, JapaneseText.rejected, JapaneseText.hired, JapaneseText.pending];
   String? selectedJobStatus = JapaneseText.all;
 
   String? selectedJobTitle;

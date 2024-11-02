@@ -29,7 +29,7 @@ class JapaneseText {
   static String hired = "確定済";
   static String working = "稼働済";
   static String canceled = "キャンセル";
-  static String rejected = "キャンセル";
+  static String rejected = "拒否された";
   static String pending = "保留中";
 
   static String expWelcome = "車通勤可";
@@ -148,10 +148,8 @@ class JapaneseText {
   static String dontHaveScheduleMessage = "編集するスケジュールがありません。";
   static String dontHaveWorkRecordMessage = "編集する勤務実績がありません。";
 
-  static String canNotCreateAllWorkgroupMessage =
-      "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
-  static String canNotEditAllWorkgroupMessage =
-      "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
+  static String canNotCreateAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を作成できません。";
+  static String canNotEditAllWorkgroupMessage = "すべての作業グループのスケジュールまたは勤務実績を編集することはできません。";
   static String workday = "勤務日";
   static String fixedDayOff = "所定休日";
   static String lawDayOff = "法定休日";
@@ -665,10 +663,8 @@ class JapaneseText {
   static String driveLicenseMoto = "運転免許(原付.二輪)";
   static String forkliftDrivingSkill = "フォークリフト運転技能者";
   static String hazardousMaterialsHandlerABC = "危険物取扱者(甲.乙.丙種)";
-  static String personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel2 =
-      "介護職員初任者研修修了者(ホームヘルパー2級)";
-  static String personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel1 =
-      "介護職員初任者研修修了者(ホームヘルパー1級)";
+  static String personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel2 = "介護職員初任者研修修了者(ホームヘルパー2級)";
+  static String personWhoHasCompletedTrainingForFirstTimeCareWorkersLevel1 = "介護職員初任者研修修了者(ホームヘルパー1級)";
   static String careWorker = "介護福祉士";
   static String nursingCareSupportSpecialist = "介護支援専門員(ケアマネージャー)";
   static String nurseTeacher = "保育士";
@@ -718,8 +714,7 @@ class JapaneseText {
   static String basicResidentRegisterCard = "住民基本台帳カード";
   static String residentRecord = "住民票";
 
-  static String beforeSelectFileMessage =
-      "パスポートの名前、生年月日、性別が記載されているページの写真をアップロードしてください。 \n必ずパスポート原本全体の写真を撮影してください。";
+  static String beforeSelectFileMessage = "パスポートの名前、生年月日、性別が記載されているページの写真をアップロードしてください。 \n必ずパスポート原本全体の写真を撮影してください。";
   static String afterSelectedFileMessage =
       "身分証全体が、鮮明に写っていますか？ パスポートの顔写真入りのページ全体が鮮明に写っている、手ブレ、はみ出し、反射のない写真でなければなりません。 \nまた、身分証明書がエアジョブ上で第三者に開示されることはありません。";
 }
