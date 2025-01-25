@@ -42,7 +42,6 @@ class _HomePageForCompanyState extends State<HomePageForCompany> with AfterBuild
     dashboardPageForCompany = Provider.of<DashboardForCompanyProvider>(context);
     homeProvider = Provider.of<HomeProvider>(context);
     authProvider = Provider.of<AuthProvider>(context);
-    print(homeProvider.selectedItemForCompany);
     return Scaffold(
       backgroundColor: const Color(0xffF0F3F5),
       body: Container(

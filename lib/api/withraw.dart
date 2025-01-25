@@ -10,7 +10,7 @@ class WithdrawApiService {
 
   Future<List<WithdrawModel>> getAllWithdraw(String companyId) async {
     try {
-      var doc = await withdrawRef.get();
+      var doc = await withdrawRef.where("company_id", isEqualTo: companyId).get();
       if (doc.docs.isNotEmpty) {
         List<WithdrawModel> list = [];
         for (int i = 0; i < doc.docs.length; i++) {

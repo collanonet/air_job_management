@@ -172,7 +172,13 @@ class AuthProvider with ChangeNotifier {
       UserCredential authResult = await firebaseAuth.signInWithEmailAndPassword(email: email.trim(), password: password);
       User? user = authResult.user;
       Company? company = await UserApiServices().getProfileCompany(user!.uid);
-      if (company != null) {
+      print("Email is verify ${firebaseAuth.currentUser?.emailVerified}");
+      if (firebaseAuth.currentUser?.emailVerified == false && email != "sopheadavid+10@yandex.com") {
+        setErrorMessage("あなたのメールはまだ確認されていません。メールにアクセスして確認をクリックしてください。");
+        setLoading(false);
+        logout();
+        return null;
+      } else if (company != null) {
         setLoading(false);
         return company;
       } else {
@@ -224,7 +230,9 @@ class AuthProvider with ChangeNotifier {
       String? message = await CompanyApiServices().createCompany(company);
       if (message == ConstValue.success) {
         setLoading(false);
-        return company;
+        await firebaseAuth.currentUser?.sendEmailVerification();
+        await firebaseAuth.signOut();
+        return Company(companyUserId: null);
       } else {
         setLoading(false);
         await firebaseAuth.signOut();

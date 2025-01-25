@@ -40,7 +40,7 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
 
   @override
   void initState() {
-    // email = TextEditingController(text: 'sopheadavid+10@yandex.com');
+    // email = TextEditingController(text: 'sopheadavid+1000@yandex.com');
     // password = TextEditingController(text: '123456789');
     super.initState();
   }
@@ -197,9 +197,14 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
         user = await authProvider.createCompanyAccount(email.text.trim(), password.text.trim());
       }
       if (user != null) {
-        authProvider.setCompany = user;
-        authProvider.onChangeBranch(mainBranch);
-        context.go(MyRoute.companyInformationManagement);
+        if (user.companyUserId != null) {
+          authProvider.setCompany = user;
+          authProvider.onChangeBranch(mainBranch);
+          context.go(MyRoute.companyInformationManagement);
+        } else {
+          authProvider.onChange(true);
+          toastMessageSuccess("会社が正常に作成されました。メールにアクセスして、送信された確認リンクをクリックしてください。", context);
+        }
       } else {
         toastMessageError("${authProvider.errorMessage}", context);
       }

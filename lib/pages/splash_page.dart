@@ -48,65 +48,69 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
   TextEditingController contentController = TextEditingController();
 
   startTime() async {
-    print("Splash called");
-    FirebaseAuth.instance.authStateChanges().listen((user) async {
-      if (GoRouter.of(context).location == "/") {
-        if (user != null) {
-          await FirebaseAuth.instance.currentUser?.reload();
-          bool isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
-          AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
-          MyUser? users = await UserApiServices().getProfileUser(user.uid);
-          Company? company = await UserApiServices().getProfileCompany(user.uid);
-          authProvider.setProfile = users;
-          if (company != null) {
-            authProvider.setCompany = company;
-            authProvider.branch = mainBranch;
-            context.go(MyRoute.companyInformationManagement);
-          } else {
-            if (users!.role == RoleHelper.admin) {
-              context.go(MyRoute.dashboard);
-            } else if (users.role == RoleHelper.worker && isEmailVerified == true) {
-              if (users.isFullTimeStaff == true) {
-                isFullTime = true;
-                context.go(MyRoute.workerSearchJobPage);
-              } else {
-                isFullTime = false;
-                context.go(MyRoute.workerSearchJobPage);
-              }
-            } else if (users.role == RoleHelper.worker && isEmailVerified == false) {
-              MyPageRoute.goToReplace(
-                  context,
-                  VerifyUserEmailPage(
-                    myUser: users,
-                    isFullTime: users.isFullTimeStaff!,
-                  ));
-            }
-          }
+    var user = FirebaseAuth.instance.currentUser;
+    if (GoRouter.of(context).location == "/") {
+      if (user != null) {
+        // await FirebaseAuth.instance.currentUser?.reload();
+        bool isEmailVerified = FirebaseAuth.instance.currentUser!.emailVerified;
+        AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
+        MyUser? users = await UserApiServices().getProfileUser(user.uid);
+        Company? company = await UserApiServices().getProfileCompany(user.uid);
+        authProvider.setProfile = users;
+        if (company != null) {
+          authProvider.setCompany = company;
+          authProvider.branch = mainBranch;
+          context.go(MyRoute.companyInformationManagement);
         } else {
-          setState(() {
-            isSplash = false;
-          });
+          if (users!.role == RoleHelper.admin) {
+            context.go(MyRoute.dashboard);
+          } else if (users.role == RoleHelper.worker && isEmailVerified == true) {
+            if (users.isFullTimeStaff == true) {
+              isFullTime = true;
+              context.go(MyRoute.workerSearchJobPage);
+            } else {
+              isFullTime = false;
+              context.go(MyRoute.workerSearchJobPage);
+            }
+          } else if (users.role == RoleHelper.worker && isEmailVerified == false) {
+            MyPageRoute.goToReplace(
+                context,
+                VerifyUserEmailPage(
+                  myUser: users,
+                  isFullTime: users.isFullTimeStaff!,
+                ));
+          }
         }
       } else {
-        if (user != null) {
-          MyUser? users = await UserApiServices().getProfileUser(user.uid);
-          AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
-          if (users?.role == null) {
-            if (GoRouter.of(context).location.toString().contains("company")) {
-              context.go(MyRoute.companyInformationManagement);
-            } else {
-              authProvider.branch = mainBranch;
-              context.go(MyRoute.companyInformationManagement);
-            }
+        setState(() {
+          isSplash = false;
+        });
+      }
+    } else {
+      if (user != null) {
+        MyUser? users = await UserApiServices().getProfileUser(user.uid);
+        AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
+        if (users?.role == null) {
+          if (GoRouter.of(context).location.toString().contains("company")) {
+            context.go(MyRoute.companyInformationManagement);
+          } else {
+            authProvider.branch = mainBranch;
+            context.go(MyRoute.companyInformationManagement);
           }
         }
+      } else {
+        setState(() {
+          isSplash = false;
+        });
       }
-    });
+    }
   }
 
   @override
   void initState() {
-    startTime();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      startTime();
+    });
     super.initState();
   }
 
