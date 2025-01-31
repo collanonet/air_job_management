@@ -170,12 +170,13 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                         // toastMessageError("このオプションは利用できません。モバイルアプリのシーカーを使用してください。", context);
                         String userAgent = html.window.navigator.userAgent;
                         if (userAgent.contains('Mac OS')) {
-                          js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
+                          js.context.callMethod('open', ["https://apps.apple.com/sk/app/%E3%82%A8%E3%82%A2%E3%82%B8%E3%83%A7%E3%83%96/id6468330466"]);
                         } else if (userAgent.contains('Windows')) {
                           js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
                         } else {
                           if (userAgent.contains('iOS')) {
-                            js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
+                            js.context
+                                .callMethod('open', ["https://apps.apple.com/sk/app/%E3%82%A8%E3%82%A2%E3%82%B8%E3%83%A7%E3%83%96/id6468330466"]);
                           } else {
                             js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
                           }
@@ -272,12 +273,14 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                   onTap: () {
                                     String userAgent = html.window.navigator.userAgent;
                                     if (userAgent.contains('Mac OS')) {
-                                      js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
+                                      js.context.callMethod(
+                                          'open', ["https://apps.apple.com/sk/app/%E3%82%A8%E3%82%A2%E3%82%B8%E3%83%A7%E3%83%96/id6468330466"]);
                                     } else if (userAgent.contains('Windows')) {
                                       js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
                                     } else {
                                       if (userAgent.contains('iOS')) {
-                                        js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
+                                        js.context.callMethod(
+                                            'open', ["https://apps.apple.com/sk/app/%E3%82%A8%E3%82%A2%E3%82%B8%E3%83%A7%E3%83%96/id6468330466"]);
                                       } else {
                                         js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
                                       }
@@ -554,12 +557,14 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                           onTap: () {
                             String userAgent = html.window.navigator.userAgent;
                             if (userAgent.contains('Mac OS')) {
-                              js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
+                              js.context
+                                  .callMethod('open', ["https://apps.apple.com/sk/app/%E3%82%A8%E3%82%A2%E3%82%B8%E3%83%A7%E3%83%96/id6468330466"]);
                             } else if (userAgent.contains('Windows')) {
                               js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
                             } else {
                               if (userAgent.contains('iOS')) {
-                                js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
+                                js.context
+                                    .callMethod('open', ["https://apps.apple.com/sk/app/%E3%82%A8%E3%82%A2%E3%82%B8%E3%83%A7%E3%83%96/id6468330466"]);
                               } else {
                                 js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
                               }
@@ -611,12 +616,14 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
                                         onTap: () {
                                           String userAgent = html.window.navigator.userAgent;
                                           if (userAgent.contains('Mac OS')) {
-                                            js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
+                                            js.context.callMethod(
+                                                'open', ["https://apps.apple.com/sk/app/%E3%82%A8%E3%82%A2%E3%82%B8%E3%83%A7%E3%83%96/id6468330466"]);
                                           } else if (userAgent.contains('Windows')) {
                                             js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
                                           } else {
                                             if (userAgent.contains('iOS')) {
-                                              js.context.callMethod('open', ["https://testflight.apple.com/join/hT4uZGwr"]);
+                                              js.context.callMethod('open',
+                                                  ["https://apps.apple.com/sk/app/%E3%82%A8%E3%82%A2%E3%82%B8%E3%83%A7%E3%83%96/id6468330466"]);
                                             } else {
                                               js.context.callMethod('open', ["https://play.google.com/store/apps/details?id=com.collabonet.airjob"]);
                                             }

@@ -27,8 +27,7 @@ class ChooseBranchWidget extends StatefulWidget {
   State<ChooseBranchWidget> createState() => _ChooseBranchWidgetState();
 }
 
-class _ChooseBranchWidgetState extends State<ChooseBranchWidget>
-    with AfterBuildMixin {
+class _ChooseBranchWidgetState extends State<ChooseBranchWidget> with AfterBuildMixin {
   late AuthProvider authProvider;
   Branch? selectedBranch;
 
@@ -51,15 +50,9 @@ class _ChooseBranchWidgetState extends State<ChooseBranchWidget>
                   : Container(
                       margin: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
-                          color: selectedBranch?.createdAt == branch?.createdAt
-                              ? Colors.orange.withOpacity(0.1)
-                              : Colors.transparent,
-                          border: Border.all(
-                              color:
-                                  selectedBranch?.createdAt == branch?.createdAt
-                                      ? AppColor.primaryColor
-                                      : AppColor.darkGrey,
-                              width: 1),
+                          color: selectedBranch?.createdAt == branch?.createdAt ? Colors.orange.withOpacity(0.1) : Colors.transparent,
+                          border:
+                              Border.all(color: selectedBranch?.createdAt == branch?.createdAt ? AppColor.primaryColor : AppColor.darkGrey, width: 1),
                           borderRadius: BorderRadius.circular(5)),
                       child: Material(
                         color: Colors.transparent,
@@ -72,11 +65,8 @@ class _ChooseBranchWidgetState extends State<ChooseBranchWidget>
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Text(
-                              branch?.name == "企業"
-                                  ? "企業"
-                                  : "${branch!.name} | ${branch.postalCode} | ${branch.location}",
-                              style: kNormalText.copyWith(
-                                  fontFamily: "Normal", color: Colors.black),
+                              branch?.name == "企業" ? "企業" : "${branch!.name == "主枝" ? "" : branch.name} | ${branch.postalCode} | ${branch.location}",
+                              style: kNormalText.copyWith(fontFamily: "Normal", color: Colors.black),
                               overflow: TextOverflow.fade,
                             ),
                           ),
@@ -88,37 +78,34 @@ class _ChooseBranchWidgetState extends State<ChooseBranchWidget>
       actions: [
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                    width: 200,
-                    child: ButtonWidget(
-                      radius: 25,
-                      color: AppColor.whiteColor,
-                      title: "キャンセル",
-                      onPress: () {
-                        Navigator.pop(context);
-                      },
-                    )),
-                AppSize.spaceWidth16,
-                SizedBox(
-                  width: 200,
-                  child: ButtonWidget(
-                      radius: 25,
-                      title: "選択",
-                      color: AppColor.primaryColor,
-                      onPress: () {
-                        authProvider.onChangeBranch(selectedBranch);
-                        Navigator.pop(context);
-                        widget.onRefresh();
-                        if (selectedBranch?.name != mainBranch.name) {
-                          context.go(MyRoute.companyDashboard);
-                        }
-                      }),
-                ),
-              ]),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+            SizedBox(
+                width: 200,
+                child: ButtonWidget(
+                  radius: 25,
+                  color: AppColor.whiteColor,
+                  title: "キャンセル",
+                  onPress: () {
+                    Navigator.pop(context);
+                  },
+                )),
+            AppSize.spaceWidth16,
+            SizedBox(
+              width: 200,
+              child: ButtonWidget(
+                  radius: 25,
+                  title: "選択",
+                  color: AppColor.primaryColor,
+                  onPress: () {
+                    authProvider.onChangeBranch(selectedBranch);
+                    Navigator.pop(context);
+                    widget.onRefresh();
+                    if (selectedBranch?.name != mainBranch.name) {
+                      context.go(MyRoute.companyDashboard);
+                    }
+                  }),
+            ),
+          ]),
         )
       ],
     );
@@ -128,17 +115,14 @@ class _ChooseBranchWidgetState extends State<ChooseBranchWidget>
   void afterBuild(BuildContext context) {
     bool isContain = false;
     for (var b in authProvider.myCompany!.branchList!) {
-      if (mainBranch.id == b.id &&
-          mainBranch.name == b.name &&
-          mainBranch.location == b.location) {
+      if (mainBranch.id == b.id && mainBranch.name == b.name && mainBranch.location == b.location) {
         isContain = true;
         break;
       }
     }
     if (!isContain) {
       authProvider.myCompany!.branchList!.add(mainBranch);
-      authProvider.myCompany!.branchList =
-          authProvider.myCompany!.branchList!.reversed.toList();
+      authProvider.myCompany!.branchList = authProvider.myCompany!.branchList!.reversed.toList();
     }
     setState(() {
       selectedBranch = authProvider.branch;

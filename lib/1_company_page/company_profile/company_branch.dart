@@ -53,11 +53,7 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
                     // IconButton(onPressed: () => JobPostingApiService().updateAllJobPosting(), icon: const Icon(Icons.update)),
                     SizedBox(
                       width: 230,
-                      child: ButtonWidget(
-                          radius: 25,
-                          title: "ブランチの作成",
-                          color: AppColor.primaryColor,
-                          onPress: () => showCreateBranchDialog()),
+                      child: ButtonWidget(radius: 25, title: "ブランチの作成", color: AppColor.primaryColor, onPress: () => showCreateBranchDialog()),
                     ),
                   ],
                 ),
@@ -79,90 +75,57 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
                       itemBuilder: (context, index) {
                         var branch = authProvider.myCompany!.branchList![index];
                         Branch? selectedBranch = authProvider.branch;
-                        return (branch.location == "" && branch.id == "" ||
-                                branch.isDelete == true)
+                        return (branch.location == "" && branch.id == "" || branch.isDelete == true)
                             ? const SizedBox()
                             : Container(
                                 decoration: BoxDecoration(
-                                    color: selectedBranch?.createdAt ==
-                                            branch.createdAt
-                                        ? Colors.orange.withOpacity(0.1)
-                                        : Colors.transparent,
+                                    color: selectedBranch?.createdAt == branch.createdAt ? Colors.orange.withOpacity(0.1) : Colors.transparent,
                                     border: Border.all(
-                                        color: selectedBranch?.createdAt ==
-                                                branch.createdAt
-                                            ? AppColor.primaryColor
-                                            : AppColor.darkGrey,
-                                        width: 1),
+                                        color: selectedBranch?.createdAt == branch.createdAt ? AppColor.primaryColor : AppColor.darkGrey, width: 1),
                                     borderRadius: BorderRadius.circular(20)),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 32, vertical: 16),
+                                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                                 margin: const EdgeInsets.only(bottom: 16),
                                 child: Row(
                                   children: [
                                     Expanded(
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
                                           TitleWidget(title: "店舗${index + 1}"),
                                           Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Text(JapaneseText.name,
-                                                      style:
-                                                          kNormalText.copyWith(
-                                                              fontSize: 12))),
+                                                  alignment: Alignment.centerLeft,
+                                                  child: Text(JapaneseText.name, style: kNormalText.copyWith(fontSize: 12))),
                                               AppSize.spaceHeight5,
                                               SizedBox(
-                                                width: AppSize.getDeviceHeight(
-                                                        context) *
-                                                    0.8,
+                                                width: AppSize.getDeviceHeight(context) * 0.8,
                                                 child: PrimaryTextField(
                                                   hint: "",
-                                                  controller:
-                                                      TextEditingController(
-                                                          text:
-                                                              "${branch.name}"),
+                                                  controller: TextEditingController(text: branch.name!.contains("主枝") ? "" : branch.name),
                                                   readOnly: true,
                                                 ),
                                               ),
                                             ],
                                           ),
                                           Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: Text(
-                                                          JapaneseText
-                                                              .postalCode,
-                                                          style: kNormalText
-                                                              .copyWith(
-                                                                  fontSize:
-                                                                      12))),
+                                                      alignment: Alignment.centerLeft,
+                                                      child: Text(JapaneseText.postalCode, style: kNormalText.copyWith(fontSize: 12))),
                                                   AppSize.spaceHeight5,
                                                   SizedBox(
                                                     width: 150,
                                                     child: PrimaryTextField(
                                                       hint: "",
-                                                      controller:
-                                                          TextEditingController(
-                                                              text:
-                                                                  "${branch.postalCode}"),
+                                                      controller: TextEditingController(text: "${branch.postalCode}"),
                                                       readOnly: true,
                                                     ),
                                                   ),
@@ -170,31 +133,17 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
                                               ),
                                               AppSize.spaceWidth16,
                                               Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: Text(
-                                                          JapaneseText.location,
-                                                          style: kNormalText
-                                                              .copyWith(
-                                                                  fontSize:
-                                                                      12))),
+                                                      alignment: Alignment.centerLeft,
+                                                      child: Text(JapaneseText.location, style: kNormalText.copyWith(fontSize: 12))),
                                                   AppSize.spaceHeight5,
                                                   SizedBox(
-                                                    width:
-                                                        AppSize.getDeviceHeight(
-                                                                    context) *
-                                                                0.8 -
-                                                            166,
+                                                    width: AppSize.getDeviceHeight(context) * 0.8 - 166,
                                                     child: PrimaryTextField(
                                                       hint: "",
-                                                      controller:
-                                                          TextEditingController(
-                                                              text:
-                                                                  "${branch.location}"),
+                                                      controller: TextEditingController(text: "${branch.location}"),
                                                       readOnly: true,
                                                     ),
                                                   ),
@@ -203,24 +152,15 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
                                             ],
                                           ),
                                           Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Text("TEL",
-                                                      style:
-                                                          kNormalText.copyWith(
-                                                              fontSize: 12))),
+                                              Align(alignment: Alignment.centerLeft, child: Text("TEL", style: kNormalText.copyWith(fontSize: 12))),
                                               AppSize.spaceHeight5,
                                               SizedBox(
                                                 width: 200,
                                                 child: PrimaryTextField(
                                                   hint: "",
-                                                  controller: TextEditingController(
-                                                      text:
-                                                          "${branch.contactNumber}"),
+                                                  controller: TextEditingController(text: "${branch.contactNumber}"),
                                                   readOnly: true,
                                                 ),
                                               ),
@@ -239,12 +179,7 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
                                               color: AppColor.primaryColor,
                                               onPress: () => showDialog(
                                                       context: context,
-                                                      builder: (context) =>
-                                                          CreateOrEditBranchWidget(
-                                                              branch: branch,
-                                                              index:
-                                                                  index)).then(
-                                                      (value) {
+                                                      builder: (context) => CreateOrEditBranchWidget(branch: branch, index: index)).then((value) {
                                                     if (value != null) {}
                                                   })),
                                         ),
@@ -254,22 +189,13 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
                                         Material(
                                           color: Colors.transparent,
                                           child: InkWell(
-                                            onTap: () => onDeleteBranch(
-                                                index,
-                                                selectedBranch?.createdAt ==
-                                                    branch.createdAt),
+                                            onTap: () => onDeleteBranch(index, selectedBranch?.createdAt == branch.createdAt),
                                             child: Container(
                                               width: 100,
                                               height: 40,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      width: 2,
-                                                      color: Colors.red)),
+                                              decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.red)),
                                               alignment: Alignment.center,
-                                              child: Text("削除",
-                                                  style: kNormalText.copyWith(
-                                                      fontSize: 13,
-                                                      color: Colors.red)),
+                                              child: Text("削除", style: kNormalText.copyWith(fontSize: 13, color: Colors.red)),
                                             ),
                                           ),
                                         )
@@ -301,11 +227,7 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
                   // IconButton(onPressed: () => JobPostingApiService().updateAllJobPosting(), icon: const Icon(Icons.update)),
                   SizedBox(
                     width: 230,
-                    child: ButtonWidget(
-                        radius: 25,
-                        title: "ブランチの作成",
-                        color: AppColor.primaryColor,
-                        onPress: () => showCreateBranchDialog()),
+                    child: ButtonWidget(radius: 25, title: "ブランチの作成", color: AppColor.primaryColor, onPress: () => showCreateBranchDialog()),
                   ),
                 ],
               ),
@@ -327,21 +249,13 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
                     itemBuilder: (context, index) {
                       var branch = authProvider.myCompany!.branchList![index];
                       Branch? selectedBranch = authProvider.branch;
-                      return (branch.location == "" && branch.id == "" ||
-                              branch.isDelete == true)
+                      return (branch.location == "" && branch.id == "" || branch.isDelete == true)
                           ? const SizedBox()
                           : Container(
                               decoration: BoxDecoration(
-                                  color: selectedBranch?.createdAt ==
-                                          branch.createdAt
-                                      ? Colors.orange.withOpacity(0.1)
-                                      : Colors.transparent,
+                                  color: selectedBranch?.createdAt == branch.createdAt ? Colors.orange.withOpacity(0.1) : Colors.transparent,
                                   border: Border.all(
-                                      color: selectedBranch?.createdAt ==
-                                              branch.createdAt
-                                          ? AppColor.primaryColor
-                                          : AppColor.darkGrey,
-                                      width: 1),
+                                      color: selectedBranch?.createdAt == branch.createdAt ? AppColor.primaryColor : AppColor.darkGrey, width: 1),
                                   borderRadius: BorderRadius.circular(20)),
                               padding: const EdgeInsets.all(32),
                               margin: const EdgeInsets.only(bottom: 16),
@@ -350,61 +264,42 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
                                   Expanded(
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         TitleWidget(title: "店舗${index + 1}"),
                                         Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Align(
                                                 alignment: Alignment.centerLeft,
-                                                child: Text(JapaneseText.name,
-                                                    style: kNormalText.copyWith(
-                                                        fontSize: 12))),
+                                                child: Text(JapaneseText.name, style: kNormalText.copyWith(fontSize: 12))),
                                             AppSize.spaceHeight5,
                                             SizedBox(
-                                              width: AppSize.getDeviceHeight(
-                                                      context) *
-                                                  0.8,
+                                              width: AppSize.getDeviceHeight(context) * 0.8,
                                               child: PrimaryTextField(
                                                 hint: "",
-                                                controller:
-                                                    TextEditingController(
-                                                        text: "${branch.name}"),
+                                                controller: TextEditingController(text: "${branch.name}"),
                                                 readOnly: true,
                                               ),
                                             ),
                                           ],
                                         ),
                                         Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Text(
-                                                        JapaneseText.postalCode,
-                                                        style: kNormalText
-                                                            .copyWith(
-                                                                fontSize: 12))),
+                                                    alignment: Alignment.centerLeft,
+                                                    child: Text(JapaneseText.postalCode, style: kNormalText.copyWith(fontSize: 12))),
                                                 AppSize.spaceHeight5,
                                                 SizedBox(
                                                   width: 150,
                                                   child: PrimaryTextField(
                                                     hint: "",
-                                                    controller:
-                                                        TextEditingController(
-                                                            text:
-                                                                "${branch.postalCode}"),
+                                                    controller: TextEditingController(text: "${branch.postalCode}"),
                                                     readOnly: true,
                                                   ),
                                                 ),
@@ -412,30 +307,17 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
                                             ),
                                             AppSize.spaceWidth16,
                                             Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
-                                                    child: Text(
-                                                        JapaneseText.location,
-                                                        style: kNormalText
-                                                            .copyWith(
-                                                                fontSize: 12))),
+                                                    alignment: Alignment.centerLeft,
+                                                    child: Text(JapaneseText.location, style: kNormalText.copyWith(fontSize: 12))),
                                                 AppSize.spaceHeight5,
                                                 SizedBox(
-                                                  width:
-                                                      AppSize.getDeviceHeight(
-                                                                  context) *
-                                                              0.8 -
-                                                          166,
+                                                  width: AppSize.getDeviceHeight(context) * 0.8 - 166,
                                                   child: PrimaryTextField(
                                                     hint: "",
-                                                    controller:
-                                                        TextEditingController(
-                                                            text:
-                                                                "${branch.location}"),
+                                                    controller: TextEditingController(text: "${branch.location}"),
                                                     readOnly: true,
                                                   ),
                                                 ),
@@ -444,22 +326,15 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
                                           ],
                                         ),
                                         Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Text("TEL",
-                                                    style: kNormalText.copyWith(
-                                                        fontSize: 12))),
+                                            Align(alignment: Alignment.centerLeft, child: Text("TEL", style: kNormalText.copyWith(fontSize: 12))),
                                             AppSize.spaceHeight5,
                                             SizedBox(
                                               width: 200,
                                               child: PrimaryTextField(
                                                 hint: "",
-                                                controller: TextEditingController(
-                                                    text:
-                                                        "${branch.contactNumber}"),
+                                                controller: TextEditingController(text: "${branch.contactNumber}"),
                                                 readOnly: true,
                                               ),
                                             ),
@@ -478,11 +353,7 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
                                             color: AppColor.primaryColor,
                                             onPress: () => showDialog(
                                                     context: context,
-                                                    builder: (context) =>
-                                                        CreateOrEditBranchWidget(
-                                                            branch: branch,
-                                                            index: index)).then(
-                                                    (value) {
+                                                    builder: (context) => CreateOrEditBranchWidget(branch: branch, index: index)).then((value) {
                                                   if (value != null) {}
                                                 })),
                                       ),
@@ -492,22 +363,13 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
                                       Material(
                                         color: Colors.transparent,
                                         child: InkWell(
-                                          onTap: () => onDeleteBranch(
-                                              index,
-                                              selectedBranch?.createdAt ==
-                                                  branch.createdAt),
+                                          onTap: () => onDeleteBranch(index, selectedBranch?.createdAt == branch.createdAt),
                                           child: Container(
                                             width: 100,
                                             height: 40,
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    width: 2,
-                                                    color: Colors.red)),
+                                            decoration: BoxDecoration(border: Border.all(width: 2, color: Colors.red)),
                                             alignment: Alignment.center,
-                                            child: Text("削除",
-                                                style: kNormalText.copyWith(
-                                                    fontSize: 13,
-                                                    color: Colors.red)),
+                                            child: Text("削除", style: kNormalText.copyWith(fontSize: 13, color: Colors.red)),
                                           ),
                                         ),
                                       )
@@ -536,15 +398,12 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
               isLoading = true;
             });
             authProvider.myCompany!.branchList![index].isDelete = true;
-            String? isSuccess = await CompanyApiServices()
-                .updateCompanyBranchInfo(authProvider.myCompany!.uid!,
-                    authProvider.myCompany!.branchList!);
+            String? isSuccess = await CompanyApiServices().updateCompanyBranchInfo(authProvider.myCompany!.uid!, authProvider.myCompany!.branchList!);
             setState(() {
               isLoading = false;
             });
             if (isSuccess == ConstValue.success) {
-              authProvider.onChangeCompany(authProvider.myCompany!,
-                  branch: null);
+              authProvider.onChangeCompany(authProvider.myCompany!, branch: null);
               toastMessageSuccess(JapaneseText.successDelete, context);
             } else {
               toastMessageSuccess(JapaneseText.failDelete, context);
@@ -554,11 +413,7 @@ class _CompanyBranchPageState extends State<CompanyBranchPage> {
   }
 
   showCreateBranchDialog() {
-    showDialog(
-            context: context,
-            builder: (context) =>
-                const CreateOrEditBranchWidget(branch: null, index: null))
-        .then((value) {
+    showDialog(context: context, builder: (context) => const CreateOrEditBranchWidget(branch: null, index: null)).then((value) {
       if (value != null) {}
     });
   }

@@ -206,12 +206,12 @@ class _RootCompanyPageState extends State<RootCompanyPage> with AfterBuildMixin 
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "${authProvider.myCompany?.companyName}",
+                    authProvider.myCompany?.companyName ?? "",
                     style: normalTextStyle.copyWith(fontSize: 20, color: AppColor.blackColor, fontFamily: "Bold"),
                   ),
                   AppSize.spaceHeight5,
                   Text(
-                    "${authProvider.myCompany?.location}",
+                    authProvider.myCompany?.location ?? "",
                     style: normalTextStyle.copyWith(fontSize: 16, color: AppColor.blackColor, fontFamily: "Normal"),
                   ),
                 ],
