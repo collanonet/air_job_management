@@ -1,3 +1,4 @@
+import 'package:air_job_management/main.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
@@ -19,7 +20,8 @@ import '../../utils/my_route.dart';
 import '../home/widgets/choose_branch.dart';
 
 class LoginPageForCompany extends StatefulWidget {
-  const LoginPageForCompany({super.key});
+  final bool isVerify;
+  const LoginPageForCompany({super.key, this.isVerify = false});
 
   @override
   _LoginPageForCompanyState createState() => _LoginPageForCompanyState();
@@ -40,9 +42,18 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
 
   @override
   void initState() {
-    // email = TextEditingController(text: 'sopheadavid+1000@yandex.com');
-    // password = TextEditingController(text: '123456789');
+    if (widget.isVerify) {
+      checkingUser();
+    }
     super.initState();
+  }
+
+  checkingUser() async {
+    email.text = getFromLocalStorage("user_email") ?? "";
+    password.text = getFromLocalStorage("user_password") ?? "";
+    Future.delayed(const Duration(seconds: 1)).then((value) {
+      onLogin();
+    });
   }
 
   @override
@@ -202,6 +213,8 @@ class _LoginPageForCompanyState extends State<LoginPageForCompany> {
           authProvider.onChangeBranch(mainBranch);
           context.go(MyRoute.companyInformationManagement);
         } else {
+          saveToLocalStorage("user_email", email.text.trim());
+          saveToLocalStorage("user_password", password.text.trim());
           authProvider.onChange(true);
           toastMessageSuccess("会社が正常に作成されました。メールにアクセスして、送信された確認リンクをクリックしてください。", context);
         }

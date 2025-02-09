@@ -1,3 +1,4 @@
+import 'dart:html' as html;
 import 'dart:ui';
 
 import 'package:air_job_management/1_company_page/home/home.dart';
@@ -51,6 +52,14 @@ import 'package:provider/provider.dart';
 import '1_company_page/applicant/applicant_root.dart';
 import '2_worker_page/search/create_request_success.dart';
 import 'firebase_options.dart';
+
+void saveToLocalStorage(String key, String value) {
+  html.window.localStorage[key] = value;
+}
+
+String? getFromLocalStorage(String key) {
+  return html.window.localStorage[key];
+}
 
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
   // Override behavior methods and getters like dragDevices
@@ -283,7 +292,18 @@ final GoRouter _router = GoRouter(
               GoRoute(
                 path: 'login',
                 builder: (BuildContext context, GoRouterState state) {
-                  return const LoginPageForCompany();
+                  String externalPath = state.location;
+                  bool isVerify = false;
+                  if (externalPath.contains("verifyEmail")) {
+                    isVerify = true;
+                    String lastPath = externalPath.split("company/login?").last;
+                    String url = 'https://air-job.firebaseapp.com/__/auth/action?$lastPath';
+                    html.WindowBase? popupWindow = html.window.open(url, '_blank', 'width=800,height=600');
+                    html.window.history.pushState({}, '', '/company');
+                  }
+                  return LoginPageForCompany(
+                    isVerify: isVerify,
+                  );
                 },
               ),
               GoRoute(
