@@ -302,7 +302,7 @@ class WorkerManagementApiService {
             companyName: company.companyName ?? "",
             branchId: branch?.id ?? "",
             status: shiftModel!.status!,
-            date: DateToAPIHelper.convertDateToString(shiftModel.date!));
+            date: [DateToAPIHelper.convertDateToString(shiftModel.date!)]);
       }
       return true;
     } catch (e) {
@@ -338,25 +338,27 @@ class WorkerManagementApiService {
         if (company.manager!.isNotEmpty) {
           managerName = company.manager!.first.kanji ?? "";
         }
+        List<String> dateList = [];
         for (int i = 0; i < shiftList.length; i++) {
           if (selectShiftList!.contains(i)) {
-            await NotificationService.sendEmailApplyShift(
-                token: myUser.fcmToken ?? "",
-                startTime: shiftList.first.startWorkTime ?? "",
-                endTime: shiftList.first.endWorkTime ?? "",
-                branchName: branch?.name ?? "",
-                managerName: managerName,
-                email: myUser.email ?? "",
-                msg: "Your Shift Apply",
-                name: myUser.nameKanJi ?? "",
-                userId: myUser.uid ?? "",
-                companyId: company.uid ?? "",
-                companyName: company.companyName ?? "",
-                branchId: branch?.id ?? "",
-                status: status!,
-                date: DateToAPIHelper.convertDateToString(shiftList[i].date!));
+            dateList.add(DateToAPIHelper.convertDateToString(shiftList[i].date!));
           }
         }
+        await NotificationService.sendEmailApplyShift(
+            token: myUser.fcmToken ?? "",
+            startTime: shiftList.first.startWorkTime ?? "",
+            endTime: shiftList.first.endWorkTime ?? "",
+            branchName: branch?.name ?? "",
+            managerName: managerName,
+            email: myUser.email ?? "",
+            msg: "Your Shift Apply",
+            name: myUser.nameKanJi ?? "",
+            userId: myUser.uid ?? "",
+            companyId: company.uid ?? "",
+            companyName: company.companyName ?? "",
+            branchId: branch?.id ?? "",
+            status: status!,
+            date: dateList);
       }
       return true;
     } catch (e) {
@@ -388,7 +390,7 @@ class WorkerManagementApiService {
             companyName: company.companyName ?? "",
             branchId: branch?.id ?? "",
             status: status!,
-            date: DateToAPIHelper.convertDateToString(DateTime.now()));
+            date: [DateToAPIHelper.convertDateToString(DateTime.now())]);
       }
       return true;
     } catch (e) {

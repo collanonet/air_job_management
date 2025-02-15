@@ -223,9 +223,10 @@ class NotificationService {
       required String endTime,
       required String branchId,
       required String status,
-      required String date}) {
+      required List<String> date}) {
     try {
       String text = "";
+      String htmlText = "";
       if (status == "approved") {
         text = """ 
   $name様
@@ -235,7 +236,10 @@ class NotificationService {
   ご応募頂きました、下記シフトで確定できましたので、
   ご確認のほど宜しくお願い致します。
   シフト確定日：
-  1. ${date.split("/")[1]}/${date.split("/")[2]} : $startTime〜$endTime 
+  ${date.map((e) {
+          int index = date.indexOf(e) + 1;
+          return "$index. ${e.split("/")[1]}/${e.split("/")[2]} : $startTime〜$endTime　\n";
+        })}
   
   勤務にあたり注意事項や事前のご連絡は、
   追って担当者からご連絡させて頂きます。
@@ -248,7 +252,79 @@ class NotificationService {
   $companyName 会社
   $branchName 店
   担当：$managerName
-                  """;
+                  """
+            .replaceAll("(", "")
+            .replaceAll(")", "")
+            .replaceAll(",", " ");
+        htmlText = """
+        <!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シフト確定通知</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .shift-list {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <p class="header">$name様</p>
+
+    <p>この度は掲載求人にご応募頂きまして、誠にありがとうございます。</p>
+
+    <p>ご応募頂きました、下記シフトで確定できましたので、<br>
+       ご確認のほど宜しくお願い致します。</p>
+
+    <p><strong>シフト確定日：</strong></p>
+    <ul class="shift-list">
+        ${date.map((e) {
+          int index = date.indexOf(e) + 1;
+          return "<li>" + index.toString() + ". " + e.split("/")[1] + "/" + e.split("/")[2] + " : " + startTime + "〜" + endTime + "</li>";
+        }).join("")}
+    </ul>
+
+    <p>勤務にあたり注意事項や事前のご連絡は、<br>
+       追って担当者からご連絡させて頂きます。</p>
+
+    <p>それでは当日の勤務宜しくお願いします。</p>
+
+    <p>スタッフ一同ご一緒に働けますことを楽しみにしております。</p>
+
+    <div class="footer">
+        <p><strong>$companyName 会社</strong></p>
+        <p>$branchName 店</p>
+        <p>担当：$managerName</p>
+    </div>
+</div>
+
+</body>
+</html>
+        """;
       } else {
         text = """ 
   $name様
@@ -266,6 +342,60 @@ class NotificationService {
   $branchName 店
   担当：$managerName
                   """;
+        htmlText = """
+        <!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シフトマッチング不可のお知らせ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <p class="header">$name様</p>
+
+    <p>この度は掲載求人にご応募頂きまして、誠にありがとうございます。</p>
+
+    <p>ご応募頂きましたシフト日程では、<br>
+       残念ながらシフトのマッチングができませんでした。</p>
+
+    <p>引き続き他の日程でご検討可能な日程がありましたら、<br>
+       ご応募のほど引き続き宜しくお願い致します。</p>
+
+    <div class="footer">
+        <p><strong>$companyName 会社</strong></p>
+        <p>$branchName 店</p>
+        <p>担当：$managerName</p>
+    </div>
+</div>
+
+</body>
+</html>
+
+        """;
       }
       var messageApi = MessageApi(userId, companyId);
       final message = MessageModel(message: text, senderId: companyId, receiverId: userId, createdAt: DateTime.now());
@@ -290,7 +420,7 @@ class NotificationService {
         "message": {
           "subject": msg,
           "text": text,
-          "html": text,
+          "html": htmlText,
         },
       });
       print('Email request for device sent!');
