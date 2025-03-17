@@ -134,7 +134,7 @@ class _SearchScreenDetialState extends State<SearchScreenDetial> {
       ),
       body: Scrollbar(
         controller: scrollController,
-        isAlwaysShown: true,
+        thumbVisibility: true,
         child: SingleChildScrollView(
           controller: scrollController,
           child: SafeArea(

@@ -6,13 +6,13 @@ import 'package:air_job_management/models/widthraw.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/withdraw.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:air_job_management/widgets/user_basic_information.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../api/user_api.dart';
 import '../../utils/app_color.dart';
@@ -60,7 +60,7 @@ class _UsageDetailPageState extends State<UsageDetailPage> with AfterBuildMixin 
               padding: const EdgeInsets.all(16.0),
               child: Scrollbar(
                   controller: scrollController,
-                  isAlwaysShown: true,
+                  thumbVisibility: true,
                   child: SingleChildScrollView(
                       controller: scrollController,
                       child: Column(

@@ -1,9 +1,9 @@
 import 'package:air_job_management/pages/register/new_register_form_for_part_time.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../models/user.dart';
 import '../../utils/app_color.dart';

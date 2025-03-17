@@ -5,11 +5,11 @@ import 'package:air_job_management/pages/job_seeker/job_seeker_detail/applicatio
 import 'package:air_job_management/pages/job_seeker/job_seeker_detail/basic_info.dart';
 import 'package:air_job_management/pages/job_seeker/job_seeker_detail/chat.dart';
 import 'package:air_job_management/providers/job_seeker_detail.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../utils/app_color.dart';
 import '../../../utils/app_size.dart';
@@ -17,15 +17,13 @@ import '../../../utils/style.dart';
 
 class JobSeekerDetailPage extends StatefulWidget {
   final String seekerId;
-  const JobSeekerDetailPage({Key? key, required this.seekerId})
-      : super(key: key);
+  const JobSeekerDetailPage({Key? key, required this.seekerId}) : super(key: key);
 
   @override
   State<JobSeekerDetailPage> createState() => _JobSeekerDetailPageState();
 }
 
-class _JobSeekerDetailPageState extends State<JobSeekerDetailPage>
-    with AfterBuildMixin {
+class _JobSeekerDetailPageState extends State<JobSeekerDetailPage> with AfterBuildMixin {
   MyUser? seeker;
   late JobSeekerDetailProvider provider;
 
@@ -38,8 +36,7 @@ class _JobSeekerDetailPageState extends State<JobSeekerDetailPage>
   @override
   Widget build(BuildContext context) {
     provider = Provider.of<JobSeekerDetailProvider>(context);
-    return CustomLoadingOverlay(
-        isLoading: provider.isLoading, child: buildBody());
+    return CustomLoadingOverlay(isLoading: provider.isLoading, child: buildBody());
   }
 
   buildBody() {
@@ -89,8 +86,7 @@ class _JobSeekerDetailPageState extends State<JobSeekerDetailPage>
               Container(
                 width: 60,
                 height: 60,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle, color: AppColor.primaryColor),
+                decoration: BoxDecoration(shape: BoxShape.circle, color: AppColor.primaryColor),
                 alignment: Alignment.center,
                 child: const Icon(
                   Icons.person,
@@ -105,8 +101,7 @@ class _JobSeekerDetailPageState extends State<JobSeekerDetailPage>
                 children: [
                   Text(
                     "${seeker?.nameKanJi}",
-                    style: normalTextStyle.copyWith(
-                        fontSize: 13, color: AppColor.primaryColor),
+                    style: normalTextStyle.copyWith(fontSize: 13, color: AppColor.primaryColor),
                   ),
                   AppSize.spaceHeight5,
                   Row(
@@ -136,8 +131,7 @@ class _JobSeekerDetailPageState extends State<JobSeekerDetailPage>
             children: [
               StatusUtils.displayStatusForJobSeeker(seeker?.workingStatus),
               AppSize.spaceWidth16,
-              IconButton(
-                  onPressed: () => context.pop(), icon: Icon(Icons.close)),
+              IconButton(onPressed: () => context.pop(), icon: Icon(Icons.close)),
             ],
           )
         ],
@@ -158,19 +152,12 @@ class _JobSeekerDetailPageState extends State<JobSeekerDetailPage>
                 alignment: Alignment.center,
                 child: Text(
                   provider.tabMenu[0],
-                  style: normalTextStyle.copyWith(
-                      color: provider.selectMenu == provider.tabMenu[0]
-                          ? Colors.white
-                          : Colors.black),
+                  style: normalTextStyle.copyWith(color: provider.selectMenu == provider.tabMenu[0] ? Colors.white : Colors.black),
                 ),
                 decoration: BoxDecoration(
-                    color: provider.selectMenu == provider.tabMenu[0]
-                        ? AppColor.primaryColor
-                        : Colors.white,
+                    color: provider.selectMenu == provider.tabMenu[0] ? AppColor.primaryColor : Colors.white,
                     border: Border.all(width: 1, color: AppColor.primaryColor),
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(16),
-                        topLeft: Radius.circular(16))),
+                    borderRadius: BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16))),
               ),
             ),
             AppSize.spaceWidth16,
@@ -182,19 +169,12 @@ class _JobSeekerDetailPageState extends State<JobSeekerDetailPage>
                 alignment: Alignment.center,
                 child: Text(
                   provider.tabMenu[1],
-                  style: normalTextStyle.copyWith(
-                      color: provider.selectMenu == provider.tabMenu[1]
-                          ? Colors.white
-                          : Colors.black),
+                  style: normalTextStyle.copyWith(color: provider.selectMenu == provider.tabMenu[1] ? Colors.white : Colors.black),
                 ),
                 decoration: BoxDecoration(
-                    color: provider.selectMenu == provider.tabMenu[1]
-                        ? AppColor.primaryColor
-                        : Colors.white,
+                    color: provider.selectMenu == provider.tabMenu[1] ? AppColor.primaryColor : Colors.white,
                     border: Border.all(width: 1, color: AppColor.primaryColor),
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(16),
-                        topLeft: Radius.circular(16))),
+                    borderRadius: BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16))),
               ),
             ),
             AppSize.spaceWidth16,
@@ -206,19 +186,12 @@ class _JobSeekerDetailPageState extends State<JobSeekerDetailPage>
                 alignment: Alignment.center,
                 child: Text(
                   provider.tabMenu[2],
-                  style: normalTextStyle.copyWith(
-                      color: provider.selectMenu == provider.tabMenu[2]
-                          ? Colors.white
-                          : Colors.black),
+                  style: normalTextStyle.copyWith(color: provider.selectMenu == provider.tabMenu[2] ? Colors.white : Colors.black),
                 ),
                 decoration: BoxDecoration(
-                    color: provider.selectMenu == provider.tabMenu[2]
-                        ? AppColor.primaryColor
-                        : Colors.white,
+                    color: provider.selectMenu == provider.tabMenu[2] ? AppColor.primaryColor : Colors.white,
                     border: Border.all(width: 1, color: AppColor.primaryColor),
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(16),
-                        topLeft: Radius.circular(16))),
+                    borderRadius: BorderRadius.only(topRight: Radius.circular(16), topLeft: Radius.circular(16))),
               ),
             )
           ],

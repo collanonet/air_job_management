@@ -1,10 +1,10 @@
 import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/pages/job_posting/widgets/job_posting_card.dart';
 import 'package:air_job_management/utils/app_color.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:air_job_management/widgets/loading.dart';
 import 'package:flutter/material.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../api/user_api.dart';
 import '../../../models/job_posting.dart';
@@ -17,8 +17,7 @@ class ApplicationHistoryPage extends StatefulWidget {
   State<ApplicationHistoryPage> createState() => _ApplicationHistoryPageState();
 }
 
-class _ApplicationHistoryPageState extends State<ApplicationHistoryPage>
-    with AfterBuildMixin {
+class _ApplicationHistoryPageState extends State<ApplicationHistoryPage> with AfterBuildMixin {
   ValueNotifier loading = ValueNotifier<bool>(true);
   List<JobApply> jobApply = [];
   List<JobPosting> jobList = [];
@@ -43,8 +42,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage>
             var jobPosting = jobList[index];
             return Padding(
               padding: const EdgeInsets.only(top: 16),
-              child: JobPostingCardWidget(
-                  jobPosting: jobPosting, fromSeekerPage: true),
+              child: JobPostingCardWidget(jobPosting: jobPosting, fromSeekerPage: true),
             );
           });
     }
@@ -57,9 +55,7 @@ class _ApplicationHistoryPageState extends State<ApplicationHistoryPage>
 
   getData() async {
     jobApply = await UserApiServices().getJobByWorkerId(widget.id);
-    var data = await Future.wait([
-      ...jobApply.map((e) => JobPostingApiService().getAJobPosting(e.jobId!))
-    ]);
+    var data = await Future.wait([...jobApply.map((e) => JobPostingApiService().getAJobPosting(e.jobId!))]);
     jobList = data.map((e) => e!).toList();
     loading.value = false;
     setState(() {});

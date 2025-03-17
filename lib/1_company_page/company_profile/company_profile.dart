@@ -1,11 +1,11 @@
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/app_size.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../api/company.dart';
 import '../../providers/company.dart';

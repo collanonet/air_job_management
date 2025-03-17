@@ -5,6 +5,7 @@ import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
@@ -13,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../const/const.dart';
 import '../../utils/app_size.dart';
@@ -128,7 +128,7 @@ class _CreateOrEditCompanyPageState extends State<CreateOrEditCompanyPage> with 
                 decoration: boxDecoration,
                 child: Scrollbar(
                   controller: scrollController,
-                  isAlwaysShown: true,
+                  thumbVisibility: true,
                   child: SingleChildScrollView(
                     controller: scrollController,
                     child: Column(

@@ -3,13 +3,13 @@ import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/providers/job_posting.dart';
 import 'package:air_job_management/providers/job_posting_for_japanese.dart';
 import 'package:air_job_management/utils/date_time_utils.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/radio_listtile.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../api/company.dart';
 import '../../const/const.dart';
@@ -291,7 +291,7 @@ class _CreateOrEditJobForJapanesePageState extends State<CreateOrEditJobForJapan
                   decoration: boxDecoration,
                   child: Scrollbar(
                     controller: controller,
-                    isAlwaysShown: true,
+                    thumbVisibility: true,
                     interactive: true,
                     child: SingleChildScrollView(
                       controller: controller,

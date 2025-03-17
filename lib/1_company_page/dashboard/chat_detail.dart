@@ -3,6 +3,7 @@ import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/pages/job_seeker/job_seeker_detail/chat.dart';
 import 'package:air_job_management/services/send_email.dart';
 import 'package:air_job_management/utils/app_size.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
@@ -11,7 +12,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../api/user_api.dart';
@@ -109,7 +109,7 @@ class _DashboardChatPageState extends State<DashboardChatPage> with AfterBuildMi
         }
         return Scrollbar(
           controller: scrollController,
-          isAlwaysShown: true,
+          thumbVisibility: true,
           child: ListView.separated(
             controller: scrollController,
             cacheExtent: 10000,

@@ -11,6 +11,7 @@ import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/entry_exit_history.dart';
 import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/export_data.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/widgets/custom_button.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
@@ -19,7 +20,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../api/entry_exit.dart';
@@ -81,7 +81,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
             padding: const EdgeInsets.all(16.0),
             child: Scrollbar(
               controller: scrollController22,
-              isAlwaysShown: true,
+              thumbVisibility: true,
               child: SingleChildScrollView(
                 controller: scrollController22,
                 child: Column(
@@ -592,7 +592,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
             else
               Scrollbar(
                 controller: controllerIndex3,
-                isAlwaysShown: true,
+                thumbVisibility: true,
                 child: SingleChildScrollView(
                   primary: false,
                   controller: controllerIndex3,
@@ -1042,7 +1042,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                       child: Scrollbar(
                         controller: horizontalScroll1,
                         scrollbarOrientation: ScrollbarOrientation.top,
-                        isAlwaysShown: true,
+                        thumbVisibility: true,
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           controller: horizontalScroll1,
@@ -1231,7 +1231,7 @@ class _EntryExitHistoryPageState extends State<EntryExitHistoryPage> with AfterB
                 child: Scrollbar(
                   controller: horizontalScroll1,
                   scrollbarOrientation: ScrollbarOrientation.top,
-                  isAlwaysShown: true,
+                  thumbVisibility: true,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     controller: horizontalScroll1,

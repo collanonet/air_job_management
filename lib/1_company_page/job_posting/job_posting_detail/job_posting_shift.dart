@@ -46,7 +46,7 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
         decoration: boxDecorationNoTopRadius,
         padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Scrollbar(
-            isAlwaysShown: true,
+            thumbVisibility: true,
             controller: scrollController2,
             child: SingleChildScrollView(
               controller: scrollController2,
@@ -482,7 +482,7 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
           decoration: boxDecorationNoTopRadius,
           padding: const EdgeInsets.symmetric(horizontal: 32),
           child: Scrollbar(
-              isAlwaysShown: true,
+              thumbVisibility: true,
               controller: scrollController2,
               child: SingleChildScrollView(
                 controller: scrollController2,

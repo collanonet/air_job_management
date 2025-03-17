@@ -5,11 +5,11 @@ import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/common_utils.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../api/worker_api/search_api.dart';
 import '../../../models/worker_model/search_job.dart';

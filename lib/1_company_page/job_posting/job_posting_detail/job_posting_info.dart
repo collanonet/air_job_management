@@ -4,6 +4,7 @@ import 'package:air_job_management/providers/company/job_posting.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:file_picker/file_picker.dart';
@@ -12,7 +13,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../pages/job_posting/create_or_edit_job_for_japanese.dart';
 import '../../../widgets/custom_button.dart';
@@ -40,7 +40,7 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
         decoration: boxDecorationNoTopRadius,
         padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Scrollbar(
-          isAlwaysShown: true,
+          thumbVisibility: true,
           controller: scrollController2,
           child: SingleChildScrollView(
             primary: false,
@@ -110,7 +110,7 @@ class _JobPostingInformationPageForCompanyState extends State<JobPostingInformat
       height: 165,
       child: Scrollbar(
         controller: scrollController,
-        isAlwaysShown: true,
+        thumbVisibility: true,
         child: ListView.builder(
             controller: scrollController,
             itemCount: provider.jobPosterProfile.length,

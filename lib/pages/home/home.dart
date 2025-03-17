@@ -2,12 +2,12 @@ import 'package:air_job_management/pages/home/widgets/air_job_management.dart';
 import 'package:air_job_management/pages/home/widgets/tab_section.dart';
 import 'package:air_job_management/providers/home.dart';
 import 'package:air_job_management/utils/app_size.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/my_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 class HomePage extends StatefulWidget {
   final String? selectItem;
@@ -66,8 +66,7 @@ class _HomePageState extends State<HomePage> with AfterBuildMixin {
                       title: homeProvider.menuList[i],
                       icon: homeProvider.menuIconList[i],
                       onPress: () {
-                        homeProvider
-                            .onChangeSelectItem(homeProvider.menuList[i]);
+                        homeProvider.onChangeSelectItem(homeProvider.menuList[i]);
                         var route = homeProvider.checkRoute(homeProvider);
                         context.go(route);
                       }),
@@ -88,11 +87,7 @@ class _HomePageState extends State<HomePage> with AfterBuildMixin {
   }
 
   rightWidget() {
-    int selectedIndex =
-        homeProvider.menuList.indexOf(homeProvider.selectedItem);
-    return Expanded(
-        child: widget.page != null
-            ? widget.page!
-            : homeProvider.menuPageList.elementAt(selectedIndex));
+    int selectedIndex = homeProvider.menuList.indexOf(homeProvider.selectedItem);
+    return Expanded(child: widget.page != null ? widget.page! : homeProvider.menuPageList.elementAt(selectedIndex));
   }
 }

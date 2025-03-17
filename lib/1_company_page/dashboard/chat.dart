@@ -2,6 +2,7 @@ import 'package:air_job_management/1_company_page/dashboard/chat_detail.dart';
 import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/loading.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -9,7 +10,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../api/user_api.dart';
 import '../../api/worker_api/chat_api.dart';
@@ -125,7 +125,7 @@ class _ChatPageAtDashboardState extends State<ChatPageAtDashboard> with AfterBui
                     ),
                     Scrollbar(
                       controller: scrollController,
-                      isAlwaysShown: true,
+                      thumbVisibility: true,
                       child: SizedBox(
                         width: 300,
                         height: 420,

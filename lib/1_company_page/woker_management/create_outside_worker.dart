@@ -6,6 +6,7 @@ import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/job_posting.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
 import 'package:air_job_management/providers/home.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/widgets/custom_dropdown_string.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
@@ -13,7 +14,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../2_worker_page/viewprofile/widgets/pickimage.dart';
 import '../../api/company/worker_managment.dart';
@@ -90,7 +90,7 @@ class _CreateOutsideStaffPageState extends State<CreateOutsideStaffPage> with Af
           padding: const EdgeInsets.symmetric(horizontal: 32),
           margin: const EdgeInsets.all(32),
           child: Scrollbar(
-            isAlwaysShown: true,
+            thumbVisibility: true,
             controller: verticalScroll,
             child: SingleChildScrollView(
               controller: verticalScroll,
@@ -578,7 +578,7 @@ class _CreateOutsideStaffPageState extends State<CreateOutsideStaffPage> with Af
         width: AppSize.getDeviceWidth(context),
         height: 162,
         child: Scrollbar(
-          isAlwaysShown: true,
+          thumbVisibility: true,
           controller: horizontalScroll,
           child: ListView.builder(
               controller: horizontalScroll,

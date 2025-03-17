@@ -8,6 +8,7 @@ import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/models/worker_model/shift.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:csv/csv.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -15,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../api/entry_exit.dart';
 import '../../api/user_api.dart';
@@ -84,7 +84,7 @@ class _ApplicantListPageState extends State<ApplicantListPage> with AfterBuildMi
         padding: const EdgeInsets.all(16.0),
         child: Scrollbar(
           controller: scrollController,
-          isAlwaysShown: true,
+          thumbVisibility: true,
           child: SingleChildScrollView(
             controller: scrollController,
             child: Column(

@@ -3,9 +3,9 @@ import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/models/worker_model/shift.dart';
 import 'package:air_job_management/providers/auth.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../api/company/request.dart';
 import '../../../helper/date_to_api.dart';
@@ -85,7 +85,7 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
         decoration: boxDecorationNoTopRadius,
         padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Scrollbar(
-          isAlwaysShown: true,
+          thumbVisibility: true,
           controller: scrollController,
           child: SingleChildScrollView(
             controller: scrollController,
@@ -546,7 +546,7 @@ class _BasicInformationPageState extends State<BasicInformationPage> with AfterB
         width: AppSize.getDeviceWidth(context),
         height: 250,
         child: Scrollbar(
-          isAlwaysShown: true,
+          thumbVisibility: true,
           controller: scrollController2,
           child: SingleChildScrollView(
             controller: scrollController2,

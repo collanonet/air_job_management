@@ -6,13 +6,13 @@ import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../api/user_api.dart';
 import '../../models/company.dart';
@@ -76,7 +76,7 @@ class _EntryExitHistoryListPageState extends State<EntryExitHistoryListPage> wit
         padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Scrollbar(
           controller: scrollController,
-          isAlwaysShown: true,
+          thumbVisibility: true,
           child: SizedBox(
             width: AppSize.getDeviceWidth(context),
             height: AppSize.getDeviceHeight(context) * 0.9,

@@ -3,12 +3,12 @@ import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/dateTime_Cal.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_dialog.dart';
 import 'package:air_job_management/widgets/loading.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:flutter/material.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../api/user_api.dart';
 import '../../helper/currency_format.dart';

@@ -3,9 +3,9 @@ import 'package:air_job_management/pages/company/widgets/company_card.dart';
 import 'package:air_job_management/pages/company/widgets/filter_company.dart';
 import 'package:air_job_management/pages/company/widgets/sign_up_or_delete.dart';
 import 'package:air_job_management/providers/company.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';

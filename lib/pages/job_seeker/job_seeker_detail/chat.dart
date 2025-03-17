@@ -2,6 +2,7 @@ import 'package:air_job_management/api/company.dart';
 import 'package:air_job_management/api/user_api.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/utils/app_size.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,7 +10,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../models/company.dart';

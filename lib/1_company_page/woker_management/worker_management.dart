@@ -2,12 +2,12 @@ import 'package:air_job_management/1_company_page/woker_management/widget/filter
 import 'package:air_job_management/1_company_page/woker_management/widget/job_card.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/providers/company/worker_management.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../api/entry_exit.dart';
 import '../../api/user_api.dart';
@@ -79,7 +79,7 @@ class _WorkerManagementPageState extends State<WorkerManagementPage> with AfterB
         padding: const EdgeInsets.all(16.0),
         child: Scrollbar(
           controller: scrollController,
-          isAlwaysShown: true,
+          thumbVisibility: true,
           child: SingleChildScrollView(
             controller: scrollController,
             child: Column(

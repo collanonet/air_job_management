@@ -109,7 +109,7 @@ class _ViewJobDetailState extends State<ViewJobDetail> {
       ),
       body: Scrollbar(
         controller: scrollController,
-        isAlwaysShown: true,
+        thumbVisibility: true,
         child: SingleChildScrollView(
           controller: scrollController,
           child: StreamBuilder(

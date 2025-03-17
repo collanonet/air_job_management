@@ -3,12 +3,12 @@ import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/const/const.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_dialog.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../models/job_posting.dart';
 import '../../../providers/company/job_posting.dart';

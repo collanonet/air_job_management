@@ -8,13 +8,13 @@ import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/job_posting.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../2_worker_page/viewprofile/widgets/pickimage.dart';
 import '../../api/user_api.dart';

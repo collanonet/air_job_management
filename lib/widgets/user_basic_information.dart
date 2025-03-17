@@ -7,9 +7,9 @@ import 'package:air_job_management/models/entry_exit_history.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/common_utils.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../pages/register/widget/radio_list_tile.dart';
 import '../../../utils/app_color.dart';
@@ -90,7 +90,7 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
       decoration: boxDecorationNoTopRadius,
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Scrollbar(
-        isAlwaysShown: true,
+        thumbVisibility: true,
         controller: scrollController,
         child: SingleChildScrollView(
           controller: scrollController,
@@ -549,7 +549,7 @@ class _BasicInformationPageState extends State<UserBasicInformationPage> with Af
         width: AppSize.getDeviceWidth(context),
         height: 250,
         child: Scrollbar(
-          isAlwaysShown: true,
+          thumbVisibility: true,
           controller: scrollController2,
           child: SingleChildScrollView(
             controller: scrollController2,

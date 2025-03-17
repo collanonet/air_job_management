@@ -2,6 +2,7 @@ import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/models/user.dart';
 import 'package:air_job_management/pages/job_seeker/job_seeker_detail/chat.dart';
 import 'package:air_job_management/utils/app_size.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,7 +10,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../api/user_api.dart';
@@ -105,7 +105,7 @@ class _CompanyChatPageState extends State<CompanyChatPage> with AfterBuildMixin 
         }
         return Scrollbar(
           controller: scrollController,
-          isAlwaysShown: true,
+          thumbVisibility: true,
           child: ListView.separated(
             controller: scrollController,
             cacheExtent: 10000,

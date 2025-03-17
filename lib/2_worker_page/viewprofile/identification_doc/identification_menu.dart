@@ -2,11 +2,11 @@ import 'package:air_job_management/2_worker_page/viewprofile/identification_doc/
 import 'package:air_job_management/2_worker_page/viewprofile/identification_doc/widget/iden_card.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/page_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../api/user_api.dart';
 import '../../../providers/auth.dart';

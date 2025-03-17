@@ -3,13 +3,13 @@ import 'package:air_job_management/helper/japan_date_time.dart';
 import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/providers/job_posting.dart';
 import 'package:air_job_management/utils/date_time_utils.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/multi_select.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../api/company.dart';
 import '../../const/const.dart';
@@ -173,7 +173,7 @@ class _CreateOrEditJobPageState extends State<CreateOrEditJobPage> with AfterBui
                 decoration: boxDecoration,
                 child: Scrollbar(
                   controller: controller,
-                  isAlwaysShown: true,
+                  thumbVisibility: true,
                   interactive: true,
                   child: SingleChildScrollView(
                     controller: controller,

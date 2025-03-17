@@ -2,7 +2,6 @@ import 'package:air_job_management/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../utils/app_color.dart';
 
@@ -101,8 +100,7 @@ class PrimaryTextField extends StatelessWidget {
           border: InputBorder.none, // Removes the underline
           hintText: hint,
           prefixIcon: prefix,
-          hintStyle: kNormalText.copyWith(
-              fontFamily: "Normal", fontSize: 16, color: AppColor.greyColor),
+          hintStyle: kNormalText.copyWith(fontFamily: "Normal", fontSize: 16, color: AppColor.greyColor),
           suffixIcon: readOnly
               ? SizedBox()
               : suffix == null
@@ -120,7 +118,9 @@ class PrimaryTextField extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         suffix!,
-                        const SpaceX(),
+                        const SizedBox(
+                          width: 8,
+                        ),
                         Icon(
                           FlutterIcons.asterisk_fou,
                           color: readOnly
@@ -130,7 +130,9 @@ class PrimaryTextField extends StatelessWidget {
                                   : Colors.transparent,
                           size: 8,
                         ),
-                        const SpaceX(16),
+                        const SizedBox(
+                          width: 16,
+                        ),
                       ],
                     ),
           enabledBorder: OutlineInputBorder(
@@ -142,8 +144,7 @@ class PrimaryTextField extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(4),
-            borderSide:
-                BorderSide(color: AppColor.primaryColor, width: borderWidth),
+            borderSide: BorderSide(color: AppColor.primaryColor, width: borderWidth),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(4),
@@ -153,8 +154,7 @@ class PrimaryTextField extends StatelessWidget {
           //   borderRadius: BorderRadius.circular(4),
           //   borderSide: BorderSide(color: Colors.red, width: borderWidth),
           // ),
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
         ),
       ),
     );
@@ -180,9 +180,7 @@ class FormValidator {
 
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) return "無効な電子メール";
-    bool emailValid = RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(value);
+    bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
     return emailValid ? null : "無効な電子メール";
   }
 }

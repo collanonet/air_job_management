@@ -12,6 +12,7 @@ import 'package:air_job_management/providers/favorite_provider.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/page_route.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/custom_back_button.dart';
@@ -23,7 +24,6 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../api/user_api.dart';
 import '../../models/user.dart';
@@ -96,7 +96,7 @@ class _ViewJobDetailViaLinkPageState extends State<ViewJobDetailViaLinkPage> wit
             )
           : Scrollbar(
               controller: scrollController,
-              isAlwaysShown: true,
+              thumbVisibility: true,
               child: SingleChildScrollView(
                 controller: scrollController,
                 child: SafeArea(

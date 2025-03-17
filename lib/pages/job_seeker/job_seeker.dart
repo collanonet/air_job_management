@@ -4,12 +4,12 @@ import 'package:air_job_management/pages/job_seeker/widget/filter_data.dart';
 import 'package:air_job_management/pages/job_seeker/widget/job_seeker_card.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/app_size.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:air_job_management/widgets/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../providers/job_seeker.dart';
 import '../../utils/japanese_text.dart';
@@ -90,27 +90,19 @@ class _JobSeekerPageState extends State<JobSeekerPage> with AfterBuildMixin {
                           flex: 2,
                         ),
                         Expanded(
-                          child: Text(JapaneseText.jobDetail,
-                              style: normalTextStyle.copyWith(fontSize: 13)),
+                          child: Text(JapaneseText.jobDetail, style: normalTextStyle.copyWith(fontSize: 13)),
                           flex: 3,
                         ),
                         Expanded(
-                          child: Text(JapaneseText.note,
-                              style: normalTextStyle.copyWith(fontSize: 13)),
+                          child: Text(JapaneseText.note, style: normalTextStyle.copyWith(fontSize: 13)),
                           flex: 3,
                         ),
                         Expanded(
-                          child: Center(
-                              child: Text(JapaneseText.message,
-                                  style:
-                                      normalTextStyle.copyWith(fontSize: 13))),
+                          child: Center(child: Text(JapaneseText.message, style: normalTextStyle.copyWith(fontSize: 13))),
                           flex: 1,
                         ),
                         Expanded(
-                          child: Center(
-                              child: Text(JapaneseText.correspondenceStatus,
-                                  style:
-                                      normalTextStyle.copyWith(fontSize: 13))),
+                          child: Center(child: Text(JapaneseText.correspondenceStatus, style: normalTextStyle.copyWith(fontSize: 13))),
                           flex: 1,
                         )
                       ],
@@ -137,12 +129,8 @@ class _JobSeekerPageState extends State<JobSeekerPage> with AfterBuildMixin {
         return ListView.separated(
             itemCount: jobSeekerProvider.myUserList.length,
             shrinkWrap: true,
-            separatorBuilder: (context, index) => Padding(
-                padding: EdgeInsets.only(
-                    top: 10,
-                    bottom: index + 1 == jobSeekerProvider.myUserList.length
-                        ? 20
-                        : 0)),
+            separatorBuilder: (context, index) =>
+                Padding(padding: EdgeInsets.only(top: 10, bottom: index + 1 == jobSeekerProvider.myUserList.length ? 20 : 0)),
             itemBuilder: (context, index) {
               MyUser user = jobSeekerProvider.myUserList[index];
               return JobSeekerCardWidget(user: user);

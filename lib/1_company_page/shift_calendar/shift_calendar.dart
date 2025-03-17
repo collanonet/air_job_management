@@ -9,13 +9,13 @@ import 'package:air_job_management/helper/date_to_api.dart';
 import 'package:air_job_management/providers/company/shift_calendar.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/widgets/empty_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../api/user_api.dart';
@@ -85,7 +85,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
             padding: const EdgeInsets.all(16.0),
             child: Scrollbar(
               controller: scrollController,
-              isAlwaysShown: true,
+              thumbVisibility: true,
               child: SingleChildScrollView(
                 controller: scrollController,
                 child: Column(
@@ -241,7 +241,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                       }),
                       child: Scrollbar(
                         controller: scrollControllerForShiftPerDay,
-                        isAlwaysShown: true,
+                        thumbVisibility: true,
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           controller: scrollControllerForShiftPerDay,
@@ -411,7 +411,7 @@ class _ShiftCalendarPageState extends State<ShiftCalendarPage> with AfterBuildMi
                 }),
                 child: Scrollbar(
                   controller: scrollControllerForShiftPerDay,
-                  isAlwaysShown: true,
+                  thumbVisibility: true,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     controller: scrollControllerForShiftPerDay,

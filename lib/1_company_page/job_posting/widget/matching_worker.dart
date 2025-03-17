@@ -1,11 +1,11 @@
 import 'package:air_job_management/api/company/worker_managment.dart';
 import 'package:air_job_management/models/job_posting.dart';
 import 'package:air_job_management/models/worker_model/shift.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/widgets/custom_loading_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../../helper/date_to_api.dart';
 import '../../../models/company/worker_management.dart';

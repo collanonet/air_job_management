@@ -588,14 +588,27 @@ class MyApp extends StatelessWidget {
           ],
           child: MaterialApp.router(
             scrollBehavior: MyCustomScrollBehavior(), // <== add here
-
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
             theme: ThemeData(
+                scaffoldBackgroundColor: Colors.white,
                 textTheme: TextTheme().apply(fontSizeFactor: 0.6.sp),
+                primaryColor: Colors.white,
+                primarySwatch: const MaterialColor(0xfffffff, {
+                  50: Color(0xfffffff),
+                  100: Color(0xfffffff),
+                  200: Color(0xfffffff),
+                  300: Color(0xfffffff),
+                  400: Color(0xfffffff),
+                  500: Color(0xfffffff),
+                  600: Color(0xfffffff),
+                  700: Color(0xfffffff),
+                  800: Color(0xfffffff),
+                  900: Color(0xfffffff)
+                }),
                 pageTransitionsTheme: const PageTransitionsTheme(builders: {
                   TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
                   TargetPlatform.iOS: OpenUpwardsPageTransitionsBuilder(),

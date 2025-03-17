@@ -118,7 +118,7 @@ class _CreateJobSeekerPageState extends State<CreateJobSeekerPage> {
                 decoration: boxDecoration,
                 child: Scrollbar(
                   controller: scrollController,
-                  isAlwaysShown: true,
+                  thumbVisibility: true,
                   child: SingleChildScrollView(
                     controller: scrollController,
                     child: Column(

@@ -4,9 +4,9 @@ import 'package:air_job_management/pages/job_posting/widgets/job_posting_card.da
 import 'package:air_job_management/pages/job_posting/widgets/sign_up_or_delete.dart';
 import 'package:air_job_management/providers/job_posting.dart';
 import 'package:air_job_management/providers/job_posting_for_japanese.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../utils/app_color.dart';
 import '../../utils/app_size.dart';

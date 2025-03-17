@@ -13,6 +13,7 @@ import 'package:air_job_management/pages/register/verify_user.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/utils/app_color.dart';
 import 'package:air_job_management/utils/japanese_text.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/my_route.dart';
 import 'package:air_job_management/utils/page_route.dart';
 import 'package:air_job_management/utils/respnsive.dart';
@@ -26,7 +27,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../utils/app_size.dart';
 
@@ -244,7 +244,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
             Expanded(
                 child: Scrollbar(
                     controller: scrollController,
-                    isAlwaysShown: true,
+                    thumbVisibility: true,
                     child: SingleChildScrollView(
                         controller: scrollController,
                         child: Column(children: [
@@ -582,7 +582,7 @@ class _SplashScreenState extends State<SplashScreen> with AfterBuildMixin {
             Expanded(
                 child: Scrollbar(
                     controller: scrollController,
-                    isAlwaysShown: true,
+                    thumbVisibility: true,
                     child: SingleChildScrollView(
                         controller: scrollController,
                         child: Column(children: [

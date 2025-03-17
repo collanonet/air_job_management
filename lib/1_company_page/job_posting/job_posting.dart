@@ -8,13 +8,13 @@ import 'package:air_job_management/api/job_posting.dart';
 import 'package:air_job_management/models/company/worker_management.dart';
 import 'package:air_job_management/providers/auth.dart';
 import 'package:air_job_management/providers/company/job_posting.dart';
+import 'package:air_job_management/utils/mixin.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:sura_flutter/sura_flutter.dart';
 
 import '../../api/user_api.dart';
 import '../../models/company.dart';
@@ -78,7 +78,7 @@ class _JobPostingForCompanyPageState extends State<JobPostingForCompanyPage> wit
         padding: const EdgeInsets.all(16.0),
         child: Scrollbar(
           controller: scrollController,
-          isAlwaysShown: true,
+          thumbVisibility: true,
           child: SingleChildScrollView(
             controller: scrollController,
             child: Column(

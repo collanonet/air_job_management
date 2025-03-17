@@ -166,7 +166,7 @@ class _EditProfileState extends State<EditProfile> {
                 color: Colors.white, borderRadius: BorderRadius.only(bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16))),
             child: Scrollbar(
               controller: scrollController,
-              isAlwaysShown: true,
+              thumbVisibility: true,
               child: SingleChildScrollView(
                 controller: scrollController,
                 child: Column(
