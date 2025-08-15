@@ -304,20 +304,22 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       authProvider.setLoading(true);
       MyUser? user = await authProvider.loginAccount(email.text.trim(), password.text.trim());
+      context.go(MyRoute.dashboard);
       if (user != null) {
-        if (user.role == RoleHelper.admin) {
-          context.go(MyRoute.dashboard);
-        } else {
-          await authProvider.logout();
-          toastMessageError("求職者の方はモバイルアプリをご利用ください。", context);
-          // if (user.isFullTimeStaff == true) {
-          //   isFullTime = true;
-          //   context.go(MyRoute.workerJobSearchFullTime);
-          // } else {
-          //   isFullTime = false;
-          //   context.go(MyRoute.workerJobSearchPartTime);
-          // }
-        }
+        context.go(MyRoute.dashboard);
+        // if (user.role == RoleHelper.admin) {
+        //   context.go(MyRoute.dashboard);
+        // } else {
+        //   await authProvider.logout();
+        //   toastMessageError("求職者の方はモバイルアプリをご利用ください。", context);
+        //   // if (user.isFullTimeStaff == true) {
+        //   //   isFullTime = true;
+        //   //   context.go(MyRoute.workerJobSearchFullTime);
+        //   // } else {
+        //   //   isFullTime = false;
+        //   //   context.go(MyRoute.workerJobSearchPartTime);
+        //   // }
+        // }
       } else {
         toastMessageError("${authProvider.errorMessage}", context);
       }
