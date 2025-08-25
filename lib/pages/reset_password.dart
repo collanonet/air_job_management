@@ -141,7 +141,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           isLoading = true;
         });
         try {
-          await firebaseAuth.sendPasswordResetEmail(email: email.text.trim());
+        await firebaseAuth.sendPasswordResetEmail(email: email.text.trim());
+        print("Reset Password Data: ${firebaseAuth.sendPasswordResetEmail(email: email.text.trim()).toString()}");
           setState(() {
             isLoading = false;
           });

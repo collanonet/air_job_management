@@ -10,9 +10,12 @@ import 'package:air_job_management/utils/style.dart';
 import 'package:air_job_management/utils/toast_message_util.dart';
 import 'package:air_job_management/widgets/custom_choose_date_or_time.dart';
 import 'package:air_job_management/widgets/custom_dropdown_string.dart';
+import 'package:air_job_management/widgets/date_input.dart';
+import 'package:air_job_management/widgets/time_input.dart';
 import 'package:air_job_management/widgets/title.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../helper/date_to_api.dart';
@@ -40,6 +43,9 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
   @override
   Widget build(BuildContext context) {
     provider = Provider.of<JobPostingForCompanyProvider>(context);
+    final start = provider.startWorkDate;              // 既存の開始日
+    final end   = provider.endWorkDate;                // 既存の終了日（現在値）
+    final last  = DateTime(2100, 12, 31);
     if (widget.isFromCopyShift == true) {
       return Container(
         width: AppSize.getDeviceWidth(context),
@@ -67,24 +73,48 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      CustomChooseDateOrTimeWidget(
+                       SizedBox(
                         width: 200,
-                        title: JapaneseText.postedStartDay,
-                        onTap: () async {
-                          var date = await showDatePicker(
-                              context: context, initialDate: provider.startPostDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
-                          if (date != null) {
-                            setState(() {
-                              provider.startPostDate = date;
-                              if (provider.startPostDate.isAfter(provider.endPostDate)) {
-                                provider.endPostDate = date;
-                              }
-                            });
-                          }
-                        },
-                        val: toJapanDateWithoutWeekDay(provider.startPostDate),
-                        isHaveIcon: true,
+                        child: DatePickerField(
+                          label: JapaneseText.postedStartDay,
+                          helperText: 'YYYY/MM/DD',
+                          firstDate: DateTime.now(),          
+                          lastDate: DateTime(2100, 12, 31),               
+                          initialDate: provider.startPostDate,              
+                          onChanged: (dt) {
+                            if (dt != null) {
+                              setState(() {
+                                provider.startPostDate = dt;
+                              });
+                            }
+                          },
+                          onSubmitted: (dt) {
+                            if (dt != null) {
+                              setState(() {
+                                provider.startPostDate = dt;
+                              });
+                            }
+                          },
+                        ),
                       ),
+                      // CustomChooseDateOrTimeWidget(
+                      //   width: 200,
+                      //   title: JapaneseText.postedStartDay,
+                      //   onTap: () async {
+                      //     var date = await showDatePicker(
+                      //         context: context, initialDate: provider.startPostDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
+                      //     if (date != null) {
+                      //       setState(() {
+                      //         provider.startPostDate = date;
+                      //         if (provider.startPostDate.isAfter(provider.endPostDate)) {
+                      //           provider.endPostDate = date;
+                      //         }
+                      //       });
+                      //     }
+                      //   },
+                      //   val: toJapanDateWithoutWeekDay(provider.startPostDate),
+                      //   isHaveIcon: true,
+                      // ),
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
                         child: Text(
@@ -92,21 +122,45 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                           style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
                         ),
                       ),
-                      CustomChooseDateOrTimeWidget(
+                      SizedBox(
                         width: 200,
-                        title: JapaneseText.postedEndDay,
-                        onTap: () async {
-                          var date = await showDatePicker(
-                              context: context, initialDate: provider.endPostDate, firstDate: provider.startPostDate, lastDate: DateTime(2100));
-                          if (date != null) {
-                            setState(() {
-                              provider.endPostDate = date;
-                            });
-                          }
-                        },
-                        val: toJapanDateWithoutWeekDay(provider.endPostDate),
-                        isHaveIcon: true,
+                        child: DatePickerField(
+                          label: JapaneseText.postedEndDay,
+                          helperText: 'YYYY/MM/DD',
+                          firstDate: DateTime.now(),          
+                          lastDate: DateTime(2100, 12, 31),               
+                          initialDate: provider.endPostDate,              
+                          onChanged: (dt) {
+                            if (dt != null) {
+                              setState(() {
+                                provider.endPostDate = dt;
+                              });
+                            }
+                          },
+                          onSubmitted: (dt) {
+                            if (dt != null) {
+                              setState(() {
+                                provider.endPostDate = dt;
+                              });
+                            }
+                          },
+                        ),
                       ),
+                      // CustomChooseDateOrTimeWidget(
+                      //   width: 200,
+                      //   title: JapaneseText.postedEndDay,
+                      //   onTap: () async {
+                      //     var date = await showDatePicker(
+                      //         context: context, initialDate: provider.endPostDate, firstDate: provider.startPostDate, lastDate: DateTime(2100));
+                      //     if (date != null) {
+                      //       setState(() {
+                      //         provider.endPostDate = date;
+                      //       });
+                      //     }
+                      //   },
+                      //   val: toJapanDateWithoutWeekDay(provider.endPostDate),
+                      //   isHaveIcon: true,
+                      // ),
                     ],
                   ),
                   AppSize.spaceHeight16,
@@ -118,24 +172,48 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      CustomChooseDateOrTimeWidget(
+                      SizedBox(
                         width: 200,
-                        title: JapaneseText.startWorkingDay,
-                        onTap: () async {
-                          var date = await showDatePicker(
-                              context: context, initialDate: provider.startWorkDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
-                          if (date != null) {
-                            setState(() {
-                              provider.startWorkDate = date;
-                              if (provider.startWorkDate.isAfter(provider.endWorkDate)) {
-                                provider.endWorkDate = date;
-                              }
-                            });
-                          }
-                        },
-                        val: toJapanDateWithoutWeekDay(provider.startWorkDate),
-                        isHaveIcon: true,
+                        child: DatePickerField(
+                          label: JapaneseText.startWorkingDay,
+                          helperText: 'YYYY/MM/DD',
+                          firstDate: DateTime.now(),          
+                          lastDate: DateTime(2100, 12, 31),               
+                          initialDate: provider.startWorkDate,              
+                          onChanged: (dt) {
+                            if (dt != null) {
+                              setState(() {
+                                provider.startWorkDate = dt;
+                              });
+                            }
+                          },
+                          onSubmitted: (dt) {
+                            if (dt != null) {
+                              setState(() {
+                                provider.startWorkDate = dt;
+                              });
+                            }
+                          },
+                        ),
                       ),
+                      // CustomChooseDateOrTimeWidget(
+                      //   width: 200,
+                      //   title: JapaneseText.startWorkingDay,
+                      //   onTap: () async {
+                      //     var date = await showDatePicker(
+                      //         context: context, initialDate: provider.startWorkDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
+                      //     if (date != null) {
+                      //       setState(() {
+                      //         provider.startWorkDate = date;
+                      //         if (provider.startWorkDate.isAfter(provider.endWorkDate)) {
+                      //           provider.endWorkDate = date;
+                      //         }
+                      //       });
+                      //     }
+                      //   },
+                      //   val: toJapanDateWithoutWeekDay(provider.startWorkDate),
+                      //   isHaveIcon: true,
+                      // ),
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
                         child: Text(
@@ -143,41 +221,88 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                           style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
                         ),
                       ),
-                      CustomChooseDateOrTimeWidget(
+                     SizedBox(
                         width: 200,
-                        title: JapaneseText.endWorkingDay,
-                        onTap: () async {
-                          var date = await showDatePicker(
-                              context: context, initialDate: provider.endWorkDate, firstDate: provider.startWorkDate, lastDate: DateTime(2100));
-                          if (date != null) {
-                            setState(() {
-                              provider.endWorkDate = date;
-                            });
-                          }
-                        },
-                        val: toJapanDateWithoutWeekDay(provider.endWorkDate),
-                        isHaveIcon: true,
+                        child: DatePickerField(
+                          label: JapaneseText.endWorkingDay,
+                          helperText: 'YYYY/MM/DD',
+                          firstDate: DateTime.now(),          
+                          lastDate: DateTime(2100, 12, 31),               
+                          initialDate: provider.endWorkDate,              
+                          onChanged: (dt) {
+                            if (dt != null) {
+                              setState(() {
+                                provider.endWorkDate = dt;
+                              });
+                            }
+                          },
+                          onSubmitted: (dt) {
+                            if (dt != null) {
+                              setState(() {
+                                provider.endWorkDate = dt;
+                              });
+                            }
+                          },
+                        ),
                       ),
+
+
+                      // CustomChooseDateOrTimeWidget(
+                      //   width: 200,
+                      //   title: JapaneseText.endWorkingDay,
+                      //   onTap: () async {
+                      //     var date = await showDatePicker(
+                      //         context: context, initialDate: provider.endWorkDate, firstDate: provider.startWorkDate, lastDate: DateTime(2100));
+                      //     if (date != null) {
+                      //       setState(() {
+                      //         provider.endWorkDate = date;
+                      //       });
+                      //     }
+                      //   },
+                      //   val: toJapanDateWithoutWeekDay(provider.endWorkDate),
+                      //   isHaveIcon: true,
+                      // ),
                     ],
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      CustomChooseDateOrTimeWidget(
-                        title: JapaneseText.startWorkingTime,
-                        onTap: () async {
-                          var time = await showTimePicker(
-                              context: context,
-                              initialTime: TimeOfDay(hour: provider.startWorkingTime.hour, minute: provider.startWorkingTime.minute));
-                          if (time != null) {
-                            setState(() {
-                              provider.startWorkingTime = DateTime(1, 1, 1, time.hour, time.minute);
-                            });
-                          }
-                        },
-                        val: dateTimeToHourAndMinute(provider.startWorkingTime),
-                      ),
+                       SizedBox(
+                            width: 120,
+                            child: TimePickerField(
+                              label: JapaneseText.startWorkingTime,
+                              // helperText: "Enter in HH:mm format",
+                              initialTime: TextEditingController(text: dateTimeToHourAndMinute(provider.startWorkingTime)),
+                              onChanged: (val) {
+                                    final parts = val.split(":");
+                                    if (parts.length == 2) {
+                                      final hour = int.tryParse(parts[0]);
+                                      final minute = int.tryParse(parts[1]);
+                                      if (hour != null && minute != null && hour >= 0 && hour < 24 && minute >= 0 && minute < 60) {
+                                        setState(() {
+                                          provider.startWorkingTime = DateTime(1, 1, 1, hour, minute);
+                                        });
+                                      }
+                                    }
+                                  },
+                              onSubmitted: (time) => print("Submitted: $time"),
+                            ),
+                          ),
+                      // CustomChooseDateOrTimeWidget(
+                      //   title: JapaneseText.startWorkingTime,
+                      //   onTap: () async {
+                      //     var time = await showTimePicker(
+                      //         context: context,
+                      //         initialTime: TimeOfDay(hour: provider.startWorkingTime.hour, minute: provider.startWorkingTime.minute));
+                      //     if (time != null) {
+                      //       setState(() {
+                      //         provider.startWorkingTime = DateTime(1, 1, 1, time.hour, time.minute);
+                      //       });
+                      //     }
+                      //   },
+                      //   val: dateTimeToHourAndMinute(provider.startWorkingTime),
+                      // ),
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
                         child: Text(
@@ -185,33 +310,75 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                           style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
                         ),
                       ),
-                      CustomChooseDateOrTimeWidget(
-                        title: JapaneseText.endWorkingTime,
-                        onTap: () async {
-                          var time = await showTimePicker(
-                              context: context, initialTime: TimeOfDay(hour: provider.endWorkingTime.hour, minute: provider.endWorkingTime.minute));
-                          if (time != null) {
-                            setState(() {
-                              provider.endWorkingTime = DateTime(1, 1, 1, time.hour, time.minute);
-                            });
-                          }
-                        },
-                        val: dateTimeToHourAndMinute(provider.endWorkingTime),
-                      ),
+                      SizedBox(
+                            width: 120,
+                            child: TimePickerField(
+                              label: JapaneseText.endWorkingTime,
+                              // helperText: "Enter in HH:mm format",
+                              initialTime: TextEditingController(text: dateTimeToHourAndMinute(provider.endWorkingTime)),
+                              onChanged: (val) {
+                                    final parts = val.split(":");
+                                    if (parts.length == 2) {
+                                      final hour = int.tryParse(parts[0]);
+                                      final minute = int.tryParse(parts[1]);
+                                      if (hour != null && minute != null && hour >= 0 && hour < 24 && minute >= 0 && minute < 60) {
+                                        setState(() {
+                                          provider.endWorkingTime = DateTime(1, 1, 1, hour, minute);
+                                        });
+                                      }
+                                    }
+                                  },
+                              onSubmitted: (time) => print("Submitted: $time"),
+                            ),
+                          ),
+                      // CustomChooseDateOrTimeWidget(
+                      //   title: JapaneseText.endWorkingTime,
+                      //   onTap: () async {
+                      //     var time = await showTimePicker(
+                      //         context: context, initialTime: TimeOfDay(hour: provider.endWorkingTime.hour, minute: provider.endWorkingTime.minute));
+                      //     if (time != null) {
+                      //       setState(() {
+                      //         provider.endWorkingTime = DateTime(1, 1, 1, time.hour, time.minute);
+                      //       });
+                      //     }
+                      //   },
+                      //   val: dateTimeToHourAndMinute(provider.endWorkingTime),
+                      // ),
                       AppSize.spaceWidth32,
-                      CustomChooseDateOrTimeWidget(
-                        title: JapaneseText.startBreakTime,
-                        onTap: () async {
-                          var time = await showTimePicker(
-                              context: context, initialTime: TimeOfDay(hour: provider.startBreakTime.hour, minute: provider.startBreakTime.minute));
-                          if (time != null) {
-                            setState(() {
-                              provider.startBreakTime = DateTime(1, 1, 1, time.hour, time.minute);
-                            });
-                          }
-                        },
-                        val: dateTimeToHourAndMinute(provider.startBreakTime),
-                      ),
+                      SizedBox(
+                            width: 120,
+                            child: TimePickerField(
+                              label: JapaneseText.startBreakTime,
+                              // helperText: "Enter in HH:mm format",
+                              initialTime: TextEditingController(text: dateTimeToHourAndMinute(provider.startBreakTime)),
+                              onChanged: (val) {
+                                    final parts = val.split(":");
+                                    if (parts.length == 2) {
+                                      final hour = int.tryParse(parts[0]);
+                                      final minute = int.tryParse(parts[1]);
+                                      if (hour != null && minute != null && hour >= 0 && hour < 24 && minute >= 0 && minute < 60) {
+                                        setState(() {
+                                          provider.startBreakTime = DateTime(1, 1, 1, hour, minute);
+                                        });
+                                      }
+                                    }
+                                  },
+                              onSubmitted: (time) => print("Submitted: $time"),
+                            ),
+                          ),
+                      // CustomChooseDateOrTimeWidget(
+                      //   title: JapaneseText.startBreakTime,
+                      //   onTap: () async {
+                      //     var time = await showTimePicker(
+                      //         context: context, initialTime: TimeOfDay(hour: provider.startBreakTime.hour, minute: provider.startBreakTime.minute));
+                      //     if (time != null) {
+                      //       setState(() {
+                      //         provider.startBreakTime = DateTime(1, 1, 1, time.hour, time.minute);
+                      //       });
+                      //     }
+                      //   },
+                      //   val: dateTimeToHourAndMinute(provider.startBreakTime),
+                      // ),
                       Padding(
                         padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
                         child: Text(
@@ -219,19 +386,40 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                           style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
                         ),
                       ),
-                      CustomChooseDateOrTimeWidget(
-                        title: JapaneseText.endBreakTime,
-                        onTap: () async {
-                          var time = await showTimePicker(
-                              context: context, initialTime: TimeOfDay(hour: provider.endBreakTime.hour, minute: provider.endBreakTime.minute));
-                          if (time != null) {
-                            setState(() {
-                              provider.endBreakTime = DateTime(1, 1, 1, time.hour, time.minute);
-                            });
-                          }
-                        },
-                        val: dateTimeToHourAndMinute(provider.endBreakTime),
-                      ),
+                      SizedBox(
+                            width: 120,
+                            child: TimePickerField(
+                              label: JapaneseText.endBreakTime,
+                              // helperText: "Enter in HH:mm format",
+                              initialTime: TextEditingController(text: dateTimeToHourAndMinute(provider.endBreakTime)),
+                              onChanged: (val) {
+                                    final parts = val.split(":");
+                                    if (parts.length == 2) {
+                                      final hour = int.tryParse(parts[0]);
+                                      final minute = int.tryParse(parts[1]);
+                                      if (hour != null && minute != null && hour >= 0 && hour < 24 && minute >= 0 && minute < 60) {
+                                        setState(() {
+                                          provider.endBreakTime = DateTime(1, 1, 1, hour, minute);
+                                        });
+                                      }
+                                    }
+                                  },
+                              onSubmitted: (time) => print("Submitted: $time"),
+                            ),
+                          ),
+                      // CustomChooseDateOrTimeWidget(
+                      //   title: JapaneseText.endBreakTime,
+                      //   onTap: () async {
+                      //     var time = await showTimePicker(
+                      //         context: context, initialTime: TimeOfDay(hour: provider.endBreakTime.hour, minute: provider.endBreakTime.minute));
+                      //     if (time != null) {
+                      //       setState(() {
+                      //         provider.endBreakTime = DateTime(1, 1, 1, time.hour, time.minute);
+                      //       });
+                      //     }
+                      //   },
+                      //   val: dateTimeToHourAndMinute(provider.endBreakTime),
+                      // ),
                     ],
                   ),
                   Text(
@@ -502,24 +690,48 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          CustomChooseDateOrTimeWidget(
-                            width: 200,
-                            title: JapaneseText.postedStartDay,
-                            onTap: () async {
-                              var date = await showDatePicker(
-                                  context: context, initialDate: provider.startPostDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
-                              if (date != null) {
-                                setState(() {
-                                  provider.startPostDate = date;
-                                  if (provider.startPostDate.isAfter(provider.endPostDate)) {
-                                    provider.endPostDate = date;
-                                  }
-                                });
-                              }
-                            },
-                            val: toJapanDateWithoutWeekDay(provider.startPostDate),
-                            isHaveIcon: true,
-                          ),
+                           SizedBox(
+                        width: 200,
+                        child: DatePickerField(
+                          label: JapaneseText.postedStartDay,
+                          helperText: 'YYYY/MM/DD',
+                          firstDate: DateTime.now(),          
+                          lastDate: DateTime(2100, 12, 31),               
+                          initialDate: provider.startPostDate,              
+                          onChanged: (dt) {
+                            if (dt != null) {
+                              setState(() {
+                                provider.startPostDate = dt;
+                              });
+                            }
+                          },
+                          onSubmitted: (dt) {
+                            if (dt != null) {
+                              setState(() {
+                                provider.startPostDate = dt;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                          // CustomChooseDateOrTimeWidget(
+                          //   width: 200,
+                          //   title: JapaneseText.postedStartDay,
+                          //   onTap: () async {
+                          //     var date = await showDatePicker(
+                          //         context: context, initialDate: provider.startPostDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
+                          //     if (date != null) {
+                          //       setState(() {
+                          //         provider.startPostDate = date;
+                          //         if (provider.startPostDate.isAfter(provider.endPostDate)) {
+                          //           provider.endPostDate = date;
+                          //         }
+                          //       });
+                          //     }
+                          //   },
+                          //   val: toJapanDateWithoutWeekDay(provider.startPostDate),
+                          //   isHaveIcon: true,
+                          // ),
                           Padding(
                             padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
                             child: Text(
@@ -527,21 +739,45 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                               style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
                             ),
                           ),
-                          CustomChooseDateOrTimeWidget(
-                            width: 200,
-                            title: JapaneseText.postedEndDay,
-                            onTap: () async {
-                              var date = await showDatePicker(
-                                  context: context, initialDate: provider.endPostDate, firstDate: provider.startPostDate, lastDate: DateTime(2100));
-                              if (date != null) {
-                                setState(() {
-                                  provider.endPostDate = date;
-                                });
-                              }
-                            },
-                            val: toJapanDateWithoutWeekDay(provider.endPostDate),
-                            isHaveIcon: true,
-                          ),
+                           SizedBox(
+                        width: 200,
+                        child: DatePickerField(
+                          label: JapaneseText.postedEndDay,
+                          helperText: 'YYYY/MM/DD',
+                          firstDate: DateTime.now(),          
+                          lastDate: DateTime(2100, 12, 31),               
+                          initialDate: provider.endPostDate,              
+                          onChanged: (dt) {
+                            if (dt != null) {
+                              setState(() {
+                                provider.endPostDate = dt;
+                              });
+                            }
+                          },
+                          onSubmitted: (dt) {
+                            if (dt != null) {
+                              setState(() {
+                                provider.endPostDate = dt;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                          // CustomChooseDateOrTimeWidget(
+                          //   width: 200,
+                          //   title: JapaneseText.postedEndDay,
+                          //   onTap: () async {
+                          //     var date = await showDatePicker(
+                          //         context: context, initialDate: provider.endPostDate, firstDate: provider.startPostDate, lastDate: DateTime(2100));
+                          //     if (date != null) {
+                          //       setState(() {
+                          //         provider.endPostDate = date;
+                          //       });
+                          //     }
+                          //   },
+                          //   val: toJapanDateWithoutWeekDay(provider.endPostDate),
+                          //   isHaveIcon: true,
+                          // ),
                         ],
                       ),
                       AppSize.spaceHeight16,
@@ -553,24 +789,48 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          CustomChooseDateOrTimeWidget(
-                            width: 200,
-                            title: JapaneseText.startWorkingDay,
-                            onTap: () async {
-                              var date = await showDatePicker(
-                                  context: context, initialDate: provider.startWorkDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
-                              if (date != null) {
-                                setState(() {
-                                  provider.startWorkDate = date;
-                                  if (provider.startWorkDate.isAfter(provider.endWorkDate)) {
-                                    provider.endWorkDate = date;
-                                  }
-                                });
-                              }
-                            },
-                            val: toJapanDateWithoutWeekDay(provider.startWorkDate),
-                            isHaveIcon: true,
-                          ),
+                            SizedBox(
+                        width: 200,
+                        child: DatePickerField(
+                          label: JapaneseText.startWorkingDay,
+                          helperText: 'YYYY/MM/DD',
+                          firstDate: DateTime.now(),          
+                          lastDate: DateTime(2100, 12, 31),               
+                          initialDate: provider.startWorkDate,              
+                          onChanged: (dt) {
+                            if (dt != null) {
+                              setState(() {
+                                provider.startWorkDate = dt;
+                              });
+                            }
+                          },
+                          onSubmitted: (dt) {
+                            if (dt != null) {
+                              setState(() {
+                                provider.startWorkDate = dt;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                          // CustomChooseDateOrTimeWidget(
+                          //   width: 200,
+                          //   title: JapaneseText.startWorkingDay,
+                          //   onTap: () async {
+                          //     var date = await showDatePicker(
+                          //         context: context, initialDate: provider.startWorkDate, firstDate: DateTime(2023, 1, 1), lastDate: DateTime(2100));
+                          //     if (date != null) {
+                          //       setState(() {
+                          //         provider.startWorkDate = date;
+                          //         if (provider.startWorkDate.isAfter(provider.endWorkDate)) {
+                          //           provider.endWorkDate = date;
+                          //         }
+                          //       });
+                          //     }
+                          //   },
+                          //   val: toJapanDateWithoutWeekDay(provider.startWorkDate),
+                          //   isHaveIcon: true,
+                          // ),
                           Padding(
                             padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
                             child: Text(
@@ -578,41 +838,88 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                               style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
                             ),
                           ),
-                          CustomChooseDateOrTimeWidget(
+                         SizedBox(
                             width: 200,
-                            title: JapaneseText.endWorkingDay,
-                            onTap: () async {
-                              var date = await showDatePicker(
-                                  context: context, initialDate: provider.endWorkDate, firstDate: provider.startWorkDate, lastDate: DateTime(2100));
-                              if (date != null) {
-                                setState(() {
-                                  provider.endWorkDate = date;
-                                });
-                              }
-                            },
-                            val: toJapanDateWithoutWeekDay(provider.endWorkDate),
-                            isHaveIcon: true,
+                            child: DatePickerField(
+                              label: JapaneseText.endWorkingDay,
+                              helperText: 'YYYY/MM/DD',
+                              firstDate: DateTime.now(),              // 入力の下限
+                              lastDate: DateTime(2100, 12, 31),               // 入力の上限
+                              initialDate: provider.endWorkDate,              // 初期表示
+                              onChanged: (dt) {
+                                if (dt != null) {
+                                  setState(() {
+                                    provider.endWorkDate = dt;
+                                  });
+                                }
+                              },
+                              onSubmitted: (dt) {
+                                if (dt != null) {
+                                  setState(() {
+                                    provider.endWorkDate = dt;
+                                  });
+                                }
+                              },
+                            ),
                           ),
+
+                         
+                          // CustomChooseDateOrTimeWidget(
+                          //   width: 200,
+                          //   title: JapaneseText.endWorkingDay,
+                          //   onTap: () async {
+                          //     var date = await showDatePicker(
+                          //         context: context, initialDate: provider.endWorkDate, firstDate: provider.startWorkDate, lastDate: DateTime(2100));
+                          //     if (date != null) {
+                          //       setState(() {
+                          //         provider.endWorkDate = date;
+                          //       });
+                          //     }
+                          //   },
+                          //   val: toJapanDateWithoutWeekDay(provider.endWorkDate),
+                          //   isHaveIcon: true,
+                          // ),
                         ],
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          CustomChooseDateOrTimeWidget(
-                            title: JapaneseText.startWorkingTime,
-                            onTap: () async {
-                              var time = await showTimePicker(
-                                  context: context,
-                                  initialTime: TimeOfDay(hour: provider.startWorkingTime.hour, minute: provider.startWorkingTime.minute));
-                              if (time != null) {
-                                setState(() {
-                                  provider.startWorkingTime = DateTime(1, 1, 1, time.hour, time.minute);
-                                });
-                              }
-                            },
-                            val: dateTimeToHourAndMinute(provider.startWorkingTime),
+                             SizedBox(
+                            width: 120,
+                            child: TimePickerField(
+                              label: JapaneseText.startWorkingTime,
+                              // helperText: "Enter in HH:mm format",
+                              initialTime: TextEditingController(text: dateTimeToHourAndMinute(provider.startWorkingTime)),
+                              onChanged: (val) {
+                                    final parts = val.split(":");
+                                    if (parts.length == 2) {
+                                      final hour = int.tryParse(parts[0]);
+                                      final minute = int.tryParse(parts[1]);
+                                      if (hour != null && minute != null && hour >= 0 && hour < 24 && minute >= 0 && minute < 60) {
+                                        setState(() {
+                                          provider.startWorkingTime = DateTime(1, 1, 1, hour, minute);
+                                        });
+                                      }
+                                    }
+                                  },
+                              onSubmitted: (time) => print("Submitted: $time"),
+                            ),
                           ),
+                          // CustomChooseDateOrTimeWidget(
+                          //   title: JapaneseText.startWorkingTime,
+                          //   onTap: () async {
+                          //     var time = await showTimePicker(
+                          //         context: context,
+                          //         initialTime: TimeOfDay(hour: provider.startWorkingTime.hour, minute: provider.startWorkingTime.minute));
+                          //     if (time != null) {
+                          //       setState(() {
+                          //         provider.startWorkingTime = DateTime(1, 1, 1, time.hour, time.minute);
+                          //       });
+                          //     }
+                          //   },
+                          //   val: dateTimeToHourAndMinute(provider.startWorkingTime),
+                          // ),
                           Padding(
                             padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
                             child: Text(
@@ -620,35 +927,77 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                               style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
                             ),
                           ),
-                          CustomChooseDateOrTimeWidget(
-                            title: JapaneseText.endWorkingTime,
-                            onTap: () async {
-                              var time = await showTimePicker(
-                                  context: context,
-                                  initialTime: TimeOfDay(hour: provider.endWorkingTime.hour, minute: provider.endWorkingTime.minute));
-                              if (time != null) {
-                                setState(() {
-                                  provider.endWorkingTime = DateTime(1, 1, 1, time.hour, time.minute);
-                                });
-                              }
-                            },
-                            val: dateTimeToHourAndMinute(provider.endWorkingTime),
+                          SizedBox(
+                            width: 120,
+                            child: TimePickerField(
+                              label: JapaneseText.endWorkingTime,
+                              // helperText: "Enter in HH:mm format",
+                              initialTime: TextEditingController(text: dateTimeToHourAndMinute(provider.endWorkingTime)),
+                              onChanged: (val) {
+                                    final parts = val.split(":");
+                                    if (parts.length == 2) {
+                                      final hour = int.tryParse(parts[0]);
+                                      final minute = int.tryParse(parts[1]);
+                                      if (hour != null && minute != null && hour >= 0 && hour < 24 && minute >= 0 && minute < 60) {
+                                        setState(() {
+                                          provider.endWorkingTime = DateTime(1, 1, 1, hour, minute);
+                                        });
+                                      }
+                                    }
+                                  },
+                              onSubmitted: (time) => print("Submitted: $time"),
+                            ),
                           ),
+                          // CustomChooseDateOrTimeWidget(
+                          //   title: JapaneseText.endWorkingTime,
+                          //   onTap: () async {
+                          //     var time = await showTimePicker(
+                          //         context: context,
+                          //         initialTime: TimeOfDay(hour: provider.endWorkingTime.hour, minute: provider.endWorkingTime.minute));
+                          //     if (time != null) {
+                          //       setState(() {
+                          //         provider.endWorkingTime = DateTime(1, 1, 1, time.hour, time.minute);
+                          //       });
+                          //     }
+                          //   },
+                          //   val: dateTimeToHourAndMinute(provider.endWorkingTime),
+                          // ),
                           AppSize.spaceWidth32,
-                          CustomChooseDateOrTimeWidget(
-                            title: JapaneseText.startBreakTime,
-                            onTap: () async {
-                              var time = await showTimePicker(
-                                  context: context,
-                                  initialTime: TimeOfDay(hour: provider.startBreakTime.hour, minute: provider.startBreakTime.minute));
-                              if (time != null) {
-                                setState(() {
-                                  provider.startBreakTime = DateTime(1, 1, 1, time.hour, time.minute);
-                                });
-                              }
-                            },
-                            val: dateTimeToHourAndMinute(provider.startBreakTime),
+                          SizedBox(
+                            width: 120,
+                            child: TimePickerField(
+                              label: JapaneseText.startBreakTime,
+                              // helperText: "Enter in HH:mm format",
+                              initialTime: TextEditingController(text: dateTimeToHourAndMinute(provider.startBreakTime)),
+                              onChanged: (val) {
+                                    final parts = val.split(":");
+                                    if (parts.length == 2) {
+                                      final hour = int.tryParse(parts[0]);
+                                      final minute = int.tryParse(parts[1]);
+                                      if (hour != null && minute != null && hour >= 0 && hour < 24 && minute >= 0 && minute < 60) {
+                                        setState(() {
+                                          provider.startBreakTime = DateTime(1, 1, 1, hour, minute);
+                                        });
+                                      }
+                                    }
+                                  },
+                              onSubmitted: (time) => print("Submitted: $time"),
+                            ),
                           ),
+                          // CustomChooseDateOrTimeWidget(
+                          //   title: JapaneseText.startBreakTime,
+                          //   onTap: () async {
+                          //     var time = await showTimePicker(
+                          //         context: context,
+                          //         initialTime: TimeOfDay(hour: provider.startBreakTime.hour, minute: provider.startBreakTime.minute));
+                          //     if (time != null) {
+                          //       setState(() {
+                          //         provider.startBreakTime = DateTime(1, 1, 1, time.hour, time.minute);
+                          //       });
+                          //     }
+                          //   },
+                          //   val: dateTimeToHourAndMinute(provider.startBreakTime),
+                          // ),
                           Padding(
                             padding: const EdgeInsets.only(top: 5, left: 5, right: 5),
                             child: Text(
@@ -656,19 +1005,42 @@ class _JobPostingShiftPageForCompanyState extends State<JobPostingShiftPageForCo
                               style: kTitleText.copyWith(fontSize: 16, color: AppColor.thirdColor, fontFamily: "Normal"),
                             ),
                           ),
-                          CustomChooseDateOrTimeWidget(
-                            title: JapaneseText.endBreakTime,
-                            onTap: () async {
-                              var time = await showTimePicker(
-                                  context: context, initialTime: TimeOfDay(hour: provider.endBreakTime.hour, minute: provider.endBreakTime.minute));
-                              if (time != null) {
-                                setState(() {
-                                  provider.endBreakTime = DateTime(1, 1, 1, time.hour, time.minute);
-                                });
-                              }
-                            },
-                            val: dateTimeToHourAndMinute(provider.endBreakTime),
+                          SizedBox(
+                            width: 120,
+                            child: TimePickerField(
+                              label: JapaneseText.endBreakTime,
+                              // helperText: "Enter in HH:mm format",
+                              initialTime: TextEditingController(text: dateTimeToHourAndMinute(provider.endBreakTime)),
+                              onChanged: (val) {
+                                    final parts = val.split(":");
+                                    if (parts.length == 2) {
+                                      final hour = int.tryParse(parts[0]);
+                                      final minute = int.tryParse(parts[1]);
+                                      if (hour != null && minute != null && hour >= 0 && hour < 24 && minute >= 0 && minute < 60) {
+                                        setState(() {
+                                          provider.endBreakTime = DateTime(1, 1, 1, hour, minute);
+                                        });
+                                      }
+                                    }
+                                  },
+                              onSubmitted: (time) => print("Submitted: $time"),
+                            ),
                           ),
+
+                          // CustomChooseDateOrTimeWidget(
+                          //   title: JapaneseText.endBreakTime,
+                          //   onTap: () async {
+                          //     var time = await showTimePicker(
+                          //         context: context, initialTime: TimeOfDay(hour: provider.endBreakTime.hour, minute: provider.endBreakTime.minute));
+                          //     if (time != null) {
+                          //       setState(() {
+                          //         provider.endBreakTime = DateTime(1, 1, 1, time.hour, time.minute);
+                          //       });
+                          //     }
+
+                          //   },
+                          //   val: dateTimeToHourAndMinute(provider.endBreakTime),
+                          // ),
                         ],
                       ),
                       Text(

@@ -78,7 +78,7 @@ class JapaneseText {
   static String companyShiftList = "シフト枠一覧";
 
   static String dashboardCompany = "ダッシュボード";
-  static String recruitmentTemplate = "求人ひな形";
+  static String recruitmentTemplate = "求人情報入力";
   static String shiftFrame = "シフト枠";
   static String applicantCompany = "応募者";
   static String workerCompany = "ワーカー";
