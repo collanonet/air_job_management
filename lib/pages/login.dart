@@ -304,6 +304,7 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       authProvider.setLoading(true);
       MyUser? user = await authProvider.loginAccount(email.text.trim(), password.text.trim());
+      context.go(MyRoute.dashboard);
       if (user != null) {
         context.go(MyRoute.dashboard);
         // if (user.role == RoleHelper.admin) {
